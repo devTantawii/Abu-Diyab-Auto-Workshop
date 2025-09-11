@@ -1,3 +1,4 @@
+import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,12 +11,18 @@ class LogoutBottomSheet extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    if (token == null) return;
+    if (token == null) {
+      print("⚠️ لا يوجد توكن محفوظ، المستخدم غير مسجل دخول.");
+      return;
+    }
 
     try {
+      print("📡 جاري محاولة تسجيل الخروج...");
+      print("🔑 التوكن المرسل: $token");
+
       final dio = Dio();
       final response = await dio.post(
-        'https://devworkshop.abudiyabksa.com/api/logout',
+        mainApi + logoutApi,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -24,11 +31,17 @@ class LogoutBottomSheet extends StatelessWidget {
         ),
       );
 
-      if (response.statusCode == 200) {
+      print("📩 Status Code: ${response.statusCode}");
+      print("📩 Response Data: ${response.data}");
+
+      if (response.statusCode == 200 &&
+          (response.data['status'] == 200 || response.data['status'] == 'success')) {
         await prefs.clear();
 
+        print("✅ تم تسجيل الخروج بنجاح ومسح البيانات المحلية.");
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم تسجيل الخروج بنجاح')),
+          const SnackBar(content: Text('تم تسجيل الخروج بنجاح ✅')),
         );
 
         Navigator.pushAndRemoveUntil(
@@ -37,13 +50,34 @@ class LogoutBottomSheet extends StatelessWidget {
               (route) => false,
         );
       } else {
+        final msg = response.data['msg'] ?? 'فشل تسجيل الخروج';
+        print("⚠️ فشل تسجيل الخروج: $msg");
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('فشل تسجيل الخروج')),
+          SnackBar(content: Text(msg)),
         );
       }
-    } catch (e) {
+    } on DioError catch (dioError) {
+      print("❌ DioError: ${dioError.message}");
+      if (dioError.response != null) {
+        print("📩 DioError Response: ${dioError.response?.data}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              dioError.response?.data['msg'] ?? 'خطأ من السيرفر أثناء تسجيل الخروج',
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('مشكلة في الاتصال بالسيرفر')),
+        );
+      }
+    } catch (e, stack) {
+      print("❌ استثناء غير متوقع: $e");
+      print("📝 Stacktrace: $stack");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج')),
+        const SnackBar(content: Text('حدث خطأ غير متوقع أثناء تسجيل الخروج')),
       );
     }
   }

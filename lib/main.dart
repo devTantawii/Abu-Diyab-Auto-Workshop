@@ -38,21 +38,26 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final prefs = await SharedPreferences.getInstance();
-  initialToken = prefs.getString('token');
+  String? savedToken = prefs.getString('token');
+
+  // لو فيه | في التوكين، نشيل الجزء الأول ونخلي التاني بس
+  if (savedToken != null && savedToken.contains('|')) {
+    savedToken = savedToken.split('|')[1];
+  }
+
+  initialToken = savedToken;
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
         BlocProvider(
-          create: (_) => CarBrandCubit(
-            dio: Dio(),
-            productionApi: productionApi,
-            brandApi: BrandApi,
-          )..fetchCarBrands(),
+          create: (_) => CarBrandCubit()..fetchCarBrands(), // 👈 هنا
+
         ),
         BlocProvider<CarModelCubit>(
-          create: (_) => CarModelCubit(dio: Dio(), productionApi: productionApi),
+          create:
+              (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
         ),
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
@@ -64,7 +69,8 @@ void main() async {
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen:
+            initialToken != null ? const HomeScreen() : OnboardingScreen(),
       ),
     ),
   );
@@ -72,6 +78,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final Widget initialScreen;
+
   const MyApp({Key? key, required this.initialScreen}) : super(key: key);
 
   @override
@@ -105,7 +112,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
-              (route) => false,
+          (route) => false,
         );
       }
     }
@@ -115,7 +122,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
-            (route) => false,
+        (route) => false,
       );
     }
   }
@@ -162,9 +169,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               themeMode: themeMode,
               debugShowCheckedModeBanner: false,
               home: Directionality(
-                textDirection: _locale?.languageCode == 'ar'
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
+                textDirection:
+                    _locale?.languageCode == 'ar'
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
                 child: widget.initialScreen,
               ),
             );

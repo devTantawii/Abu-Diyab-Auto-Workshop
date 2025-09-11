@@ -1,28 +1,34 @@
 class Car {
   final int id;
-  final String boardNo;
+  final String licencePlate;
   final String? name;
+  final String? year;
+  final String? kilometer;
+  final String? carCertificate;
   final Map<String, dynamic> carBrand;
   final Map<String, dynamic> carModel;
-  final int? creationYear;
 
   Car({
     required this.id,
-    required this.boardNo,
+    required this.licencePlate,
     this.name,
+    this.year,
+    this.kilometer,
+    this.carCertificate,
     required this.carBrand,
     required this.carModel,
-    this.creationYear,
   });
 
   factory Car.fromJson(Map<String, dynamic> json) {
     return Car(
-      id: json['id'],
-      boardNo: json['board_no'] ?? '',
+      id: json['id'] ?? 0,
+      licencePlate: json['licence_plate'] ?? '',
       name: json['name'],
+      year: json['year'], // جاية String
+      kilometer: json['kilometer'],
+      carCertificate: json['car_certificate'],
       carBrand: json['car_brand'] ?? {},
       carModel: json['car_model'] ?? {},
-      creationYear: json['creation_year'],
     );
   }
 }

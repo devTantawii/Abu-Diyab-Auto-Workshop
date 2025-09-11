@@ -57,7 +57,6 @@ class _ImageSliderState extends State<ImageSlider> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // الصور
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: SizedBox(

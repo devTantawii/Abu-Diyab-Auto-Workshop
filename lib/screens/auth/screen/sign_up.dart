@@ -23,6 +23,7 @@ class AuthBottomSheet extends StatefulWidget {
 
 class _AuthBottomSheetState extends State<AuthBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _name2Controller = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -30,6 +31,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
   @override
   void dispose() {
     _nameController.dispose();
+    _name2Controller.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -37,10 +39,14 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
 
   String? _validatePhone(String? value) {
     if (value == null || value.isEmpty) {
-      return _isArabic(context) ? "يرجى إدخال رقم الهاتف" : "Please enter phone number";
+      return _isArabic(context)
+          ? "يرجى إدخال رقم الهاتف"
+          : "Please enter phone number";
     }
     if (value.length < 9 || value.length > 15) {
-      return _isArabic(context) ? "رقم الهاتف غير صحيح" : "Invalid phone number";
+      return _isArabic(context)
+          ? "رقم الهاتف غير صحيح"
+          : "Invalid phone number";
     }
     return null;
   }
@@ -61,22 +67,23 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
           child: BlocConsumer<RegisterCubit, RegisterState>(
             listener: (context, state) {
               if (state is RegisterSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (context) => FractionallySizedBox(
-                    widthFactor: 1,
-                    child: OtpBottomSheet(phone: _phoneController.text),
-                  ),
+                  builder:
+                      (context) => FractionallySizedBox(
+                        widthFactor: 1,
+                        child: OtpBottomSheet(phone: _phoneController.text),
+                      ),
                 );
               } else if (state is RegisterFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.error)));
               }
             },
             builder: (context, state) {
@@ -85,7 +92,9 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                 child: Container(
                   padding: EdgeInsets.all(20.sp),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors. white
+                        : Colors. black,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20.r),
                     ),
@@ -103,7 +112,9 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             Text(
                               isArabic ? 'انضم إلينا الآن !' : 'Join us now!',
                               style: TextStyle(
-                                color: Colors.black,
+                                color:Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
                                 fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -115,7 +126,9 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                   ? 'يرجى إنشاء حساب لتتمكن من تقديم طلب جديد 🚀'
                                   : 'Please create an account to place a new request 🚀',
                               style: TextStyle(
-                                color: Colors.black.withOpacity(0.7),
+                                color: Theme.of(context).brightness == Brightness.light
+                                    ?  Colors.black.withOpacity(0.7)
+                                    : Colors.white,
                                 fontSize: 14.h,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,
@@ -123,15 +136,25 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             ),
                             SizedBox(height: 20.h),
 
-                            build_label(text: isArabic ? 'الإسم' : 'Name'),
+                            build_label(text: isArabic ? 'الإسم الأول' : 'Frist Name'),
                             _buildTextField(
                               controller: _nameController,
-                              hint: isArabic ? "XXXX XXXX" : "John Doe",
+                              hint: isArabic ? "XXXX " : "John Doe",
                               textInputType: TextInputType.name,
                             ),
                             SizedBox(height: 15.h),
 
-                            build_label(text: isArabic ? 'رقم الهاتف' : 'Phone Number'),
+                            build_label(text: isArabic ? 'اسم العائله' : 'Family Name'),
+                            _buildTextField(
+                              controller: _name2Controller,
+                              hint: isArabic ? "XXXX " : "John Doe",
+                              textInputType: TextInputType.name,
+                            ),
+                            SizedBox(height: 15.h),
+
+                            build_label(
+                              text: isArabic ? 'رقم الهاتف' : 'Phone Number',
+                            ),
                             _buildTextField(
                               controller: _phoneController,
                               hint: isArabic ? "5XXXXXXX" : "5XXXXXXX",
@@ -141,7 +164,9 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             ),
                             SizedBox(height: 15.h),
 
-                            build_label(text: isArabic ? 'كلمة المرور' : 'Password'),
+                            build_label(
+                              text: isArabic ? 'كلمة المرور' : 'Password',
+                            ),
                             _buildTextField(
                               controller: _passwordController,
                               hint: "********",
@@ -167,35 +192,48 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                               height: 50.h,
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: state is RegisterLoading
-                                    ? null
-                                    : () {
-                                  if (_formKey.currentState!.validate()) {
-                                    final model = RegisterRequestModel(
-                                      name: _nameController.text.trim(),
-                                      phone: _phoneController.text.trim(),
-                                      password: _passwordController.text.trim(),
-                                    );
-                                    context.read<RegisterCubit>().register(model);
-                                  }
-                                },
+                                onPressed:
+                                    state is RegisterLoading
+                                        ? null
+                                        : () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            final model = RegisterRequestModel(
+                                              name: _nameController.text.trim(),
+                                              name2: _name2Controller.text.trim(),
+                                              phone:
+                                                  _phoneController.text.trim(),
+                                              password:
+                                                  _passwordController.text
+                                                      .trim(),
+                                            );
+                                            context
+                                                .read<RegisterCubit>()
+                                                .register(model);
+                                          }
+                                        },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFFBA1B1B),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                 ),
-                                child: state is RegisterLoading
-                                    ? CircularProgressIndicator(color: Colors.white)
-                                    : Text(
-                                  isArabic ? 'أنشئ حسابك' : 'Create Account',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                    fontFamily: 'Graphik Arabic',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                                child:
+                                    state is RegisterLoading
+                                        ? CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                        : Text(
+                                          isArabic
+                                              ? 'أنشئ حسابك'
+                                              : 'Create Account',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.sp,
+                                            fontFamily: 'Graphik Arabic',
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
                               ),
                             ),
 
@@ -205,9 +243,13 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  isArabic ? 'عندك حساب ؟ ' : 'Already have an account? ',
+                                  isArabic
+                                      ? 'عندك حساب ؟ '
+                                      : 'Already have an account? ',
                                   style: TextStyle(
-                                    color: Colors.black,
+                                    color: Theme.of(context).brightness == Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontSize: 15.h,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w500,
@@ -216,20 +258,28 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Future.delayed(Duration(milliseconds: 100), () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) => FractionallySizedBox(
-                                          widthFactor: 1,
-                                          child: BlocProvider(
-                                            create: (_) => LoginCubit(dio: Dio()),
-                                            child: const LoginBottomSheet(),
-                                          ),
-                                        ),
-                                      );
-                                    });
+                                    Future.delayed(
+                                      Duration(milliseconds: 100),
+                                      () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          builder:
+                                              (context) => FractionallySizedBox(
+                                                widthFactor: 1,
+                                                child: BlocProvider(
+                                                  create:
+                                                      (_) => LoginCubit(
+                                                        dio: Dio(),
+                                                      ),
+                                                  child:
+                                                      const LoginBottomSheet(),
+                                                ),
+                                              ),
+                                        );
+                                      },
+                                    );
                                   },
                                   child: Text(
                                     isArabic ? 'سجّل دخولك' : 'Login',
@@ -248,19 +298,27 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                               padding: EdgeInsets.symmetric(vertical: 15.h),
                               child: Row(
                                 children: [
-                                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                                  Expanded(
+                                    child: Divider(color: Colors.grey.shade300),
+                                  ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                    ),
                                     child: Text(
                                       isArabic ? "أو" : "OR",
                                       style: GoogleFonts.almarai(
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black,
+                                        color: Theme.of(context).brightness == Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
                                       ),
                                     ),
                                   ),
-                                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                                  Expanded(
+                                    child: Divider(color: Colors.grey.shade300),
+                                  ),
                                 ],
                               ),
                             ),
@@ -281,10 +339,11 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                       context: context,
                                       isScrollControlled: true,
                                       backgroundColor: Colors.transparent,
-                                      builder: (context) => FractionallySizedBox(
-                                        widthFactor: 1,
-                                        child: const SupportBottomSheet(),
-                                      ),
+                                      builder:
+                                          (context) => FractionallySizedBox(
+                                            widthFactor: 1,
+                                            child: const SupportBottomSheet(),
+                                          ),
                                     );
                                   },
                                   child: Text(
@@ -316,7 +375,6 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     );
   }
 
-
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -331,15 +389,23 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
       validator: validator,
       obscureText: obscureText,
       inputFormatters:
-      maxLength != null ? [LengthLimitingTextInputFormatter(maxLength)] : null,
+          maxLength != null
+              ? [LengthLimitingTextInputFormatter(maxLength)]
+              : null,
       decoration: InputDecoration(
         hintText: hint,
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
-        hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color: Colors.grey),
+        hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color:  Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -349,4 +415,3 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     );
   }
 }
-

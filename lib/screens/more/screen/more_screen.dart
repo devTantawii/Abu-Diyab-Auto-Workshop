@@ -4,6 +4,8 @@ import 'package:abu_diyab_workshop/screens/auth/screen/sign_up.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/log_out.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/support_bottom_sheet.dart';
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
+import 'package:abu_diyab_workshop/screens/more/screen/bakat_screen.dart';
+import 'package:abu_diyab_workshop/screens/more/screen/widget/privacy.dart';
 import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
 import 'package:abu_diyab_workshop/screens/profile/widget/ITN.dart';
 import 'package:dio/dio.dart';
@@ -17,6 +19,7 @@ import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
 import '../../on_boarding/screen/on_boarding_screen.dart';
+import 'invite_friends.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -24,7 +27,6 @@ class MoreScreen extends StatefulWidget {
   @override
   State<MoreScreen> createState() => _MoreScreenState();
 }
-
 
 class _MoreScreenState extends State<MoreScreen> {
   bool _isLoggedIn = false;
@@ -42,11 +44,11 @@ class _MoreScreenState extends State<MoreScreen> {
     if (token == null) {
       await prefs.clear();
       if (mounted) {
-     //   Navigator.pushAndRemoveUntil(
-     //     context,
-     //     MaterialPageRoute(builder: (_) => OnboardingScreen()),
-     //         (route) => false,
-     //   );
+        //   Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (_) => OnboardingScreen()),
+        //         (route) => false,
+        //   );
       }
       return;
     }
@@ -64,10 +66,10 @@ class _MoreScreenState extends State<MoreScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor:  Theme.of(context).brightness ==
-          Brightness.light
-          ? Colors.white
-          :Colors.black,
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
         appBar: AppBar(
           toolbarHeight: 130.h,
           backgroundColor: Colors.transparent,
@@ -79,9 +81,10 @@ class _MoreScreenState extends State<MoreScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: Theme.of(context).brightness == Brightness.light
-                    ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
-                    : [const Color(0xFF690505), const Color(0xFF6F5252)],
+                colors:
+                    Theme.of(context).brightness == Brightness.light
+                        ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
+                        : [const Color(0xFF690505), const Color(0xFF6F5252)],
               ),
             ),
 
@@ -114,10 +117,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       'المزيد',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).brightness ==
-                            Brightness.light
-                       ? Colors.black
-                        :Colors.white,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 25,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -135,6 +138,48 @@ class _MoreScreenState extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                SizedBox(height: 10,),
+                if (_isLoggedIn)
+                  widget_ITN(
+                    text: 'باقاتي',
+                    iconPath: 'assets/icons/gift_card1.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BakatScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                SizedBox(height: 10,),
+                if (_isLoggedIn)
+                  widget_ITN(
+                    text: 'ادع أصدقائك',
+                    iconPath: 'assets/icons/gift_card1.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InviteFriends(),
+                        ),
+                      );
+                    },
+                  ),
+                SizedBox(height: 10,),
+
+                  widget_ITN(
+                    text: 'الخصوصيه',
+                    iconPath: 'assets/icons/user.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Privacy(),
                         ),
                       );
                     },
@@ -169,19 +214,19 @@ class _MoreScreenState extends State<MoreScreen> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.language,color: Color(0xFFBA1B1B),) ,// شكل الكرة الأرضية الافتراضي
+                      Icon(Icons.language, color: Color(0xFFBA1B1B)),
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child:
-                        Text(
+                        child: Text(
                           locale!.isDirectionRTL(context)
                               ? 'لغة التطبيق'
                               : 'App Language',
                           style: TextStyle(
-                            color: Theme.of(context).brightness ==
-                                Brightness.light
-                                ? Colors.black
-                                : Colors.white,                            fontSize: 16,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                            fontSize: 16,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
                           ),
@@ -201,42 +246,40 @@ class _MoreScreenState extends State<MoreScreen> {
                 ),
 
                 SizedBox(height: 10.h),
-                 Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      // حواف دائرية بـ radius 16
-                      border: Border.all(
-                        color: Colors.grey, // لون البوردر
-                        width: 2.0, // سماكة البوردر
-                      ),
-                    ),
-                    child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.color_lens,
-                            color: Color(0xFFBA1B1B),
-                          ),
-                          SizedBox(width: 5.w),
-
-                          Text(
-                            locale.isDirectionRTL(context)
-                                ? "الوضع الليلي "
-                                : "Dark Theme",                              style: GoogleFonts.almarai(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Theme.of(context).brightness ==
-                                Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                          ),
-                          ), Spacer(),
-                          AnimatedThemeToggleButton(),
-                        ],
-                      ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 2.0,
                     ),
                   ),
+                  child: ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.color_lens, color: Color(0xFFBA1B1B)),
+                        SizedBox(width: 5.w),
+
+                        Text(
+                          locale.isDirectionRTL(context)
+                              ? "الوضع الليلي "
+                              : "Dark Theme",
+                          style: GoogleFonts.almarai(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w400,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                          ),
+                        ),
+                        Spacer(),
+                        AnimatedThemeToggleButton(),
+                      ],
+                    ),
+                  ),
+                ),
 
                 SizedBox(height: 10.h),
 
@@ -301,16 +344,16 @@ class _MoreScreenState extends State<MoreScreen> {
                                   ),
                             );
                           },
-                          child: Container(
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
                             width: double.infinity,
                             height: 50,
                             decoration: ShapeDecoration(
+                              color: Colors.white,
                               shape: RoundedRectangleBorder(
                                 side: BorderSide(
-                                  width: 1.50,
-                                  color: Colors.black.withOpacity(
-                                    0.7,
-                                  ), // fix for .withValues() error
+                                  width: 1.5,
+                                  color: Colors.black.withOpacity(0.7),
                                 ),
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -395,7 +438,6 @@ class LanguageToggle extends StatelessWidget {
               ),
             ),
 
-            // الزر المتحرك
             AnimatedAlign(
               alignment:
                   isArabic ? Alignment.centerLeft : Alignment.centerRight,
@@ -432,52 +474,49 @@ class AnimatedThemeToggleButton extends StatelessWidget {
               context.read<ThemeCubit>().setDarkTheme();
             }
           },
-          child: Container(
-
-            height: 40,
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.black87 : Colors.orangeAccent,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark ? Colors.black45 : Colors.orange.withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+            height: 35.h,
+            padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.white : Colors.orangeAccent,
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      isDark ? Colors.black26 : Colors.orange.withOpacity(0.5),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (child, animation) =>
+                          ScaleTransition(scale: animation, child: child),
+                  child: Icon(
+                    isDark ? Icons.dark_mode : Icons.light_mode,
+                    key: ValueKey<bool>(isDark),
+                    color: Colors.black87,
+                    size: 18,
                   ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
-                    child: Icon(
-                      isDark ? Icons.dark_mode : Icons.light_mode,
-                      key: ValueKey<bool>(isDark),
-                      color: Colors.white,
-                      size: 15,
-                    ),
+                ),
+                SizedBox(width: 8),
+                AnimatedDefaultTextStyle(
+                  duration: Duration(milliseconds: 300),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w500,
                   ),
-                  SizedBox(width: 8),
-                  AnimatedDefaultTextStyle(
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    duration: Duration(milliseconds: 300),
-                    child: Text(isDark ? "Dark" : "Light"),
-                  ),
-                ],
-              ),
+                  child: Text(isDark ? "Dark" : "Light"),
+                ),
+              ],
             ),
           ),
         );
@@ -485,4 +524,3 @@ class AnimatedThemeToggleButton extends StatelessWidget {
     );
   }
 }
-

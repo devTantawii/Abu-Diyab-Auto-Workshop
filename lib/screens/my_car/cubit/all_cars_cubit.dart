@@ -16,9 +16,12 @@ class CarCubit extends Cubit<CarState> {
   // Fetch all cars
   Future<void> fetchCars(String token) async {
     emit(CarLoading());
+    print("Fetching cars...");
+    print(token);
+
     try {
       final response = await _dio.get(
-        "$mainApi/user-cars",
+        "$mainApi/app/elwarsha/user-cars/get",
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -28,17 +31,32 @@ class CarCubit extends Cubit<CarState> {
         ),
       );
 
+      print("Response status: ${response.statusCode}");
+      print("Response data: ${response.data}");
+
       if (response.statusCode == 200) {
-        final data =
-            response.data is String
-                ? List<Map<String, dynamic>>.from(jsonDecode(response.data))
-                : List<Map<String, dynamic>>.from(response.data);
+        final responseData = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
+
+        print("responseData: $responseData");
+
+        final data = List<Map<String, dynamic>>.from(responseData["data"]);
+        print("Cars data: $data");
+
+        print("Decoded data: $data");
+
         final cars = data.map((e) => Car.fromJson(e)).toList();
+        print("Parsed cars: $cars");
+
         emit(CarLoaded(cars));
       } else {
+        print("Non-200 response");
         emit(CarError("Failed to load cars"));
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("Error caught: $e");
+      print(stackTrace);
       emit(CarError(e.toString()));
     }
   }
@@ -52,7 +70,7 @@ class CarCubit extends Cubit<CarState> {
     int? carModelId,
     required String creationYear,
     required String boardNo,
-    //   required String translationName,
+    required String translationName,
     int? kiloRead,
     File? carDocs,
   }) async {
@@ -60,25 +78,25 @@ class CarCubit extends Cubit<CarState> {
     try {
       final brandId = carBrandId ?? 0;
       final modelId = carModelId ?? 0;
-      //     final kilo = kiloRead ?? 0;
+      final kilo = kiloRead ?? 0;
 
       FormData formData = FormData.fromMap({
+       // "_method": "PUT", // 👈 مهم للـ Laravel
         "car_brand_id": brandId,
         "car_model_id": modelId,
-        "creation_year": creationYear,
-        "board_no": boardNo,
-        //  "name": translationName,   // 👈 الاسم الصحيح
-        //  "kilo_read": kilo,         // 👈 اضفته هنا
+        "year": creationYear,
+        "licence_plate": boardNo,
+        "name": translationName,
+        "kilometer": kilo,
         if (carDocs != null)
-          "car_docs": await MultipartFile.fromFile(
+          "car_certificate": await MultipartFile.fromFile(
             carDocs.path,
             filename: carDocs.path.split("/").last,
           ),
       });
 
       final response = await _dio.post(
-        // 👈 جرب POST مع _method=PUT
-        "$mainApi/user-cars/$carId?_method=PUT",
+        "$mainApi/app/elwarsha/user-cars/update/$carId",
         data: formData,
         options: Options(
           headers: {
@@ -87,17 +105,16 @@ class CarCubit extends Cubit<CarState> {
           },
         ),
       );
-      // 🖨️ اطبع الريسبونس كامل في اللوج
+
       print("🔵 UpdateCar Response Status: ${response.statusCode}");
       print("🔵 UpdateCar Response Data: ${response.data}");
       print("🔵 UpdateCar Response Headers: ${response.headers}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // لو السيرفر بيرجع رسالة
         final message =
-            response.data is Map && response.data['message'] != null
-                ? response.data['message']
-                : "تم تعديل السيارة بنجاح";
+        response.data is Map && response.data['msg'] != null
+            ? response.data['msg']
+            : "تم تعديل السيارة بنجاح";
 
         emit(UpdateCarSuccess(message: message));
         await fetchCars(token);
@@ -105,7 +122,7 @@ class CarCubit extends Cubit<CarState> {
         emit(
           UpdateCarError(
             message:
-                "فشل تعديل السيارة (Status ${response.statusCode}) - ${response.data}",
+            "فشل تعديل السيارة (Status ${response.statusCode}) - ${response.data}",
           ),
         );
       }
@@ -115,9 +132,10 @@ class CarCubit extends Cubit<CarState> {
         print("❌ UpdateCar Error Data: ${e.response?.data}");
 
         final serverMessage =
-            e.response?.data['message'] ??
-            e.response?.data.toString() ??
-            "فشل تعديل السيارة";
+            e.response?.data['msg'] ??
+                e.response?.data['message'] ??
+                e.response?.data.toString() ??
+                "فشل تعديل السيارة";
 
         emit(UpdateCarError(message: serverMessage));
       } else {
@@ -126,4 +144,5 @@ class CarCubit extends Cubit<CarState> {
       }
     }
   }
+
 }

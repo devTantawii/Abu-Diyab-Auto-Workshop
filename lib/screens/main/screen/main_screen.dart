@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constant/Responsivemodel.dart';
 import '../../../core/language/locale.dart';
 import '../../services/screen/change_tire.dart';
 import '../cubit/services_cubit.dart';
@@ -25,7 +26,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String _username = 'زائر'; // الاسم الافتراضي
+  String _username = 'زائر';
   final Dio dio = Dio();
   List<Map<String, String>> services = [];
   bool showAllServices = false;
@@ -43,16 +44,17 @@ class _MainScreenState extends State<MainScreen> {
       _username = prefs.getString('username') ?? 'زائر';
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
     return Scaffold(
-      backgroundColor: Color(0xFFEAEAEA),
+      backgroundColor:Theme.of(context).brightness == Brightness.light
+          ? Colors. white
+          : Colors. black,
       appBar: AppBar(
-        toolbarHeight: 150.h,
+        toolbarHeight: Responsive.h(context, 150, 200),
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -82,7 +84,6 @@ class _MainScreenState extends State<MainScreen> {
                         final token = prefs.getString('token');
 
                         if (token != null && token.isNotEmpty) {
-                          // المستخدم مسجل دخول، روح على صفحة البروفايل
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -90,7 +91,6 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                           );
                         } else {
-                          // مش مسجل دخول، اعرض Bottom Sheet
                           showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
@@ -104,8 +104,8 @@ class _MainScreenState extends State<MainScreen> {
                         }
                       },
                       child: Container(
-                        width: 48.w,
-                        height: 48.h,
+                        height: Responsive.h(context, 48, 60),
+                        width: Responsive.w(context, 48, 60),
                         child: const CircleAvatar(
                           radius: 30,
                           backgroundImage: AssetImage(
@@ -143,10 +143,8 @@ class _MainScreenState extends State<MainScreen> {
 
 
                           SizedBox(height: 4.h),
-                          // مكانك داخل flexibleSpace Column:
                           SizedBox(
                             height: 25.h,
-                            // قيد واضح لحجم الـ location widget داخل الـ AppBar
                             child: const LocationWidget(),
                           ),
                         ],
@@ -158,7 +156,9 @@ class _MainScreenState extends State<MainScreen> {
                         width: 48.w,
                         height: 48.h,
                         decoration: ShapeDecoration(
-                          color: Colors.white,
+                          color:Theme.of(context).brightness == Brightness.light
+                              ? Colors. white
+                              : Colors. black,
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
                               width: 1,
@@ -169,7 +169,9 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         child: Icon(
                           Icons.notifications_active,
-                          color: Color(0xFF4D4D4D),
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                           size: 28.sp,
                         ),
                       ),
@@ -183,13 +185,17 @@ class _MainScreenState extends State<MainScreen> {
                     Container(
                       width: 282.w,
                       height: 50.h,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding:  EdgeInsets.symmetric(horizontal: 10),
                       decoration: ShapeDecoration(
-                        color: Colors.white,
+                        color:Theme.of(context).brightness == Brightness.light
+                            ? Colors. white
+                            : Colors. black,
                         shape: RoundedRectangleBorder(
-                          side: const BorderSide(
+                          side:  BorderSide(
                             width: 1.5,
-                            color: Color(0xFFAFAFAF),
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? Colors. white
+                                : Colors. black,
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -204,7 +210,9 @@ class _MainScreenState extends State<MainScreen> {
                                 'ابحث عن الخدمات',
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).brightness == Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                   fontSize: 15.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w500,
@@ -216,7 +224,7 @@ class _MainScreenState extends State<MainScreen> {
                             onPressed: () {},
                             icon: const Icon(
                               Icons.search,
-                              size: 20,
+                              size: 30,
                               color: Colors.grey,
                             ),
                           ),
@@ -225,10 +233,12 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     Spacer(),
                     Container(
-                      width: 50.w, // responsive width
-                      height: 50.h, // نخليها مربعة ومقاسة حسب الشاشة
+                      width: 50.w,
+                      height: 50.h,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors. white
+                            : Colors. black,
                         border: Border.all(
                           width: 1.w, // responsive border
                           color: Colors.black.withValues(alpha: 0.5),
@@ -244,7 +254,9 @@ class _MainScreenState extends State<MainScreen> {
                             child: Icon(
                               Icons.ios_share_outlined,
                               size: 20.sp, // responsive icon size
-                              color: const Color(0xFF474747),
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? const Color(0xFF474747)
+                                  :  Colors. white,
                             ),
                           ),
                           SizedBox(height: 6.h), // responsive spacing
@@ -300,7 +312,9 @@ class _MainScreenState extends State<MainScreen> {
                                   : "Services",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
                                 fontSize: 20.sp,
                                 fontFamily: 'GraphikArabic',
                                 fontWeight: FontWeight.w600,
@@ -351,25 +365,24 @@ class _MainScreenState extends State<MainScreen> {
                                   : (state.services.length > 3
                                       ? 3
                                       : state.services.length),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 1,
-                              ),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: MediaQuery.of(context).size.width * 0.01, // نسبة من العرض
+                            crossAxisSpacing: MediaQuery.of(context).size.width * 0.04, // نسبة من العرض
+                            childAspectRatio: 1,
+                          ),
 
                           itemBuilder: (context, index) {
                             final service = state.services[index];
                             return _buildServiceItem(
                               title: service.title,
                               imagePath: service.image,
-                              serviceId: service.id, // لو موجود عندك من الموديل
+                              serviceId: service.id,
 
                             );
                           },
                         ),
-                        SizedBox(height: 15.h),
+                        SizedBox(height: 8.h),
                         Center(
                           child: Image.asset(
                             'assets/images/main_pack.png',
@@ -387,7 +400,9 @@ class _MainScreenState extends State<MainScreen> {
                                   : "Upcoming maintenance",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Colors.black,
+                                color:Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
                                 fontSize: 16.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -405,8 +420,15 @@ class _MainScreenState extends State<MainScreen> {
                           width: double.infinity,
                           height: isTablet ? 140.h : 100.h,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
+                            color: Theme.of(context).brightness == Brightness.light
+                                ?Colors.white.withOpacity(0.8)
+                                :  Colors.black,
                             borderRadius: BorderRadius.circular(12.sp),
+                            border: Border.all(width: 1,
+                                color:Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                          )
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(10.w),
@@ -444,8 +466,16 @@ class _MainScreenState extends State<MainScreen> {
                           width: double.infinity,
                           height: isTablet ? 120.h : 94.h,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black,
                             borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              width: 1.0,
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black12,
@@ -481,7 +511,9 @@ class _MainScreenState extends State<MainScreen> {
                                                 ? "تغيير إطارات "
                                                 : "Change tires",
                                             style: TextStyle(
-                                              color: Colors.black,
+                                              color: Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -506,9 +538,11 @@ class _MainScreenState extends State<MainScreen> {
                                                 ? 'جيلي , إمجراند'
                                                 : "Geely, Emgrand",
                                             style: TextStyle(
-                                              color: Colors.black.withValues(
+                                              color:Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black.withValues(
                                                 alpha: 0.70,
-                                              ),
+                                              ) : Colors.white,
+
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -519,9 +553,9 @@ class _MainScreenState extends State<MainScreen> {
                                           Text(
                                             '2024',
                                             style: TextStyle(
-                                              color: Colors.black.withValues(
-                                                alpha: 0.70,
-                                              ),
+                                              color:Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black.withValues(alpha: 0.70,)
+                                                  : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -536,15 +570,17 @@ class _MainScreenState extends State<MainScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            Image.asset(
-                                              "assets/icons/quill_notifications.png",
-                                              width: 18.w,
-                                              height: 18.h,
+                                            Icon(
+                                                Icons.notifications_none,
+                                              size: 18.sp,
+                                              color:Colors.red
                                             ),
                                             Text(
                                               '17 / 9 / 2025',
                                               style: TextStyle(
-                                                color: Colors.black,
+                                                color: Theme.of(context).brightness == Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white,
                                                 fontSize: 14.21.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w500,
@@ -599,8 +635,16 @@ class _MainScreenState extends State<MainScreen> {
                           width: double.infinity,
                           height: isTablet ? 120.h : 94.h,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black,
                             borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              width: 1.0,
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black12,
@@ -611,10 +655,10 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           child: Row(
                             textDirection:
-                                Localizations.localeOf(context).languageCode ==
-                                        'ar'
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
+                            Localizations.localeOf(context).languageCode ==
+                                'ar'
+                                ? TextDirection.rtl
+                                : TextDirection.ltr,
                             children: [
                               Expanded(
                                 child: Padding(
@@ -625,18 +669,20 @@ class _MainScreenState extends State<MainScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             locale.isDirectionRTL(context)
                                                 ? "تغيير إطارات "
                                                 : "Change tires",
                                             style: TextStyle(
-                                              color: Colors.black,
+                                              color: Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -654,16 +700,18 @@ class _MainScreenState extends State<MainScreen> {
 
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             locale.isDirectionRTL(context)
                                                 ? 'جيلي , إمجراند'
                                                 : "Geely, Emgrand",
                                             style: TextStyle(
-                                              color: Colors.black.withValues(
+                                              color:Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black.withValues(
                                                 alpha: 0.70,
-                                              ),
+                                              ) : Colors.white,
+
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -674,9 +722,9 @@ class _MainScreenState extends State<MainScreen> {
                                           Text(
                                             '2024',
                                             style: TextStyle(
-                                              color: Colors.black.withValues(
-                                                alpha: 0.70,
-                                              ),
+                                              color:Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black.withValues(alpha: 0.70,)
+                                                  : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -689,17 +737,19 @@ class _MainScreenState extends State<MainScreen> {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                           children: [
-                                            Image.asset(
-                                              "assets/icons/quill_notifications.png",
-                                              width: 18.w,
-                                              height: 18.h,
+                                            Icon(
+                                                Icons.notifications_none,
+                                                size: 18.sp,
+                                                color:Colors.red
                                             ),
                                             Text(
                                               '17 / 9 / 2025',
                                               style: TextStyle(
-                                                color: Colors.black,
+                                                color: Theme.of(context).brightness == Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white,
                                                 fontSize: 14.21.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w500,
@@ -726,6 +776,7 @@ class _MainScreenState extends State<MainScreen> {
                                   ),
                                 ),
                               ),
+
                               Container(
                                 width: 99.w,
                                 height: double.infinity,
@@ -739,7 +790,8 @@ class _MainScreenState extends State<MainScreen> {
                                 child: Center(
                                   child: Image.asset(
                                     "assets/icons/car_logo.png",
-
+                                    // width: 40.w, // حجم مناسب - تقدر تعدّله حسب الحاجة
+                                    // height: 40.h,
                                     fit: BoxFit.fill,
                                   ),
                                 ),
@@ -763,7 +815,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildServiceItem({
     required String title,
     required String imagePath,
-    int? serviceId, // ممكن تستخدم id من API لو عندك
+    int? serviceId,
   }) {
     final isNetworkImage = imagePath.startsWith('http');
 
@@ -777,8 +829,16 @@ class _MainScreenState extends State<MainScreen> {
             width: 100.w,
             height: 100.h,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors. white
+                  : Colors. black,
+              borderRadius: BorderRadius.circular(20),
+              border:Border.all(color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.grey
+                  : Colors.white,
+                width: 1.5.sp
+              )
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -800,7 +860,9 @@ class _MainScreenState extends State<MainScreen> {
                   title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black,
+                    color:  Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
                     fontSize: 14.h,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,

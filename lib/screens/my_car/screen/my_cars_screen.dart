@@ -42,7 +42,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     return BlocProvider(
       create: (_) => _cubit,
       child: Scaffold(
-        backgroundColor: const Color(0xFFEAEAEA),
+        backgroundColor:
+        Theme.of(context).brightness == Brightness.light
+            ? Color(0xFFEAEAEA)
+            : Colors.black54,
         appBar: _buildAppBar(context, locale),
         body: Padding(
           padding: EdgeInsets.all(20.w),
@@ -66,7 +69,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         size: 40,
                       ),
                       SizedBox(height: 20.h),
-                  //    Text(state.message),
+                      //    Text(state.message),
                       ElevatedButton(
                         onPressed: _loadCars,
                         child: const Text("سجل الدخول مره اخري من فضلك"),
@@ -78,8 +81,47 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 if (state.cars.isEmpty) {
                   return Column(
                     children: [
+                      SizedBox(height: 120.h),
+                      Image.asset(
+                        'assets/icons/car_gar.png',
+                        width: 115.w,
+                        height: 115.h,
+                        color:
+                             Colors.grey
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        'خلّي سيارتك عندنا، وريح بالك',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white70,
+                          fontSize: 18.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Color(0xFF474747)
+                              : Colors.white54,
+
+                          fontSize: 16.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+
+                        ),
+                      ),
+                      SizedBox(height: 40.h),
+
                       _addCarButton(locale!),
-                      Center(child: Text("لا توجد سيارات")),
                     ],
                   );
                 }
@@ -202,7 +244,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                           ),
                           DetailItem(
                             label: 'سنة الصنع:',
-                            value: car.creationYear?.toString() ?? '',
+                            value: car.year?.toString() ?? '',
                           ),
                         ],
                       ),
@@ -226,8 +268,8 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 );
 
                                 // إذا تم الحذف، نعيد تحميل السيارات
-                                if (result == 'deleted') {
-                                  _loadCars();
+                                if (result == 'deleted' || result == 'updated') {
+                                  _loadCars(); // ⬅️ ريفريش في الحالتين
                                 }
                               }
                             },
@@ -280,7 +322,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     ),
                     SizedBox(width: 70.w),
                     Text(
-                      car.boardNo,
+                      car.licencePlate,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,
@@ -329,11 +371,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
   Widget _addCarButton(AppLocalizations locale) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AddCar()),
+          MaterialPageRoute(builder: (context) => const AddCar()),
         );
+
+        if (result == true) {
+          // ⬅️ اعمل ريفريش للبيانات
+          _loadCars();
+        }
       },
       child: Container(
         width: 226.w,
@@ -348,7 +395,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         child: Center(
           child: Text(
             locale.isDirectionRTL(context)
-                ? "أضف سيارة جديدة +"
+                ? "أضف سيارتي الآن +"
                 : "Add a new car +",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -363,4 +410,3 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     );
   }
 }
-

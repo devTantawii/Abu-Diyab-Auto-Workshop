@@ -16,18 +16,25 @@ class OldOrder extends StatelessWidget {
       // Makes container responsive
       padding: EdgeInsets.all(12),
       // Add padding instead of hardcoded positions
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        shadows: [
+      decoration: BoxDecoration(
+        color:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x3F000000),
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Color(0x3F000000)
+                    : Color(0xFF9B8989),
             blurRadius: 12,
             offset: Offset(0, 4),
             spreadRadius: 0,
           ),
         ],
       ),
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -43,11 +50,13 @@ class OldOrder extends StatelessWidget {
                     TextSpan(
                       text: 'اسم الخدمة :',
                       style: TextStyle(
-                        color: const Color(0xFF4D4D4D),
+                        color: Theme.of(context).brightness == Brightness.light
+                          ?Colors.black
+                          :Colors.white,
+
                         fontSize: 15.h,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
-                        height: 1.47,
                       ),
                     ),
                     TextSpan(
@@ -106,8 +115,9 @@ class OldOrder extends StatelessWidget {
                     'رقــم الطلـب : ',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.h,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ?Colors.black
+                          :Colors.white,                      fontSize: 16.h,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
                       height: 1.38,
@@ -188,8 +198,9 @@ class OldOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12.h,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ?Colors.black
+                              :Colors.white,                          fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
@@ -219,8 +230,9 @@ class OldOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12.h,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ?Colors.black
+                              :Colors.white,                          fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
@@ -250,8 +262,9 @@ class OldOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12.h,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ?Colors.black
+                              :Colors.white,                          fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
@@ -292,8 +305,9 @@ class OldOrder extends StatelessWidget {
                 'تاريخ الإنجاز :',
                 textAlign: TextAlign.right,
                 style: TextStyle(
-                  color: const Color(0xFF4D4D4D),
-                  fontSize: 16,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ?Colors.black
+                      :Colors.white,                  fontSize: 16,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
                   height: 1.38,
@@ -324,22 +338,25 @@ class OldOrder extends StatelessWidget {
           Center(
             child: Container(
               width: double.infinity,
-              // يجعل الحاوية متجاوبة
               constraints: BoxConstraints(maxWidth: 327.w),
-              // أقصى عرض
               height: 55.h,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.50, color: const Color(0xFFA3A3A3)),
-                  borderRadius: BorderRadius.circular(12),
+              decoration: BoxDecoration(
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Colors.black,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  width: 1.5,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                 ),
               ),
               child: Center(
-                // أضفنا Center هنا لجعل المحتوى في المنتصف رأسيًا
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  // يجعل العناصر في المنتصف أفقيًا
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
@@ -353,7 +370,10 @@ class OldOrder extends StatelessWidget {
                       'إجمالي الفاتورة:',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.black,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -429,7 +449,10 @@ class OldOrder extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1.30,
-                        color: Colors.black.withOpacity(0.7),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ?Colors.black
+                            :Colors.white,
+
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -438,7 +461,9 @@ class OldOrder extends StatelessWidget {
                     'وش رأيك بالخدمة؟',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: const Color(0xFF4D4D4D),
+                      color: Theme.of(context).brightness == Brightness.light
+                          ?Colors.black
+                          :Colors.white,
                       fontSize: 15,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,

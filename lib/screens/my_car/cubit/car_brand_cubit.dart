@@ -1,41 +1,53 @@
+import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/car_brand_model.dart';
 import 'car_brand_state.dart';
 
 class CarBrandCubit extends Cubit<CarBrandState> {
-  final Dio dio;
-  final String productionApi;
-  final String brandApi;
+  CarBrandCubit() : super(CarBrandInitial());
+  Dio dio = Dio();
 
-  CarBrandCubit({
-    required this.dio,
-    required this.productionApi,
-    required this.brandApi,
-  }) : super(CarBrandInitial());
+  Future<void> fetchCarBrands() async {
+    print("🚀 fetchCarBrands called");
 
-  Future<void> fetchCarBrands({String locale = 'ar'}) async {
+
     emit(CarBrandLoading());
-
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token'); // 👈 جبنا التوكن
+      print("🔑 Token: $token");
+
       final response = await dio.get(
-        productionApi + brandApi,
-        options: Options(headers: {'Accept-Language': locale}),
+        mainApi + brandApi,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token", // 👈 هنا حطينا التوكن
+            "Accept": "application/json",
+          },
+        ),
       );
 
-      if (response.statusCode == 200) {
-        /// بعض الـ APIs بيرجع List مباشرة أو Map فيه key اسمه "data"
-        final List data = response.data is List ? response.data : response.data['data'];
+      print("📡 Response status: ${response.statusCode}");
+      print("📦 Response data: ${response.data}");
 
-        final brands = data
-            .map((e) => CarBrandModel.fromJson(e, locale: locale))
-            .toList();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final List data =
+        response.data is List ? response.data : response.data['data'];
+
+        final brands = data.map((e) => CarBrandModel.fromJson(e)).toList();
+
+
 
         emit(CarBrandLoaded(brands));
       } else {
-        emit(CarBrandError('Failed to load car brands'));
+        print("❌ Failed with status code: ${response.statusCode}");
+        emit(CarBrandError(
+            'Failed to load car brands: ${response.statusCode}'));
       }
     } catch (e) {
+      print("⚠️ Exception occurred: $e");
       emit(CarBrandError('Error: $e'));
     }
   }

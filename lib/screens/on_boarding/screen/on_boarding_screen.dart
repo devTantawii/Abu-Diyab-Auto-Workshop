@@ -8,38 +8,50 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int currentPage = 0;
 
-  List<Map<String, String>> onboardingData = [
+  final List<Map<String, String>> onboardingData = [
     {
       "title": "خدمات سيارتك",
       "title2": "بضغطة زر!",
-      "description": "دور على كل خدمات سيارتك، من صيانة وغسيل لقطع غيار، بسهولة تامة وبجودة مضمونة.",
+      "description":
+      "دور على كل خدمات سيارتك، من صيانة وغسيل لقطع غيار، بسهولة تامة وبجودة مضمونة.",
       "image": "assets/images/onboarding1.png",
     },
     {
       "title": "خبراء الصيانة",
       "title2": "بين يديك!",
-      "description": "اعتمد على أمهر المتخصصين لسيارتك. خدمات احترافية وجودة مضمونة، وين ما كنت ووقت ما تحتاج.",
+      "description":
+      "اعتمد على أمهر المتخصصين لسيارتك. خدمات احترافية وجودة مضمونة، وين ما كنت ووقت ما تحتاج.",
       "image": "assets/images/onboarding2.png",
     },
     {
       "title": "سيارتك في أمان",
       "title2": "وراحة تامة!",
-      "description": "لا تشيل همّ الصيانة بعد اليوم! كل اللي تحتاجه لسيارتك، من الألف للياء، صار بيدك. استمتع بقيادة بلا قلق",
+      "description":
+      "لا تشيل همّ الصيانة بعد اليوم! كل اللي تحتاجه لسيارتك، من الألف للياء، صار بيدك. استمتع بقيادة بلا قلق",
       "image": "assets/images/onboarding3.png",
     },
   ];
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return Scaffold(
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
-              reverse: true,
+              reverse: false,
               controller: _pageController,
               itemCount: onboardingData.length,
               onPageChanged: (index) {
@@ -48,16 +60,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 });
               },
               itemBuilder: (context, index) => OnboardingContent(
-                title: onboardingData[index]["title"] ?? "",
-                title2: onboardingData[index]["title2"] ?? "",
-                description: onboardingData[index]["description"] ?? "",
-                image: onboardingData[index]["image"] ?? "",
+                title: onboardingData[index]["title"]!,
+                title2: onboardingData[index]["title2"]!,
+                description: onboardingData[index]["description"]!,
+                image: onboardingData[index]["image"]!,
               ),
+            ),
+          ),
 
+          // مؤشرات الصفحات
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              onboardingData.length,
+                  (index) => AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                width: currentPage == index ? 20 : 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color:
+                  currentPage == index ? Color(0xFFBA1B1B) : Colors.grey,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
             ),
           ),
 
           SizedBox(height: 20),
+
+          // أزرار التنقل
           currentPage == onboardingData.length - 1
               ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -66,24 +98,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black,
                     spreadRadius: 1,
-                    blurRadius: 6,
-                    offset: Offset(4, 4), // هنا الزاوية: 4 يمين و4 تحت
+                    offset: Offset(4, 4),
                   ),
                 ],
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => HomeScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFBA1B1B),
                   minimumSize: Size(270, 50),
-                  elevation: 0, // خليها صفر عشان ما تدمجش ظل ElevatedButton
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -105,10 +137,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black,
                   spreadRadius: 1,
-                  blurRadius: 1,
-                  offset: Offset(0, 3),
+                  offset: Offset(4, 4),
                 ),
               ],
             ),
@@ -126,12 +157,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 elevation: 0,
               ),
               child: Icon(
-                Icons.arrow_back,
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.arrow_forward
+                    : Icons.arrow_back,
                 color: Colors.white,
               ),
             ),
           ),
-
 
           SizedBox(height: 30),
         ],
@@ -156,6 +188,9 @@ class OnboardingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -163,12 +198,12 @@ class OnboardingContent extends StatelessWidget {
         children: [
           // صورة
           Container(
-            height: 250,
+            height: MediaQuery.of(context).size.height * 0.35,
             child: Image.asset(image, fit: BoxFit.contain),
           ),
           SizedBox(height: 40),
 
-          // العنوان RichText
+          // العنوان
           RichText(
             textAlign: TextAlign.center,
             textDirection: TextDirection.rtl,
@@ -177,38 +212,29 @@ class OnboardingContent extends StatelessWidget {
                 TextSpan(
                   text: title,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor,
                     fontSize: 25,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 WidgetSpan(
-                  alignment: PlaceholderAlignment.baseline,
-                  baseline: TextBaseline.alphabetic,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/bg_tag.png",),
-                        fit: BoxFit.fill,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Baseline(
-                      baseline: 25, // نفس حجم الـ fontSize عشان ينطبق
-                      baselineType: TextBaseline.alphabetic,
-                      child: Text(
-                        textDirection: TextDirection.rtl,
+                  alignment: PlaceholderAlignment.middle,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset("assets/images/bg_tag.png"),
+                      Text(
                         title2,
+                        textDirection: TextDirection.rtl,
                         style: TextStyle(
-                          color: Colors.black,
+                          color: textColor,
                           fontSize: 25,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -220,11 +246,11 @@ class OnboardingContent extends StatelessWidget {
             description,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.black.withValues(alpha: 0.70),
+              color: textColor,
               fontSize: 20,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,
-              height: 1.50,
+              height: 1.5,
             ),
           ),
         ],

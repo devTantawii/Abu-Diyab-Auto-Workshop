@@ -21,9 +21,9 @@ class _NemraState extends State<Nemra> {
     super.initState();
     // ✅ نخلي الحروف تتكتب بشكل منفصل (بمسافات)
     widget.arabicLettersController.addListener(() {
-      final rawText = widget.arabicLettersController.text
-          .replaceAll(' ', ''); // نشيل المسافات القديمة
-      final spacedText = rawText.split('').join(' '); // نضيف مسافة بين كل حرف
+      final rawText =
+      widget.arabicLettersController.text.replaceAll(' ', '');
+      final spacedText = rawText.split('').join(' ');
       if (widget.arabicLettersController.text != spacedText) {
         widget.arabicLettersController.value =
             widget.arabicLettersController.value.copyWith(
@@ -36,14 +36,22 @@ class _NemraState extends State<Nemra> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ ألوان الوضع الفاتح والداكن
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final bgColor = isLight ? Colors.white : Colors.black;
+    final borderColor = isLight ? Colors.black : Colors.white70;
+    final textColor = isLight ? Colors.black : Colors.white;
+    final hintColor = isLight ? Colors.black54 : Colors.white54;
+    final dotColor = isLight ? Colors.black : Colors.white;
+
     return Center(
       child: Container(
         width: 193,
         height: 160,
         decoration: ShapeDecoration(
-          color: Colors.white,
+          color: bgColor,
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1, color: Colors.black),
+            side: BorderSide(width: 1, color: borderColor),
             borderRadius: BorderRadius.circular(12),
           ),
         ),
@@ -55,9 +63,9 @@ class _NemraState extends State<Nemra> {
               top: 80,
               child: Container(
                 width: 152,
-                decoration: const ShapeDecoration(
+                decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1.5, color: Colors.black),
+                    side: BorderSide(width: 1.5, color: borderColor),
                   ),
                 ),
               ),
@@ -69,9 +77,9 @@ class _NemraState extends State<Nemra> {
               child: Container(
                 transform: Matrix4.identity()..rotateZ(1.57),
                 width: 160,
-                decoration: const ShapeDecoration(
+                decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1.5, color: Colors.black),
+                    side: BorderSide(width: 1.5, color: borderColor),
                   ),
                 ),
               ),
@@ -87,25 +95,25 @@ class _NemraState extends State<Nemra> {
                     SizedBox(
                       width: 22,
                       height: 23,
-                      child: Image.asset('assets/icons/ksa_flag.png'),
+                      child: Image.asset('assets/icons/ksa_flag.png',color: textColor,),
                     ),
                     const SizedBox(height: 5),
-                    const Text(
+                    Text(
                       'السعودية',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: textColor,
                         fontSize: 8,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 5),
-                    const Text(
+                    Text(
                       'K\nS\nA',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: textColor,
                         fontSize: 14,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
@@ -116,9 +124,9 @@ class _NemraState extends State<Nemra> {
                     Container(
                       width: 14,
                       height: 14,
-                      decoration: const ShapeDecoration(
-                        color: Colors.black,
-                        shape: OvalBorder(),
+                      decoration: ShapeDecoration(
+                        color: dotColor,
+                        shape: const OvalBorder(),
                       ),
                     ),
                   ],
@@ -137,25 +145,25 @@ class _NemraState extends State<Nemra> {
                   textDirection: TextDirection.rtl,
                   child: TextField(
                     controller: widget.arabicLettersController,
-                    maxLength: 5, // 3 حروف + مسافتين بينهم
+                    maxLength: 5,
                     textAlign: TextAlign.center,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
-                        RegExp(r'[\u0600-\u06FF\s]'), // مسموح الحروف + مسافة
+                        RegExp(r'[\u0600-\u06FF\s]'),
                       ),
                     ],
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: textColor,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       counterText: '',
                       hintText: 'أ ب ج',
                       hintStyle: TextStyle(
                         fontSize: 20,
-                        color: Colors.black26,
+                        color: hintColor,
                       ),
                     ),
                   ),
@@ -178,18 +186,18 @@ class _NemraState extends State<Nemra> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                   ],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: textColor,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     counterText: '',
                     hintText: '1234',
                     hintStyle: TextStyle(
                       fontSize: 20,
-                      color: Colors.black26,
+                      color: hintColor,
                     ),
                   ),
                 ),

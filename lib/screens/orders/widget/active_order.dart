@@ -17,11 +17,18 @@ class ActiveOrder extends StatelessWidget {
       padding: EdgeInsets.all(12),
       // Add padding instead of hardcoded positions
       decoration: ShapeDecoration(
-        color: Colors.white,
+        color:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
+
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         shadows: [
           BoxShadow(
-            color: Color(0x3F000000),
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Color(0x3F000000)
+                    : Color(0xFF9B8989),
             blurRadius: 12,
             offset: Offset(0, 4),
             spreadRadius: 0,
@@ -43,7 +50,10 @@ class ActiveOrder extends StatelessWidget {
                     TextSpan(
                       text: 'اسم الخدمة :',
                       style: TextStyle(
-                        color: const Color(0xFF4D4D4D),
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 15.h,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -93,7 +103,8 @@ class ActiveOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
 
           // Status and order number row
           Row(
@@ -105,7 +116,10 @@ class ActiveOrder extends StatelessWidget {
                     'رقــم الطلـب : ',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      color: Colors.black,
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                       fontSize: 16.h,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -154,24 +168,35 @@ class ActiveOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
 
           // Vehicle details section
           Row(
-      //      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //      mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Vehicle image placeholder
               Container(
-                width: 93.w ,
+                width: 93.w,
                 height: 85.h,
                 decoration: BoxDecoration(
+                  border: Border.all(
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.transparent,
+                    width: 1,
+                  ),
                   color: Colors.black.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child:Image.asset('assets/icons/car_logo.png',fit: BoxFit.cover,),
+                child: Image.asset(
+                  'assets/icons/car_logo.png',
+                  fit: BoxFit.cover,
+                ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(width: 10),
 
               // Vehicle details
               Column(
@@ -183,13 +208,17 @@ class ActiveOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
                           fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -202,7 +231,6 @@ class ActiveOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
 
@@ -214,13 +242,17 @@ class ActiveOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
                           fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -233,7 +265,6 @@ class ActiveOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
 
@@ -245,13 +276,17 @@ class ActiveOrder extends StatelessWidget {
                         'المــوديــل : ',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
                           fontSize: 12.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -264,7 +299,6 @@ class ActiveOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
                 ],
@@ -277,7 +311,8 @@ class ActiveOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
           // Delivery estimate
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -286,7 +321,10 @@ class ActiveOrder extends StatelessWidget {
                 'موعد التسليم المتوقع !',
                 textAlign: TextAlign.right,
                 style: TextStyle(
-                  color: const Color(0xFF4D4D4D),
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                   fontSize: 16,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
@@ -313,7 +351,8 @@ class ActiveOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
 
           // Buttons row
           Row(
@@ -351,7 +390,10 @@ class ActiveOrder extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1.30,
-                        color: Colors.black.withOpacity(0.7),
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -360,7 +402,10 @@ class ActiveOrder extends StatelessWidget {
                     'تواصل مع المركز',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: const Color(0xFF4D4D4D),
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                       fontSize: 15,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -369,7 +414,6 @@ class ActiveOrder extends StatelessWidget {
                   ),
                 ),
               ),
-
             ],
           ),
         ],

@@ -41,6 +41,7 @@ class _EditCarState extends State<EditCar> {
 
   final TextEditingController carNameController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
+  String? existingCarCertificateUrl;
 
   bool isLoading = true;
 
@@ -56,45 +57,47 @@ class _EditCarState extends State<EditCar> {
       final token = prefs.getString('token') ?? '';
 
       final response = await Dio().get(
-        '$mainApi/user-cars/${widget.carId}',
+        '$mainApi/app/elwarsha/user-cars/show/${widget.carId}',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
-            'Accept-Language': 'ar', // or "fr", "es", etc.
+            'Accept-Language': 'ar',
           },
         ),
       );
 
-      final data = response.data;
+      final data = response.data['data'];
       debugPrint("🚘 بيانات السيارة كاملة: $data");
 
-      // تقسيم رقم اللوحة
-      final boardParts = data['board_no']?.split(' ') ?? [];
-      final letters =
-          boardParts.length >= 2
-              ? boardParts.sublist(0, boardParts.length - 1).join('')
-              : '';
+      // تقسيم رقم اللوحة من licence_plate
+      final boardParts = data['licence_plate']?.split(' ') ?? [];
+      final letters = boardParts.length >= 2
+          ? boardParts.sublist(0, boardParts.length - 1).join(' ')
+          : '';
       final numbers = boardParts.isNotEmpty ? boardParts.last : '';
 
-      final carYear =
-          data['creation_year']?.toString() ?? DateTime.now().year.toString();
+      // السنة
+      final carYear = data['year']?.toString() ?? DateTime.now().year.toString();
       final yearIndex = years.contains(carYear) ? years.indexOf(carYear) : 0;
 
       setState(() {
         carNameController.text = data['name'] ?? '';
-        kiloReadController.text = data['kilo_read']?.toString() ?? '';
+        kiloReadController.text = data['kilometer']?.toString() ?? '';
         arabicLettersController.text = letters;
         arabicNumbersController.text = numbers;
 
-        // تأكد أن القيم صحيحة أو ضع قيمة افتراضية (مثلاً 0)
-        _selectedCarBrandId = data['car_brand_id'] ?? 0;
-        _selectedCarModelId = data['car_model_id'] ?? 0;
+        _selectedCarBrandId = data['car_brand']?['id'] ?? 0;
+        _selectedCarModelId = data['car_model']?['id'] ?? 0;
 
         selectedYearIndex = yearIndex;
+
+        existingCarCertificateUrl = data['car_certificate']; // 👈 خزن رابط الصورة
+
+
         isLoading = false;
       });
 
-      if (_selectedCarBrandId != null) {
+      if (_selectedCarBrandId != null && _selectedCarBrandId != 0) {
         context.read<CarModelCubit>().fetchCarModels(_selectedCarBrandId!);
       }
     } catch (e) {
@@ -187,7 +190,7 @@ class _EditCarState extends State<EditCar> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
-            Navigator.pop(context); // العودة للشاشة السابقة
+            Navigator.pop(context, 'updated'); // ← رجع "updated"
           } else if (state is UpdateCarError) {
             ScaffoldMessenger.of(
               context,
@@ -676,8 +679,10 @@ class _EditCarState extends State<EditCar> {
               ),
               SizedBox(height: 10.h),
               UploadFormWidget(
+                existingImageUrl: existingCarCertificateUrl,
                 onImageSelected: (file) => selectedCarDoc = file,
               ),
+
             ],
           ),
         ),
@@ -702,18 +707,14 @@ class _EditCarState extends State<EditCar> {
 
                     if (_selectedCarBrandId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار ماركة السيارة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء اختيار ماركة السيارة")),
                       );
                       return;
                     }
 
                     if (_selectedCarModelId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار موديل السيارة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء اختيار موديل السيارة")),
                       );
                       return;
                     }
@@ -721,9 +722,7 @@ class _EditCarState extends State<EditCar> {
                     if (arabicLettersController.text.trim().isEmpty ||
                         arabicNumbersController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء إدخال رقم اللوحة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء إدخال رقم اللوحة")),
                       );
                       return;
                     }
@@ -733,10 +732,9 @@ class _EditCarState extends State<EditCar> {
                       numbersRaw: arabicNumbersController.text,
                     );
 
-                    final kiloRead =
-                        int.tryParse(
-                          _digitsToEn(kiloReadController.text.trim()),
-                        ) ??
+                    final kiloRead = int.tryParse(
+                      _digitsToEn(kiloReadController.text.trim()),
+                    ) ??
                         0;
 
                     await context.read<CarCubit>().updateCar(
@@ -746,7 +744,7 @@ class _EditCarState extends State<EditCar> {
                       carModelId: _selectedCarModelId ?? 0,
                       creationYear: years[selectedYearIndex],
                       boardNo: boardNoFinal,
-                   //   translationName: carNameController.text.trim(),
+                      translationName: carNameController.text.trim(),
                       kiloRead: kiloRead,
                       carDocs: selectedCarDoc,
                     );
@@ -827,7 +825,7 @@ class _EditCarState extends State<EditCar> {
 
                     try {
                       final response = await Dio().delete(
-                        '$mainApi/user-cars/${widget.carId}',
+                        '$mainApi/app/elwarsha/user-cars/delete/${widget.carId}',
                         options: Options(
                           headers: {'Authorization': 'Bearer $token'},
                         ),

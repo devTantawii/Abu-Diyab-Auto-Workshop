@@ -17,7 +17,6 @@ class _LocationWidgetState extends State<LocationWidget> {
   @override
   void initState() {
     super.initState();
-    // نأجل طلب الموقع لحد ما يتم بناء الفريم الأول
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getUserLocation();
     });

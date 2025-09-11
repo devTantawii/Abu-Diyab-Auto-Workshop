@@ -6,8 +6,13 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadFormWidget extends StatefulWidget {
   final void Function(File?) onImageSelected;
+  final String? existingImageUrl; // 👈 رابط من API لو موجود
 
-  const UploadFormWidget({Key? key, required this.onImageSelected}) : super(key: key);
+  const UploadFormWidget({
+    Key? key,
+    required this.onImageSelected,
+    this.existingImageUrl,
+  }) : super(key: key);
 
   @override
   _UploadFormWidgetState createState() => _UploadFormWidgetState();
@@ -28,10 +33,8 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         _selectedImage = File(pickedFile.path);
       });
 
-      // نرجع الصورة للأب
       widget.onImageSelected(_selectedImage);
     }
-
   }
 
   Future<ImageSource> _showSourceDialog() async {
@@ -64,13 +67,15 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                     icon: Icons.camera_alt_rounded,
                     label: isArabic ? 'الكاميرا' : 'Camera',
                     color: Colors.blue,
-                    onTap: () => Navigator.pop(context, ImageSource.camera),
+                    onTap: () =>
+                        Navigator.pop(context, ImageSource.camera),
                   ),
                   _buildOptionButton(
                     icon: Icons.photo_library_rounded,
                     label: isArabic ? 'المعرض' : 'Gallery',
                     color: Colors.green,
-                    onTap: () => Navigator.pop(context, ImageSource.gallery),
+                    onTap: () =>
+                        Navigator.pop(context, ImageSource.gallery),
                   ),
                 ],
               ),
@@ -78,7 +83,8 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
           ),
         ),
       ),
-    ) ?? ImageSource.gallery;
+    ) ??
+        ImageSource.gallery;
   }
 
   Widget _buildOptionButton({
@@ -92,9 +98,11 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(14.w),
+            margin: EdgeInsets.all(15.w),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 30.w),
@@ -103,6 +111,9 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
           Text(
             label,
             style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
               fontSize: 13.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,
@@ -121,7 +132,9 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: ShapeDecoration(
-        color: const Color(0xFFEAEAEA),
+        color: Theme.of(context).brightness == Brightness.light
+            ? const Color(0xFFEAEAEA)
+            : Colors.black,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -130,20 +143,51 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         onTap: _pickImage,
         child: DottedBorder(
           color: Colors.grey,
-          strokeWidth: 1,
-          dashPattern: [6, 3],
+          strokeWidth: 3,
+          dashPattern: [16.h, 8.w],
           borderType: BorderType.RRect,
           radius: Radius.circular(8.r),
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           child: Center(
-            child: _selectedImage == null
-                ? Column(
+            child: _selectedImage != null
+                ? ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.file(
+                _selectedImage!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            )
+                : (widget.existingImageUrl != null &&
+                widget.existingImageUrl!.isNotEmpty)
+                ? ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.network(
+                widget.existingImageUrl!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error, size: 40),
+              ),
+            )
+                : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/ep_upload.png',
-                  height: 50,
-                  width: 65,
+                Container(
+                  decoration: BoxDecoration(
+                    color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.transparent
+                        : Colors.grey,
+                  ),
+                  child: Image.asset(
+                    'assets/icons/ep_upload.png',
+                    height: 46.32.h,
+                    width: 62.04.w,
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -152,22 +196,16 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                       : 'You can upload car registration here',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Theme.of(context).brightness ==
+                        Brightness.light
+                        ? Colors.black.withOpacity(0.7)
+                        : Colors.white,
                     fontSize: 13.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
-            )
-                : ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: Image.file(
-                _selectedImage!,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
             ),
           ),
         ),

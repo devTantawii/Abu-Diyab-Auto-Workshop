@@ -19,7 +19,9 @@ class _OffersScreenState extends State<OffersScreen> {
     final isArabic = locale.isDirectionRTL(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEAEAEA),
+      backgroundColor:Theme.of(context).brightness == Brightness.light
+          ? Colors. white
+          : Colors. black,
       appBar: AppBar(
         toolbarHeight: 100.h,
         backgroundColor: Colors.transparent,
@@ -53,7 +55,8 @@ class _OffersScreenState extends State<OffersScreen> {
           ),
         ),
       ),
-      body: Padding(
+      body:
+      Padding(
         padding: EdgeInsets.all(20.w),
         child: Column(
           children: [
@@ -61,7 +64,9 @@ class _OffersScreenState extends State<OffersScreen> {
               duration: const Duration(milliseconds: 300),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color:    Theme.of(context).brightness == Brightness.light
+                    ? Colors. white
+                    : Colors. black,
                 border: Border.all(color: const Color(0xFFAFAFAF)),
                 borderRadius: BorderRadius.circular(15.r),
                 boxShadow: [
@@ -126,7 +131,9 @@ class _OffersScreenState extends State<OffersScreen> {
                           : 'Installment for center services',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.black.withOpacity(0.7),
+                        color:Theme.of(context).brightness == Brightness.light
+                            ? Colors.black.withOpacity(0.7)
+                            : Colors. white,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Graphik Arabic',

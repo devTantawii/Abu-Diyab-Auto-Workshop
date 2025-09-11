@@ -8,75 +8,84 @@ class HelpCard extends StatelessWidget {
   final String iconPath;
   final VoidCallback? onTap; // زرار اختيارى
 
-
   const HelpCard({
     super.key,
     required this.title,
     required this.description,
-    required this.iconPath, this.onTap,
+    required this.iconPath,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: InkWell(
-        onTap: onTap,
-
-        child: Container(
-          padding: EdgeInsets.all(12.w),
-          height: 125.h,
-          width: 170.w,
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 2.w,
-                color: const Color(0xFFAFAFAF),
-              ),
-              borderRadius: BorderRadius.circular(12),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(6.w),
+        height: 125.h,
+        width: 170.w,
+        decoration: ShapeDecoration(
+          color:
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 2.w,
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? const Color(0xFFAFAFAF)
+                      : Colors.white,
             ),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    title, textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.h,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Spacer(),
-                  Image.asset(
-                    iconPath,
-                    width: 24.w,
-                    height: 24.w,
-                    fit: BoxFit.contain,
-                  ),
-                ],
-              ),
-              SizedBox(height: 12.h),
-              Flexible(
-                child: Text(
-                  description,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: Colors.black.withValues(alpha: 0.70),
-                    fontSize: 16,
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                    fontSize: 18.h,
                     fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w500,
-                    height: 1.25,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                Spacer(),
+                Image.asset(
+                  iconPath,
+                  width: 24.w,
+                  height: 24.w,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            ),
+            SizedBox(height: 12.h),
+            Flexible(
+              child: Text(
+                description,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.black.withValues(alpha: 0.70)
+                          : Colors.white,
+                  fontSize: 8.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w500,
+                  height: 1.25,
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

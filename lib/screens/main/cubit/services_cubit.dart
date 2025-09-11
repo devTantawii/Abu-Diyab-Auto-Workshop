@@ -1,12 +1,8 @@
-// lib/features/services/presentation/cubit/services_cubit.dart
 import 'package:abu_diyab_workshop/screens/main/cubit/services_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-
 import '../../../../core/constant/api.dart';
 import '../model/service_model.dart';
-
-
 class ServicesCubit extends Cubit<ServicesState> {
   final Dio dio;
   static const String baseImageUrl = 'https://devworkshop.abudiyabksa.com/storage/';

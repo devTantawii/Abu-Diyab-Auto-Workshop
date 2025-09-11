@@ -24,9 +24,11 @@ import 'nemra.dart';
 
 class AddCar extends StatefulWidget {
   const AddCar({super.key});
+
   @override
   State<AddCar> createState() => _AddCarState();
 }
+
 class _AddCarState extends State<AddCar> {
   final TextEditingController arabicLettersController = TextEditingController();
   final TextEditingController arabicNumbersController = TextEditingController();
@@ -108,9 +110,17 @@ class _AddCarState extends State<AddCar> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    final bgColor = isLight ? Colors.white : Colors.black;
+    final cardColor = isLight ? Colors.white : const Color(0xFF1E1E1E);
+    final textColor = isLight ? Colors.black : Colors.white;
+    final hintColor = isLight ? Colors.black54 : Colors.white54;
+    final borderColor = isLight ? Colors.grey.shade300 : Colors.white24;
+    final shadowColor = isLight ? Colors.black12 : Colors.transparent;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEAEAEA),
+      backgroundColor: isLight ? Color(0xFFEAEAEA) : Colors.black,
       appBar: AppBar(
         toolbarHeight: 100.h,
         backgroundColor: Colors.transparent,
@@ -191,8 +201,8 @@ class _AddCarState extends State<AddCar> {
                   locale.isDirectionRTL(context)
                       ? 'رقم لوحة السيارة'
                       : 'Car plate number',
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: textColor,
                     fontSize: 14,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
@@ -222,7 +232,7 @@ class _AddCarState extends State<AddCar> {
                       : "Car brand",
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor,
                     fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
@@ -230,7 +240,7 @@ class _AddCarState extends State<AddCar> {
                 ),
               ),
               SizedBox(height: 10.h),
-              BlocBuilder<CarBrandCubit, CarBrandState> (
+              BlocBuilder<CarBrandCubit, CarBrandState>(
                 builder: (context, state) {
                   if (state is CarBrandLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -244,30 +254,46 @@ class _AddCarState extends State<AddCar> {
                           final car = state.brands[index];
                           final isSelected = _selectedCarBrandId == car.id;
 
+                          // ✅ لو الاسم فاضي نجيب بديل من اللينك
+                          String displayName =
+                              car.name.isNotEmpty
+                                  ? car.name
+                                  : car.image
+                                      .split('/')
+                                      .last
+                                      .replaceAll('.png', '')
+                                      .toUpperCase();
+
                           return GestureDetector(
                             onTap: () {
                               setState(() {
                                 _selectedCarBrandId = car.id;
                                 _selectedCarModelId = null;
                               });
-                              context.read<CarModelCubit>().fetchCarModels(car.id);
+                              context.read<CarModelCubit>().fetchCarModels(
+                                car.id,
+                              );
                             },
                             child: Container(
-                              width: 80.w, // عرض ريسبونسف
+                              width: 80.w,
                               margin: EdgeInsets.symmetric(horizontal: 6.w),
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFFE19A9A) : Colors.white,
+                                color:
+                                    isSelected
+                                        ? const Color(0xFFE19A9A)
+                                        : cardColor,
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFFBA1B1B)
-                                      : Colors.grey.shade300,
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFFBA1B1B)
+                                          : borderColor,
                                   width: 2.w,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black12,
+                                    color: shadowColor,
                                     blurRadius: 6.r,
                                     offset: Offset(0, 2.h),
                                   ),
@@ -280,19 +306,20 @@ class _AddCarState extends State<AddCar> {
                                     car.image,
                                     width: 40.w,
                                     height: 40.w,
-                                    fit: BoxFit.scaleDown,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        Icon(Icons.error, size: 24.sp),
+                                    fit: BoxFit.contain,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Icon(Icons.error, size: 24.sp),
                                   ),
-                                  SizedBox(height:  4.h),
+                                  SizedBox(height: 4.h),
                                   Text(
-                                    car.name,
+                                    displayName,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: isSelected ? Colors.black : Colors.grey,
-                                      fontSize: 12.sp, // خط ريسبونسف
+                                      color: isSelected ? textColor : hintColor,
+                                      fontSize: 12.sp,
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -323,7 +350,7 @@ class _AddCarState extends State<AddCar> {
                       ? "موديل السيارة"
                       : "Car model",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor,
                     fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
@@ -333,11 +360,9 @@ class _AddCarState extends State<AddCar> {
               SizedBox(height: 10.h),
               BlocBuilder<CarModelCubit, CarModelState>(
                 builder: (context, state) {
-                  if (state is CarModelLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is CarModelLoaded) {
+                  if (state is CarModelLoaded) {
                     return SizedBox(
-                      height: 50.h, // ارتفاع ريسبونسف
+                      height: 50.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.models.length,
@@ -357,17 +382,21 @@ class _AddCarState extends State<AddCar> {
                               margin: EdgeInsets.symmetric(horizontal: 8.w),
                               padding: EdgeInsets.all(8.w),
                               decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFFE19A9A) : Colors.white,
+                                color:
+                                    isSelected
+                                        ? const Color(0xFFE19A9A)
+                                        : cardColor,
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFFBA1B1B)
-                                      : Colors.grey.shade300,
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFFBA1B1B)
+                                          : borderColor,
                                   width: 2.w,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black12,
+                                    color: shadowColor,
                                     blurRadius: 4.r,
                                     offset: Offset(0, 2.h),
                                   ),
@@ -380,8 +409,8 @@ class _AddCarState extends State<AddCar> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: isSelected ? Colors.black : Colors.black54,
-                                  fontSize: 11.sp, // ريسبونسف
+                                  color: isSelected ? textColor : hintColor,
+                                  fontSize: 11.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -391,15 +420,13 @@ class _AddCarState extends State<AddCar> {
                         },
                       ),
                     );
-                  } else if (state is CarModelError) {
-                    return Center(child: Text(state.message));
                   }
                   return const SizedBox();
                 },
               ),
               SizedBox(height: 15.h),
 
-              // --- اسم السيارة (اختياري) ---
+              // ---- اسم السيارة ----
               Align(
                 alignment:
                     locale.isDirectionRTL(context)
@@ -414,7 +441,7 @@ class _AddCarState extends State<AddCar> {
                                 ? 'اسم السيارة '
                                 : 'Car name ',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: textColor,
                           fontSize: 14.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -426,7 +453,7 @@ class _AddCarState extends State<AddCar> {
                                 ? '( اختياري )'
                                 : '( Optional )',
                         style: TextStyle(
-                          color: const Color(0xFF4D4D4D),
+                          color: hintColor,
                           fontSize: 12.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -434,46 +461,34 @@ class _AddCarState extends State<AddCar> {
                       ),
                     ],
                   ),
-                  textAlign:
-                      locale.isDirectionRTL(context)
-                          ? TextAlign.right
-                          : TextAlign.left,
                 ),
               ),
               SizedBox(height: 10.h),
               Container(
                 decoration: ShapeDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.sp),
                   ),
                 ),
                 child: TextField(
                   controller: carNameController,
+                  style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText:
                         locale.isDirectionRTL(context)
-                            ? "سيارة الدوام، سيارة العائلة، سيارة أحمد"
-                            : "Work car, family car, Ahmed's car",
-                    hintTextDirection:
-                        locale.isDirectionRTL(context)
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 12.0,
-                    ),
+                            ? "سيارة الدوام، سيارة العائلة..."
+                            : "Work car, family car...",
+                    hintStyle: TextStyle(color: hintColor),
                     border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.all(12),
                   ),
                   textDirection: TextDirection.rtl,
                 ),
               ),
-
               SizedBox(height: 15.h),
 
-              // --- سنة الصنع ---
+              // ---- سنة الصنع ----
               Align(
                 alignment:
                     locale.isDirectionRTL(context)
@@ -484,10 +499,10 @@ class _AddCarState extends State<AddCar> {
                       ? "سنة الصنع"
                       : "Year of manufacture",
                   style: TextStyle(
+                    color: textColor,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
-                  textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(
@@ -496,31 +511,26 @@ class _AddCarState extends State<AddCar> {
                   itemExtent: 30.h,
                   physics: const FixedExtentScrollPhysics(),
                   onSelectedItemChanged: (index) {
-                    setState(() {
-                      selectedYearIndex = index;
-                    });
+                    setState(() => selectedYearIndex = index);
                   },
                   childDelegate: ListWheelChildBuilderDelegate(
                     builder: (context, index) {
                       if (index < 0 || index >= years.length) return null;
                       final isSelected = index == selectedYearIndex;
                       return Container(
-                        width: double.infinity,
                         color:
                             isSelected
-                                ? const Color(0xFFBBBBBB)
+                                ? (isLight
+                                    ? const Color(0xFFBBBBBB)
+                                    : Colors.white24)
                                 : Colors.transparent,
                         child: Center(
                           child: Text(
                             years[index],
                             style: TextStyle(
-                              fontFamily: 'Graphik Arabic',
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w500,
-                              color:
-                                  isSelected
-                                      ? Colors.black
-                                      : const Color(0xFF5E5E5E),
+                              color: isSelected ? textColor : hintColor,
                             ),
                           ),
                         ),
@@ -530,10 +540,9 @@ class _AddCarState extends State<AddCar> {
                   ),
                 ),
               ),
-
               SizedBox(height: 15.h),
 
-              // --- ممشى السيارة ---
+              // ---- ممشى السيارة ----
               Align(
                 alignment:
                     locale.isDirectionRTL(context)
@@ -544,30 +553,26 @@ class _AddCarState extends State<AddCar> {
                       ? "ممشى السياره"
                       : "Car counter",
                   style: TextStyle(
+                    color: textColor,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
-                  textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(height: 10.h),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                padding: EdgeInsets.all(10.w),
                 decoration: ShapeDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
                 child: Row(
-                  textDirection:
-                      locale.isDirectionRTL(context)
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
                   children: [
                     Expanded(
                       child: DottedBorder(
-                        color: Colors.grey,
+                        color: borderColor,
                         strokeWidth: 1,
                         dashPattern: const [6, 3],
                         borderType: BorderType.RRect,
@@ -575,30 +580,15 @@ class _AddCarState extends State<AddCar> {
                         padding: EdgeInsets.symmetric(horizontal: 8.w),
                         child: TextField(
                           controller: kiloReadController,
+                          style: TextStyle(color: textColor),
                           decoration: InputDecoration(
                             hintText: '0000000',
-                            hintStyle: TextStyle(
-                              color: Colors.black.withValues(alpha: 0.70),
-                              fontSize: 13,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w500,
-                            ),
-                            hintTextDirection:
-                                locale.isDirectionRTL(context)
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12.h,
-                            ),
+                            hintStyle: TextStyle(color: hintColor),
                             border: InputBorder.none,
                           ),
-                          textDirection:
-                              locale.isDirectionRTL(context)
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly, // يقبل أرقام بس
+                            FilteringTextInputFormatter.digitsOnly,
                           ],
                         ),
                       ),
@@ -606,20 +596,18 @@ class _AddCarState extends State<AddCar> {
                     SizedBox(width: 8.w),
                     Text(
                       locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.black,
+                      style: TextStyle(
+                        color: textColor,
                         fontSize: 15,
-                        fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-
               SizedBox(height: 15.h),
 
+              // ---- الاستمارة ----
               Align(
                 alignment:
                     locale.isDirectionRTL(context)
@@ -634,30 +622,24 @@ class _AddCarState extends State<AddCar> {
                                 ? 'إستمارة السيارة '
                                 : 'Car Registration ',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: textColor,
                           fontSize: 14.sp,
-                          fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       TextSpan(
                         text:
                             locale.isDirectionRTL(context)
-                                ? '( أختياري )'
+                                ? '( اختياري )'
                                 : '( Optional )',
                         style: TextStyle(
-                          color: const Color(0xFF4D4D4D),
+                          color: hintColor,
                           fontSize: 12.sp,
-                          fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
-                  textAlign:
-                      locale.isDirectionRTL(context)
-                          ? TextAlign.right
-                          : TextAlign.left,
                 ),
               ),
               SizedBox(height: 10.h),
@@ -674,10 +656,10 @@ class _AddCarState extends State<AddCar> {
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: shadowColor,
               blurRadius: 6,
               offset: const Offset(0, -3),
             ),
@@ -689,6 +671,8 @@ class _AddCarState extends State<AddCar> {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text("✅ ${state.message}")));
+              Navigator.pop(context, true); // ← رجع قيمة
+
             } else if (state is AddCarError) {
               ScaffoldMessenger.of(
                 context,
@@ -806,11 +790,11 @@ class _AddCarState extends State<AddCar> {
 
                   debugPrint("🚀 Request Body: $requestBody");
 
-
-
                   if (kiloInt == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("⚠️ من فضلك أدخل ممشى السيارة")),
+                      const SnackBar(
+                        content: Text("⚠️ من فضلك أدخل ممشى السيارة"),
+                      ),
                     );
                     return;
                   }
@@ -818,15 +802,15 @@ class _AddCarState extends State<AddCar> {
                   debugPrint("📌 kiloRead to send: $kiloInt");
 
                   context.read<AddCarCubit>().addCar(
-                    userId: 1,
-                    carDocs: selectedCarDoc,
-                    kiloRead: kiloInt,
-                    translationName: carNameController.text.trim(),
-                    boardNo: boardNoFinal,
-                    creationYear: years[selectedYearIndex],
+                //    userId: 1,
                     carModelId: _selectedCarModelId!,
                     carBrandId: _selectedCarBrandId!,
                     token: token,
+                    carCertificate: selectedCarDoc,
+                    kilometre: kiloInt.toString(),
+                    name: carNameController.text.trim(),
+                    licencePlate: boardNoFinal,
+                    year: years[selectedYearIndex],
                   );
                 },
                 child: Text(

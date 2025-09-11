@@ -16,7 +16,9 @@ class build_label extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.black,
+          color:Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           fontSize: 13.sp,
           fontFamily: 'Graphik Arabic',
           fontWeight: FontWeight.w500,

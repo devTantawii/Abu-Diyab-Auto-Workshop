@@ -168,7 +168,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
       height: MediaQuery.of(context).size.height * 0.9,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors. white
+            : Colors. black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Padding(
@@ -183,8 +185,10 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
 
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.h,
+                color:Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
+                fontSize: 17.sp,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w600,
               ),
@@ -197,8 +201,10 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
 
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Colors.black.withValues(alpha: 0.70),
-                fontSize: 13.h,
+                color: Theme.of(context).brightness == Brightness.light
+                    ?Colors.black.withValues(alpha: 0.70)
+                    : Colors.white,
+                fontSize: 12.sp,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w500,
               ),
@@ -266,10 +272,12 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
               },
               child: Container(
                 width: double.infinity,
-                height: 46.h,
+                height: 52.h,
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:Theme.of(context).brightness == Brightness.light
+                      ? Colors. white
+                      : Colors. black,
                   border: Border.all(color: Color(0xFFAFAFAF), width: 1),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -281,7 +289,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                           ? "الشكاوي"
                           : "Complaints",
                       style: TextStyle(
-                        color: Colors.black,
+                        color:Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 15.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -297,7 +307,6 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                         fit: BoxFit.contain,
                       ),
                     ),
-                    // النص
                   ],
                 ),
               ),
@@ -309,7 +318,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                     ? "مواقع التواصل الإجتماعي"
                     : "social media sites",
                 style: TextStyle(
-                  color: Colors.black,
+                  color:Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                   fontSize: 20.sp,
                   fontFamily: 'Almarai',
                   fontWeight: FontWeight.w400,
@@ -398,7 +409,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                     : "To visit our website",
                 //  textAlign: TextAlign.right,
                 style: TextStyle(
-                  color: Colors.black,
+                  color:Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                   fontSize: 20.sp,
                   fontFamily: 'Almarai',
                   fontWeight: FontWeight.w400,

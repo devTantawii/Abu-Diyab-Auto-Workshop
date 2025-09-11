@@ -1,10 +1,13 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../home/screen/home_screen.dart';
+import '../cubit/login_cubit.dart';
+import 'login.dart';
 
 class OtpBottomSheet extends StatefulWidget {
   final String phone;
@@ -20,42 +23,84 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
   bool _loading = false;
 
   Future<void> _verifyCode() async {
-    if (_codeController.text.trim().length != 6) return;
+    if (_codeController.text.trim().length != 6) {
+      print("❌ الكود المدخل أقل من 6 أرقام");
+      return;
+    }
 
     setState(() => _loading = true);
 
     try {
+      print("🔄 جاري إرسال الطلب للتحقق...");
+
       final dio = Dio();
       final response = await dio.post(
-        'https://devworkshop.abudiyabksa.com/api$otpApi',
-        data: {'phone': widget.phone, 'code': _codeController.text.trim()},
+        mainApi+ verify_otpApi,
+        data: {'phone': widget.phone, 'otp': _codeController.text.trim()},
       );
 
-      if (response.statusCode == 200) {
-        final token = response.data["token"];
-        final user = response.data["user"];
+      print("📩 Response status: ${response.statusCode}");
+      print("📩 Response data: ${response.data}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // الـ API يرجع بيانات المستخدم داخل "data"
+        final user = response.data["data"];
+        final token = response.data["token"]; // ممكن يكون null
+
+        print("✅ التحقق نجح - User: ${user?["first_name"] ?? "مجهول"}, Token: ${token ?? "لا يوجد"}");
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('username', user["name"] ?? 'زائر');
-        await prefs.setString('token', token);
+
+        // تخزين بيانات المستخدم
+        await prefs.setString('username', user?["first_name"] ?? 'زائر');
+        await prefs.setString('phone', user?["phone"] ?? '');
+
+        // تخزين التوكن إذا موجود
+        if (token != null) {
+          await prefs.setString('token', token);
+        }
+
         await prefs.setBool('is_logged_in', true);
 
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("تم التحقق بنجاح 🎉")));
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-          (route) => false,
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("تم التحقق بنجاح 🎉")),
         );
+
+        Navigator.pop(context);
+        Future.delayed(
+          Duration(milliseconds: 100),
+              () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder:
+                  (context) => FractionallySizedBox(
+                widthFactor: 1,
+                child: BlocProvider(
+                  create:
+                      (_) => LoginCubit(
+                    dio: Dio(),
+                  ),
+                  child:
+                  const LoginBottomSheet(),
+                ),
+              ),
+            );
+          },
+        );
+
+      } else {
+        print("⚠️ التحقق فشل - statusCode: ${response.statusCode}");
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("رمز التحقق غير صحيح أو حدث خطأ")));
+      print("❌ حدث خطأ أثناء التحقق: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("رمز التحقق غير صحيح أو حدث خطأ")),
+      );
     } finally {
       setState(() => _loading = false);
+      print("🏁 انتهت عملية التحقق");
     }
   }
 

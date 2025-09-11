@@ -28,6 +28,7 @@ class RegisterCubit extends Cubit<RegisterState> {
 
         // طباعة الرد من السيرفر
         print("📩 Received Response:");
+        print(response.data);
         print({
           "message": message,
           "verification_sms": verificationMessage,

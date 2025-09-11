@@ -11,12 +11,12 @@ class AddCarCubit extends Cubit<AddCarState> {
   Dio dio = Dio();
 
   Future<void> addCar({
-    required int userId,
-    required File? carDocs, // 👈 خليها File? بدل String
-    required int kiloRead,
-    required String translationName,
-    required String boardNo,
-    required String creationYear,
+ //   required int userId,
+    required File? carCertificate, // 👈 هنا اسم زي الـ API
+    required String kilometre,     // 👈 String عشان الـ API بيرجع "50000"
+    required String name,
+    required String licencePlate,
+    required String year,
     required int carModelId,
     required int carBrandId,
     required String token,
@@ -25,18 +25,17 @@ class AddCarCubit extends Cubit<AddCarState> {
 
     try {
       FormData formData = FormData.fromMap({
-        "user_id": userId,
-        "kilo_read": kiloRead,
-        "translations[0][name]": translationName,
-        "translations[0][locale]": "ar", // 👈 أضف اللغة
-        "board_no": boardNo,
-        "creation_year": creationYear,
+   //     "user_id": userId, // لو مش مطلوب من الـ backend ممكن تشيله
+        "licence_plate": licencePlate,
+        "name": name,
+        "year": year,
+        "kilometer": kilometre,
         "car_model_id": carModelId,
         "car_brand_id": carBrandId,
-        if (carDocs != null)
-          "car_docs": await MultipartFile.fromFile(
-            carDocs.path,
-            filename: carDocs.path.split("/").last,
+        if (carCertificate != null)
+          "car_certificate": await MultipartFile.fromFile(
+            carCertificate.path,
+            filename: carCertificate.path.split("/").last,
           ),
       });
 
@@ -44,7 +43,7 @@ class AddCarCubit extends Cubit<AddCarState> {
       debugPrint("📤 Sending files: ${formData.files}");
 
       final response = await dio.post(
-        "$productionApi/user-cars",
+        "$mainApi/app/elwarsha/user-cars/create",
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -58,7 +57,7 @@ class AddCarCubit extends Cubit<AddCarState> {
       debugPrint("📥 Response data: ${response.data}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        emit(AddCarSuccess(response.data["message"] ?? "Car added successfully ✅"));
+        emit(AddCarSuccess(response.data["msg"] ?? "Car added successfully ✅"));
       } else {
         emit(AddCarError("❌ Failed: ${response.statusCode} - ${response.statusMessage}"));
       }
@@ -70,6 +69,5 @@ class AddCarCubit extends Cubit<AddCarState> {
       debugPrint(stack.toString());
       emit(AddCarError("Error: $e"));
     }
-
   }
 }
