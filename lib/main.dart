@@ -1,15 +1,21 @@
 import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
+import 'package:abu_diyab_workshop/screens/main/cubit/car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/main/cubit/services_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/CarModelCubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/car_brand_cubit.dart';
 import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen.dart';
+import 'package:abu_diyab_workshop/screens/reminds/cubit/maintenance_cubit.dart';
+import 'package:abu_diyab_workshop/screens/reminds/cubit/notes_details_cubit.dart';
+import 'package:abu_diyab_workshop/screens/reminds/cubit/user_car_note_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/cubit/car_check_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/oil_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/tire_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/battery_repo.dart';
+import 'package:abu_diyab_workshop/screens/services/repo/car_check_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/oil_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/tire_repo.dart';
 import 'package:dio/dio.dart';
@@ -51,21 +57,23 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(
-          create: (_) => CarBrandCubit()..fetchCarBrands(), // 👈 هنا
-
-        ),
+        BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
-          create:
-              (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
+          create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
         ),
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
         BlocProvider(create: (_) => CarCubit()),
         BlocProvider(create: (_) => OilCubit(OilRepository())),
+        BlocProvider(create: (_) => CarCheckCubit(CarCheckRepository())),
         BlocProvider(create: (_) => TireCubit(TireRepository())),
         BlocProvider(create: (_) => BatteryCubit(BatteryRepository())),
         BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => MaintenanceCubit()),
+        BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
+      //  BlocProvider<UserCarsCubit>(
+      //    create: (_) => UserCarsCubit()..fetchUserCars(),
+      //  ),
       ],
       child: MyApp(
         key: myAppKey,

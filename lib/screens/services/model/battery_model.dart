@@ -1,59 +1,92 @@
 class Battery {
   final int id;
-  final String serialCode;
+  final int subServiceId;
+  final int carModelId;
   final String type;
-  final String brand;
   final String country;
-  final String manufactureYear;
-  final int ampere;
+  final String size; // بدل ampere
+  final DateTime dateOfManufacture; // بدل manufactureYear
+  final int warrantyPeriodMonths; // بدل warranty + warrantyUnit
   final String price;
-  final String warranty;
-  final String warrantyUnit;
-  final int available;
 
   Battery({
     required this.id,
-    required this.serialCode,
+    required this.subServiceId,
+    required this.carModelId,
     required this.type,
-    required this.brand,
     required this.country,
-    required this.manufactureYear,
-    required this.ampere,
+    required this.size,
+    required this.dateOfManufacture,
+    required this.warrantyPeriodMonths,
     required this.price,
-    required this.warranty,
-    required this.warrantyUnit,
-    required this.available,
   });
 
   factory Battery.fromJson(Map<String, dynamic> json) {
     return Battery(
       id: json['id'] ?? 0,
-      serialCode: json['serial_code'] ?? '',
+      subServiceId: json['sub_service_id'] ?? 0,
+      carModelId: json['car_model_id'] ?? 0,
       type: json['type'] ?? '',
-      brand: json['brand'] ?? '',
       country: json['country'] ?? '',
-      manufactureYear: json['manufacture_year'] ?? '',
-      ampere: json['ampere'] ?? 0,
+      size: json['size'] ?? '',
+      dateOfManufacture: DateTime.tryParse(json['date_of_manufacture'] ?? '') ?? DateTime.now(),
+      warrantyPeriodMonths: json['warranty_period_months'] ?? 0,
       price: json['price'] ?? '0.00',
-      warranty: json['warranty'] ?? '0.00',
-      warrantyUnit: json['warranty_unit'] ?? '',
-      available: json['available'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'serial_code': serialCode,
+      'sub_service_id': subServiceId,
+      'car_model_id': carModelId,
       'type': type,
-      'brand': brand,
       'country': country,
-      'manufacture_year': manufactureYear,
-      'ampere': ampere,
+      'size': size,
+      'date_of_manufacture': dateOfManufacture.toIso8601String(),
+      'warranty_period_months': warrantyPeriodMonths,
       'price': price,
-      'warranty': warranty,
-      'warranty_unit': warrantyUnit,
-      'available': available,
+    };
+  }
+}
+class Service {
+  final int id;
+  final int serviceId;
+  final String name;
+  final String description;
+  final int status;
+  final List<Battery> batteryChanges;
+
+  Service({
+    required this.id,
+    required this.serviceId,
+    required this.name,
+    required this.description,
+    required this.status,
+    required this.batteryChanges,
+  });
+
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return Service(
+      id: json['id'] ?? 0,
+      serviceId: json['service_id'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      status: json['status'] ?? 0,
+      batteryChanges: (json['battery_changes'] as List<dynamic>? ?? [])
+          .map((e) => Battery.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'service_id': serviceId,
+      'name': name,
+      'description': description,
+      'status': status,
+      'battery_changes': batteryChanges.map((e) => e.toJson()).toList(),
     };
   }
 }

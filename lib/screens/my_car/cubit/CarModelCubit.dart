@@ -37,17 +37,20 @@ class CarModelCubit extends Cubit<CarModelState> {
 
       if (response.statusCode == 200 && response.data['status'] == 200) {
         List<CarModel> models =
-            (response.data['data'] as List)
-                .map((json) => CarModel.fromJson(json))
-                .toList();
-        for (var car in models) {
-          print('   - ID: ${car.id}, Name: ${car.name}');
+        (response.data['data'] as List)
+            .map((json) => CarModel.fromJson(json))
+            .toList();
+
+        if (models.isEmpty) {
+          // 🆕 لو مفيش موديلات
+          emit(CarModelLoaded([], message: response.data['msg'] ?? "لا توجد موديلات"));
+        } else {
+          emit(CarModelLoaded(models));
         }
-        emit(CarModelLoaded(models));
       } else {
-        print('⚠️ API Error: ${response.data}');
         emit(CarModelError(response.data['msg'] ?? 'حدث خطأ في جلب الموديلات'));
       }
+
     } catch (e, stack) {
       print('❌ Exception occurred: $e');
       print('📜 Stack trace: $stack');

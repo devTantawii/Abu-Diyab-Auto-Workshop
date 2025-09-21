@@ -122,11 +122,14 @@ class LogoutBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          const Text(
+           Text(
             'هل أنت متأكد من رغبتك في تسجيل الخروج ؟',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
+              color:  Theme.of(context).brightness == Brightness.light
+                  ? Color(0xFF1D1D1D)
+                  : Color(0xFF1D1D1D),
               fontWeight: FontWeight.w600,
               fontFamily: 'Graphik Arabic',
             ),

@@ -154,7 +154,7 @@ class _NemraState extends State<Nemra> {
                     ],
                     style: TextStyle(
                       fontSize: 25,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w400,
                       color: textColor,
                     ),
                     decoration: InputDecoration(
@@ -188,7 +188,7 @@ class _NemraState extends State<Nemra> {
                   ],
                   style: TextStyle(
                     fontSize: 25,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w400,
                     color: textColor,
                   ),
                   decoration: InputDecoration(

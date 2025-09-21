@@ -23,12 +23,16 @@ class Tire {
     return Tire(
       id: json['id'],
       size: json['size'],
-      price: json['price'],
-      manufactureYear: json['manufacture_year'],
-      available: json['available'],
-      type: json['type'],
-      brand: json['brand'],
-      country: json['country'],
+      price: int.tryParse(json['price'].toString()) ?? 0,
+      // عشان JSON بيرجع string
+      manufactureYear: json['date_of_manufacture'] ?? "",
+      // بدل manufacture_year
+      available: json['available'] ?? 1,
+      // لو مش موجود نحط قيمة افتراضية
+      type: json['type'] ?? "",
+      brand: json['brand'] ?? "Unknown",
+      // لأن JSON مافيهوش brand
+      country: json['country'] ?? "",
     );
   }
 
@@ -42,6 +46,49 @@ class Tire {
       'type': type,
       'brand': brand,
       'country': country,
+    };
+  }
+}
+
+class SubTireService {
+  final int id;
+  final int serviceId;
+  final String name;
+  final String description;
+  final int status;
+  final List<Tire> tires;
+
+  SubTireService({
+    required this.id,
+    required this.serviceId,
+    required this.name,
+    required this.description,
+    required this.status,
+    required this.tires,
+  });
+
+  factory SubTireService.fromJson(Map<String, dynamic> json) {
+    return SubTireService(
+      id: json['id'],
+      serviceId: json['service_id'],
+      name: json['name'],
+      description: json['description'],
+      status: json['status'],
+      tires:
+          (json['tires'] as List<dynamic>)
+              .map((t) => Tire.fromJson(t))
+              .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'service_id': serviceId,
+      'name': name,
+      'description': description,
+      'status': status,
+      'tires': tires.map((t) => t.toJson()).toList(),
     };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:abu_diyab_workshop/screens/main/cubit/services_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constant/api.dart';
 import '../model/service_model.dart';
 class ServicesCubit extends Cubit<ServicesState> {
@@ -11,12 +12,16 @@ class ServicesCubit extends Cubit<ServicesState> {
 
   Future<void> fetchServices() async {
     emit(ServicesLoading());
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
     try {
       final response = await dio.get(
-        productionApi + servicesApi,
+        mainApi + servicesApi,
         options: Options(
           headers: {
             'Accept-Language': 'ar',
+            'Authorization': 'Bearer $token',
+
           },
         ),
       );

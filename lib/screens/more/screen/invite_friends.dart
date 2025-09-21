@@ -51,7 +51,13 @@ class _InviteFriendsState extends State<InviteFriends> {
                       color: Colors.white,
                       child: IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                        icon: Transform.translate(
+                          offset: const Offset(-2, 0),
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -93,7 +99,10 @@ class _InviteFriendsState extends State<InviteFriends> {
                       label: "2. صديقك يسجل",
                       imagePath: "assets/images/vector_up.png",
                     ),
-                    _StepIcon(icon: Icons.card_giftcard, label: "3. اربح مكافأت"),
+                    _StepIcon(
+                      icon: Icons.card_giftcard,
+                      label: "3. اربح مكافأت",
+                    ),
                   ],
                 ),
                 SizedBox(height: 20.h),
@@ -102,7 +111,10 @@ class _InviteFriendsState extends State<InviteFriends> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black87,
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(
                         width: 1.5,
@@ -115,11 +127,14 @@ class _InviteFriendsState extends State<InviteFriends> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       /// العنوان
-                      const Text(
+                      Text(
                         'كود الدعوة الخاص بك',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white70,
                           fontSize: 16,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -137,7 +152,8 @@ class _InviteFriendsState extends State<InviteFriends> {
                           Flexible(
                             flex: 2,
                             child: Container(
-                              height: size.height * 0.06, // نسبة من ارتفاع الشاشة
+                              height: size.height * 0.06,
+                              // نسبة من ارتفاع الشاشة
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFBA1B1B),
                                 shape: RoundedRectangleBorder(
@@ -174,12 +190,17 @@ class _InviteFriendsState extends State<InviteFriends> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: const Center(
+                              child: Center(
                                 child: Text(
                                   'ABUDIYAB2025',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Color(0xFF474747),
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Color(0xFF474747)
+                                            : Colors.white70,
+
                                     fontSize: 18,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
@@ -230,7 +251,10 @@ class _InviteFriendsState extends State<InviteFriends> {
                   height: 159,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1.50,
@@ -251,16 +275,18 @@ class _InviteFriendsState extends State<InviteFriends> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        SizedBox(height: 10.h,),
+                        SizedBox(height: 10.h),
                         Text(
                           'رصيدك الحالي',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white70,
                             fontSize: 20.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
-
                           ),
                         ),
                         Row(
@@ -281,7 +307,8 @@ class _InviteFriendsState extends State<InviteFriends> {
                               height: 22.h,
                             ),
                           ],
-                        ),SizedBox(height: 15.h,),
+                        ),
+                        SizedBox(height: 15.h),
                         Row(
                           children: [
                             Expanded(
@@ -295,7 +322,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
-                                child:Center(
+                                child: Center(
                                   child: Text(
                                     'عدد الإحالات الخاصه بك',
                                     textAlign: TextAlign.center,
@@ -314,14 +341,22 @@ class _InviteFriendsState extends State<InviteFriends> {
                               flex: 1, // التلت
                               child: Container(
                                 height: 50,
-                                padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 42,
+                                  vertical: 14,
+                                ),
                                 clipBehavior: Clip.antiAlias,
                                 decoration: ShapeDecoration(
-                                  color: Colors.white,
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white70
+                                          : Colors.black54,
                                   shape: RoundedRectangleBorder(
                                     side: BorderSide(
                                       width: 1.50,
-                                      strokeAlign: BorderSide.strokeAlignOutside,
+                                      strokeAlign:
+                                          BorderSide.strokeAlignOutside,
                                       color: const Color(0xFF9B9B9B),
                                     ),
                                     borderRadius: BorderRadius.circular(15),
@@ -331,7 +366,11 @@ class _InviteFriendsState extends State<InviteFriends> {
                                   '7',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Colors.black,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white70,
                                     fontSize: 18.sp,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w500,
@@ -340,7 +379,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -360,30 +399,33 @@ class _InviteFriendsState extends State<InviteFriends> {
                     ),
                   ],
                 ),
-                SizedBox(height:  10.h),
-            Container(
-              width: 350,
-              height: 239,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1.50,
-                    color: const Color(0xFF9B9B9B),
+                SizedBox(height: 10.h),
+                Container(
+                  width: 350,
+                  height: 239,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1.50,
+                        color: const Color(0xFF9B9B9B),
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x3FFFFFFF),
+                        blurRadius: 12,
+                        offset: Offset(0, 0),
+                        spreadRadius: 0,
+                      ),
+                    ],
                   ),
-                  borderRadius: BorderRadius.circular(15),
                 ),
-                shadows: [
-                  BoxShadow(
-                    color: Color(0x3FFFFFFF),
-                    blurRadius: 12,
-                    offset: Offset(0, 0),
-                    spreadRadius: 0,
-                  )
-                ],
-              ),
-            ),
               ],
             ),
           ),
@@ -406,15 +448,18 @@ class _StepIcon extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisSize: MainAxisSize.min, // 👈 يخلي الأيقونة والصورة لازقين
+          mainAxisSize: MainAxisSize.min,
           children: [
             CircleAvatar(
               radius: 28,
-              backgroundColor: Colors.white,
+              backgroundColor:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.black87,
               child: Icon(icon, size: 28, color: Color(0xFFBA1B1B)),
             ),
             if (imagePath != null) ...[
-              const SizedBox(width: 6), // مسافة بسيطة بين الأيقونة والصورة
+              const SizedBox(width: 6),
               Image.asset(imagePath!, width: 60.w),
               const SizedBox(width: 6),
             ],

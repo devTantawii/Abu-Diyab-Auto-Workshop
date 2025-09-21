@@ -9,13 +9,13 @@ import '../../my_car/cubit/CarModelCubit.dart';
 import '../../my_car/cubit/CarModelState.dart';
 import '../cubit/battery_cubit.dart';
 
-class CarModelSection extends StatelessWidget {
+class CarModelWidget extends StatelessWidget {
   final String titleAr;
   final String titleEn;
   final int? selectedCarModelId;
   final Function(int modelId) onModelSelected;
 
-  const CarModelSection({
+  const CarModelWidget({
     Key? key,
     required this.titleAr,
     required this.titleEn,
@@ -56,11 +56,26 @@ class CarModelSection extends StatelessWidget {
             if (state is CarModelLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is CarModelLoaded) {
+              if (state.models.isEmpty) {
+                return Center(
+                  child: Text(
+                    state.message ?? "لا توجد موديلات متاحة",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ),
+                );
+              }
               return SizedBox(
                 height: 50.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: state.models.length,
+
                   itemBuilder: (context, index) {
                     final car = state.models[index];
                     final isSelected = selectedCarModelId == car.id;
@@ -68,7 +83,7 @@ class CarModelSection extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         onModelSelected(car.id);
-                        context.read<BatteryCubit>().fetchBatterysByModel(car.id);
+                        context.read<BatteryCubit>().fetchServicesByModel(car.id);
                       },
                       child: Container(
                         width: 70.w,

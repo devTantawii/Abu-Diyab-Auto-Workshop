@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
 import 'package:checkbox_grouped/checkbox_grouped.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,11 @@ import '../../my_car/cubit/car_brand_state.dart';
 import '../../my_car/screen/widget/image_picker.dart';
 import '../cubit/oil_cubit.dart';
 import '../cubit/oil_state.dart';
-import '../widgets/CarBrand-Section.dart';
-import '../widgets/CarModel-Section.dart';
+
 import '../widgets/Custom-Button.dart';
 import '../widgets/NotesAndCarCounter-Section.dart';
 import '../widgets/Service-Custom-AppBar.dart';
+import '../widgets/car_model_widget.dart';
 
 /// ---------------- Main UI ----------------
 class ChangeOil extends StatefulWidget {
@@ -33,6 +34,18 @@ class _ChangeOilState extends State<ChangeOil> {
   File? selectedCarDoc;
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
+
+  @override
+  void dispose() {
+    notesController.dispose();
+    kiloReadController.dispose();
+
+    // نفرغ الزيوت لما نخرج من الشاشة
+
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
@@ -41,8 +54,10 @@ class _ChangeOilState extends State<ChangeOil> {
       backgroundColor: Color(0xFFD27A7A),
       appBar: CustomGradientAppBar(
         title: "إنشاء طلب",
-        onBack: () => Navigator.pop(context),
-      ),
+        onBack: () {
+          context.read<OilCubit>().resetOils(); // هنا قبل ما نرجع
+          Navigator.pop(context);
+        },      ),
       body: Container(
           decoration:BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -83,7 +98,7 @@ class _ChangeOilState extends State<ChangeOil> {
                 SizedBox(height: 6.h),
                 /// ---------------- ماركة السيارة ----------------
                 /// ---------------- ماركة السيارة ----------------
-                CarBrandSection(
+                CarBrandWidget(
                   titleAr: "ماركة السيارة",
                   titleEn: "Car brand",
                   selectedCarBrandId: _selectedCarBrandId,
@@ -93,14 +108,18 @@ class _ChangeOilState extends State<ChangeOil> {
                       _selectedCarModelId = null;
                     });
 
-                    /// هنا نستدعي موديلات السيارة
+                    /// نجيب الموديلات
                     context.read<CarModelCubit>().fetchCarModels(id);
+
+                    /// نفرغ الزيوت
+                    context.read<OilCubit>().resetOils();
                   },
+
                 ),
 
 
                 /// ---------------- الموديل ----------------
-                CarModelSection(
+                CarModelWidget(
                   titleAr: "موديل السيارة",
                   titleEn: "Car model",
                   selectedCarModelId: _selectedCarModelId,
@@ -141,12 +160,6 @@ class _ChangeOilState extends State<ChangeOil> {
                     if (state is OilLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is OilLoaded) {
-                      // ✅ نحتفظ بحالة كل تشيك بوكس
-                      final List<bool> selections = List<bool>.filled(
-                        state.oils.length,
-                        false,
-                      );
-
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -154,9 +167,7 @@ class _ChangeOilState extends State<ChangeOil> {
                         itemBuilder: (context, index) {
                           final oil = state.oils[index];
                           return Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 16.h,
-                            ),
+                            margin: EdgeInsets.symmetric(vertical: 16.h),
                             padding: EdgeInsets.all(12.w),
                             decoration: BoxDecoration(
                               color: Theme.of(context).brightness == Brightness.light
@@ -178,33 +189,26 @@ class _ChangeOilState extends State<ChangeOil> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // ✅ التشيك بوكس
-                                StatefulBuilder(
-                                  builder: (context, setInnerState) {
-                                    return Transform.scale(
-                                      scale: 1.2.sp,
-                                      child: Checkbox(
-                                        value: selections[index],
-                                        onChanged: (v) {
-                                          setInnerState(() {
-                                            selections[index] = v ?? false;
-                                          });
-                                        },
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4.r), // هنا تتحكم في الانحناء
-                                        ),
-                                        side: const BorderSide(
-                                          color: Color(0xFF474747),
-                                          width: 1.2,
-                                        ),
-                                        checkColor: Colors.white,
-                                        activeColor: const Color(0xFF1FAF38),
-                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                    );
-                                  },
+                                // ✅ التشيك بوكس (مربوط بالـ Cubit)
+                                Transform.scale(
+                                  scale: 1.2.sp,
+                                  child: Checkbox(
+                                    value: state.selections[index],
+                                    onChanged: (v) {
+                                      context.read<OilCubit>().toggleSelection(index, v ?? false);
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                    side: const BorderSide(
+                                      color: Color(0xFF474747),
+                                      width: 1.2,
+                                    ),
+                                    checkColor: Colors.white,
+                                    activeColor: const Color(0xFF1FAF38),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
                                 ),
-
 
                                 SizedBox(width: 12.w),
 
@@ -213,7 +217,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // 🏷️ العنوان
+                                      // 🏷️ العنوان + السعر
                                       Row(
                                         children: [
                                           Text(
@@ -232,7 +236,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                           Row(
                                             children: [
                                               Text(
-                                                "${oil.price}",
+                                                oil.oilChanges[0].price,
                                                 style: TextStyle(
                                                   color: const Color(0xFFBA1B1B),
                                                   fontSize: 16.sp,
@@ -255,12 +259,11 @@ class _ChangeOilState extends State<ChangeOil> {
 
                                       // 📄 الوصف
                                       Text(
-                                        oil.description != null &&
-                                                oil.description!.isNotEmpty
-                                            ? oil.description!
-                                            : "النوع: ${oil.type} | الماركة: ${oil.brand} | بلد: ${oil.country}",
+                                        oil.description.isNotEmpty
+                                            ? oil.description
+                                            : "النوع: ${oil.status} | الماركة: ${oil.serviceId} | بلد: ${oil.id}",
                                         style: TextStyle(
-                                          color:Theme.of(context).brightness == Brightness.light
+                                          color: Theme.of(context).brightness == Brightness.light
                                               ? const Color(0xFF474747)
                                               : Colors.white,
                                           fontSize: 11.sp,
@@ -269,10 +272,6 @@ class _ChangeOilState extends State<ChangeOil> {
                                           height: 1.6,
                                         ),
                                       ),
-
-                                      SizedBox(height: 8.h),
-
-                                      // 💰 السعر
                                     ],
                                   ),
                                 ),
@@ -282,7 +281,8 @@ class _ChangeOilState extends State<ChangeOil> {
                         },
                       );
                     } else if (state is OilError) {
-                      return Center(child: Text(state.message));
+                      return Text(state.message);
+                 //     return Center(child: Text(state.message));
                     }
                     return const SizedBox();
                   },

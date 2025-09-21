@@ -15,9 +15,9 @@ class OilRepository {
     ),
   );
 
-  Future<List<Oil>> getOilsByModel(int modelId) async {
+  Future<List<SubOil>> getOilsByModel(int modelId) async {
     try {
-      final response = await _dio.get("$mainApi/car-models/$modelId/oils");
+      final response = await _dio.get("$mainApi/app/elwarsha/services/get-subs-oilchange?car_model_id=${modelId}&service_id=6");
       print(response.data);
       print(modelId);
 
@@ -26,7 +26,7 @@ class OilRepository {
 
         if (body is Map && body['data'] is List) {
           final data = body['data'] as List;
-          return data.map((e) => Oil.fromJson(e)).toList();
+          return data.map((e) => SubOil.fromJson(e)).toList();
         } else {
           throw Exception("Unexpected response format: $body");
         }

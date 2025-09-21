@@ -81,10 +81,22 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                       ),
                 );
               } else if (state is RegisterFailure) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.error)));
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text(" خطأ"),
+                    content: Text(state.error), // أو state.msg حسب اللي معرفه
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("موافق"),
+                      ),
+                    ],
+                  ),
+                );
               }
+
+
             },
             builder: (context, state) {
               return BackdropFilter(

@@ -18,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
+import '../../../widgets/app_bar_widget.dart';
+import '../../main/screen/main_screen.dart';
 import '../../on_boarding/screen/on_boarding_screen.dart';
 import 'invite_friends.dart';
 
@@ -77,16 +79,8 @@ class _MoreScreenState extends State<MoreScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors:
-                    Theme.of(context).brightness == Brightness.light
-                        ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
-                        : [const Color(0xFF690505), const Color(0xFF6F5252)],
-              ),
-            ),
+            decoration: buildAppBarDecoration(context),
+
 
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +108,7 @@ class _MoreScreenState extends State<MoreScreen> {
                 Row(
                   children: [
                     Text(
-                      'المزيد',
+                      'عام',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
@@ -128,7 +122,8 @@ class _MoreScreenState extends State<MoreScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10.h),
+                if (_isLoggedIn)
+                  SizedBox(height: 10.h),
                 if (_isLoggedIn)
                   widget_ITN(
                     text: 'تعديل بيانات الحساب',
@@ -142,7 +137,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       );
                     },
                   ),
-                SizedBox(height: 10,),
+                if (_isLoggedIn)
+                  SizedBox(height: 10,),
                 if (_isLoggedIn)
                   widget_ITN(
                     text: 'باقاتي',
@@ -156,7 +152,8 @@ class _MoreScreenState extends State<MoreScreen> {
                       );
                     },
                   ),
-                SizedBox(height: 10,),
+                if (_isLoggedIn)
+                  SizedBox(height: 10,),
                 if (_isLoggedIn)
                   widget_ITN(
                     text: 'ادع أصدقائك',
@@ -184,7 +181,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       );
                     },
                   ),
-                if (_isLoggedIn) SizedBox(height: 10.h),
+               SizedBox(height: 10.h),
 
                 widget_ITN(
                   text: 'تواصل معنا ',

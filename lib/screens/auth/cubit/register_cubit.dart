@@ -12,25 +12,30 @@ class RegisterCubit extends Cubit<RegisterState> {
   Future<void> register(RegisterRequestModel model) async {
     emit(RegisterLoading());
 
-    // طباعة البيانات قبل الإرسال
     print("📤 Sending JSON to /register:");
     print(model.toJson());
 
     try {
       final response = await dio.post(
-        mainApi+registerApi,
+        mainApi + registerApi,
         data: model.toJson(),
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Accept-Language': 'ar',
+
+          },
+        ),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final message = response.data["message"];
+        final message = response.data["msg"]; // ✅ هنا
         final verificationMessage = response.data["verification_sms"];
 
-        // طباعة الرد من السيرفر
         print("📩 Received Response:");
         print(response.data);
         print({
-          "message": message,
+          "msg": message,
           "verification_sms": verificationMessage,
         });
 
@@ -49,7 +54,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       String errorMessage = "حدث خطأ أثناء الاتصال";
 
       if (e.response?.data is Map<String, dynamic>) {
-        errorMessage = e.response?.data["message"] ?? errorMessage;
+        errorMessage = e.response?.data["msg"] ?? errorMessage; // ✅ هنا
       } else if (e.response?.data is String) {
         errorMessage = e.response?.data;
       }

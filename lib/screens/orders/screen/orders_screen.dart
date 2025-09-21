@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/language/locale.dart';
+import '../../../widgets/app_bar_widget.dart';
+import '../../main/screen/main_screen.dart';
 import '../widget/old_order.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -33,13 +35,8 @@ class _OrderScreenState extends State<OrderScreen> {
 
           child: Container(
             padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
-              ),
-            ),
+            decoration: buildAppBarDecoration(context),
+
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

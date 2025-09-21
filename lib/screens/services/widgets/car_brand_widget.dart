@@ -6,13 +6,13 @@ import '../../my_car/cubit/CarModelCubit.dart';
 import '../../my_car/cubit/car_brand_cubit.dart';
 import '../../my_car/cubit/car_brand_state.dart';
 
-class CarBrandSection extends StatelessWidget {
+class CarBrandWidget extends StatelessWidget {
   final String titleAr;
   final String titleEn;
   final int? selectedCarBrandId;
   final Function(int brandId) onBrandSelected;
 
-  const CarBrandSection({
+  const CarBrandWidget({
     Key? key,
     required this.titleAr,
     required this.titleEn,

@@ -8,8 +8,9 @@ class CarModelLoading extends CarModelState {}
 
 class CarModelLoaded extends CarModelState {
   final List<CarModel> models;
+  final String? message;
 
-  CarModelLoaded(this.models);
+  CarModelLoaded(this.models, {this.message});
 }
 
 class CarModelError extends CarModelState {

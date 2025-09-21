@@ -14,7 +14,9 @@ class DetailItem extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.black,
+            color:Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white54,
             fontSize: 14.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w500,

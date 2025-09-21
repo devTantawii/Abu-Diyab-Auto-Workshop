@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart' hide BatteryLoaded;
+import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +14,9 @@ import '../../my_car/cubit/car_brand_cubit.dart';
 import '../../my_car/cubit/car_brand_state.dart';
 import '../../my_car/screen/widget/image_picker.dart';
 import '../cubit/battery_state.dart';
-import '../widgets/CarBrand-Section.dart';
-import '../widgets/CarModel-Section.dart';
 import '../widgets/Custom-Button.dart';
 import '../widgets/Service-Custom-AppBar.dart';
+import '../widgets/car_model_widget.dart';
 
 class ChangeBattery extends StatefulWidget {
   const ChangeBattery({super.key});
@@ -29,6 +29,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
   int? _selectedCarBrandId;
   int? _selectedCarModelId;
   File? selectedCarDoc;
+  List<bool> selections = [];
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                 SizedBox(height: 6.h),
 
                 /// ---------------- ماركة السيارة ----------------
-                CarBrandSection(
+                CarBrandWidget(
                   titleAr: "ماركة السيارة",
                   titleEn: "Car brand",
                   selectedCarBrandId: _selectedCarBrandId,
@@ -101,7 +102,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                 SizedBox(height: 15.h),
 
                 /// ---------------- الموديل ----------------
-                CarModelSection(
+                CarModelWidget(
                   titleAr: "موديل السيارة",
                   titleEn: "Car model",
                   selectedCarModelId: _selectedCarModelId,
@@ -111,7 +112,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     });
 
                     /// هنا لو محتاج تجيب بيانات بناءً على الموديل
-                    context.read<BatteryCubit>().fetchBatterysByModel(id);
+                    context.read<BatteryCubit>().fetchServicesByModel(id);
                   },
                 ),
                 SizedBox(height: 15.h),
@@ -146,25 +147,30 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     if (state is BatteryLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is BatteryLoaded) {
-                      final List<bool> selections = List<bool>.filled(
-                        state.batterys.length,
-                        false,
-                      );
+                      if (state.services == null) {
+                        return const Center(child: Text("No services available"));
+                      }
+                      // إنشاء قائمة الاختيارات فقط عند التحميل
+                      if (selections.length != state.services.length) {
+                        selections = List<bool>.filled(state.services.length, false);
+                      }
+
                       return ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: state.batterys.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state.services.length,
                         itemBuilder: (context, index) {
-                          final battery = state.batterys[index];
+                          final service = state.services[index]; // Service
+                          final batteries = service.batteryChanges; // List<Battery>
+                          final battery = batteries.isNotEmpty ? batteries[0] : null;
+
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 16.h),
                             padding: EdgeInsets.all(12.w),
                             decoration: BoxDecoration(
-                              color:
-                                  Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : Colors.black,
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black,
                               borderRadius: BorderRadius.circular(15.r),
                               border: Border.all(
                                 width: 1.5.w,
@@ -181,115 +187,87 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // ✅ التشيك بوكس
-                                StatefulBuilder(
-                                  builder: (context, setInnerState) {
-                                    return Transform.scale(
-                                      scale: 1.2.sp,
-                                      child: Checkbox(
-                                        value: selections[index],
-                                        onChanged: (v) {
-                                          setInnerState(() {
-                                            selections[index] = v ?? false;
-                                          });
-                                        },
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4.r,
-                                          ), // هنا تتحكم في الانحناء
-                                        ),
-                                        side: const BorderSide(
-                                          color: Color(0xFF474747),
-                                          width: 1.2,
-                                        ),
-                                        checkColor: Colors.white,
-                                        activeColor: const Color(0xFF1FAF38),
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                    );
-                                  },
+                                // ✅ Checkbox
+                                Transform.scale(
+                                  scale: 1.2.sp,
+                                  child: Checkbox(
+                                    value: selections[index],
+                                    onChanged: (v) {
+                                      setState(() {
+                                        selections[index] = v ?? false;
+                                      });
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                    side: const BorderSide(
+                                      color: Color(0xFF474747),
+                                      width: 1.2,
+                                    ),
+                                    checkColor: Colors.white,
+                                    activeColor: const Color(0xFF1FAF38),
+                                    materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                  ),
                                 ),
 
                                 SizedBox(width: 12.w),
 
-                                // 📦 تفاصيل الزيت
+                                // 📦 تفاصيل البطارية
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // 🏷️ العنوان
+                                      // 🏷️ اسم الخدمة + السعر
                                       Row(
                                         children: [
-                                          Text(
-                                            battery.brand,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                              fontSize: 14.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
+                                          Expanded(
+                                            child: Text(
+                                              service.name,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                color: Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                                fontSize: 14.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                          Spacer(),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "${battery.price}",
-                                                style: TextStyle(
-                                                  color: const Color(
-                                                    0xFFBA1B1B,
+                                          if (battery != null)
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${battery.price} SAR",
+                                                  style: TextStyle(
+                                                    color: const Color(0xFFBA1B1B),
+                                                    fontSize: 16.sp,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w600,
                                                   ),
-                                                  fontSize: 16.sp,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
                                                 ),
-                                              ),
-                                              SizedBox(width: 4.w),
-                                              Image.asset(
-                                                'assets/icons/ryal.png',
-                                                width: 20.w,
-                                                height: 20.h,
-                                              ),
-                                            ],
-                                          ),
+                                                SizedBox(width: 4.w),
+                                                Image.asset(
+                                                  'assets/icons/ryal.png',
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                ),
+                                              ],
+                                            ),
                                         ],
                                       ),
 
                                       SizedBox(height: 6.h),
-                                      Text(battery.type),
-                                      Text(battery.manufactureYear),
-                                      Text(battery.country),
-                                      Text(battery.warrantyUnit),
-                                      Text(battery.warranty),
 
-                                      // 📄 الوصف
-
-                                      //     Text(
-                                      //       battery.description != null &&
-                                      //           battery.description!.isNotEmpty
-                                      //           ? battery.description!
-                                      //           : "النوع: ${battery.type} | الماركة: ${battery.brand} | بلد: ${battery.country}",
-                                      //       style: TextStyle(
-                                      //         color:Theme.of(context).brightness == Brightness.light
-                                      //             ? const Color(0xFF474747)
-                                      //             : Colors.white,
-                                      //         fontSize: 11.sp,
-                                      //         fontFamily: 'Graphik Arabic',
-                                      //         fontWeight: FontWeight.w500,
-                                      //         height: 1.6,
-                                      //       ),
-                                      //     ),
-                                      SizedBox(height: 8.h),
-
-                                      // 💰 السعر
+                                      // 📄 تفاصيل البطارية
+                                      if (battery != null) ...[
+                                        Text("Type: ${battery.type}"),
+                                        Text("Country: ${battery.country}"),
+                                        Text("Warranty: ${battery.warrantyPeriodMonths} months"),
+                                        Text("Size: ${battery.size}"),
+                                      ],
                                     ],
                                   ),
                                 ),
@@ -301,6 +279,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     } else if (state is BatteryError) {
                       return Center(child: Text(state.message));
                     }
+
                     return const SizedBox();
                   },
                 ),

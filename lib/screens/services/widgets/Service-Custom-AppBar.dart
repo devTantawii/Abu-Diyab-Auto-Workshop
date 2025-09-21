@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../widgets/app_bar_widget.dart';
+
 class CustomGradientAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
@@ -24,13 +26,8 @@ class CustomGradientAppBar extends StatelessWidget
         child: Container(
           height: 130.h,
           padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
-            ),
-          ),
+          decoration: buildAppBarDecoration(context),
+
           child: Row(
             children: [
               GestureDetector(

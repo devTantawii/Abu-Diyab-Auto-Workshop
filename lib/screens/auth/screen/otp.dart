@@ -9,6 +9,8 @@ import '../../home/screen/home_screen.dart';
 import '../cubit/login_cubit.dart';
 import 'login.dart';
 
+enum OtpState { idle, loading, success, error }
+
 class OtpBottomSheet extends StatefulWidget {
   final String phone;
 
@@ -20,89 +22,106 @@ class OtpBottomSheet extends StatefulWidget {
 
 class _OtpBottomSheetState extends State<OtpBottomSheet> {
   final TextEditingController _codeController = TextEditingController();
-  bool _loading = false;
+  OtpState _state = OtpState.idle;
+  String? _errorMessage;
 
   Future<void> _verifyCode() async {
     if (_codeController.text.trim().length != 6) {
-      print("❌ الكود المدخل أقل من 6 أرقام");
+      _showMessage("❌ الكود المدخل أقل من 6 أرقام");
+      setState(() {
+        _state = OtpState.error;
+      });
       return;
     }
 
-    setState(() => _loading = true);
+    setState(() {
+      _state = OtpState.loading;
+      _errorMessage = null;
+    });
 
     try {
-      print("🔄 جاري إرسال الطلب للتحقق...");
-
       final dio = Dio();
       final response = await dio.post(
-        mainApi+ verify_otpApi,
-        data: {'phone': widget.phone, 'otp': _codeController.text.trim()},
+        mainApi + verify_otpApi,
+        data: {
+          'phone': widget.phone,
+          'otp': _codeController.text.trim(),
+        },
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Accept-Language': 'ar',
+
+          },
+        ),
       );
 
-      print("📩 Response status: ${response.statusCode}");
-      print("📩 Response data: ${response.data}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // الـ API يرجع بيانات المستخدم داخل "data"
         final user = response.data["data"];
-        final token = response.data["token"]; // ممكن يكون null
-
-        print("✅ التحقق نجح - User: ${user?["first_name"] ?? "مجهول"}, Token: ${token ?? "لا يوجد"}");
+        final token = response.data["token"];
 
         final prefs = await SharedPreferences.getInstance();
-
-        // تخزين بيانات المستخدم
         await prefs.setString('username', user?["first_name"] ?? 'زائر');
         await prefs.setString('phone', user?["phone"] ?? '');
-
-        // تخزين التوكن إذا موجود
         if (token != null) {
           await prefs.setString('token', token);
         }
-
         await prefs.setBool('is_logged_in', true);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("تم التحقق بنجاح 🎉")),
-        );
+        setState(() => _state = OtpState.success);
 
         Navigator.pop(context);
-        Future.delayed(
-          Duration(milliseconds: 100),
-              () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder:
-                  (context) => FractionallySizedBox(
-                widthFactor: 1,
-                child: BlocProvider(
-                  create:
-                      (_) => LoginCubit(
-                    dio: Dio(),
-                  ),
-                  child:
-                  const LoginBottomSheet(),
-                ),
+        Future.delayed(const Duration(milliseconds: 100), () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => FractionallySizedBox(
+              widthFactor: 1,
+              child: BlocProvider(
+                create: (_) => LoginCubit(dio: Dio()),
+                child: const LoginBottomSheet(),
               ),
-            );
-          },
-        );
+            ),
+          );
 
+          _showMessage("تم انشاء الحساب\nقم الان بتسجيل الدخول");
+        });
       } else {
-        print("⚠️ التحقق فشل - statusCode: ${response.statusCode}");
+        _showMessage("⚠️ التحقق فشل - الكود غير صحيح");
+        setState(() => _state = OtpState.error);
       }
-    } catch (e) {
-      print("❌ حدث خطأ أثناء التحقق: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("رمز التحقق غير صحيح أو حدث خطأ")),
+    } on DioException catch (dioError) {
+      _showMessage(
+        dioError.response?.data["msg"] ??
+            "❌ حدث خطأ أثناء الاتصال بالسيرفر",
       );
-    } finally {
-      setState(() => _loading = false);
-      print("🏁 انتهت عملية التحقق");
+      setState(() => _state = OtpState.error);
+    } catch (e) {
+      _showMessage("❌ حدث خطأ غير متوقع: $e");
+      setState(() => _state = OtpState.error);
     }
   }
+
+  void _showMessage(String msg) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+     //   title: const Text("تنبيه"),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("موافق"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool get _loading => _state == OtpState.loading;
 
   @override
   Widget build(BuildContext context) {
@@ -256,35 +275,38 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                 ],
               ),
 
-              SizedBox(height: 30.h), // المسافة بين الكود والزر
+              SizedBox(height: 30.h),
+
               // زر التحقق
               SizedBox(
                 width: double.infinity,
                 height: 48.h,
                 child: ElevatedButton(
                   onPressed:
-                      _codeController.text.length == 6 && !_loading
-                          ? _verifyCode
-                          : null,
+                  _codeController.text.length == 6 && !_loading
+                      ? _verifyCode
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFBA1B1B),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  child:
-                      _loading
-                          ? const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          )
-                          : Text(
-                            'تأكيد الرمز',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.sp,
-                            ),
-                          ),
+                  child: _loading
+                      ? const CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  )
+                      : Text(
+                    'تأكيد الرمز',
+                    style: TextStyle(
+                      color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                 ),
               ),
             ],

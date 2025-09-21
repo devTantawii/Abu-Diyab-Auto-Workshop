@@ -1,16 +1,17 @@
-// oil_state.dart
 
-
-import 'package:abu_diyab_workshop/screens/services/model/battery_model.dart';
+import '../model/battery_model.dart';
 
 abstract class BatteryState {}
 
 class BatteryInitial extends BatteryState {}
 class BatteryLoading extends BatteryState {}
+
+// بدل BatteryLoaded القديمة
 class BatteryLoaded extends BatteryState {
-  final List<Battery> batterys;
-  BatteryLoaded(this.batterys);
+  final List<Service> services; // <- هنا
+  BatteryLoaded(this.services);
 }
+
 class BatteryError extends BatteryState {
   final String message;
   BatteryError(this.message);

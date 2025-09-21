@@ -1,7 +1,6 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:dio/dio.dart';
 import '../model/battery_model.dart';
-import '../model/oil_model.dart';
 
 class BatteryRepository {
   final Dio _dio = Dio(
@@ -15,30 +14,28 @@ class BatteryRepository {
     ),
   );
 
-  Future<List<Battery>> getBatterysByModel(int modelId) async {
+  Future<List<Service>> getServicesByModel(int modelId) async {
     try {
-      final response = await _dio.get("$mainApi/car-models/$modelId/batteries");
-      print(response.data);
-      print(modelId);
+      final response = await _dio.get(
+        "$mainApi/app/elwarsha/services/get-subs-batterychange?car_model_id=$modelId&service_id=4",
+      );
 
       if (response.statusCode == 200) {
         final body = response.data;
-
         if (body is Map && body['data'] is List) {
-          final data = body['data'] as List;
-          return data.map((e) => Battery.fromJson(e)).toList();
+          final servicesData = body['data'] as List;
+          return servicesData.map((e) => Service.fromJson(e)).toList();
         } else {
-          throw Exception("Unexpected response format: $body");
+          throw Exception("Unexpected response format");
         }
       } else {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      print("Dio error: ${e.response?.data ?? e.message}");
       throw Exception("Dio error: ${e.message}");
     } catch (e) {
-      print("Unexpected error: $e");
       throw Exception("Unexpected error: $e");
     }
   }
 }
+

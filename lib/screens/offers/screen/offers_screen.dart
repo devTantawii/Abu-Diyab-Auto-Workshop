@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/language/locale.dart';
+import '../../../widgets/app_bar_widget.dart';
+import '../../main/screen/main_screen.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({super.key});
@@ -23,20 +25,15 @@ class _OffersScreenState extends State<OffersScreen> {
           ? Colors. white
           : Colors. black,
       appBar: AppBar(
-        toolbarHeight: 100.h,
+        toolbarHeight: 130.h,
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
         flexibleSpace: Container(
           height: 130.h,
           padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
-            ),
-          ),
+          decoration: buildAppBarDecoration(context),
+
           child: Row(
             children: [
               Expanded(

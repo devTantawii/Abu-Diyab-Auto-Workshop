@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constant/api.dart';
 import '../../../../core/language/locale.dart';
+import '../../../../widgets/app_bar_widget.dart';
+import '../../../main/screen/main_screen.dart';
 import '../../cubit/CarModelCubit.dart';
 import '../../cubit/CarModelState.dart';
 import '../../cubit/all_cars_state.dart';
@@ -59,10 +61,7 @@ class _EditCarState extends State<EditCar> {
       final response = await Dio().get(
         '$mainApi/app/elwarsha/user-cars/show/${widget.carId}',
         options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept-Language': 'ar',
-          },
+          headers: {'Authorization': 'Bearer $token', 'Accept-Language': 'ar'},
         ),
       );
 
@@ -71,13 +70,15 @@ class _EditCarState extends State<EditCar> {
 
       // تقسيم رقم اللوحة من licence_plate
       final boardParts = data['licence_plate']?.split(' ') ?? [];
-      final letters = boardParts.length >= 2
-          ? boardParts.sublist(0, boardParts.length - 1).join(' ')
-          : '';
+      final letters =
+          boardParts.length >= 2
+              ? boardParts.sublist(0, boardParts.length - 1).join(' ')
+              : '';
       final numbers = boardParts.isNotEmpty ? boardParts.last : '';
 
       // السنة
-      final carYear = data['year']?.toString() ?? DateTime.now().year.toString();
+      final carYear =
+          data['year']?.toString() ?? DateTime.now().year.toString();
       final yearIndex = years.contains(carYear) ? years.indexOf(carYear) : 0;
 
       setState(() {
@@ -91,8 +92,8 @@ class _EditCarState extends State<EditCar> {
 
         selectedYearIndex = yearIndex;
 
-        existingCarCertificateUrl = data['car_certificate']; // 👈 خزن رابط الصورة
-
+        existingCarCertificateUrl =
+            data['car_certificate']; // 👈 خزن رابط الصورة
 
         isLoading = false;
       });
@@ -168,6 +169,14 @@ class _EditCarState extends State<EditCar> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    final bgColor = isLight ? Colors.white : Colors.black;
+    final cardColor = isLight ? Colors.white : const Color(0xFF1E1E1E);
+    final textColor = isLight ? Colors.black : Colors.white;
+    final hintColor = isLight ? Colors.black54 : Colors.white54;
+    final borderColor = isLight ? Colors.grey.shade300 : Colors.white24;
+    final shadowColor = isLight ? Colors.black12 : Colors.transparent;
 
     if (isLoading)
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -199,7 +208,10 @@ class _EditCarState extends State<EditCar> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFEAEAEA),
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.light
+                ? Color(0xFFEAEAEA)
+                : Colors.black87,
         appBar: AppBar(
           toolbarHeight: 100.h,
           backgroundColor: Colors.transparent,
@@ -213,13 +225,8 @@ class _EditCarState extends State<EditCar> {
             child: Container(
               height: 130.h,
               padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
-                ),
-              ),
+              decoration: buildAppBarDecoration(context),
+
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -278,8 +285,8 @@ class _EditCarState extends State<EditCar> {
                   locale.isDirectionRTL(context)
                       ? 'رقم لوحة السيارة'
                       : 'Car plate number',
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: textColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -307,7 +314,7 @@ class _EditCarState extends State<EditCar> {
                       ? "ماركة السيارة"
                       : "Car brand",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -340,19 +347,23 @@ class _EditCarState extends State<EditCar> {
                               );
                             },
                             child: Container(
-                              width: 80.w, // عرض ريسبونسف
+                              width: 80.w,
+                              // عرض ريسبونسف
                               height: 70,
                               margin: const EdgeInsets.symmetric(horizontal: 6),
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? Color(0xFFE19A9A)
-                                        : Colors.white,
+                                        ? const Color(0xFFE19A9A)
+                                        : Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color:
                                       isSelected
-                                          ? Color(0xFFBA1B1B)
+                                          ? const Color(0xFFBA1B1B)
                                           : Colors.grey.shade300,
                                   width: 2,
                                 ),
@@ -380,6 +391,7 @@ class _EditCarState extends State<EditCar> {
                                           isSelected
                                               ? Colors.black
                                               : Colors.grey,
+
                                       fontSize: 12.h,
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w600,
@@ -413,7 +425,7 @@ class _EditCarState extends State<EditCar> {
                       ? "موديل السيارة"
                       : "Car model",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -449,13 +461,16 @@ class _EditCarState extends State<EditCar> {
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? Color(0xFFE19A9A)
-                                        : Colors.white,
+                                        ? const Color(0xFFE19A9A)
+                                        : Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color:
                                       isSelected
-                                          ? Color(0xFFBA1B1B)
+                                          ? const Color(0xFFBA1B1B)
                                           : Colors.grey.shade300,
                                   width: 2,
                                 ),
@@ -466,7 +481,12 @@ class _EditCarState extends State<EditCar> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color:
-                                      isSelected ? Colors.black : Colors.grey,
+                                      isSelected
+                                          ? Colors.black
+                                          : Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
                                   fontSize: 14.h,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w600,
@@ -502,7 +522,7 @@ class _EditCarState extends State<EditCar> {
                                 ? 'اسم السيارة '
                                 : 'Car name ',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: textColor,
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -525,7 +545,7 @@ class _EditCarState extends State<EditCar> {
               SizedBox(height: 10.h),
               Container(
                 decoration: ShapeDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -537,6 +557,8 @@ class _EditCarState extends State<EditCar> {
                         locale.isDirectionRTL(context)
                             ? "سيارة الدوام، سيارة العائلة، سيارة أحمد"
                             : "Work car, family car, Ahmed's car",
+                    hintStyle: TextStyle(color: hintColor),
+
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 12,
@@ -559,6 +581,8 @@ class _EditCarState extends State<EditCar> {
                       ? "سنة الصنع"
                       : "Year of manufacture",
                   style: TextStyle(
+                    color: textColor,
+
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -568,10 +592,14 @@ class _EditCarState extends State<EditCar> {
               SizedBox(
                 height: 80.h,
                 child: ListWheelScrollView.useDelegate(
-                  controller: FixedExtentScrollController(initialItem: selectedYearIndex), // 👈 يبدأ من السنة اللي جت من الـ API
+                  controller: FixedExtentScrollController(
+                    initialItem: selectedYearIndex,
+                  ),
+                  // 👈 يبدأ من السنة اللي جت من الـ API
                   itemExtent: 30.h,
                   physics: const FixedExtentScrollPhysics(),
-                  onSelectedItemChanged: (index) => setState(() => selectedYearIndex = index),
+                  onSelectedItemChanged:
+                      (index) => setState(() => selectedYearIndex = index),
                   childDelegate: ListWheelChildBuilderDelegate(
                     builder: (context, index) {
                       if (index < 0 || index >= years.length) return null;
@@ -579,14 +607,19 @@ class _EditCarState extends State<EditCar> {
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         width: double.infinity,
-                        color: isSelected ? const Color(0xFFBBBBBB) : Colors.transparent,
+                        color:
+                            isSelected
+                                ? (isLight
+                                    ? const Color(0xFFBBBBBB)
+                                    : Colors.white24)
+                                : Colors.transparent,
                         child: Center(
                           child: Text(
                             years[index],
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w500,
-                              color: isSelected ? Colors.black : const Color(0xFF5E5E5E),
+                              color: isSelected ? textColor : hintColor,
                             ),
                           ),
                         ),
@@ -619,7 +652,7 @@ class _EditCarState extends State<EditCar> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
                 decoration: ShapeDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -628,7 +661,7 @@ class _EditCarState extends State<EditCar> {
                   children: [
                     Expanded(
                       child: DottedBorder(
-                        color: Colors.grey,
+                        color: borderColor,
                         strokeWidth: 1,
                         dashPattern: const [6, 3],
                         borderType: BorderType.RRect,
@@ -682,13 +715,15 @@ class _EditCarState extends State<EditCar> {
                 existingImageUrl: existingCarCertificateUrl,
                 onImageSelected: (file) => selectedCarDoc = file,
               ),
-
             ],
           ),
         ),
         bottomNavigationBar: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          color: Colors.white,
+          color:
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.white10,
           child: Row(
             children: [
               Expanded(
@@ -707,14 +742,18 @@ class _EditCarState extends State<EditCar> {
 
                     if (_selectedCarBrandId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء اختيار ماركة السيارة")),
+                        const SnackBar(
+                          content: Text("الرجاء اختيار ماركة السيارة"),
+                        ),
                       );
                       return;
                     }
 
                     if (_selectedCarModelId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء اختيار موديل السيارة")),
+                        const SnackBar(
+                          content: Text("الرجاء اختيار موديل السيارة"),
+                        ),
                       );
                       return;
                     }
@@ -722,7 +761,9 @@ class _EditCarState extends State<EditCar> {
                     if (arabicLettersController.text.trim().isEmpty ||
                         arabicNumbersController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء إدخال رقم اللوحة")),
+                        const SnackBar(
+                          content: Text("الرجاء إدخال رقم اللوحة"),
+                        ),
                       );
                       return;
                     }
@@ -732,9 +773,10 @@ class _EditCarState extends State<EditCar> {
                       numbersRaw: arabicNumbersController.text,
                     );
 
-                    final kiloRead = int.tryParse(
-                      _digitsToEn(kiloReadController.text.trim()),
-                    ) ??
+                    final kiloRead =
+                        int.tryParse(
+                          _digitsToEn(kiloReadController.text.trim()),
+                        ) ??
                         0;
 
                     await context.read<CarCubit>().updateCar(
@@ -768,7 +810,10 @@ class _EditCarState extends State<EditCar> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14.h),
-                    backgroundColor: Colors.white, // خلفية الزر
+                    backgroundColor:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.white10, // خلفية الزر
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       side: const BorderSide(
@@ -781,45 +826,9 @@ class _EditCarState extends State<EditCar> {
                     final prefs = await SharedPreferences.getInstance();
                     final token = prefs.getString('token') ?? '';
 
-                    bool confirm =
-                        await showDialog(
-                          context: context,
-                          builder:
-                              (_) => AlertDialog(
-                                title: Text(
-                                  locale.isDirectionRTL(context)
-                                      ? 'تأكيد الحذف'
-                                      : 'Confirm Delete',
-                                ),
-                                content: Text(
-                                  locale.isDirectionRTL(context)
-                                      ? 'هل أنت متأكد من حذف هذه السيارة؟'
-                                      : 'Are you sure you want to delete this car?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, false),
-                                    child: Text(
-                                      locale.isDirectionRTL(context)
-                                          ? 'إلغاء'
-                                          : 'Cancel',
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, true),
-                                    child: Text(
-                                      locale.isDirectionRTL(context)
-                                          ? 'حذف'
-                                          : 'Delete',
-                                      style: const TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                        ) ??
-                        false;
+                    bool confirm = await showDeleteCarBottomSheet(context);
+
+                    false;
 
                     if (!confirm) return;
 
@@ -865,7 +874,10 @@ class _EditCarState extends State<EditCar> {
                         ? 'حذف السيارة'
                         : 'Delete Car',
                     style: TextStyle(
-                      color: Colors.black,
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -877,5 +889,162 @@ class _EditCarState extends State<EditCar> {
         ),
       ),
     );
+  }
+
+  Future<bool> showDeleteCarBottomSheet(BuildContext context) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Container(
+          width: 1.sw,
+          // عرض الشاشة كامل
+          height: 0.48.sh,
+          // 55% من ارتفاع الشاشة
+          margin: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16.w),
+          decoration: ShapeDecoration(
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Color(0xFF1D1D1D),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 2.w, color: const Color(0xFF9B9B9B)),
+              borderRadius: BorderRadius.circular(15.r),
+            ),
+            shadows: [
+              BoxShadow(
+                color: const Color(0x3F000000),
+                blurRadius: 8.r,
+                offset: Offset(0, 0),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // العنوان
+              Text(
+                'هل تريد حذف السيارة؟',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFFBA1B1B),
+                  fontSize: 22.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              SizedBox(height: 20.h),
+
+              // الصورة
+              SizedBox(
+                height: 140.h,
+                width: 140.w,
+                child: Image.asset(
+                  "assets/icons/delete_car.png",
+                  fit: BoxFit.contain,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Color(0xFF1D1D1D)
+                          : Colors.white70,
+                ),
+              ),
+
+              SizedBox(height: 20.h),
+
+              // النص التوضيحي
+              Text(
+                'إذا حذفتها، بتنمسح كل بياناتها من حسابك',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Color(0xFF1D1D1D)
+                          : Colors.white70,
+                  fontSize: 18.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              const Spacer(),
+
+              // الأزرار
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context, true),
+                      child: Container(
+                        height: 50.h,
+                        margin: EdgeInsets.only(right: 8.w),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFBA1B1B),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'نعم، احذفها',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context, false),
+                      child: Container(
+                        height: 50.h,
+                        margin: EdgeInsets.only(left: 8.w),
+                        decoration: ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1.5.w,
+                              color: const Color(0xFF9B9B9B),
+                            ),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'رجوع',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                              fontSize: 18.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    return result ?? false;
   }
 }
