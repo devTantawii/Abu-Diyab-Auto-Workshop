@@ -1,5 +1,6 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:dio/dio.dart';
+import '../../../core/langCode.dart';
 import '../model/oil_model.dart';
 import '../model/tire_model.dart';
 class TireRepository {
@@ -9,7 +10,8 @@ class TireRepository {
       receiveTimeout: const Duration(seconds: 10),
       headers: {
         "Accept": "application/json",
-        "Accept-Language": "ar",
+        "Accept-Language": langCode == '' ? "en" : langCode,
+
       },
     ),
   );

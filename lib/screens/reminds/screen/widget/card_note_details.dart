@@ -25,7 +25,9 @@ class CardNotesDetails extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
+            color:Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
             fontSize: 15.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w500,

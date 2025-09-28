@@ -14,6 +14,7 @@ import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
 import '../widget/build_label.dart';
 import '../widget/reset_pass_flow.dart';
+import 'otp.dart';
 
 class LoginBottomSheet extends StatefulWidget {
   const LoginBottomSheet({super.key});
@@ -48,9 +49,10 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
 
           padding: EdgeInsets.all(20.sp),
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.light
-                ?Colors.white
-                :Colors.black,
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: SafeArea(
@@ -66,9 +68,11 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           ? 'حيّاك! سجل دخولك'
                           : "Welcome! Log in",
                       style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ?Colors.black
-                            :Colors.white,                        fontSize: 17.sp,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                        fontSize: 17.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
@@ -79,9 +83,10 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           ? "عطنا رقم جوالك ونساعدك تصلّح سيارتك بأقرب وقت 🚗"
                           : "Give us your mobile number and we will help you fix your car as soon as possible 🚗",
                       style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ?Colors.black.withOpacity(0.7)
-                            :Colors.white.withOpacity(0.7),
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black.withOpacity(0.7)
+                                : Colors.white.withOpacity(0.7),
                         fontSize: 13.h,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -136,8 +141,24 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => HomeScreen()),
-                                (route) => false, // ⬅️ يقفل كل الصفحات السابقة
-                          );                        } else if (state is LoginFailure) {
+                            (route) => false, // ⬅️ يقفل كل الصفحات السابقة
+                          );
+                        } else if (state is LoginFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                        } else if (state is LoginNeedsVerification) {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder:
+                                (context) => FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: OtpBottomSheet(phone: state.phone),
+                                ),
+                          );
+                        } else if (state is LoginFailure) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
                           );
@@ -236,9 +257,12 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                 : "You don't have an account?",
 
                             style: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.light
-                                  ?Colors.black
-                                  :Colors.white,                                fontSize: 15.27.h,
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                              fontSize: 15.27.h,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
                             ),
@@ -337,9 +361,12 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                               style: GoogleFonts.almarai(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ?Colors.black
-                                    :Colors.white,                                ),
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
+                              ),
                             ),
                           ),
                           Expanded(

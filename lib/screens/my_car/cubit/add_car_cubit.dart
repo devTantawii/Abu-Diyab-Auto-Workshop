@@ -3,6 +3,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import '../../../core/langCode.dart';
 import 'add_car_state.dart';
 
 class AddCarCubit extends Cubit<AddCarState> {
@@ -48,6 +49,7 @@ class AddCarCubit extends Cubit<AddCarState> {
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
+            "Accept-Language": langCode == '' ? "en" : langCode
           },
         ),
         data: formData,

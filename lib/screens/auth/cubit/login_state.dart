@@ -47,4 +47,7 @@ class SubmitNewPasswordSuccess extends LoginState {}
 class SubmitNewPasswordFailure extends LoginState {
   final String message;
   SubmitNewPasswordFailure({required this.message});
+}class LoginNeedsVerification extends LoginState {
+  final String phone;
+  LoginNeedsVerification({required this.phone});
 }

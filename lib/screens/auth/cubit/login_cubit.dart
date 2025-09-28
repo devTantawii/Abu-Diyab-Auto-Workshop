@@ -3,6 +3,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/langCode.dart';
 import '../../../main.dart';
 import '../model/login_model.dart';
 import 'login_state.dart';
@@ -21,7 +22,14 @@ class LoginCubit extends Cubit<LoginState> {
       final response = await dio.post(
         mainApi + loginApi,
         data: {'phone': phone, 'password': password},
+        options: Options(
+          validateStatus: (status) {
+            // يخلي Dio ما يرمش Error لو رجع 403
+            return status != null && status < 500;
+          },
+        ),
       );
+
 
       print('📩 Status Code: ${response.statusCode}');
       print('📩 Response Data: ${response.data}');
@@ -55,9 +63,25 @@ class LoginCubit extends Cubit<LoginState> {
         initialToken = token;
 
         emit(LoginSuccess());
+      } else if (response.statusCode == 403 &&
+          response.data["data"]?["needs_verification"] == true) {
+        final phone = response.data["data"]["phone"];
+        print("⚠️ الحساب محتاج تحقق OTP لرقم $phone");
+
+        // استدعاء resend otp
+        try {
+          final resend = await dio.post(
+            mainApi + resendOtpApi, // ضيف resendOtpApi في api.dart
+            data: {"phone": phone},
+          );
+          print("📩 resendOtp response: ${resend.data}");
+        } catch (e) {
+          print("❌ resendOtp failed: $e");
+        }
+
+        emit(LoginNeedsVerification(phone: phone));
       } else {
         final errorMessage = response.data['msg'] ?? 'فشل تسجيل الدخول';
-        print('⚠️ فشل تسجيل الدخول: $errorMessage');
         emit(LoginFailure(message: errorMessage));
       }
     } on DioError catch (dioError) {
@@ -100,6 +124,7 @@ class LoginCubit extends Cubit<LoginState> {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode
           },
         ),
       );

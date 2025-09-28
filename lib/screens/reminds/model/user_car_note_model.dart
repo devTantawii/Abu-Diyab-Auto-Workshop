@@ -1,5 +1,6 @@
 class UserNote {
   final int id;
+  final int userId; // مضافة
   final String kilometer;
   final String lastMaintenance;
   final String details;
@@ -13,6 +14,7 @@ class UserNote {
 
   UserNote({
     required this.id,
+    required this.userId, // مضافة
     required this.kilometer,
     required this.lastMaintenance,
     required this.details,
@@ -28,6 +30,7 @@ class UserNote {
   factory UserNote.fromJson(Map<String, dynamic> json) {
     return UserNote(
       id: json['id'],
+      userId: json['user_id'], // مضافة
       kilometer: json['kilometer'],
       lastMaintenance: json['last_maintenance'],
       details: json['details'],
@@ -64,11 +67,13 @@ class Service {
 
 class UserCar {
   final int id;
+  final String year; // مضافة
   final CarBrand carBrand;
   final CarModel carModel;
 
   UserCar({
     required this.id,
+    required this.year, // مضافة
     required this.carBrand,
     required this.carModel,
   });
@@ -76,6 +81,7 @@ class UserCar {
   factory UserCar.fromJson(Map<String, dynamic> json) {
     return UserCar(
       id: json['id'],
+      year: json['year'], // مضافة
       carBrand: CarBrand.fromJson(json['car_brand']),
       carModel: CarModel.fromJson(json['car_model']),
     );

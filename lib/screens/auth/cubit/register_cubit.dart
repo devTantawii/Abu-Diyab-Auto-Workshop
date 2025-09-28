@@ -1,6 +1,7 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import '../../../core/langCode.dart';
 import '../model/register_request_model.dart';
 import 'register_state.dart';
 
@@ -22,7 +23,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Accept-Language': 'ar',
+            "Accept-Language": langCode == '' ? "en" : langCode
 
           },
         ),

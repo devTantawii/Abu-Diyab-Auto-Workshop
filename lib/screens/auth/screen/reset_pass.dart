@@ -24,16 +24,22 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _otpController = TextEditingController();
+
+  final List<TextEditingController> _otpControllers =
+  List.generate(4, (_) => TextEditingController());
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
+  String get _otpCode => _otpControllers.map((c) => c.text).join();
 
   bool _isArabic(BuildContext context) =>
       Localizations.localeOf(context).languageCode == 'ar';
 
   @override
   void dispose() {
-    _otpController.dispose();
+    for (var c in _otpControllers) {
+      c.dispose();
+    }
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -54,9 +60,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 MaterialPageRoute(builder: (_) => const ProfileScreen()),
               );
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(isArabic
-                    ? "تم تغيير كلمة المرور بنجاح ✅"
-                    : "Password changed successfully ✅")),
+                SnackBar(
+                  content: Text(isArabic
+                      ? "تم تغيير كلمة المرور بنجاح ✅"
+                      : "Password changed successfully ✅"),
+                ),
               );
             } else if (state is ResetPasswordFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -102,19 +110,59 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       SizedBox(height: 20.h),
 
                       _buildLabel(isArabic ? 'الكود (OTP)' : 'OTP Code'),
-                      _buildTextField(
-                        controller: _otpController,
-                        hint: widget.otp,
-                        textInputType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return isArabic
-                                ? "يرجى إدخال الكود"
-                                : "Please enter the code";
-                          }
-                          return null;
-                        },
+
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: List.generate(4, (index) {
+                            return SizedBox(
+                              width: 55,
+                              child: TextFormField(
+                                controller: _otpControllers[index],
+                                maxLength: 1,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: InputDecoration(
+                                  counterText: "",
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.grey.shade400),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Color(0xFFBA1B1B)),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  if (value.isNotEmpty && index < 3) {
+                                    FocusScope.of(context).nextFocus();
+                                  }
+                                  if (value.isEmpty && index > 0) {
+                                    FocusScope.of(context).previousFocus();
+                                  }
+                                  setState(() {});
+                                },
+                                validator: (value) {
+                                  if (_otpCode.length < 4) {
+                                    return isArabic
+                                        ? "يرجى إدخال الكود كامل"
+                                        : "Please enter full code";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            );
+                          }),
+                        ),
                       ),
+
                       SizedBox(height: 15.h),
 
                       _buildLabel(
@@ -125,18 +173,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         textInputType: TextInputType.visiblePassword,
                         obscureText: true,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (_otpCode.length < 4) {
                             return isArabic
-                                ? "يرجى إدخال كلمة المرور"
-                                : "Please enter password";
-                          }
-                          if (value.length < 6) {
-                            return isArabic
-                                ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-                                : "Password must be at least 6 characters";
+                                ? "يرجى إدخال الكود كامل"
+                                : "Please enter full code";
                           }
                           return null;
                         },
+
                       ),
                       SizedBox(height: 15.h),
 
@@ -170,15 +214,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           onPressed: state is ResetPasswordLoading
                               ? null
                               : () {
-                            if (_formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate() && _otpCode.length == 4) {
                               context.read<LoginCubit>().resetPassword(
                                 phone: widget.phone,
-                                otp: _otpController.text.trim(),
-                                newPassword:
-                                _passwordController.text.trim(),
-                                confirmPassword:
-                                _confirmPasswordController.text
-                                    .trim(),
+                                otp: _otpCode,
+                                newPassword: _passwordController.text.trim(),
+                                confirmPassword: _confirmPasswordController.text.trim(),
                               );
                             }
                           },

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/langCode.dart';
 import '../../home/screen/home_screen.dart';
 
 class LogoutBottomSheet extends StatelessWidget {
@@ -27,6 +28,7 @@ class LogoutBottomSheet extends StatelessWidget {
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
+            "Accept-Language": langCode == '' ? "en" : langCode
           },
         ),
       );

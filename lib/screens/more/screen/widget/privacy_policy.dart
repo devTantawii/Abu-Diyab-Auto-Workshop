@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/language/locale.dart';
+import '../../../services/widgets/Service-Custom-AppBar.dart';
+import '../../cubit/static_pages_cubit.dart';
 
 class PrivacyPolicy extends StatelessWidget {
   const PrivacyPolicy({super.key});
@@ -10,104 +14,100 @@ class PrivacyPolicy extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    return Scaffold(
-      backgroundColor:
-      Theme.of(context).brightness == Brightness.light
-          ? Colors.white
-          : Colors.black,
-      appBar: AppBar(
-        toolbarHeight: 100.h,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Container(
-            height: 130.h,
-            padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: Theme.of(context).brightness == Brightness.light
-                    ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
-                    : [const Color(0xFF690505), const Color(0xFF6F5252)],
-              ),
-            ),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Text(
-                    locale!.isDirectionRTL(context)
-                        ? "سياسة الخصوصية"
-                        : "Privacy Policy",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22.sp,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 36),
-              ],
-            ),
-          ),
+    return BlocProvider(
+      create: (_) => StaticPagesCubit()..fetchStaticPages(),
+      child: Scaffold(
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.light
+                ? const Color(0xFFD27A7A)
+                : const Color(0xFF6F5252),
+
+        appBar: CustomGradientAppBar(
+          title_ar: "سياسة الخصوصية",
+          title_en: "Privacy Policy",
+          onBack: () => Navigator.pop(context),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-        child: Text(
-          // هنا تقدر تحط النصوص الطويلة اللي عايزها
-          locale.isDirectionRTL(context)
-              ? '''
-هذا مثال على نص سياسة الخصوصية باللغة العربية. 
-ممكن تضيف هنا أي كلام كتير فشخ، سواء فقرات طويلة أو شروط وسياسات أو أي تفاصيل.
 
-- البند الأول: شرح السياسة.
-- البند الثاني: جمع البيانات.
-- البند الثالث: استخدام البيانات.
-- البند الرابع: حماية المعلومات.
-
-والموضوع مفتوح تضيف قد ما تحب من النصوص.
-'''
-              : '''
-This is an example of Privacy Policy text in English. 
-You can add here as much content as you want, long paragraphs, terms, conditions, or anything.
-
-- Section 1: Policy Explanation.
-- Section 2: Data Collection.
-- Section 3: Data Usage.
-- Section 4: Information Protection.
-
-Feel free to expand this with unlimited text.
-''',
-          style: TextStyle(
-            fontSize: 16.sp,
-            height: 1.6, // مسافة بين السطور علشان النص يبقى مريح للقراءة
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+        body: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
           ),
-          textAlign: TextAlign.start,
+          child: BlocBuilder<StaticPagesCubit, StaticPagesState>(
+            builder: (context, state) {
+              if (state is StaticPagesLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is StaticPagesLoaded) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 20.h,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        state.pages.privacyPolicy ?? "",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          height: 1.6,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      Html(
+                        data:
+                            """ <h1>عنوان رئيسي</h1> <p>فقرة <b>بخط عريض</b> و <i>مائل</i>.</p> <ul> <li>أول عنصر</li> <li>تاني عنصر</li> </ul> <a href="https://flutter.dev">رابط لفلتر</a> <img src="https://via.placeholder.com/150" /> """,
+                      ),
+                      Html(
+                        data: """
+<h1><ul><li style="text-align: center;">h1</li></ul></h1>
+<h2><ul><li>h2</li></ul></h2>
+<h3><ol><li><span style="background-color: transparent; font-size: 0.875rem;">h3</span></li></ol></h3>
+<h4><ol><li><span style="background-color: transparent; font-size: 0.875rem;">h4</span></li></ol></h4>
+<p><ol><li><span style="background-color: transparent; font-size: 0.875rem;">per</span></li></ol></p>
+<ol>
+  <li><span style="background-color: transparent; font-size: 0.875rem;">hfs</span></li>
+  <li style="text-align: center;"><span style="background-color: transparent; font-size: 0.875rem;">fsedf</span></li>
+  <li style="text-align: left;"><span style="background-color: transparent; font-size: 0.875rem;">sf</span></li>
+  <li><span style="background-color: transparent; font-size: 0.875rem;">sdf</span></li>
+  <li><span style="background-color: transparent; font-size: 0.875rem;"><u>sdfe</u></span></li>
+  <li><span style="background-color: transparent; font-size: 0.875rem;"><i>sdf</i></span></li>
+</ol>
+""",
+                        style: {
+                          "h1": Style(fontSize: FontSize.xxLarge, color: Colors.red),
+                          "h2": Style(fontSize: FontSize.xLarge, color: Colors.blue),
+                          "h3": Style(fontSize: FontSize.large),
+                          "h4": Style(fontSize: FontSize.medium),
+                          "p": Style(fontSize: FontSize.medium, lineHeight: LineHeight.number(1.6)),
+                          "li": Style(fontSize: FontSize.medium, margin: Margins.only(bottom: 8)),
+                        },
+                      ),
+
+                    ],
+                  ),
+                );
+              } else if (state is StaticPagesError) {
+                return Center(
+                  child: Text(
+                    state.message,
+                    style: TextStyle(color: Colors.red, fontSize: 16.sp),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );

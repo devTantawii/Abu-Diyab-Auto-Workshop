@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/langCode.dart';
+
 class BannerModel {
   final int id;
   final String image;
@@ -49,7 +51,7 @@ class _ImageSliderState extends State<ImageSlider> {
     try {
       final response = await _dio.get(
         "$mainApi/app/elwarsha/banners/get",
-        options: Options(headers: {"Accept": "application/json"}),
+        options: Options(headers: {"Accept": "application/json",  "Accept-Language": langCode == '' ? "en" : langCode}),
       );
 
       if (response.statusCode == 200) {

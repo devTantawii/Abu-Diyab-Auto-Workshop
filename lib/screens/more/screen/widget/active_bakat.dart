@@ -29,7 +29,7 @@ class _ActiveBakatState extends State<ActiveBakat> {
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           side: BorderSide(width: 2, color: const Color(0xFFAFAFAF)),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.sp),
         ),
       ),
       child: Column(
@@ -39,19 +39,24 @@ class _ActiveBakatState extends State<ActiveBakat> {
             'باقة بريميوم 🔥',
             textAlign: TextAlign.right,
             style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+              fontSize: 22.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w600,
             ),
           ),
+          SizedBox(height: 4.h,),
           Row(
             children: [
               Text(
                 'تنتهي في :',
                 textAlign: TextAlign.right,
                 style: TextStyle(
-                  color: Colors.black,
+                  color:Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                   fontSize: 16.sp,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
@@ -86,8 +91,10 @@ class _ActiveBakatState extends State<ActiveBakat> {
             'خدماتك المشمولة في الباقة',
             textAlign: TextAlign.right,
             style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+              fontSize: 14.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w600,
             ),
@@ -101,8 +108,10 @@ class _ActiveBakatState extends State<ActiveBakat> {
                 TextSpan(
                   text: 'هذا النص هو مثال لنص يمكن أن يستبدل في ',
                   style: TextStyle(
-                    color: Colors.black.withValues(alpha: 0.70),
-                    fontSize: 12,
+                    color:Theme.of(context).brightness == Brightness.light
+                        ?Colors.black.withValues(alpha: 0.70)
+                        : Colors.white,
+                    fontSize: 12.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
                   ),
@@ -111,7 +120,7 @@ class _ActiveBakatState extends State<ActiveBakat> {
                   text: '( احجز الان )',
                   style: TextStyle(
                     color: const Color(0xFFBA1B1B),
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
                   ),
@@ -138,14 +147,14 @@ class _ActiveBakatState extends State<ActiveBakat> {
           ),
 
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 12.sp, vertical: 4.sp),
             decoration: BoxDecoration(
               color:
               Theme.of(context).brightness == Brightness.light
                   ? Colors.white
                   : Colors.black,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey, width: 1),
+              border: Border.all(color: Colors.grey, width: 1.5.sp),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -154,8 +163,10 @@ class _ActiveBakatState extends State<ActiveBakat> {
                   'سجل إستخدام الباقة',
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color:Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
                   ),
@@ -170,7 +181,9 @@ class _ActiveBakatState extends State<ActiveBakat> {
                 options.map((option) {
                   return DropdownMenuItem(
                     value: option,
-                    child: Text(option),
+                    child: Text(option,style: TextStyle(fontSize: 12.sp,  color:Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,),),
                   );
                 }).toList(),
                 onChanged: (value) {

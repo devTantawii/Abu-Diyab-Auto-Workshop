@@ -28,8 +28,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/constant/api.dart';
 import 'core/global.dart';
+import 'core/helpers/SharedPreference/pereferences.dart';
 import 'core/language/locale.dart';
 import 'core/theme.dart';
+import 'language/languageCubit.dart';
 
 final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 String? initialToken;
@@ -52,15 +54,16 @@ void main() async {
   }
 
   initialToken = savedToken;
+  final sharedPrefHelper = SharedPreferencesHelper();
 
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider<LanguageCubit>(  create: (_) => LanguageCubit(sharedPrefHelper),
+        ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
-        BlocProvider<CarModelCubit>(
-          create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
-        ),
+        BlocProvider<CarModelCubit>(create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi)),
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
         BlocProvider(create: (_) => CarCubit()),
@@ -71,14 +74,10 @@ void main() async {
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => MaintenanceCubit()),
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
-      //  BlocProvider<UserCarsCubit>(
-      //    create: (_) => UserCarsCubit()..fetchUserCars(),
-      //  ),
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen:
-            initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
       ),
     ),
   );
@@ -94,8 +93,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  Locale? _locale;
-
   @override
   void initState() {
     super.initState();
@@ -120,7 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
-          (route) => false,
+              (route) => false,
         );
       }
     }
@@ -130,7 +127,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
-        (route) => false,
+            (route) => false,
       );
     }
   }
@@ -145,14 +142,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final langCode = prefs.getString('languageCode') ?? 'ar';
-    setState(() => _locale = Locale(langCode));
+    final cubit = context.read<LanguageCubit>();
+    if (langCode == 'ar') {
+      cubit.selectArabicLanguage();
+    } else {
+      cubit.selectEngLanguage();
+    }
   }
 
   void changeLanguage(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('languageCode', locale.languageCode);
-    setState(() => _locale = locale);
+    final cubit = context.read<LanguageCubit>();
+    if (locale.languageCode == 'ar') {
+      cubit.selectArabicLanguage();
+    } else {
+      cubit.selectEngLanguage();
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -161,28 +169,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return BlocBuilder<ThemeCubit, ThemeMode>(
-          builder: (context, themeMode) {
-            return MaterialApp(
-              locale: _locale,
-              supportedLocales: const [Locale('en'), Locale('ar')],
-              localizationsDelegates: const [
-                AppLocalizationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              theme: lightTheme(),
-              darkTheme: darkTheme(),
-              themeMode: themeMode,
-              debugShowCheckedModeBanner: false,
-              home: Directionality(
-                textDirection:
-                    _locale?.languageCode == 'ar'
+        return BlocBuilder<LanguageCubit, Locale>(
+          builder: (context, locale) {
+            return BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                return MaterialApp(
+                  locale: locale,
+                  supportedLocales: const [Locale('en'), Locale('ar')],
+                  localizationsDelegates: const [
+                    AppLocalizationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  theme: lightTheme(),
+                  darkTheme: darkTheme(),
+                  themeMode: themeMode,
+                  debugShowCheckedModeBanner: false,
+                  home: Directionality(
+                    textDirection: locale.languageCode == 'ar'
                         ? TextDirection.rtl
                         : TextDirection.ltr,
-                child: widget.initialScreen,
-              ),
+                    child: widget.initialScreen,
+                  ),
+                );
+              },
             );
           },
         );
@@ -191,3 +202,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 }
+///
+///
+///             "Accept-Language": langCode == '' ? "en" : langCode
+///

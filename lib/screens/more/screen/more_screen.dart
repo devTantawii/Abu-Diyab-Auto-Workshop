@@ -3,7 +3,6 @@ import 'package:abu_diyab_workshop/screens/auth/screen/login.dart';
 import 'package:abu_diyab_workshop/screens/auth/screen/sign_up.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/log_out.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/support_bottom_sheet.dart';
-import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:abu_diyab_workshop/screens/more/screen/bakat_screen.dart';
 import 'package:abu_diyab_workshop/screens/more/screen/widget/privacy.dart';
 import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
@@ -12,15 +11,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
-import '../../../widgets/app_bar_widget.dart';
-import '../../main/screen/main_screen.dart';
-import '../../on_boarding/screen/on_boarding_screen.dart';
+
+import '../../services/widgets/Service-Custom-AppBar.dart';
 import 'invite_friends.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -69,309 +66,296 @@ class _MoreScreenState extends State<MoreScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor:
-            Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
-        appBar: AppBar(
-          toolbarHeight: 130.h,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Container(
-            padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
-            decoration: buildAppBarDecoration(context),
+        Theme.of(context).brightness == Brightness.light
+            ? Color(0xFFD27A7A)
+            : const Color(0xFF6F5252),
+        appBar:  CustomGradientAppBar(
+          title_ar:  "المزيد",
+          title_en: " More",
+          showBackIcon: false,
 
-
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  locale!.isDirectionRTL(context) ? "المزيد" : "More",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'عام',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                        fontSize: 25,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                if (_isLoggedIn)
-                  SizedBox(height: 10.h),
-                if (_isLoggedIn)
-                  widget_ITN(
-                    text: 'تعديل بيانات الحساب',
-                    iconPath: 'assets/icons/edit.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                if (_isLoggedIn)
-                  SizedBox(height: 10,),
-                if (_isLoggedIn)
-                  widget_ITN(
-                    text: 'باقاتي',
-                    iconPath: 'assets/icons/gift_card1.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BakatScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                if (_isLoggedIn)
-                  SizedBox(height: 10,),
-                if (_isLoggedIn)
-                  widget_ITN(
-                    text: 'ادع أصدقائك',
-                    iconPath: 'assets/icons/gift_card1.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InviteFriends(),
-                        ),
-                      );
-                    },
-                  ),
-                SizedBox(height: 10,),
-
-                  widget_ITN(
-                    text: 'الخصوصيه',
-                    iconPath: 'assets/icons/user.png',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Privacy(),
-                        ),
-                      );
-                    },
-                  ),
-               SizedBox(height: 10.h),
-
-                widget_ITN(
-                  text: 'تواصل معنا ',
-                  iconPath: 'assets/icons/technical-support.png',
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const SupportBottomSheet(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10.h),
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  padding: const EdgeInsets.only(left: 10, right: 5),
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.50,
-                        color: const Color(0xFFAFAFAF),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Row(
+        body: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white: Colors.black,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(20.sp),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Icon(Icons.language, color: Color(0xFFBA1B1B)),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          locale!.isDirectionRTL(context)
-                              ? 'لغة التطبيق'
-                              : 'App Language',
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
-                            fontSize: 16,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        'عام',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          fontSize: 25.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
                         ),
-                      ),
-                      Spacer(),
-                      LanguageToggle(
-                        isArabic: isArabic,
-                        onToggle: () {
-                          myAppKey.currentState?.changeLanguage(
-                            isArabic ? const Locale('en') : const Locale('ar'),
-                          );
-                        },
                       ),
                     ],
                   ),
-                ),
-
-                SizedBox(height: 10.h),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 2.0,
+                  if (_isLoggedIn)
+                    SizedBox(height: 10.h),
+                  if (_isLoggedIn)
+                    widget_ITN(
+                      text: 'تعديل بيانات الحساب',
+                      iconPath: 'assets/icons/edit.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.color_lens, color: Color(0xFFBA1B1B)),
-                        SizedBox(width: 5.w),
+                  if (_isLoggedIn)
+                    SizedBox(height: 10.h),
+                  if (_isLoggedIn)
+                    widget_ITN(
+                      text: 'باقاتي',
+                      iconPath: 'assets/icons/gift_card1.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BakatScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  if (_isLoggedIn)
+                    SizedBox(height: 10.h),
+                  if (_isLoggedIn)
+                    widget_ITN(
+                      text: 'ادع أصدقائك',
+                      iconPath: 'assets/icons/gift_card1.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => InviteFriends(),
+                          ),
+                        );
+                      },
+                    ),
+                  SizedBox(height: 10.h),
 
-                        Text(
-                          locale.isDirectionRTL(context)
-                              ? "الوضع الليلي "
-                              : "Dark Theme",
-                          style: GoogleFonts.almarai(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
+                    widget_ITN(
+                      text: 'الخصوصيه',
+                      iconPath: 'assets/icons/user.png',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Privacy(),
+                          ),
+                        );
+                      },
+                    ),
+                 SizedBox(height: 10.h),
+
+                  widget_ITN(
+                    text: 'تواصل معنا ',
+                    iconPath: 'assets/icons/technical-support.png',
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const SupportBottomSheet(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10.h),
+                  Container(
+                    width: double.infinity,
+                    height:MediaQuery.of(context).size.height * 0.06,
+                    padding:  EdgeInsets.symmetric(horizontal: 10.sp),
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side:  BorderSide(width: 1.50.sp, color:Color(0xff9B9B9B) ),
+                        borderRadius: BorderRadius.circular(12.sp),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.language, color: Color(0xFFBA1B1B),size: 18.sp,),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(
+                            locale!.isDirectionRTL(context)
+                                ? 'لغة التطبيق'
+                                : 'App Language',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness == Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                              fontSize: 15.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         Spacer(),
-                        AnimatedThemeToggleButton(),
+                        LanguageToggle(
+                          isArabic: isArabic,
+                          onToggle: () {
+                            myAppKey.currentState?.changeLanguage(
+                              isArabic ? const Locale('en') : const Locale('ar'),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
-                ),
 
-                SizedBox(height: 10.h),
+                  SizedBox(height: 10.h),
+                  Container(
 
-                _isLoggedIn
-                    ? widget_ITN(
-                      text: 'تسجيل الخروج',
-                      iconPath: 'assets/icons/logout.png',
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => const LogoutBottomSheet(),
-                        );
-                      },
-                    )
-                    : Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => const AuthBottomSheet(),
-                            );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 50,
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFBA1B1B),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'إنشاء حساب جديد',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.sp),
+                      border: Border.all(
+                    width: 1.50.sp, color:Color(0xff9B9B9B) ),),
+                    child: ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.color_lens, color: Color(0xFFBA1B1B),size: 18.sp,),
+                          SizedBox(width: 5.w),
+
+                          Text(
+                            locale.isDirectionRTL(context)
+                                ? "الوضع الليلي "
+                                : "Dark Theme",
+                            style: TextStyle(
+                              color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontSize: 15.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10.h),
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder:
-                                  (context) => BlocProvider(
-                                    create: (_) => LoginCubit(dio: Dio()),
-                                    child: const LoginBottomSheet(),
-                                  ),
-                            );
-                          },
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 300),
-                            width: double.infinity,
-                            height: 50,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1.5,
-                                  color: Colors.black.withOpacity(0.7),
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'تسجيل الدخول',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          Spacer(),
+                          AnimatedThemeToggleButton(),
+                        ],
+                      ),
                     ),
-              ],
+                  ),
+
+                  SizedBox(height: 10.h),
+
+                  _isLoggedIn
+                      ? widget_ITN(
+                        text: 'تسجيل الخروج',
+                        iconPath: 'assets/icons/logout.png',
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => const LogoutBottomSheet(),
+                          );
+                        },
+                      )
+                      : Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const AuthBottomSheet(),
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFBA1B1B),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'إنشاء حساب جديد',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder:
+                                    (context) => BlocProvider(
+                                      create: (_) => LoginCubit(dio: Dio()),
+                                      child: const LoginBottomSheet(),
+                                    ),
+                              );
+                            },
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              width: double.infinity,
+                              height: 50,
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.5,
+                                    color: Colors.black.withOpacity(0.7),
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'تسجيل الدخول',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ],
+              ),
             ),
           ),
         ),
@@ -401,7 +385,7 @@ class LanguageToggle extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.red.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.transparent, width: 1),
+          border: Border.all(color: Colors.grey, width: 1.w),
         ),
         child: Stack(
           children: [

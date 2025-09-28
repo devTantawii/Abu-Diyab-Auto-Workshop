@@ -5,6 +5,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 
+import '../../../core/langCode.dart';
 import '../model/all_cars_model.dart';
 import 'all_cars_state.dart';
 
@@ -26,7 +27,7 @@ class CarCubit extends Cubit<CarState> {
           headers: {
             "Authorization": "Bearer $token",
             "Accept": "application/json",
-            "Accept-Language": "ar",
+            "Accept-Language": langCode == '' ? "en" : langCode,
           },
         ),
       );
@@ -102,6 +103,7 @@ class CarCubit extends Cubit<CarState> {
           headers: {
             "Authorization": "Bearer $token",
             "Accept": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode
           },
         ),
       );

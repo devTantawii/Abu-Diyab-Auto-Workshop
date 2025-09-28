@@ -152,7 +152,9 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                               width: 165.w,
                               height: 150.h,
                               decoration: ShapeDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Color(0xff1D1D1D),
                                 shape: RoundedRectangleBorder(
                                   side: const BorderSide(
                                     width: 1.50,
@@ -160,10 +162,10 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                   ),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                shadows: const [
+                                shadows:  [
                                   BoxShadow(
                                     color: Color(0x3F000000),
-                                    blurRadius: 8,
+                                    blurRadius: 8.sp,
                                     offset: Offset(0, 0),
                                     spreadRadius: 0,
                                   ),
@@ -179,7 +181,9 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                           child: Text(
                                             service.title,
                                             style: TextStyle(
-                                              color: Colors.black,
+                                              color:Theme.of(context).brightness == Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -192,16 +196,15 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                           width: 18.w,
                                           errorBuilder:
                                               (context, error, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.broken_image,
-                                                    size: 18,
-                                                    color: Colors.grey,
-                                                  ),
+                                              Icon(
+                                                Icons.broken_image,
+                                                size: 18.sp,
+                                                color: Colors.grey,
+                                              ),
                                         ),
                                       ],
                                     ),
                                   ),
-
                                   if (serviceNotes.isNotEmpty)
                                     Expanded(
                                       child: ListView.builder(
@@ -213,24 +216,23 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
                                               children: [
-                                                const SizedBox(height: 8),
+                                                SizedBox(height: 8.h),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                      'assets/icons/attatch.png',
+                                                  'assets/icons/attatch.png',
                                                   text: 'المرفقات 1',
                                                 ),
-                                                const SizedBox(height: 8),
-
+                                                SizedBox(height: 8.h),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                      'assets/icons/ui_calender.png',
+                                                  'assets/icons/ui_calender.png',
                                                   text:
-                                                      '${note.lastMaintenance}',
+                                                  '${note.lastMaintenance}',
                                                 ),
                                                 const SizedBox(height: 8),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                      'assets/icons/notific.png',
+                                                  'assets/icons/notific.png',
                                                   text: '${note.remindMe}',
                                                 ),
                                               ],
@@ -240,23 +242,24 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                       ),
                                     )
                                   else
-                                    const Center(
-                                      child: Text(
-                                        '+ إضافة صيانة جديدة',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFFBA1B1B),
-                                          fontSize: 14,
-                                          fontFamily: 'Graphik Arabic',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.60,
+                                    Expanded(
+                                      child: Center(
+                                        child: Text(
+                                          '+ إضافة صيانة جديدة',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Color(0xFFBA1B1B),
+                                            fontSize: 14.sp,
+                                            fontFamily: 'Graphik Arabic',
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.60.h,
+                                          ),
                                         ),
                                       ),
                                     ),
                                 ],
                               ),
-                            ),
-                          );
+                            ),                          );
                         },
                       );
                     },

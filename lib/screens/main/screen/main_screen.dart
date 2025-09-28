@@ -16,6 +16,7 @@ import '../../../core/constant/Responsivemodel.dart';
 import '../../../core/language/locale.dart';
 
 import '../../../widgets/app_bar_widget.dart';
+import '../../../widgets/navigation.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
 import '../../reminds/cubit/user_car_note_state.dart';
 import '../../reminds/screen/remind_car_screen.dart';
@@ -47,14 +48,17 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _loadUsername();
     context.read<ServicesCubit>().fetchServices();
+    context.read<UserNotesCubit>().getUserNotes();
+
   }
 
   void _loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username') ?? 'زائر';
-      _profileImagePath = prefs.getString('profile_image'); // لو خزنت الرابط عند التحديث
-
+      _profileImagePath = prefs.getString(
+        'profile_image',
+      ); // لو خزنت الرابط عند التحديث
     });
   }
 
@@ -108,10 +112,11 @@ class _MainScreenState extends State<MainScreen> {
                             context: context,
                             isScrollControlled: true,
                             backgroundColor: Colors.transparent,
-                            builder: (context) => BlocProvider(
-                              create: (_) => LoginCubit(dio: Dio()),
-                              child: const LoginBottomSheet(),
-                            ),
+                            builder:
+                                (context) => BlocProvider(
+                                  create: (_) => LoginCubit(dio: Dio()),
+                                  child: const LoginBottomSheet(),
+                                ),
                           );
                         }
                       },
@@ -120,9 +125,14 @@ class _MainScreenState extends State<MainScreen> {
                         width: Responsive.w(context, 48, 60),
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundImage: _profileImagePath != null && _profileImagePath!.isNotEmpty
-                              ? NetworkImage(_profileImagePath!)
-                              : const AssetImage('assets/images/profile_image.png') as ImageProvider,
+                          backgroundImage:
+                              _profileImagePath != null &&
+                                      _profileImagePath!.isNotEmpty
+                                  ? NetworkImage(_profileImagePath!)
+                                  : const AssetImage(
+                                        'assets/images/profile_image.png',
+                                      )
+                                      as ImageProvider,
                         ),
                       ),
                     ),
@@ -509,201 +519,6 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         SizedBox(height: 10.h),
 
-                        /*
-                  BlocBuilder<UserCarsCubit, UserCarsState>(
-                    builder: (context, state) {
-                      if (state is UserCarsLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is UserCarsLoaded) {
-                        return ListView.builder(  shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.cars.length,
-                          itemBuilder: (context, index) {
-                            final car = state.cars[index];
-                            return Container(
-                              width: double.infinity,
-                              height: isTablet ? 120.h : 94.h,
-                              margin: EdgeInsets.only(bottom: 12.h),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black,
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(
-                                  color: Theme.of(context).brightness == Brightness.dark
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 12.r,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                textDirection:
-                                Localizations.localeOf(context).languageCode == 'ar'
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10.w,
-                                        vertical: 10.h,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          // السطر الأول (Change Tires + أيقونة)
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-
-                                                    car.,
-                                                style: TextStyle(
-                                                  color: Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                                  fontSize: 14.sp,
-                                                  fontFamily: 'Graphik Arabic',
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              SizedBox(width: 5.w),
-                                              Image.asset(
-                                                "assets/icons/tire1.png",
-                                                width: 22.w,
-                                                height: 20.h,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ],
-                                          ),
-
-                                          // السطر الثاني (البراند والموديل والسنة)
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                locale.isDirectionRTL(context)
-                                                    ? "${car.carBrand.name} , ${car.carModel.name}"
-                                                    : "${car.carBrand.name}, ${car.carModel.name}",
-                                                style: TextStyle(
-                                                  color: Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                      ? Colors.black.withValues(alpha: 0.70)
-                                                      : Colors.white,
-                                                  fontSize: 14.sp,
-                                                  fontFamily: 'Graphik Arabic',
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.60,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Text(
-                                                car.year,
-                                                style: TextStyle(
-                                                  color: Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                      ? Colors.black.withValues(alpha: 0.70)
-                                                      : Colors.white,
-                                                  fontSize: 14.sp,
-                                                  fontFamily: 'Graphik Arabic',
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.60,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-
-                                          // السطر الثالث (التاريخ + التنبيه)
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                const Icon(
-                                                  Icons.notifications_none,
-                                                  size: 18,
-                                                  color: Colors.red,
-                                                ),
-                                                Text(
-                                                  // مجرد مثال بالتاريخ، ممكن تجيب من createdAt أو updatedAt
-                                                  car.createdAt.split(" ").first,
-                                                  style: TextStyle(
-                                                    color: Theme.of(context).brightness ==
-                                                        Brightness.light
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                    fontSize: 14.21.sp,
-                                                    fontFamily: 'Graphik Arabic',
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.60,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10.w),
-                                                Text(
-                                                  locale.isDirectionRTL(context)
-                                                      ? "صيانتك بعد 5 أيام"
-                                                      : "Your maintenance after 5 days",
-                                                  style: TextStyle(
-                                                    color: const Color(0xFFBA1B1B),
-                                                    fontSize: 16.sp,
-                                                    fontFamily: 'Graphik Arabic',
-                                                    fontWeight: FontWeight.w600,
-                                                    height: 1.60,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  // لوجو العربية
-                                  Container(
-                                    width: 99.w,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.06),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12.r),
-                                        bottomLeft: Radius.circular(12.r),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Image.network(
-                                        car.carBrand.icon,
-                                        fit: BoxFit.contain,
-                                        width: 40.w,
-                                        height: 40.h,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return const Icon(Icons.directions_car);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      } else if (state is UserCarsError) {
-                        return const SizedBox.shrink();
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                 */
                         BlocBuilder<UserNotesCubit, UserNotesState>(
                           builder: (context, state) {
                             if (state is UserNotesLoading) {
@@ -761,7 +576,7 @@ class _MainScreenState extends State<MainScreen> {
                                             ),
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                                  CrossAxisAlignment.start,
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
@@ -834,7 +649,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       ),
                                                       SizedBox(width: 10.w),
                                                       Text(
-                                                        'note.userCar.carBrand.name',
+                                                        note.userCar.year,
                                                         style: TextStyle(
                                                           color:
                                                               Theme.of(
@@ -1187,7 +1002,7 @@ class _MainScreenState extends State<MainScreen> {
 
         if (token != null && token.isNotEmpty) {
           // لو عنده توكين
-          _navigateToServiceScreen(serviceId, title);
+          navigateToServiceScreen(context, serviceId, title);
         } else {
           showModalBottomSheet(
             context: context,
@@ -1246,6 +1061,8 @@ class _MainScreenState extends State<MainScreen> {
                 Text(
                   title,
                   textAlign: TextAlign.center,
+                  maxLines: 1, // أقصى عدد أسطر
+                  overflow: TextOverflow.ellipsis, // يحط "…" في الآخر
                   style: TextStyle(
                     color:
                         Theme.of(context).brightness == Brightness.light
@@ -1284,38 +1101,4 @@ class _MainScreenState extends State<MainScreen> {
   ///
   ///
   ///
-  void _navigateToServiceScreen(int? id, String title) {
-    switch (id) {
-      case 6:
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeOil()));
-        break;
-      case 5:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ChangeTire()),
-        );
-        case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => Washing()),
-        );
-        break;
-        case 9:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) =>CarCheck()),
-        );
-        break;
-      case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ChangeBattery()),
-        );
-        break;
-      default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("الصفحة الخاصة بـ $title لسه مش متوفرة")),
-        );
-    }
-  }
 }

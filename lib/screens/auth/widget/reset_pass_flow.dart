@@ -131,8 +131,8 @@ class ResetPasswordFlow {
 
   // 📌 BottomSheet OTP
   void showOtpBottomSheet(BuildContext context, String phone) {
-    final otpControllers = List.generate(6, (_) => TextEditingController());
-    final focusNodes = List.generate(6, (_) => FocusNode());
+    final otpControllers = List.generate(4, (_) => TextEditingController());
+    final focusNodes = List.generate(4, (_) => FocusNode());
 
     showModalBottomSheet(
       context: context,
@@ -203,7 +203,7 @@ class ResetPasswordFlow {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     textDirection: TextDirection.ltr,
-                    children: List.generate(6, (index) {
+                    children: List.generate(4, (index) {
                       return SizedBox(
                         width: 45.w,
                         child: TextField(
@@ -255,12 +255,13 @@ class ResetPasswordFlow {
                         : () async {
                       try {
                         String otp = otpControllers.map((c) => c.text).join();
-                        if (otp.length < 6) {
+                        if (otp.length < 4) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("أدخل الكود كاملاً", style: TextStyle(fontFamily: 'Graphik Arabic'))),
                           );
                           return;
                         }
+
                         await context.read<LoginCubit>().verifyResetPassword(phone, otp);
                       } catch (e) {
                         String errorMessage = "حدث خطأ غير متوقع";

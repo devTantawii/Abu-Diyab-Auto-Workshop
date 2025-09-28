@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constant/api.dart';
+import '../../../core/langCode.dart';
 import '../model/service_model.dart';
 class ServicesCubit extends Cubit<ServicesState> {
   final Dio dio;
@@ -19,7 +20,7 @@ class ServicesCubit extends Cubit<ServicesState> {
         mainApi + servicesApi,
         options: Options(
           headers: {
-            'Accept-Language': 'ar',
+            "Accept-Language": langCode == '' ? "en" : langCode,
             'Authorization': 'Bearer $token',
 
           },

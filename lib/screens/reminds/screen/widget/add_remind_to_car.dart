@@ -121,53 +121,55 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           width: MediaQuery.of(context).size.width * 0.9,
-                          height: 160,
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
-                            color: Colors.white,
+                            color:Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Color(0xff1D1D1D),
                             shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                width: 1.5,
-                                color: Color(0xFF9B9B9B),
+                              side:  BorderSide(
+                                width: 1.5.w,
+                                color:Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    :Color(0xFF9B9B9B),
                               ),
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15.sp),
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 12,
+                            padding:  EdgeInsets.symmetric(
+                              horizontal: 15.sp,
+                              vertical: 12.sp,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
-
                                     Row(
                                       children: [
                                         Text(
                                           widget.service.title,
                                           textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
+                                          style:  TextStyle(
+                                            color:Theme.of(context).brightness == Brightness.light
+                                                ? Colors.black
+                                                : Colors.white,
+                                            fontSize: 14.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
-                                            height: 1.60,
+                                            height: 1.60.h,
                                           ),
                                         ),
-                                        const SizedBox(width: 5),
-
+                                        SizedBox(width: 5.w),
                                         Image.network(
                                           widget.service.image,
-                                          width: 22,
-                                          height: 22,
+                                          width: 22.w,
+                                          height: 22.h,
                                           fit: BoxFit.cover,
                                         ),
-
                                       ],
                                     ),
                                     GestureDetector(
@@ -175,13 +177,12 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                                         final result = await showModalBottomSheet(
                                           context: context,
                                           isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
+                                          shape:  RoundedRectangleBorder(
                                             borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(25),
+                                              top: Radius.circular(25.sp),
                                             ),
                                           ),
                                           builder: (modalContext) {
-                                            // استخدم context جديد
                                             return BlocProvider(
                                               create:
                                                   (_) =>
@@ -198,49 +199,44 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                                           },
                                         );
                                         if (result == "updated" || result == "deleted") {
-                                          print("♻️ تم تعديل أو حذف النوت – هنعمل ريفرش");
+                                          print(":recycle: تم تعديل أو حذف النوت – هنعمل ريفرش");
                                           context.read<UserNotesCubit>().getUserNotes();
                                         }
                                       },
-
                                       child: Container(
-                                        width: 35.w,
-                                        height: 35.h,
                                         decoration: BoxDecoration(
                                           color: const Color(0x7FBA1B1B),
-                                          borderRadius: BorderRadius.circular(50),
+                                          borderRadius: BorderRadius.circular(50.sp),
                                         ),
                                         child: Image.asset(
                                           'assets/icons/edit.png',
                                           height: 30.h,
                                           width: 30.w,
+                                          fit: BoxFit.fill,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 8.h),
                                 CardNotesDetails(
                                   imagePath: 'assets/icons/attatch.png',
                                   text: 'المرفقات 1',
                                 ),
-                                const SizedBox(height: 8),
-
+                                SizedBox(height: 8.h),
                                 CardNotesDetails(
                                   imagePath: 'assets/icons/ui_calender.png',
                                   text: '${note.lastMaintenance}',
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 8.h),
                                 CardNotesDetails(
                                   imagePath: 'assets/icons/notific.png',
                                   text: '${note.remindMe}',
-
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
+                        ),                      );
                     }),
                   const SizedBox(height: 20),
                 //  Text("السيارة: ${widget.car.name ?? ''}"),

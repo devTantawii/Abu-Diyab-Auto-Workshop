@@ -1,59 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../widgets/app_bar_widget.dart';
+import '../../../core/language/locale.dart';
 
 class CustomGradientAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  final String title;
-  final VoidCallback onBack;
-
+  final String? title_ar, title_en;
+  final VoidCallback? onBack;
+  final bool showBackIcon; // :point_left: باراميتر جديد
   const CustomGradientAppBar({
     Key? key,
-    required this.title,
-    required this.onBack,
+    this.title_ar,
+    this.onBack,
+    this.title_en,
+    this.showBackIcon = true, // :point_left: افتراضيًا يظهر
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
     return AppBar(
-      toolbarHeight: 100.h,
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
       flexibleSpace: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection:
+            locale.isDirectionRTL(context)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
         child: Container(
-          height: 130.h,
+          height: 100.h,
           padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-          decoration: buildAppBarDecoration(context),
-
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors:
+                  Theme.of(context).brightness == Brightness.light
+                      ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
+                      : [const Color(0xFF690505), const Color(0xFF6F5252)],
+            ),
+          ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: onBack,
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                    size: 20,
+              // :point_down: هنا الشرط
+              if (showBackIcon)
+                GestureDetector(
+                  onTap: onBack,
+                  child: Container(
+                    width: 36.w,
+                    height: 36.h,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                      size: 30,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 16.w),
+              if (showBackIcon) SizedBox(width: 16.w),
               Expanded(
                 child: Text(
-                  title,
+                  locale.isDirectionRTL(context)
+                      ? (title_ar ?? "")
+                      : (title_en ?? ""),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
                   ),
@@ -68,5 +84,5 @@ class CustomGradientAppBar extends StatelessWidget
   }
 
   @override
-   Size get preferredSize => Size.fromHeight(100.h);
+  Size get preferredSize => Size.fromHeight(100.h);
 }

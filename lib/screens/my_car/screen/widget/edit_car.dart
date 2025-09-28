@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constant/api.dart';
+import '../../../../core/langCode.dart';
 import '../../../../core/language/locale.dart';
 import '../../../../widgets/app_bar_widget.dart';
 import '../../../main/screen/main_screen.dart';
@@ -61,7 +62,7 @@ class _EditCarState extends State<EditCar> {
       final response = await Dio().get(
         '$mainApi/app/elwarsha/user-cars/show/${widget.carId}',
         options: Options(
-          headers: {'Authorization': 'Bearer $token', 'Accept-Language': 'ar'},
+          headers: {'Authorization': 'Bearer $token',   "Accept-Language": langCode == '' ? "en" : langCode},
         ),
       );
 
@@ -836,7 +837,7 @@ class _EditCarState extends State<EditCar> {
                       final response = await Dio().delete(
                         '$mainApi/app/elwarsha/user-cars/delete/${widget.carId}',
                         options: Options(
-                          headers: {'Authorization': 'Bearer $token'},
+                          headers: {'Authorization': 'Bearer $token',  "Accept-Language": langCode == '' ? "en" : langCode},
                         ),
                       );
 

@@ -49,7 +49,7 @@ class _CarCheckState extends State<CarCheck> {
     return Scaffold(
       backgroundColor: Color(0xFFD27A7A),
       appBar: CustomGradientAppBar(
-        title: "إنشاء طلب",
+        title_ar: "إنشاء طلب",
         onBack: () {
           context.read<CarCheckCubit>().resetCarChecks(); // هنا قبل ما نرجع
           Navigator.pop(context);

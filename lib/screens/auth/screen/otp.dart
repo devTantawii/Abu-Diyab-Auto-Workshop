@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/langCode.dart';
 import '../../home/screen/home_screen.dart';
 import '../cubit/login_cubit.dart';
 import 'login.dart';
@@ -21,22 +22,22 @@ class OtpBottomSheet extends StatefulWidget {
 }
 
 class _OtpBottomSheetState extends State<OtpBottomSheet> {
-  final TextEditingController _codeController = TextEditingController();
+  final List<TextEditingController> _otpControllers =
+  List.generate(4, (_) => TextEditingController());
+
   OtpState _state = OtpState.idle;
-  String? _errorMessage;
+
+  String get _otpCode => _otpControllers.map((c) => c.text).join();
 
   Future<void> _verifyCode() async {
-    if (_codeController.text.trim().length != 6) {
-      _showMessage("❌ الكود المدخل أقل من 6 أرقام");
-      setState(() {
-        _state = OtpState.error;
-      });
+    if (_otpCode.length != 4) {
+      _showMessage("❌ الكود المدخل أقل من 4 أرقام");
+      setState(() => _state = OtpState.error);
       return;
     }
 
     setState(() {
       _state = OtpState.loading;
-      _errorMessage = null;
     });
 
     try {
@@ -45,17 +46,15 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
         mainApi + verify_otpApi,
         data: {
           'phone': widget.phone,
-          'otp': _codeController.text.trim(),
+          'otp': _otpCode,
         },
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Accept-Language': 'ar',
-
+            "Accept-Language": langCode == '' ? "en" : langCode,
           },
         ),
       );
-
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final user = response.data["data"];
@@ -64,9 +63,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('username', user?["first_name"] ?? 'زائر');
         await prefs.setString('phone', user?["phone"] ?? '');
-        if (token != null) {
-          await prefs.setString('token', token);
-        }
+        if (token != null) await prefs.setString('token', token);
         await prefs.setBool('is_logged_in', true);
 
         setState(() => _state = OtpState.success);
@@ -94,8 +91,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
       }
     } on DioException catch (dioError) {
       _showMessage(
-        dioError.response?.data["msg"] ??
-            "❌ حدث خطأ أثناء الاتصال بالسيرفر",
+        dioError.response?.data["msg"] ?? "❌ حدث خطأ أثناء الاتصال بالسيرفر",
       );
       setState(() => _state = OtpState.error);
     } catch (e) {
@@ -109,7 +105,6 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-     //   title: const Text("تنبيه"),
         content: Text(msg),
         actions: [
           TextButton(
@@ -122,6 +117,14 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
   }
 
   bool get _loading => _state == OtpState.loading;
+
+  @override
+  void dispose() {
+    for (var c in _otpControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +159,6 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // زر الإغلاق
               Align(
                 alignment: Alignment.topLeft,
                 child: GestureDetector(
@@ -179,7 +181,6 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
               SizedBox(height: 10.h),
 
-              // العنوان
               Text(
                 'تحققنا منك بس باقي خطوة',
                 style: TextStyle(
@@ -192,7 +193,6 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
               SizedBox(height: 6.h),
 
-              // الشرح
               Text.rich(
                 TextSpan(
                   children: [
@@ -220,72 +220,58 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
               SizedBox(height: 20.h),
 
-              // مربعات الكود + حقل مخفي
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(6, (index) {
-                        return Container(
-                          width: 48,
-                          height: 63,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: const Color(0x7FBA1B1B),
-                              width: 1,
-                            ),
+              // 4 مربعات OTP
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(4, (index) {
+                    return SizedBox(
+                      width: 50,
+                      child: TextField(
+                        controller: _otpControllers[index],
+                        maxLength: 1,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: InputDecoration(
+                          counterText: "",
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade400),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
-                            index < _codeController.text.length
-                                ? _codeController.text[index]
-                                : '',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                            const BorderSide(color: Color(0xFFBA1B1B)),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        );
-                      }),
-                    ),
-                  ),
-
-                  // حقل الإدخال غير مرئي
-                  Positioned.fill(
-                    child: TextField(
-                      controller: _codeController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      onChanged: (_) => setState(() {}),
-                      textDirection: TextDirection.ltr,
-                      style: const TextStyle(color: Colors.transparent),
-                      decoration: const InputDecoration(
-                        counterText: '',
-                        border: InputBorder.none,
+                        ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty && index < 3) {
+                            FocusScope.of(context).nextFocus();
+                          }
+                          if (value.isEmpty && index > 0) {
+                            FocusScope.of(context).previousFocus();
+                          }
+                          setState(() {});
+                        },
                       ),
-                      cursorColor: Colors.transparent,
-                    ),
-                  ),
-                ],
+                    );
+                  }),
+                ),
               ),
 
               SizedBox(height: 30.h),
 
-              // زر التحقق
               SizedBox(
                 width: double.infinity,
                 height: 48.h,
                 child: ElevatedButton(
                   onPressed:
-                  _codeController.text.length == 6 && !_loading
-                      ? _verifyCode
-                      : null,
+                  _otpCode.length == 4 && !_loading ? _verifyCode : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFBA1B1B),
                     shape: RoundedRectangleBorder(
@@ -300,8 +286,8 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                       : Text(
                     'تأكيد الرمز',
                     style: TextStyle(
-                      color:
-                      Theme.of(context).brightness == Brightness.light
+                      color: Theme.of(context).brightness ==
+                          Brightness.light
                           ? Colors.white
                           : Colors.black,
                       fontSize: 16.sp,

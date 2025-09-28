@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constant/api.dart';
+import '../../../core/langCode.dart';
 import '../model/CarModel.dart';
 import 'CarModelState.dart';
 
@@ -28,7 +29,7 @@ class CarModelCubit extends Cubit<CarModelState> {
         options: Options(
           headers: {
             "Authorization": "Bearer $token", // 👈 هنا حطينا التوكن
-            "Accept-Language": "ar",
+            "Accept-Language": langCode == '' ? "en" : langCode,
           },
         ),
       );

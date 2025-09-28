@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 
+import '../../../core/langCode.dart';
 import 'notes_details_state.dart';
 
 class UserNoteDetailsCubit extends Cubit<UserNoteDetailsState> {
@@ -23,6 +24,7 @@ class UserNoteDetailsCubit extends Cubit<UserNoteDetailsState> {
         headers: {
           "Authorization": "Bearer $token",
           "Accept": "application/json",
+          "Accept-Language": langCode == '' ? "en" : langCode
         },
       );
 
@@ -53,6 +55,7 @@ class UserNoteDetailsCubit extends Cubit<UserNoteDetailsState> {
         headers: {
           "Authorization": "Bearer $token",
           "Accept": "application/json",
+          "Accept-Language": langCode == '' ? "en" : langCode
         },
       );
 
@@ -87,7 +90,7 @@ class UserNoteDetailsCubit extends Cubit<UserNoteDetailsState> {
         Uri.parse("$mainApi/app/elwarsha/user-notes/update"),
         headers: {
           "Authorization": "Bearer $token",
-          "Accept": "application/json",
+          "Accept": "application/json",  "Accept-Language": langCode == '' ? "en" : langCode
         },
         body: {
           "user_note_id": noteId.toString(),

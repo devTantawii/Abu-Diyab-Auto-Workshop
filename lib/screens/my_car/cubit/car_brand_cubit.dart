@@ -2,6 +2,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/langCode.dart';
 import '../model/car_brand_model.dart';
 import 'car_brand_state.dart';
 
@@ -25,6 +26,7 @@ class CarBrandCubit extends Cubit<CarBrandState> {
           headers: {
             "Authorization": "Bearer $token", // 👈 هنا حطينا التوكن
             "Accept": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode
           },
         ),
       );

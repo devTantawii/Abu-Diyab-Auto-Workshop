@@ -42,7 +42,7 @@ class _ChangeTireState extends State<ChangeTire> {
     return Scaffold(
       backgroundColor: Color(0xFFD27A7A),
       appBar: CustomGradientAppBar(
-        title: "إنشاء طلب",
+        title_ar: "إنشاء طلب",
         onBack: () => Navigator.pop(context),
       ),
       body: Container(

@@ -6,6 +6,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/langCode.dart';
 import '../model/maintenance_note_model.dart';
 import 'maintenance_state.dart';
 
@@ -68,6 +69,7 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
         options: Options(headers: {
           "Accept": "application/json",
           "Authorization": "Bearer $token",
+          "Accept-Language": langCode == '' ? "en" : langCode
         }),
       );
 

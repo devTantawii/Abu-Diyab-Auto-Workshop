@@ -1,16 +1,13 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../auth/cubit/login_cubit.dart';
-import '../../auth/screen/login.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
 import '../repositorie/profile_repository.dart';
-import '../model/user_model.dart';
+import '../widget/change_pass.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -185,10 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.grey,
-                                  Colors.grey,
-                                ],
+                                colors: [Colors.grey, Colors.grey],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -234,7 +228,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color(0xFFBA1B1B),
-
                               ),
                               padding: EdgeInsets.all(8),
                               child: Icon(
@@ -264,9 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
+                            SizedBox(height: 5.h),
                             Container(
                               width: 165.w,
                               height: 45.h,
@@ -319,9 +310,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),SizedBox(
-                              height: 5.h,
                             ),
+                            SizedBox(height: 5.h),
                             Container(
                               width: 165.w,
                               height: 45.h,
@@ -362,24 +352,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    // الاسم الثاني
 
+                    // الاسم الثاني
                     SizedBox(height: 12.h),
 
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text(
-                        'رقم الجوال',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
+                      children: [
+                        Text(
+                          'رقم الجوال',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),SizedBox(
-                        height: 5.h,
-                      ),
+                        SizedBox(height: 5.h),
                         Container(
                           width: double.infinity,
                           height: 45.h,
@@ -395,8 +385,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           child: TextField(
                             controller: _phoneController,
-                            enabled: false, // يجعل الحقل غير قابل للتحرير
-                            textAlign: TextAlign.start, // الرقم على اليسار
+                            enabled: false,
+                            // يجعل الحقل غير قابل للتحرير
+                            textAlign: TextAlign.start,
+                            // الرقم على اليسار
                             textAlignVertical: TextAlignVertical.center,
                             style: TextStyle(
                               color: Color(0xFF707070),
@@ -405,7 +397,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontWeight: FontWeight.w500,
                             ),
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 10.h,
+                              ),
                               border: InputBorder.none,
                               isCollapsed: true,
                               suffixIcon: Icon(
@@ -418,6 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
+
 
                     SizedBox(height: 20.h),
 
@@ -443,6 +439,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         minimumSize: Size(double.infinity, 48.h),
                       ),
                     ),
+                    SizedBox(height: 20.h),
+                    ChangePasswordWidget(),
+
                   ],
                 ),
               );
@@ -489,3 +488,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
+

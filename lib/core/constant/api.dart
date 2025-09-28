@@ -15,4 +15,5 @@ const String servicesApi = "/app/elwarsha/services/get";
 const String otpApi = "/verify-phone";
 const String brandApi = "/app/elwarsha/car-brands/get";
 const String ModelApi = "/car-brand/2/models";
+const String resendOtpApi = "/app/auth/resend-otp";
 const String mainApi = testApi;

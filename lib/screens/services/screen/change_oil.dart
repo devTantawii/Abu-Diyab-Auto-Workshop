@@ -53,7 +53,7 @@ class _ChangeOilState extends State<ChangeOil> {
     return Scaffold(
       backgroundColor: Color(0xFFD27A7A),
       appBar: CustomGradientAppBar(
-        title: "إنشاء طلب",
+        title_ar: "إنشاء طلب",
         onBack: () {
           context.read<OilCubit>().resetOils(); // هنا قبل ما نرجع
           Navigator.pop(context);

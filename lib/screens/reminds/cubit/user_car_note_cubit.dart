@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constant/api.dart';
+import '../../../core/langCode.dart';
 import '../model/user_car_note_model.dart';
 
 class UserNotesCubit extends Cubit<UserNotesState> {
@@ -22,7 +23,7 @@ class UserNotesCubit extends Cubit<UserNotesState> {
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
-            "Accept-Language": "ar",
+            "Accept-Language": langCode == '' ? "en" : langCode,
             "Accept": "application/json",
             "Content-Type": "application/json",
           },
