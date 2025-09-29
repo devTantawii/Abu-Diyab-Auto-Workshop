@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../core/language/locale.dart';
+import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
 import '../repositorie/profile_repository.dart';
@@ -24,10 +26,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
     return BlocProvider(
       create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
       child: Scaffold(
-        appBar: AppBar(
+        appBar:  CustomGradientAppBar(
+          title_ar:  'الملف الشخصي',
+          title_en: "profile",
+          onBack: () => Navigator.pop(context),
+        ),
+      /*  appBar: AppBar(
           toolbarHeight: 100.h,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -65,7 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(width: 16.w),
                   Expanded(
                     child: Text(
-                      'الملف الشخصي',
+                      locale!.isDirectionRTL(context)
+                          ? 'الملف الشخصي'
+                          : "profile",
+
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -80,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-        ),
+        ),*/
         body: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileLoaded) {
@@ -91,7 +103,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             if (state is ProfileUpdated) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("تم تحديث البيانات بنجاح ✅")),
+                SnackBar(
+                  content: Text(
+                    locale!.isDirectionRTL(context)
+                        ? "تم تحديث البيانات بنجاح ✅"
+                        : "Data updated successfully ✅",
+                  ),
+                ),
               );
             }
           },
@@ -126,10 +144,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ListTile(
                                     leading: Icon(
                                       Icons.photo_library,
-                                      color: Colors.blue,
+                                      color: Color(0xFFBA1B1B),
                                     ),
                                     title: Text(
-                                      'اختيار من المعرض',
+                                      locale!.isDirectionRTL(context)
+                                          ? 'اختيار من المعرض'
+                                          : 'Selection from the gallery',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     onTap: () async {
@@ -148,10 +168,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ListTile(
                                     leading: Icon(
                                       Icons.camera_alt,
-                                      color: Colors.blue,
+                                      color: Color(0xFFBA1B1B),
                                     ),
                                     title: Text(
-                                      'التقاط صورة بالكاميرا',
+                                      locale!.isDirectionRTL(context)
+                                          ? 'التقاط صورة بالكاميرا'
+                                          : 'Take a picture with the camera',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     onTap: () async {
@@ -175,7 +197,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child: Stack(
                         children: [
-                          // الدائرة مع بوردر متدرج وظل
                           Container(
                             width: 140.r,
                             height: 140.r,
@@ -196,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(3),
-                              // سمك البوردر الداخلي
+
                               child: CircleAvatar(
                                 radius: 65.r,
                                 backgroundColor: Colors.grey.shade200,
@@ -248,7 +269,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'الإسم الأول',
+                              locale!.isDirectionRTL(context)
+                                  ? 'الإسم الأول'
+                                  : "First name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Colors.black,
@@ -274,9 +297,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: TextField(
                                 controller: _firstNameController,
                                 textAlign: TextAlign.right,
-                                // محاذاة النص لليمين
+
                                 textAlignVertical: TextAlignVertical.center,
-                                // يجعل النص في منتصف ارتفاع الحاوية
+
                                 style: TextStyle(
                                   color: Color(0xFF707070),
                                   fontSize: 13.sp,
@@ -288,9 +311,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     horizontal: 10.w,
                                     vertical: 10.h,
                                   ),
-                                  // إزالة padding عمودي زائد
+
                                   border: InputBorder.none,
-                                  isCollapsed: true, // يساعد على تمركز النص
+                                  isCollapsed: true,
                                 ),
                               ),
                             ),
@@ -302,7 +325,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'الإسم الثاني',
+                              locale!.isDirectionRTL(context)
+                                  ? 'الإسم الثاني'
+                                  : "Last name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Colors.black,
@@ -328,9 +353,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: TextField(
                                 controller: _lastNameController,
                                 textAlign: TextAlign.right,
-                                // محاذاة النص لليمين
+
                                 textAlignVertical: TextAlignVertical.center,
-                                // يجعل النص في منتصف ارتفاع الحاوية
+
                                 style: TextStyle(
                                   color: Color(0xFF707070),
                                   fontSize: 13.sp,
@@ -342,9 +367,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     horizontal: 10.w,
                                     vertical: 10.h,
                                   ),
-                                  // إزالة padding عمودي زائد
+
                                   border: InputBorder.none,
-                                  isCollapsed: true, // يساعد على تمركز النص
+                                  isCollapsed: true,
                                 ),
                               ),
                             ),
@@ -360,7 +385,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'رقم الجوال',
+                          locale!.isDirectionRTL(context)
+                              ? 'رقم الجوال'
+                              : "Mobile number",
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.black,
@@ -414,12 +441,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
 
-
                     SizedBox(height: 20.h),
 
                     // زر التحديث
-                    ElevatedButton.icon(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         print('firstName: ${_firstNameController.text}');
                         print('lastName: ${_lastNameController.text}');
                         print('phone: ${_phoneController.text}');
@@ -433,15 +459,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           imageFile: _pickedImage,
                         );
                       },
-                      icon: const Icon(Icons.save),
-                      label: const Text("تحديث"),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 48.h),
+                      child: Container(
+                        width: 350,
+                        height: 50,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFBA1B1B),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          locale!.isDirectionRTL(context) ? 'تحديث' : "Update",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20.h),
                     ChangePasswordWidget(),
-
                   ],
                 ),
               );
@@ -466,11 +507,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(height: 20.h),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // إعادة المحاولة لجلب البيانات
                           context.read<ProfileCubit>().fetchProfile();
                         },
                         icon: Icon(Icons.refresh),
-                        label: Text("حاول مرة أخرى"),
+                        label: Text(
+                          locale!.isDirectionRTL(context)
+                              ? "حاول مرة أخرى"
+                              : "Try again",),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(150.w, 48.h),
                         ),
@@ -488,5 +531,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-

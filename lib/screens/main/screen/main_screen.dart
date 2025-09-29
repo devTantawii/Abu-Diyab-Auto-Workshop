@@ -1,9 +1,6 @@
-import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
 import 'package:abu_diyab_workshop/screens/auth/screen/login.dart';
 import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
-import 'package:abu_diyab_workshop/screens/services/screen/change_battery.dart';
-import 'package:abu_diyab_workshop/screens/services/screen/change_oil.dart';
 import 'package:abu_diyab_workshop/widgets/location.dart';
 import 'package:abu_diyab_workshop/widgets/slider.dart';
 import 'package:dio/dio.dart';
@@ -11,20 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constant/Responsivemodel.dart';
 import '../../../core/language/locale.dart';
-
 import '../../../widgets/app_bar_widget.dart';
 import '../../../widgets/navigation.dart';
+import '../../profile/repositorie/profile_repository.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
 import '../../reminds/cubit/user_car_note_state.dart';
-import '../../reminds/screen/remind_car_screen.dart';
-import '../../services/screen/car_check.dart';
-import '../../services/screen/change_tire.dart';
-import '../../services/screen/washing.dart';
-import '../cubit/car_cubit.dart';
-import '../cubit/car_state.dart';
 import '../cubit/services_cubit.dart';
 import '../cubit/services_state.dart';
 
@@ -37,7 +28,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   String _username = 'زائر';
-  String? _profileImagePath; // لإضافة رابط صورة البروفايل
+  String? _profileImagePath;
 
   final Dio dio = Dio();
   List<Map<String, String>> services = [];
@@ -46,19 +37,31 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUsername();
+    _fetchUser();
     context.read<ServicesCubit>().fetchServices();
     context.read<UserNotesCubit>().getUserNotes();
+  }
 
+  final _profileRepository = ProfileRepository();
+
+  void _fetchUser() async {
+    final user =
+        await _profileRepository.getUserProfile();
+    if (user != null) {
+      setState(() {
+        _username = user.name;
+        _profileImagePath = user.image;
+      });
+    } else {
+      _loadUsername();
+    }
   }
 
   void _loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username') ?? 'زائر';
-      _profileImagePath = prefs.getString(
-        'profile_image',
-      ); // لو خزنت الرابط عند التحديث
+      _profileImagePath = prefs.getString('profile_image');
     });
   }
 
@@ -147,18 +150,18 @@ class _MainScreenState extends State<MainScreen> {
                                         : "Hello $_username")
                                     .substring(
                                       0,
-                                      (locale!.isDirectionRTL(context)
+                                      (locale.isDirectionRTL(context)
                                                       ? "هلا $_username"
                                                       : "Hello $_username")
                                                   .length >
                                               20
                                           ? 20
-                                          : (locale!.isDirectionRTL(context)
+                                          : (locale.isDirectionRTL(context)
                                                   ? "هلا $_username"
                                                   : "Hello $_username")
                                               .length,
                                     ) +
-                                ((locale!.isDirectionRTL(context)
+                                ((locale.isDirectionRTL(context)
                                                 ? "هلا $_username"
                                                 : "Hello $_username")
                                             .length >
@@ -324,9 +327,52 @@ class _MainScreenState extends State<MainScreen> {
       body: BlocBuilder<ServicesCubit, ServicesState>(
         builder: (context, state) {
           if (state is ServicesLoading) {
-            return Center(child: CircularProgressIndicator());
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 6,
+                // عدد البليس هولدر
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  childAspectRatio: 0.8, // عشان يكون شبه الكارت
+                ),
+                itemBuilder: (context, index) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // مكان الصورة
+                        Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // مكان النص
+                        Container(
+                          height: 12,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
           } else if (state is ServicesError) {
-            print(state.message);
             return Center(child: Text(state.message));
           } else if (state is ServicesLoaded) {
             return Padding(
@@ -587,7 +633,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      note.service!.name,
+                                                      note.service.name,
                                                       style: TextStyle(
                                                         color:
                                                             Theme.of(
@@ -606,7 +652,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     ),
                                                     SizedBox(width: 5.w),
                                                     Image.network(
-                                                      note.service!.icon,
+                                                      note.service.icon,
                                                       // حط لينك الصورة هنا
                                                       width: 22.w,
                                                       height: 20.h,
@@ -624,7 +670,7 @@ class _MainScreenState extends State<MainScreen> {
                                                         MainAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        "${note.userCar!.carBrand.name} , ${note.userCar!.carModel.name}",
+                                                        "${note.userCar.carBrand.name} , ${note.userCar.carModel.name}",
                                                         style: TextStyle(
                                                           color:
                                                               Theme.of(
@@ -692,7 +738,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       ),
                                                       Text(
                                                         // مجرد مثال بالتاريخ، ممكن تجيب من createdAt أو updatedAt
-                                                        note.remindMe!
+                                                        note.remindMe
                                                             .split(" ")
                                                             .first,
                                                         style: TextStyle(
@@ -1080,25 +1126,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
 }

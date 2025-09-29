@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/language/locale.dart';
-import '../../../services/widgets/Service-Custom-AppBar.dart';
+ import '../../../services/widgets/custom_app_bar.dart';
 import '../../Cubit/faqcubit/faq_cubit.dart';
 
 class FrequentlyAskedQuestions extends StatefulWidget {

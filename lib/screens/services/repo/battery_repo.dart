@@ -34,7 +34,7 @@ class BatteryRepository {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      throw Exception("Dio error: ${e.message}");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load car batteries");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }

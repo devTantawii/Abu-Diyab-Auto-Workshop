@@ -1,53 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/language/locale.dart';
+
 class widget_ITN extends StatelessWidget {
   const widget_ITN({
     super.key,
-    required this.text,
-    this.iconPath, // 👈 بقت اختيارية
+    required this.textAr,
+    required this.textEn,
+    this.iconPath,
     required this.onTap,
   });
 
-  final String text;
-  final String? iconPath; // 👈 Nullable
+  final String textAr;
+  final String textEn;
+  final String? iconPath;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final bool isRTL = locale!.isDirectionRTL(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        height: 50,
+        height: 50.h,
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1.50, color: Color(0xFFAFAFAF)),
-            borderRadius: BorderRadius.circular(12),
-          ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.sp),
+          border: Border.all(width: 1.50.sp, color: const Color(0xff9B9B9B)),
         ),
         child: Row(
-          textDirection: TextDirection.rtl,
+          textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
           children: [
-            if (iconPath != null) ...[ // 👈 يتحقق إذا فيه أيقونة
-              Image.asset(iconPath!, width: 15, height: 15),
+            if (iconPath != null) ...[
+              Image.asset(iconPath!, width: 20.w, height: 20.h,fit: BoxFit.fill,),
               SizedBox(width: 5.w),
             ],
             Text(
-              text,
-              textAlign: TextAlign.right,
+              isRTL ? textAr : textEn,
+              textAlign: TextAlign.start,
               style: TextStyle(
                 color: Theme.of(context).brightness == Brightness.light
                     ? Colors.black
                     : Colors.white,
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w500,
               ),
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios, color: Color(0xFFBA1B1B)),
+            Icon(
+              Icons.arrow_forward_ios,
+              textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+              color: const Color(0xFFBA1B1B),
+              size: 18.sp,
+            )
           ],
         ),
       ),

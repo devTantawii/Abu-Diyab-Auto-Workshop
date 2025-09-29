@@ -17,8 +17,8 @@ import '../cubit/oil_state.dart';
 
 import '../widgets/Custom-Button.dart';
 import '../widgets/NotesAndCarCounter-Section.dart';
-import '../widgets/Service-Custom-AppBar.dart';
 import '../widgets/car_model_widget.dart';
+import '../widgets/custom_app_bar.dart';
 
 /// ---------------- Main UI ----------------
 class ChangeOil extends StatefulWidget {
@@ -142,8 +142,8 @@ class _ChangeOilState extends State<ChangeOil> {
                           : Alignment.centerLeft,
                   child: Text(
                     locale.isDirectionRTL(context)
-                        ? "الزيوت المتاحة"
-                        : "Available Oils",
+                        ? "الخدمات المتوفرة"
+                        : 'Available Services',
                     style: TextStyle(
                       color: Theme.of(context).brightness == Brightness.light
                           ? Colors.black

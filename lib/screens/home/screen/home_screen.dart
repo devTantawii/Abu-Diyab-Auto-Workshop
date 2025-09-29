@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: _screens[_currentIndex],
         ),
         bottomNavigationBar: SizedBox(
-          height: 75.h, // responsive height
+          height: 60.h, // responsive height
           child: _buildBottomNavigationBar(isRTL),
         ),
       ),

@@ -1,9 +1,11 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/langCode.dart';
+import '../../../core/language/locale.dart';
 import '../../home/screen/home_screen.dart';
 
 class LogoutBottomSheet extends StatelessWidget {
@@ -86,99 +88,109 @@ class LogoutBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      decoration: const BoxDecoration(
-        color: Color(0xFFEAEAEA),
+      decoration:  BoxDecoration(
+        color:Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.sp),
+          topRight: Radius.circular(25.sp),
         ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 12),
-          const Text(
-            'تسجيل الخروج ؟',
+           SizedBox(height: 12.h),
+           Text(
+             locale!.isDirectionRTL(context) ? 'تسجيل الخروج ؟' : 'Log out?',
+
             style: TextStyle(
-              fontSize: 25,
+              fontSize: 25.sp,
               fontWeight: FontWeight.w600,
               fontFamily: 'Graphik Arabic',
-              color: Color(0xFFBA1B1B),
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
           const SizedBox(height: 20),
           Container(
-            width: 130,
-            height: 130,
+            width: 130.w,
+            height: 130.h,
             decoration: const BoxDecoration(
               color: Color(0xFFA9A9A9),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: const Text(
+            child:  Text(
               '👋',
-              style: TextStyle(fontSize: 80),
+              style: TextStyle(fontSize: 60.sp),
             ),
           ),
-          const SizedBox(height: 30),
+           SizedBox(height: 30.h),
            Text(
-            'هل أنت متأكد من رغبتك في تسجيل الخروج ؟',
-            textAlign: TextAlign.center,
+             locale.isDirectionRTL(context) ? 'هل أنت متأكد من رغبتك في تسجيل الخروج ؟' : 'Are you sure you want to log out?',
+             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20,
-              color:  Theme.of(context).brightness == Brightness.light
-                  ? Color(0xFF1D1D1D)
-                  : Color(0xFF1D1D1D),
+              fontSize: 16.sp,
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
               fontWeight: FontWeight.w600,
               fontFamily: 'Graphik Arabic',
             ),
           ),
           const SizedBox(height: 30),
           Row(
+            textDirection: locale.isDirectionRTL(context)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
             children: [
               Expanded(
-                flex: 1,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.black54),
+                flex: 5 ,
+                child: ElevatedButton(
+                  onPressed: () => _logout(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFBA1B1B),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.sp),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'لا، تراجع',
+                  child: Text(locale.isDirectionRTL(context) ? 'نعم، تسجيل الخروج' : 'Yes, log out',
+
                     style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
+                      color: Colors.white,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Graphik Arabic',
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+               SizedBox(width: 4.w),
               Expanded(
-                flex: 2,
-                child: ElevatedButton(
-                  onPressed: () => _logout(context),
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFBA1B1B),
+                flex: 4,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.black54),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.sp),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'نعم، تسجيل الخروج',
+                  child: Text(
+                    locale.isDirectionRTL(context) ? 'لا، تراجع' : 'No, step back',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 16.sp,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Graphik Arabic',
                     ),
@@ -187,7 +199,7 @@ class LogoutBottomSheet extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+           SizedBox(height: 20.h),
         ],
       ),
     );

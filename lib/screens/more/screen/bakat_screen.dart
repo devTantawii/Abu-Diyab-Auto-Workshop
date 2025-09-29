@@ -3,7 +3,7 @@ import 'package:abu_diyab_workshop/screens/more/screen/widget/old_bakat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/language/locale.dart';
-import '../../services/widgets/Service-Custom-AppBar.dart';
+import '../../services/widgets/custom_app_bar.dart';
 class BakatScreen extends StatefulWidget {
   const BakatScreen({super.key});
   @override

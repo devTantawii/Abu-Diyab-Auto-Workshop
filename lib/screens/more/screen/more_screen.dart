@@ -6,7 +6,6 @@ import 'package:abu_diyab_workshop/screens/auth/widget/support_bottom_sheet.dart
 import 'package:abu_diyab_workshop/screens/more/screen/bakat_screen.dart';
 import 'package:abu_diyab_workshop/screens/more/screen/widget/privacy.dart';
 import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
-import 'package:abu_diyab_workshop/screens/profile/widget/ITN.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +16,8 @@ import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
 
-import '../../services/widgets/Service-Custom-AppBar.dart';
+import '../../profile/widget/ITN.dart';
+import '../../services/widgets/custom_app_bar.dart';
 import 'invite_friends.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -93,15 +93,16 @@ class _MoreScreenState extends State<MoreScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    textDirection: locale!.isDirectionRTL(context)
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
                     children: [
                       Text(
-                        'عام',
-                        textAlign: TextAlign.right,
+                        locale.isDirectionRTL(context) ? 'عام' : 'General',
                         style: TextStyle(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                           fontSize: 25.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
@@ -113,7 +114,8 @@ class _MoreScreenState extends State<MoreScreen> {
                     SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
-                      text: 'تعديل بيانات الحساب',
+                      textAr: 'تعديل بيانات الحساب',
+                      textEn:"Edit account information",
                       iconPath: 'assets/icons/edit.png',
                       onTap: () {
                         Navigator.push(
@@ -128,7 +130,8 @@ class _MoreScreenState extends State<MoreScreen> {
                     SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
-                      text: 'باقاتي',
+                      textAr: 'باقاتي',
+                      textEn: "My Packages",
                       iconPath: 'assets/icons/gift_card1.png',
                       onTap: () {
                         Navigator.push(
@@ -143,7 +146,8 @@ class _MoreScreenState extends State<MoreScreen> {
                     SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
-                      text: 'ادع أصدقائك',
+                      textAr: 'ادع أصدقائك',
+                      textEn: "Invite your friends",
                       iconPath: 'assets/icons/gift_card1.png',
                       onTap: () {
                         Navigator.push(
@@ -155,9 +159,9 @@ class _MoreScreenState extends State<MoreScreen> {
                       },
                     ),
                   SizedBox(height: 10.h),
-
                     widget_ITN(
-                      text: 'الخصوصيه',
+                      textAr: 'الخصوصيه',
+                      textEn: "Privacy",
                       iconPath: 'assets/icons/user.png',
                       onTap: () {
                         Navigator.push(
@@ -171,7 +175,8 @@ class _MoreScreenState extends State<MoreScreen> {
                  SizedBox(height: 10.h),
 
                   widget_ITN(
-                    text: 'تواصل معنا ',
+                    textAr: 'تواصل معنا ',
+                    textEn: "Contact us",
                     iconPath: 'assets/icons/technical-support.png',
                     onTap: () {
                       showModalBottomSheet(
@@ -185,35 +190,35 @@ class _MoreScreenState extends State<MoreScreen> {
                   SizedBox(height: 10.h),
                   Container(
                     width: double.infinity,
-                    height:MediaQuery.of(context).size.height * 0.06,
-                    padding:  EdgeInsets.symmetric(horizontal: 10.sp),
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    padding: EdgeInsets.symmetric(horizontal: 10.sp),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
-                        side:  BorderSide(width: 1.50.sp, color:Color(0xff9B9B9B) ),
+                        side: BorderSide(width: 1.50.sp, color: Color(0xff9B9B9B)),
                         borderRadius: BorderRadius.circular(12.sp),
                       ),
                     ),
                     child: Row(
+                      textDirection: locale!.isDirectionRTL(context)
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
                       children: [
-                        Icon(Icons.language, color: Color(0xFFBA1B1B),size: 18.sp,),
+                        Icon(Icons.language, color: Color(0xFFBA1B1B), size: 18.sp),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? 'لغة التطبيق'
-                                : 'App Language',
+                            locale.isDirectionRTL(context) ? 'لغة التطبيق' : 'App Language',
                             style: TextStyle(
-                              color:
-                                  Theme.of(context).brightness == Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
                               fontSize: 15.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         LanguageToggle(
                           isArabic: isArabic,
                           onToggle: () {
@@ -228,35 +233,40 @@ class _MoreScreenState extends State<MoreScreen> {
 
                   SizedBox(height: 10.h),
                   Container(
-
+                    height: MediaQuery.of(context).size.height * 0.06,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.sp),
                       border: Border.all(
-                    width: 1.50.sp, color:Color(0xff9B9B9B) ),),
-                    child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.color_lens, color: Color(0xFFBA1B1B),size: 18.sp,),
-                          SizedBox(width: 5.w),
+                        width: 1.50.sp,
+                        color: const Color(0xff9B9B9B),
+                      ),
 
-                          Text(
-                            locale.isDirectionRTL(context)
-                                ? "الوضع الليلي "
-                                : "Dark Theme",
-                            style: TextStyle(
-                              color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
-                              fontSize: 15.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w500,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Row(
+                          textDirection: locale.isDirectionRTL(context)
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                          children: [
+                            Icon(Icons.color_lens, color: const Color(0xFFBA1B1B), size: 18.sp),
+                            SizedBox(width: 5.w),
+                            Text(
+                              locale.isDirectionRTL(context) ? "الوضع الليلي " : "Dark Theme",
+                              style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontSize: 15.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          Spacer(),
-                          AnimatedThemeToggleButton(),
-                        ],
+                            const Spacer(),
+                            AnimatedThemeToggleButton(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -265,7 +275,8 @@ class _MoreScreenState extends State<MoreScreen> {
 
                   _isLoggedIn
                       ? widget_ITN(
-                        text: 'تسجيل الخروج',
+                        textAr: 'تسجيل الخروج',
+                        textEn: "Log out",
                         iconPath: 'assets/icons/logout.png',
                         onTap: () {
                           showModalBottomSheet(
@@ -458,8 +469,8 @@ class AnimatedThemeToggleButton extends StatelessWidget {
           child: AnimatedContainer(
             duration: Duration(milliseconds: 400),
             curve: Curves.easeInOut,
-            height: 35.h,
-            padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+            height: 30.h,
+            padding: EdgeInsets.only(left: 16, right: 16, top: 7, bottom: 10),
             decoration: BoxDecoration(
               color: isDark ? Colors.white : Colors.orangeAccent,
               borderRadius: BorderRadius.circular(50),
@@ -484,7 +495,7 @@ class AnimatedThemeToggleButton extends StatelessWidget {
                     isDark ? Icons.dark_mode : Icons.light_mode,
                     key: ValueKey<bool>(isDark),
                     color: Colors.black87,
-                    size: 18,
+                    size: 14.sp,
                   ),
                 ),
                 SizedBox(width: 8),

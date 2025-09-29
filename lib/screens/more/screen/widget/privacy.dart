@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/language/locale.dart';
 import '../../../profile/widget/ITN.dart';
-import '../../../services/widgets/Service-Custom-AppBar.dart';
+import '../../../services/widgets/custom_app_bar.dart';
 import 'frequently_asked_questions.dart';
 
 class Privacy extends StatefulWidget {
@@ -46,7 +46,9 @@ class _PrivacyState extends State<Privacy> {
             children: [
               SizedBox(height: 20.h),
               widget_ITN(
-                text: 'سياسة الخصوصية',
+                textAr: 'سياسة الخصوصية',
+                textEn: "Privacy Policy",
+
                 //  iconPath: 'assets/icons/edit.png',
                 onTap: () {
                   Navigator.push(
@@ -57,8 +59,8 @@ class _PrivacyState extends State<Privacy> {
               ),
               SizedBox(height: 20.h),
               widget_ITN(
-                text:
-                'الأسئلة الشائعة',
+                textAr: 'الأسئلة الشائعة',
+                textEn: "Frequently Asked Questions",
                 //  iconPath: 'assets/icons/edit.png',
                 onTap: () {
                   Navigator.push(
@@ -70,7 +72,8 @@ class _PrivacyState extends State<Privacy> {
               SizedBox(height: 20.h),
 
               widget_ITN(
-                text: 'الشروط والأحكام',
+                textAr: 'الشروط والأحكام',
+                textEn: "Terms and Conditions",
                 //  iconPath: 'assets/icons/edit.png',
                 onTap: () {
                   Navigator.push(
@@ -82,7 +85,8 @@ class _PrivacyState extends State<Privacy> {
               SizedBox(height: 20.h),
 
               widget_ITN(
-                text: 'الشهادة الضريبية',
+                textAr: 'الشهادة الضريبية',
+                textEn: "Tax Certificate",
                 //  iconPath: 'assets/icons/edit.png',
                 onTap: () {
                   Navigator.push(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/language/locale.dart';
+
 class InviteFriends extends StatefulWidget {
   const InviteFriends({super.key});
 
@@ -12,7 +14,7 @@ class _InviteFriendsState extends State<InviteFriends> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final locale = AppLocalizations.of(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -25,17 +27,18 @@ class _InviteFriendsState extends State<InviteFriends> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-
               children: [
                 Row(
                   textDirection: TextDirection.ltr,
                   children: [
                     Expanded(
                       child: Text(
-                        'شارك التطبيق واربح معنا !',
+                        locale!.isDirectionRTL(context)
+                            ? 'شارك التطبيق واربح معنا !'
+                            : 'Share the app and win !',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -52,21 +55,25 @@ class _InviteFriendsState extends State<InviteFriends> {
                       child: IconButton(
                         onPressed: () => Navigator.pop(context),
                         icon: Transform.translate(
-                          offset: const Offset(-2, 0),
-                          child: const Icon(
+                          offset: Offset(-2.w, 0),
+                          child: Icon(
                             Icons.arrow_back_ios,
                             color: Colors.black,
+                            size: 20.sp,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
+                SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'ادع أصدقائك وأحصل علي 20',
+                      locale!.isDirectionRTL(context)
+                          ? 'ادع أصدقائك وأحصل علي 20'
+                          : 'Invite your friends and get 20',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: const Color(0xFF474747),
@@ -75,7 +82,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(width: 4.w), // مسافة صغيرة بين النص والصورة
+                    SizedBox(width: 4.w),
                     Image.asset(
                       "assets/icons/ryal.png",
                       color: const Color(0xFF474747),
@@ -85,87 +92,92 @@ class _InviteFriendsState extends State<InviteFriends> {
                   ],
                 ),
                 SizedBox(height: 8.h),
+
+                /// خطوات المشاركة
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _StepIcon(
                       icon: Icons.share,
-                      label: "1. شارك الرابط",
+                      label:
+                          locale!.isDirectionRTL(context)
+                              ? "1. شارك الرابط"
+                              : "1. Share the link",
                       imagePath: "assets/images/vector_down.png",
                     ),
                     _StepIcon(
                       icon: Icons.person_add,
-                      label: "2. صديقك يسجل",
+                      label:
+                          locale!.isDirectionRTL(context)
+                              ? "2. صديقك يسجل"
+                              : "2. Your friend is registering",
                       imagePath: "assets/images/vector_up.png",
-                    ),
+                    ),              SizedBox(width: 6.w),
+
                     _StepIcon(
                       icon: Icons.card_giftcard,
-                      label: "3. اربح مكافأت",
+                      label:
+                          locale!.isDirectionRTL(context)
+                              ? "3. اربح مكافأت"
+                              : "3. Earn rewards",
                     ),
                   ],
                 ),
                 SizedBox(height: 20.h),
 
+                /// كود الدعوة
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   decoration: ShapeDecoration(
                     color:
                         Theme.of(context).brightness == Brightness.light
                             ? Colors.white
                             : Colors.black87,
                     shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 1.5,
-                        color: Color(0xFF9B9B9B),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(width: 1.5.w, color: Color(0xFF9B9B9B)),
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      /// العنوان
                       Text(
-                        'كود الدعوة الخاص بك',
-                        textAlign: TextAlign.center,
+                        locale!.isDirectionRTL(context)
+                            ? "كود الدعوة الخاص بك"
+                            : "Your invitation code",
                         style: TextStyle(
                           color:
                               Theme.of(context).brightness == Brightness.light
                                   ? Colors.black
                                   : Colors.white70,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      SizedBox(height: 15.h),
 
-                      SizedBox(height: size.height * 0.02),
-
-                      /// الصف الأساسي (زر النسخ + الكود)
                       Row(
                         textDirection: TextDirection.ltr,
-
                         children: [
-                          /// زر النسخ
                           Flexible(
                             flex: 2,
                             child: Container(
-                              height: size.height * 0.06,
-                              // نسبة من ارتفاع الشاشة
+                              height: 40.h,
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFBA1B1B),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
-                              child: const Center(
-                                child: Text(
-                                  'نسخ',
+                              child: Center(
+                                child: Text(locale!.isDirectionRTL(context)
+                                    ? "   نسخ"
+                                    : "  Copy",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -173,21 +185,18 @@ class _InviteFriendsState extends State<InviteFriends> {
                               ),
                             ),
                           ),
-
-                          SizedBox(width: size.width * 0.03),
-
-                          /// الكود
+                          SizedBox(width: 10.w),
                           Flexible(
                             flex: 6,
                             child: Container(
-                              height: size.height * 0.06,
+                              height: 40.h,
                               decoration: ShapeDecoration(
                                 shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    width: 1,
+                                  side: BorderSide(
+                                    width: 1.w,
                                     color: Color(0xFFBA1B1B),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
                               child: Center(
@@ -200,8 +209,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                                 Brightness.light
                                             ? Color(0xFF474747)
                                             : Colors.white70,
-
-                                    fontSize: 18,
+                                    fontSize: 18.sp,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -215,31 +223,34 @@ class _InviteFriendsState extends State<InviteFriends> {
                   ),
                 ),
                 SizedBox(height: 20.h),
+
                 Container(
                   width: double.infinity,
-                  height: 50,
+                  height: 50.h,
                   decoration: ShapeDecoration(
                     color: const Color(0xFFBA1B1B),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'مشاركة الآن',
+                      Text(locale!.isDirectionRTL(context)
+                          ? "   مشاركة الآن"
+                          : "  Share now",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      SizedBox(width: 5.w),
                       Image.asset(
                         "assets/icons/telegram.png",
-                        width: 18,
-                        height: 18,
+                        width: 18.w,
+                        height: 18.h,
                       ),
                     ],
                   ),
@@ -248,7 +259,6 @@ class _InviteFriendsState extends State<InviteFriends> {
 
                 Container(
                   width: double.infinity,
-                  height: 159,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                     color:
@@ -256,29 +266,25 @@ class _InviteFriendsState extends State<InviteFriends> {
                             ? Colors.white
                             : Colors.black,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.50,
-                        color: const Color(0xFFBA1B1B),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(width: 1.5.w, color: Color(0xFFBA1B1B)),
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
                     shadows: [
                       BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 12,
+                        color: Colors.black12,
+                        blurRadius: 12.r,
                         offset: Offset(0, 0),
-                        spreadRadius: 0,
                       ),
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
                     child: Column(
                       children: [
                         SizedBox(height: 10.h),
-                        Text(
-                          'رصيدك الحالي',
-                          textAlign: TextAlign.center,
+                        Text(locale!.isDirectionRTL(context)
+                            ? "   رصيدك الحالي"
+                            : "  Your current balance",
                           style: TextStyle(
                             color:
                                 Theme.of(context).brightness == Brightness.light
@@ -303,7 +309,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                             ),
                             Image.asset(
                               "assets/icons/ryal.png",
-                              width: 20,
+                              width: 20.w,
                               height: 22.h,
                             ),
                           ],
@@ -312,19 +318,19 @@ class _InviteFriendsState extends State<InviteFriends> {
                         Row(
                           children: [
                             Expanded(
-                              flex: 2, // التلتين
+                              flex: 3,
                               child: Container(
-                                height: 50,
-                                clipBehavior: Clip.antiAlias,
+                                height: 50.h,
                                 decoration: ShapeDecoration(
                                   color: const Color(0xFFBA1B1B),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(15.r),
                                   ),
                                 ),
                                 child: Center(
-                                  child: Text(
-                                    'عدد الإحالات الخاصه بك',
+                                  child: Text(locale!.isDirectionRTL(context)
+                                      ? "   عدد الإحالات الخاصه بك"
+                                      : "  Your number of referrals",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white,
@@ -334,18 +340,15 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     ),
                                   ),
                                 ),
+
+
                               ),
                             ),
-                            SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Expanded(
-                              flex: 1, // التلت
+                              flex: 1,
                               child: Container(
-                                height: 50,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 42,
-                                  vertical: 14,
-                                ),
-                                clipBehavior: Clip.antiAlias,
+                                height: 50.h,
                                 decoration: ShapeDecoration(
                                   color:
                                       Theme.of(context).brightness ==
@@ -354,26 +357,25 @@ class _InviteFriendsState extends State<InviteFriends> {
                                           : Colors.black54,
                                   shape: RoundedRectangleBorder(
                                     side: BorderSide(
-                                      width: 1.50,
-                                      strokeAlign:
-                                          BorderSide.strokeAlignOutside,
+                                      width: 1.5.w,
                                       color: const Color(0xFF9B9B9B),
                                     ),
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(15.r),
                                   ),
                                 ),
-                                child: Text(
-                                  '7',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).brightness ==
-                                                Brightness.light
-                                            ? Colors.black
-                                            : Colors.white70,
-                                    fontSize: 18.sp,
-                                    fontFamily: 'Graphik Arabic',
-                                    fontWeight: FontWeight.w500,
+                                child: Center(
+                                  child: Text(
+                                    '7',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black
+                                              : Colors.white70,
+                                      fontSize: 18.sp,
+                                      fontFamily: 'Graphik Arabic',
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -389,10 +391,12 @@ class _InviteFriendsState extends State<InviteFriends> {
                 Row(
                   children: [
                     Text(
-                      'سجل المكافأت',
+                      locale!.isDirectionRTL(context)
+                          ? "   سجل المكافأت"
+                          : " Reward Record",
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
@@ -400,10 +404,10 @@ class _InviteFriendsState extends State<InviteFriends> {
                   ],
                 ),
                 SizedBox(height: 10.h),
+
                 Container(
-                  width: 350,
-                  height: 239,
-                  clipBehavior: Clip.antiAlias,
+                  width: 350.w,
+                  height: 239.h,
                   decoration: ShapeDecoration(
                     color:
                         Theme.of(context).brightness == Brightness.light
@@ -411,19 +415,11 @@ class _InviteFriendsState extends State<InviteFriends> {
                             : Colors.black,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
-                        width: 1.50,
+                        width: 1.5.w,
                         color: const Color(0xFF9B9B9B),
                       ),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3FFFFFFF),
-                        blurRadius: 12,
-                        offset: Offset(0, 0),
-                        spreadRadius: 0,
-                      ),
-                    ],
                   ),
                 ),
               ],
@@ -438,43 +434,46 @@ class _InviteFriendsState extends State<InviteFriends> {
 class _StepIcon extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String? imagePath; // 👈 اختياري
+  final String? imagePath;
 
   const _StepIcon({required this.icon, required this.label, this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             CircleAvatar(
-              radius: 28,
+              radius: 28.r,
               backgroundColor:
                   Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Colors.black87,
-              child: Icon(icon, size: 28, color: Color(0xFFBA1B1B)),
+              child: Icon(icon, size: 28.sp, color: Color(0xFFBA1B1B)),
             ),
             if (imagePath != null) ...[
-              const SizedBox(width: 6),
-              Image.asset(imagePath!, width: 60.w),
-              const SizedBox(width: 6),
+              SizedBox(width: 6.w),
+              Image.asset(imagePath!, width: 60.w,fit: BoxFit.fill,),
+
             ],
           ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 12,
-            fontFamily: 'Graphik Arabic',
-            fontWeight: FontWeight.w600,
-          ),
+        SizedBox(height: 8.h),
+        Row(
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 10.sp,
+                fontFamily: 'Graphik Arabic',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ],
     );

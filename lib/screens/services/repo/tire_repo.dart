@@ -33,7 +33,7 @@ class TireRepository {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      throw Exception("Dio error: ${e.response?.data ?? e.message}");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load car tires");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }

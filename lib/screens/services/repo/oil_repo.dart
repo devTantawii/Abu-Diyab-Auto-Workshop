@@ -36,7 +36,7 @@ class OilRepository {
       }
     } on DioException catch (e) {
       print("Dio error: ${e.response?.data ?? e.message}");
-      throw Exception("Dio error: ${e.message}");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load car oils");
     } catch (e) {
       print("Unexpected error: $e");
       throw Exception("Unexpected error: $e");

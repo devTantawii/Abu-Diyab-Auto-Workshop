@@ -15,8 +15,8 @@ import '../../my_car/cubit/car_brand_state.dart';
 import '../../my_car/screen/widget/image_picker.dart';
 import '../cubit/battery_state.dart';
 import '../widgets/Custom-Button.dart';
-import '../widgets/Service-Custom-AppBar.dart';
 import '../widgets/car_model_widget.dart';
+import '../widgets/custom_app_bar.dart';
 
 class ChangeBattery extends StatefulWidget {
   const ChangeBattery({super.key});
@@ -127,8 +127,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                             : Alignment.centerLeft,
                     child: Text(
                       locale.isDirectionRTL(context)
-                          ? "البطاريات المتاحة"
-                          : "Available Oils",
+                          ? "الخدمات المتوفرة"
+                          : 'Available Services',
                       style: TextStyle(
                         color:
                             Theme.of(context).brightness == Brightness.light

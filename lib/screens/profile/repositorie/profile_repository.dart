@@ -27,7 +27,12 @@ class ProfileRepository {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        return UserModel.fromJson(response.data['data']);
+        final user = UserModel.fromJson(response.data['data']);
+        await prefs.setString('username', user.name);
+        if (user.image != null) {
+          await prefs.setString('profile_image', user.image!);
+        }
+        return user;
       }
     } on DioException catch (e) {
       debugPrint("❌ Dio error: ${e.response?.data}");

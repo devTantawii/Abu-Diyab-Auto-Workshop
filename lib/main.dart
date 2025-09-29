@@ -14,10 +14,12 @@ import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/car_check_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/oil_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/tire_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/cubit/washing_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/battery_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/car_check_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/oil_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/tire_repo.dart';
+import 'package:abu_diyab_workshop/screens/services/repo/washing_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,6 +70,7 @@ void main() async {
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
         BlocProvider(create: (_) => CarCubit()),
         BlocProvider(create: (_) => OilCubit(OilRepository())),
+        BlocProvider(create: (_) => WashingCubit(WashingRepo())),
         BlocProvider(create: (_) => CarCheckCubit(CarCheckRepository())),
         BlocProvider(create: (_) => TireCubit(TireRepository())),
         BlocProvider(create: (_) => BatteryCubit(BatteryRepository())),

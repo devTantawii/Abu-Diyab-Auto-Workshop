@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constant/api.dart';
+import '../../../core/language/locale.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
   const ChangePasswordWidget({super.key});
@@ -36,115 +37,206 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
     final TextEditingController currentController = TextEditingController();
     final TextEditingController newController = TextEditingController();
     final TextEditingController confirmController = TextEditingController();
+    final locale = AppLocalizations.of(context);
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("تغيير كلمة المرور"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: currentController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: "كلمة المرور الحالية"),
-              ),
-              TextField(
-                controller: newController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: "كلمة المرور الجديدة"),
-              ),
-              TextField(
-                controller: confirmController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: "تأكيد كلمة المرور الجديدة"),
-              ),
-            ],
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          actions: [
-            TextButton(
-              child: Text("إلغاء"),
-              onPressed: () => Navigator.pop(context),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // العنوان
+                Text(
+                  locale!.isDirectionRTL(context)
+                      ? " تغيير كلمة المرور"
+                      : " Change Password",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // كلمة المرور الحالية
+                TextField(
+                  controller: currentController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: locale.isDirectionRTL(context)
+                        ? "كلمة المرور الحالية"
+                        : "Current Password",
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                // كلمة المرور الجديدة
+                TextField(
+                  controller: newController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock_reset),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: locale.isDirectionRTL(context)
+                        ? "كلمة المرور الجديدة"
+                        : "New Password",
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                // تأكيد كلمة المرور الجديدة
+                TextField(
+                  controller: confirmController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.verified_user_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: locale.isDirectionRTL(context)
+                        ? "تأكيد كلمة المرور الجديدة"
+                        : "Confirm New Password",
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 10),
+
+                // الأزرار
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.grey[700],
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        locale.isDirectionRTL(context) ? "إلغاء" : "Cancel",
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFBA1B1B),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.check),
+                      label: Text(
+                        locale.isDirectionRTL(context) ? "تغيير" : "Update",
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () async {
+                        final current = currentController.text.trim();
+                        final newPass = newController.text.trim();
+                        final confirm = confirmController.text.trim();
+
+                        if (current.isEmpty || newPass.isEmpty || confirm.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                locale.isDirectionRTL(context)
+                                    ? "من فضلك املأ جميع الحقول"
+                                    : "Please fill in all fields",
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (newPass != confirm) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                locale.isDirectionRTL(context)
+                                    ? "كلمة المرور غير متطابقة"
+                                    : "Passwords do not match",
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        try {
+                          final body = {
+                            "current_password": current,
+                            "new_password": newPass,
+                            "new_password_confirmation": confirm,
+                          };
+
+                          final response = await dio.post(
+                            "/app/elwarsha/profile/update-password",
+                            data: body,
+                          );
+
+                          if (response.statusCode == 200 ||
+                              response.statusCode == 201) {
+                            final msg = response.data['message'] ??
+                                (locale.isDirectionRTL(context)
+                                    ? "تم تغيير كلمة المرور بنجاح ✅"
+                                    : "Password changed successfully ✅");
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(msg)),
+                            );
+                          } else {
+                            final msg = response.data['message'] ??
+                                (locale.isDirectionRTL(context)
+                                    ? "حدث خطأ غير متوقع ❌"
+                                    : "Unexpected error occurred ❌");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(msg)),
+                            );
+                          }
+                        } on DioError catch (e) {
+                          String errorMsg = locale.isDirectionRTL(context)
+                              ? "حدث خطأ أثناء تغيير كلمة المرور"
+                              : "An error occurred while changing the password";
+                          if (e.response != null && e.response?.data != null) {
+                            errorMsg = e.response?.data['message'] ?? errorMsg;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(errorMsg)),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                locale.isDirectionRTL(context)
+                                    ? "خطأ غير متوقع: $e"
+                                    : "Unexpected error: $e",
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-            ElevatedButton(
-              child: Text("تغيير"),
-              onPressed: () async {
-                final current = currentController.text.trim();
-                final newPass = newController.text.trim();
-                final confirm = confirmController.text.trim();
-
-                if (current.isEmpty || newPass.isEmpty || confirm.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("من فضلك املأ جميع الحقول")),
-                  );
-                  return;
-                }
-
-                if (newPass != confirm) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("كلمة المرور غير متطابقة")),
-                  );
-                  return;
-                }
-
-                try {
-                  final body = {
-                    "current_password": current,
-                    "new_password": newPass,
-                    "new_password_confirmation": confirm,
-                  };
-
-                  // اطبع قبل الإرسال
-                  print("🔹 API Request:");
-                  print("URL: ${dio.options.baseUrl}/app/elwarsha/profile/update-password");
-                  print("Headers: ${dio.options.headers}");
-                  print("Body: $body");
-
-                  final response = await dio.post(
-                    "/app/elwarsha/profile/update-password",
-                    data: body,
-                  );
-
-                  // اطبع بعد الاستقبال
-                  print("✅ API Response:");
-                  print("Status Code: ${response.statusCode}");
-                  print("Data: ${response.data}");
-
-                  if (response.statusCode == 200 || response.statusCode == 201) {
-                    final msg = response.data['message'] ?? "تم تغيير كلمة المرور بنجاح ✅";
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(msg)),
-                    );
-                  } else {
-                    final msg = response.data['message'] ?? "حدث خطأ غير متوقع ❌";
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(msg)),
-                    );
-                  }
-                } on DioError catch (e) {
-                  print("❌ API Error:");
-                  print("Status Code: ${e.response?.statusCode}");
-                  print("Data: ${e.response?.data}");
-
-                  String errorMsg = "حدث خطأ أثناء تغيير كلمة المرور";
-                  if (e.response != null && e.response?.data != null) {
-                    errorMsg = e.response?.data['message'] ?? errorMsg;
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(errorMsg)),
-                  );
-                } catch (e) {
-                  print("⚠️ Unexpected Error: $e");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("خطأ غير متوقع: $e")),
-                  );
-                }
-
-              },
-            ),
-          ],
+          ),
         );
       },
     );
@@ -152,14 +244,19 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
     return GestureDetector(
-      onTap: token == null
-          ? null
-          : () {
-        _showChangePasswordDialog(context);
-      },
+      onTap:
+          token == null
+              ? null
+              : () {
+                _showChangePasswordDialog(context);
+              },
       child: Text(
-        'تغيير كلمه المرور !',
+        locale!.isDirectionRTL(context)
+            ? 'تغيير كلمه المرور '
+            : "Change password",
         style: TextStyle(
           color: token == null ? Colors.grey : Colors.red,
           fontWeight: FontWeight.w400,

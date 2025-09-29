@@ -4,7 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/language/locale.dart';
-import '../../../services/widgets/Service-Custom-AppBar.dart';
+import '../../../services/widgets/custom_app_bar.dart';
 import '../../cubit/static_pages_cubit.dart';
 
 class PrivacyPolicy extends StatelessWidget {
