@@ -11,23 +11,22 @@ class OilRepository {
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode,
-
       },
     ),
   );
 
-  Future<List<SubOil>> getOilsByModel(int modelId) async {
+  Future<List<OilProduct>> getOils() async {
     try {
-      final response = await _dio.get("$mainApi/app/elwarsha/services/get-subs-oilchange?car_model_id=${modelId}&service_id=6");
-      print(response.data);
-      print(modelId);
+      final response = await _dio.get("$mainApi/app/elwarsha/services/oils");
+
+      print("📦 API Response: ${response.data}");
 
       if (response.statusCode == 200) {
         final body = response.data;
 
         if (body is Map && body['data'] is List) {
           final data = body['data'] as List;
-          return data.map((e) => SubOil.fromJson(e)).toList();
+          return data.map((e) => OilProduct.fromJson(e)).toList();
         } else {
           throw Exception("Unexpected response format: $body");
         }
@@ -35,10 +34,10 @@ class OilRepository {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      print("Dio error: ${e.response?.data ?? e.message}");
-      throw Exception(e.response?.data["msg"] ?? "Failed to load car oils");
+      print("❌ Dio error: ${e.response?.data ?? e.message}");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load oils");
     } catch (e) {
-      print("Unexpected error: $e");
+      print("⚠️ Unexpected error: $e");
       throw Exception("Unexpected error: $e");
     }
   }

@@ -17,13 +17,13 @@ class ServicesLoading extends ServicesState {}
 
 class ServicesLoaded extends ServicesState {
   final List<ServiceModel> services;
+  final List<ProductModel> products;
 
-  const ServicesLoaded(this.services);
-
-  @override
-  List<Object> get props => [services];
+  const ServicesLoaded({
+    required this.services,
+    required this.products,
+  });
 }
-
 class ServicesError extends ServicesState {
   final String message;
 

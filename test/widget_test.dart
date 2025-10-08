@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:abu_diyab_workshop/core/app_setup.dart';
 import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

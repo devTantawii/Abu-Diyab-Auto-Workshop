@@ -49,13 +49,14 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       create: (_) => _cubit,
       child: Scaffold(
         backgroundColor:
-            Theme.of(context).brightness == Brightness.light
-                ? Color(0xFFEAEAEA)
-                : Colors.black54,
+        Theme.of(context).brightness == Brightness.light
+            ? Color(0xFFEAEAEA)
+            : Colors.black54,
         appBar: _buildAppBar(context, locale),
         body: Padding(
           padding: EdgeInsets.all(20.w),
-          child: BlocBuilder<CarCubit, CarState>(
+          child:
+          BlocBuilder<CarCubit, CarState>(
             builder: (context, state) {
               if (state is CarLoading) {
                 return const Center(
@@ -84,12 +85,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                             backgroundColor: Colors.transparent,
                             builder:
                                 (context) => BlocProvider(
-                                  create: (_) => LoginCubit(dio: Dio()),
-                                  child: const LoginBottomSheet(),
-                                ),
+                              create: (_) => LoginCubit(dio: Dio()),
+                              child: const LoginBottomSheet(),
+                            ),
                           );
                         },
-                        child: const Text("سجل الدخول مره اخري من فضلك"),
+                        child: Text(
+                          locale!.isDirectionRTL(context)
+                              ? "سجل الدخول مره اخري من فضلك"
+                              : "Log in again please",
+                        ),
                       ),
                     ],
                   ),
@@ -107,13 +112,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       ),
                       SizedBox(height: 20.h),
                       Text(
-                        'خلّي سيارتك عندنا، وريح بالك',
+                        locale!.isDirectionRTL(context)
+                            ? 'خلّي سيارتك عندنا، وريح بالك'
+                            : 'Leave your car with us, and relax',
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white70,
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white70,
                           fontSize: 18.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -121,13 +128,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       ),
                       SizedBox(height: 20.h),
                       Text(
-                        'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.',
+                        locale!.isDirectionRTL(context)
+                            ? 'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.'
+                            : "To serve you properly, add your car and we will provide you with everything you need from maintenance, offers, and reminders.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Color(0xFF474747)
-                                  : Colors.white54,
+                          Theme.of(context).brightness == Brightness.light
+                              ? Color(0xFF474747)
+                              : Colors.white54,
 
                           fontSize: 16.sp,
                           fontFamily: 'Graphik Arabic',
@@ -144,7 +153,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                   child: Column(
                     children: [
                       ...state.cars.map(
-                        (car) => Padding(
+                            (car) => Padding(
                           padding: EdgeInsets.only(bottom: 20.h),
                           child: _carCard(context, car, true, locale!),
                         ),
@@ -163,9 +172,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 
   PreferredSizeWidget _buildAppBar(
-    BuildContext context,
-    AppLocalizations? locale,
-  ) {
+      BuildContext context,
+      AppLocalizations? locale,
+      ) {
     return AppBar(
       toolbarHeight: 130.h,
       backgroundColor: Colors.transparent,
@@ -173,9 +182,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       automaticallyImplyLeading: false,
       flexibleSpace: Directionality(
         textDirection:
-            Localizations.localeOf(context).languageCode == 'ar'
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+        Localizations.localeOf(context).languageCode == 'ar'
+            ? TextDirection.rtl
+            : TextDirection.ltr,
         child: Container(
           padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
           decoration: buildAppBarDecoration(context),
@@ -203,18 +212,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 
   Widget _carCard(
-    BuildContext context,
-    Car car,
-    bool withEditNav,
-    AppLocalizations locale,
-  ) {
+      BuildContext context,
+      Car car,
+      bool withEditNav,
+      AppLocalizations locale,
+      ) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => RemindCarScreen(car: car),
-          ),
+          MaterialPageRoute(builder: (_) => RemindCarScreen(car: car)),
         );
       },
       child: Container(
@@ -222,9 +229,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         height: 180.h,
         decoration: BoxDecoration(
           color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.black,
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: const [
             BoxShadow(
@@ -236,9 +243,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         ),
         child: Stack(
           textDirection:
-              locale.isDirectionRTL(context)
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
+          locale.isDirectionRTL(context)
+              ? TextDirection.rtl
+              : TextDirection.ltr,
           children: [
             Column(
               children: [
@@ -257,16 +264,19 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                           children: [
                             SizedBox(height: 6.h),
                             DetailItem(
-                              label: 'ماركــة السيـــارة:',
+                              labelAr: 'ماركــة السيـــارة:',
                               value: car.carBrand['name'] ?? '',
+                              labelEn: 'car brand :',
                             ),
                             DetailItem(
-                              label: 'موديل السيـــارة:',
+                              labelAr: 'موديل السيـــارة:',
                               value: car.carModel['name'] ?? '',
+                              labelEn: 'Car Model :',
                             ),
                             DetailItem(
-                              label: 'سنة الصنع:',
+                              labelAr: 'سنة الصنع:',
                               value: car.year?.toString() ?? '',
+                              labelEn: 'Year :',
                             ),
                           ],
                         ),
@@ -313,7 +323,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.r),
                                   image: DecorationImage(
-                                    image: NetworkImage(car.carBrand['icon'] ?? ''),
+                                    image: NetworkImage(
+                                      car.carBrand['icon'] ?? '',
+                                    ),
                                     fit: BoxFit.contain,
                                   ),
                                 ),
@@ -338,13 +350,14 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                   child: Row(
                     children: [
                       Text(
-                        'رقم اللوحة:',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w500,
-                        ),
+                        locale!.isDirectionRTL(context)
+                            ?'رقم اللوحة :'
+                            : "Plate number :",                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontFamily: 'Graphik Arabic',
+                        fontWeight: FontWeight.w500,
+                      ),
                       ),
                       SizedBox(width: 70.w),
                       Text(
@@ -357,60 +370,6 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         ),
                       ),
 
-                      /*
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-
-                      Row(
-                        children: car.licencePlate
-                            .replaceAll(RegExp(r'[^0-9]'), '') // بس الأرقام
-                            .split('') // نفصلهم كل رقم لوحده
-                            .map((num) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal:5.w),
-                          child: Text(
-                            num,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ))
-                            .toList(),
-                      ),
-
-                      // خط فاصل (اختياري)
-                      Container(
-
-                        width: 1,
-                        height: 20,
-                        color: Colors.white,
-                      ),
-
-                      // جزء الحروف
-                      Row(
-                        children: car.licencePlate
-                            .replaceAll(RegExp(r'[^a-zA-Z]'), '') // بس الحروف
-                            .split('') // نفصلهم
-                            .map((ch) => Padding(
-                          padding:  EdgeInsets.symmetric(horizontal:5.w),
-                          child: Text(
-                            ch,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ))
-                            .toList(),
-                      ),
-                    ],
-                  ),
-           */
                     ],
                   ),
                 ),

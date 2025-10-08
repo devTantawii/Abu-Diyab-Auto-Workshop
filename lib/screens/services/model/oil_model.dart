@@ -1,99 +1,148 @@
-class OilChange {
+class OilProduct {
   final int id;
-  final int subServiceId;
-  final int carModelId;
-  final String price;
-  final String kilometers;
-
-  OilChange({
-    required this.id,
-    required this.subServiceId,
-    required this.carModelId,
-    required this.price,
-    required this.kilometers,
-  });
-
-  factory OilChange.fromJson(Map<String, dynamic> json) {
-    return OilChange(
-      id: json['id'],
-      subServiceId: json['sub_service_id'],
-      carModelId: json['car_model_id'],
-      price: json['price'],
-      kilometers: json['kilometers'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'sub_service_id': subServiceId,
-      'car_model_id': carModelId,
-      'price': price,
-      'kilometers': kilometers,
-    };
-  }
-}
-
-class SubOil {
-  final int id;
-  final int serviceId;
   final String name;
   final String description;
-  final int status;
-  final List<OilChange> oilChanges;
+  final String price;
+  final int quentity;
+  final String viscosty;
+  final int kilometer;
+  final Product product;
 
-  SubOil({
+  OilProduct({
     required this.id,
-    required this.serviceId,
     required this.name,
     required this.description,
-    required this.status,
-    required this.oilChanges,
+    required this.price,
+    required this.quentity,
+    required this.viscosty,
+    required this.kilometer,
+    required this.product,
   });
 
-  factory SubOil.fromJson(Map<String, dynamic> json) {
-    return SubOil(
+  factory OilProduct.fromJson(Map<String, dynamic> json) {
+    return OilProduct(
       id: json['id'],
-      serviceId: json['service_id'],
       name: json['name'],
       description: json['description'],
-      status: json['status'],
-      oilChanges: (json['oil_changes'] as List)
-          .map((e) => OilChange.fromJson(e))
-          .toList(),
+      price: json['price'],
+      quentity: json['quentity'],
+      viscosty: json['viscosty'],
+      kilometer: json['kilometer'],
+      product: Product.fromJson(json['product']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'service_id': serviceId,
       'name': name,
       'description': description,
-      'status': status,
-      'oil_changes': oilChanges.map((e) => e.toJson()).toList(),
+      'price': price,
+      'quentity': quentity,
+      'viscosty': viscosty,
+      'kilometer': kilometer,
+      'product': product.toJson(),
     };
   }
 }
 
-class SubOilResponse {
+class Product {
+  final int id;
+  final String name;
+  final String description;
+  final String icon;
+  final String slug;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      icon: json['icon'],
+      slug: json['slug'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'icon': icon,
+      'slug': slug,
+    };
+  }
+}
+
+class Pagination {
+  final int total;
+  final int count;
+  final int perPage;
+  final int currentPage;
+  final int totalPages;
+  final bool hasMorePages;
+
+  Pagination({
+    required this.total,
+    required this.count,
+    required this.perPage,
+    required this.currentPage,
+    required this.totalPages,
+    required this.hasMorePages,
+  });
+
+  factory Pagination.fromJson(Map<String, dynamic> json) {
+    return Pagination(
+      total: json['total'],
+      count: json['count'],
+      perPage: json['per_page'],
+      currentPage: json['current_page'],
+      totalPages: json['total_pages'],
+      hasMorePages: json['has_more_pages'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total': total,
+      'count': count,
+      'per_page': perPage,
+      'current_page': currentPage,
+      'total_pages': totalPages,
+      'has_more_pages': hasMorePages,
+    };
+  }
+}
+
+class OilResponse {
   final int status;
   final String msg;
-  final List<SubOil> data;
+  final List<OilProduct> data;
+  final Pagination pagination;
 
-  SubOilResponse({
+  OilResponse({
     required this.status,
     required this.msg,
     required this.data,
+    required this.pagination,
   });
 
-  factory SubOilResponse.fromJson(Map<String, dynamic> json) {
-    return SubOilResponse(
+  factory OilResponse.fromJson(Map<String, dynamic> json) {
+    return OilResponse(
       status: json['status'],
       msg: json['msg'],
       data: (json['data'] as List)
-          .map((e) => SubOil.fromJson(e))
+          .map((e) => OilProduct.fromJson(e))
           .toList(),
+      pagination: Pagination.fromJson(json['pagination']),
     );
   }
 
@@ -102,6 +151,7 @@ class SubOilResponse {
       'status': status,
       'msg': msg,
       'data': data.map((e) => e.toJson()).toList(),
+      'pagination': pagination.toJson(),
     };
   }
 }

@@ -16,16 +16,20 @@ class TireRepository {
     ),
   );
 
-  Future<List<SubTireService>> getTireServicesByModel(int modelId) async {
+  Future<List<Tire>> getTires({String? size}) async {
     try {
-      final response = await _dio.get("$mainApi/app/elwarsha/services/get-subs-tires?car_model_id=$modelId&service_id=5");
+      final queryParameters = size != null ? {'size': size} : null;
+
+      final response = await _dio.get(
+        "$mainApi/app/elwarsha/services/tires",
+        queryParameters: queryParameters,
+      );
 
       if (response.statusCode == 200) {
         final body = response.data;
-
         if (body is Map && body['data'] is List) {
           final data = body['data'] as List;
-          return data.map((e) => SubTireService.fromJson(e)).toList();
+          return data.map((e) => Tire.fromJson(e)).toList();
         } else {
           throw Exception("Unexpected response format: $body");
         }
@@ -33,7 +37,7 @@ class TireRepository {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      throw Exception(e.response?.data["msg"] ?? "Failed to load car tires");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load tires");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }

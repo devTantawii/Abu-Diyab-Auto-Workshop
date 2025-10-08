@@ -3,6 +3,7 @@ import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/app_setup.dart';
 import '../../../core/langCode.dart';
 import '../../../main.dart';
 import '../model/login_model.dart';
@@ -59,7 +60,6 @@ class LoginCubit extends Cubit<LoginState> {
 
         print('🎉 تم تسجيل الدخول بنجاح! التوكن: $token');
 
-        // تحديث initialToken في main.dart
         initialToken = token;
 
         emit(LoginSuccess());

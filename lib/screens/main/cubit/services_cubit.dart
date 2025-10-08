@@ -1,13 +1,13 @@
-import 'package:abu_diyab_workshop/screens/main/cubit/services_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constant/api.dart';
 import '../../../core/langCode.dart';
 import '../model/service_model.dart';
+import 'services_state.dart';
+
 class ServicesCubit extends Cubit<ServicesState> {
   final Dio dio;
-  static const String baseImageUrl = 'https://devworkshop.abudiyabksa.com/storage/';
 
   ServicesCubit({required this.dio}) : super(ServicesInitial());
 
@@ -15,6 +15,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     emit(ServicesLoading());
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
+
     try {
       final response = await dio.get(
         mainApi + servicesApi,
@@ -22,18 +23,26 @@ class ServicesCubit extends Cubit<ServicesState> {
           headers: {
             "Accept-Language": langCode == '' ? "en" : langCode,
             'Authorization': 'Bearer $token',
-
           },
         ),
       );
 
       if (response.statusCode == 200) {
-        final List apiData = response.data['data'];
-        final services = apiData.map<ServiceModel>((item) {
-          return ServiceModel.fromJson(item);
-        }).toList();
+        final data = response.data['data'];
 
-        emit(ServicesLoaded(services));
+        // ✅ استخراج القوائم الجديدة
+        final List servicesJson = data['services'] ?? [];
+        final List productsJson = data['products'] ?? [];
+
+        final services = servicesJson
+            .map<ServiceModel>((item) => ServiceModel.fromJson(item))
+            .toList();
+
+        final products = productsJson
+            .map<ProductModel>((item) => ProductModel.fromJson(item))
+            .toList();
+
+        emit(ServicesLoaded(services: services, products: products));
       } else {
         emit(ServicesError('Error: ${response.statusCode}'));
       }

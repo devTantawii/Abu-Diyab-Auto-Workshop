@@ -16,7 +16,7 @@ import '../model/user_car_note_model.dart';
 
 // شاشة التذكير
 class RemindCarScreen extends StatefulWidget {
-  final Car car; // ⬅️ خلي الـ car يتخزن هنا
+  final Car car;
 
   const RemindCarScreen({super.key, required this.car});
 
@@ -96,7 +96,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
               child: _carCard(
                 context,
                 widget.car,
-                false, // مش محتاج زرار تعديل هنا
+                false,
                 AppLocalizations.of(context)!,
               ),
             ),
@@ -131,7 +131,9 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                           final service = state.services[index];
                           final serviceNotes =
                               allNotes
-                                  .where((note) => note.service.id == service.id)
+                                  .where(
+                                    (note) => note.service.id == service.id,
+                                  )
                                   .toList();
 
                           return GestureDetector(
@@ -152,9 +154,11 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                               width: 165.w,
                               height: 150.h,
                               decoration: ShapeDecoration(
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Color(0xff1D1D1D),
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Color(0xff1D1D1D),
                                 shape: RoundedRectangleBorder(
                                   side: const BorderSide(
                                     width: 1.50,
@@ -162,7 +166,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                   ),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                shadows:  [
+                                shadows: [
                                   BoxShadow(
                                     color: Color(0x3F000000),
                                     blurRadius: 8.sp,
@@ -179,11 +183,15 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            service.title,
+                                            service.name,
                                             style: TextStyle(
-                                              color:Theme.of(context).brightness == Brightness.light
-                                                  ? Colors.black
-                                                  : Colors.white,
+                                              color:
+                                                  Theme.of(
+                                                            context,
+                                                          ).brightness ==
+                                                          Brightness.light
+                                                      ? Colors.black
+                                                      : Colors.white,
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -191,16 +199,16 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                           ),
                                         ),
                                         Image.network(
-                                          service.image,
+                                          service.icon,
                                           height: 18.h,
                                           width: 18.w,
                                           errorBuilder:
                                               (context, error, stackTrace) =>
-                                              Icon(
-                                                Icons.broken_image,
-                                                size: 18.sp,
-                                                color: Colors.grey,
-                                              ),
+                                                  Icon(
+                                                    Icons.broken_image,
+                                                    size: 18.sp,
+                                                    color: Colors.grey,
+                                                  ),
                                         ),
                                       ],
                                     ),
@@ -219,20 +227,20 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                                 SizedBox(height: 8.h),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                  'assets/icons/attatch.png',
+                                                      'assets/icons/attatch.png',
                                                   text: 'المرفقات 1',
                                                 ),
                                                 SizedBox(height: 8.h),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                  'assets/icons/ui_calender.png',
+                                                      'assets/icons/ui_calender.png',
                                                   text:
-                                                  '${note.lastMaintenance}',
+                                                      '${note.lastMaintenance}',
                                                 ),
                                                 const SizedBox(height: 8),
                                                 CardNotesDetails(
                                                   imagePath:
-                                                  'assets/icons/notific.png',
+                                                      'assets/icons/notific.png',
                                                   text: '${note.remindMe}',
                                                 ),
                                               ],
@@ -259,7 +267,8 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                     ),
                                 ],
                               ),
-                            ),                          );
+                            ),
+                          );
                         },
                       );
                     },
@@ -320,16 +329,14 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                         children: [
                           SizedBox(height: 6.h),
                           DetailItem(
-                            label: 'ماركــة السيـــارة:',
-                            value: car.carBrand['name'] ?? '',
+                            value: car.carBrand['name'] ?? '', labelAr: 'ماركــة السيـــارة:', labelEn: 'Car Brand',
                           ),
                           DetailItem(
-                            label: 'موديل السيـــارة:',
-                            value: car.carModel['name'] ?? '',
+                            value: car.carModel['name'] ?? '', labelAr: 'موديل السيـــارة:', labelEn: 'Car Model',
                           ),
                           DetailItem(
-                            label: 'سنة الصنع:',
-                            value: car.year?.toString() ?? '',
+
+                            value: car.year?.toString() ?? '', labelAr: 'سنة الصنع:', labelEn: 'Year',
                           ),
                         ],
                       ),

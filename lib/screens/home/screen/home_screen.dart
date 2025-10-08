@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: _screens[_currentIndex],
         ),
         bottomNavigationBar: SizedBox(
-          height: 60.h, // responsive height
+          // height: 75.h, // responsive height
           child: _buildBottomNavigationBar(isRTL),
         ),
       ),
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBottomNavigationBar(bool isRTL) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
         boxShadow: [
           BoxShadow(
@@ -107,22 +107,29 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Directionality(
           textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
           child: SingleChildScrollView(
-            child: BottomNavigationBar(
+            child: BottomNavigationBar(iconSize: 25.sp,
+              backgroundColor:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.black,
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: true,
               currentIndex: _currentIndex,
-              selectedItemColor: const Color(0xFFBA1B1B),
-              unselectedItemColor: Colors.grey,
+              selectedItemColor: Color(0xFFBA1B1B),
+              unselectedItemColor: Color(0xFF474747),
               selectedLabelStyle: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 16.sp,
+                height: 2,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w600,
+                color: Color(0xFFBA1B1B),
               ),
               unselectedLabelStyle: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 16.sp,
+                height: 2,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w500,
-                color: Colors.black.withOpacity(0.7),
+                color: Color(0xFF474747),
               ),
               onTap: (index) {
                 setState(() {

@@ -144,9 +144,26 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                             (route) => false, // ⬅️ يقفل كل الصفحات السابقة
                           );
                         } else if (state is LoginFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? 'خطأ في تسجيل الدخول'
+                                      : 'Login error',
+                            ),
+                              content: Text(state.message),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('حسناً'),
+                                ),
+                              ],
+                            ),
                           );
+                        //  ScaffoldMessenger.of(context).showSnackBar(
+                        //    SnackBar(content: Text(state.message)),
+                        //  );
                         } else if (state is LoginNeedsVerification) {
                           showModalBottomSheet(
                             context: context,

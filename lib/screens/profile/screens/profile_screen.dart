@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/language/locale.dart';
+import '../../auth/cubit/login_cubit.dart';
+import '../../auth/screen/login.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -31,12 +34,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocProvider(
       create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
       child: Scaffold(
-        appBar:  CustomGradientAppBar(
-          title_ar:  'الملف الشخصي',
+        appBar: CustomGradientAppBar(
+          title_ar: 'الملف الشخصي',
           title_en: "profile",
           onBack: () => Navigator.pop(context),
         ),
-      /*  appBar: AppBar(
+        /*  appBar: AppBar(
           toolbarHeight: 100.h,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -111,6 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               );
+            }
+            else if (state is ProfileError) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -507,13 +515,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(height: 20.h),
                       ElevatedButton.icon(
                         onPressed: () {
-                          context.read<ProfileCubit>().fetchProfile();
-                        },
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder:
+                                (context) => BlocProvider(
+                              create: (_) => LoginCubit(dio: Dio()),
+                              child: const LoginBottomSheet(),
+                            ),
+                          );                        },
                         icon: Icon(Icons.refresh),
                         label: Text(
                           locale!.isDirectionRTL(context)
                               ? "حاول مرة أخرى"
-                              : "Try again",),
+                              : "Try again",
+                        ),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(150.w, 48.h),
                         ),

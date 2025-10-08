@@ -732,7 +732,6 @@ class _EditCarState extends State<EditCar> {
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     backgroundColor: const Color(0xFFBA1B1B),
-                    // لون أساسي متناسق مع الـ theme
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -743,18 +742,14 @@ class _EditCarState extends State<EditCar> {
 
                     if (_selectedCarBrandId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار ماركة السيارة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء اختيار ماركة السيارة")),
                       );
                       return;
                     }
 
                     if (_selectedCarModelId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار موديل السيارة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء اختيار موديل السيارة")),
                       );
                       return;
                     }
@@ -762,41 +757,138 @@ class _EditCarState extends State<EditCar> {
                     if (arabicLettersController.text.trim().isEmpty ||
                         arabicNumbersController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء إدخال رقم اللوحة"),
-                        ),
+                        const SnackBar(content: Text("الرجاء إدخال رقم اللوحة")),
                       );
                       return;
                     }
 
-                    final boardNoFinal = _buildBoardNo(
-                      lettersRaw: arabicLettersController.text,
-                      numbersRaw: arabicNumbersController.text,
-                    );
+                    // عرض الـ Modal Bottom Sheet لتأكيد العملية
+                    showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                      ),
+                      builder: (context) {
+                        return Padding(
+                          padding: EdgeInsets.all(20.w),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'هل تريد حفظ التعديلات؟',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: const Color(0xFFBA1B1B),
+                                  fontSize: 22.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
 
-                    final kiloRead =
-                        int.tryParse(
-                          _digitsToEn(kiloReadController.text.trim()),
-                        ) ??
-                        0;
+                              Image.asset('assets/images/save_changes.png',height: 130.h,width: 130.w,),
+                              SizedBox(height: 15.h),
+                              Text(
+                                'تم تغيير معلومات السيارة، تبينا نحفظها؟',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  SizedBox(
+                                    height: 50.h,
+                                    width: 150.w,
 
-                    await context.read<CarCubit>().updateCar(
-                      carId: widget.carId,
-                      token: token,
-                      carBrandId: _selectedCarBrandId ?? 0,
-                      carModelId: _selectedCarModelId ?? 0,
-                      creationYear: years[selectedYearIndex],
-                      boardNo: boardNoFinal,
-                      translationName: carNameController.text.trim(),
-                      kiloRead: kiloRead,
-                      carDocs: selectedCarDoc,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFFBA1B1B),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        Navigator.pop(context); // إغلاق الشيت أولاً
+
+                                        final boardNoFinal = _buildBoardNo(
+                                          lettersRaw: arabicLettersController.text,
+                                          numbersRaw: arabicNumbersController.text,
+                                        );
+
+                                        final kiloRead = int.tryParse(
+                                          _digitsToEn(kiloReadController.text.trim()),
+                                        ) ??
+                                            0;
+
+                                        await context.read<CarCubit>().updateCar(
+                                          carId: widget.carId,
+                                          token: token,
+                                          carBrandId: _selectedCarBrandId ?? 0,
+                                          carModelId: _selectedCarModelId ?? 0,
+                                          creationYear: years[selectedYearIndex],
+                                          boardNo: boardNoFinal,
+                                          translationName:
+                                          carNameController.text.trim(),
+                                          kiloRead: kiloRead,
+                                          carDocs: selectedCarDoc,
+                                        );
+                                      },
+                                      child: Text(
+                                        'أكيد',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                 // SizedBox(width: 20.w),
+                                  SizedBox(
+                                    height: 50.h,
+                                    width: 150.w,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.grey[400],
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context); // إغلاق الشيت
+                                      },
+                                      child: Text(
+                                        'تراجع',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
-
                   child: Text(
-                    locale.isDirectionRTL(context)
-                        ? 'حفظ التعديلات'
-                        : 'Save Changes',
+                    locale.isDirectionRTL(context) ? 'حفظ التعديلات' : 'Save Changes',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.sp,

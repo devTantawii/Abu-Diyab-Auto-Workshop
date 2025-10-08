@@ -83,7 +83,7 @@ class CarModelWidget extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         onModelSelected(car.id);
-                        context.read<BatteryCubit>().fetchServicesByModel(car.id);
+                  //      context.read<BatteryCubit>().fetchServicesByModel(car.id);
                       },
                       child: Container(
                         width: 70.w,

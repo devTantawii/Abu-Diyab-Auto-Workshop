@@ -32,9 +32,10 @@ class _LocationWidgetState extends State<LocationWidget> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        bool openSettings = await _showConfirmDialog(
-          title: "تشغيل الموقع",
-          message: "خدمة الموقع مغلقة. هل تريد فتح الإعدادات لتشغيلها؟",
+        bool openSettings = await _showBottomSheetConfirm(
+        //  title: "تشغيل الموقع",
+          message: 'لتجربة أفضل نحتاج تحديد موقعك هذا يساعدنا \nنخدمك أسرع ونكون دقيقين في المواعيد.',
+
         );
         if (openSettings && mounted) {
           await Geolocator.openLocationSettings();
@@ -72,8 +73,8 @@ class _LocationWidgetState extends State<LocationWidget> {
       }
 
       if (permission == LocationPermission.deniedForever) {
-        bool openAppSettings = await _showConfirmDialog(
-          title: "إذن الموقع مرفوض",
+        bool openAppSettings = await _showBottomSheetConfirm(
+         // title: "إذن الموقع مرفوض",
           message: "يجب تفعيل إذن الموقع من إعدادات التطبيق. هل تريد فتح الإعدادات الآن؟",
         );
         if (openAppSettings && mounted) {
@@ -88,12 +89,12 @@ class _LocationWidgetState extends State<LocationWidget> {
         return;
       }
 
-      // الآن نأخذ الإحداثيات
+      // الحصول على الإحداثيات
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // تحويل الإحداثيات لعنوان
+      // تحويل الإحداثيات إلى عنوان
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -105,7 +106,8 @@ class _LocationWidgetState extends State<LocationWidget> {
         final city = placemark.locality ?? placemark.subAdministrativeArea ?? '';
         final country = placemark.country ?? '';
         setState(() {
-          _location = (city.isNotEmpty ? city : '') + (country.isNotEmpty ? ' / $country' : '');
+          _location = (city.isNotEmpty ? city : '') +
+              (country.isNotEmpty ? ' / $country' : '');
           _loading = false;
         });
       } else {
@@ -123,29 +125,64 @@ class _LocationWidgetState extends State<LocationWidget> {
     }
   }
 
-  Future<bool> _showConfirmDialog({
-    required String title,
+  // 🟢 هنا التعديل الأساسي: Bottom Sheet بدل AlertDialog
+  Future<bool> _showBottomSheetConfirm({
     required String message,
   }) async {
     if (!mounted) return false;
-    final bool? res = await showDialog<bool>(
+    final bool? result = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title, textAlign: TextAlign.center),
-        content: Text(message, textAlign: TextAlign.center),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("إلغاء")),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("موافق")),
-        ],
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              SizedBox(height: 10.h),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w500,
+
+                ),
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 150.w,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFBA1B1B),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text("موافق"),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
+            ],
+          ),
+        );
+      },
     );
-    return res ?? false;
+    return result ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
-    // مخرَج محمي بحجم ثابت / محدود ليعمل داخل AppBar بدون مشاكل
     return InkWell(
       onTap: _getUserLocation,
       child: Row(
@@ -153,14 +190,16 @@ class _LocationWidgetState extends State<LocationWidget> {
         children: [
           const Icon(Icons.location_on_outlined, color: Colors.white),
           SizedBox(width: 4.w),
-          // نستخدم ConstrainedBox بدل Flexible لو مُضمّن داخل AppBar
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 200.w),
             child: _loading
                 ? SizedBox(
               height: 16.h,
               width: 16.h,
-              child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              child: const CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
             )
                 : Text(
               _location,

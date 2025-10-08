@@ -30,9 +30,9 @@ class _OffersScreenState extends State<OffersScreen> {
 
     return Scaffold(
       backgroundColor:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+      Theme.of(context).brightness == Brightness.light
+          ? Colors.white
+          : Colors.black,
       appBar: AppBar(
         toolbarHeight: 130.h,
         backgroundColor: Colors.transparent,
@@ -73,6 +73,19 @@ class _OffersScreenState extends State<OffersScreen> {
                     if (state is OffersLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is OffersLoaded) {
+                      if (state.offers.isEmpty) {
+                        return Center(
+                          child: Text(
+                            isArabic ? "لا توجد عروض متاحة" : "No offers available",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }
                       List<bool> isExpandedList = List.generate(state.offers.length, (_) => false);
 
                       return ListView.builder(
@@ -219,28 +232,28 @@ class _OffersScreenState extends State<OffersScreen> {
                                                     padding: EdgeInsets.symmetric(vertical: 12.h),
                                                   ),
                                                   onPressed: () async{
-                                                      final prefs = await SharedPreferences.getInstance();
-                                                      final token = prefs.getString('token');
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    final token = prefs.getString('token');
 
-                                                      if (token != null && token.isNotEmpty) {
-                                                        // لو عنده توكين
-                                                        navigateToServiceScreen(context,offer.offerService.id,offer.offerService.name);
+                                                    if (token != null && token.isNotEmpty) {
+                                                      // لو عنده توكين
+                                               //       navigateToServiceScreen(context,offer.offerService.id,offer.offerService.name);
 
-                                                      } else {
-                                                        showModalBottomSheet(
-                                                          context: context,
-                                                          isScrollControlled: true,
-                                                          backgroundColor: Colors.transparent,
-                                                          builder:
-                                                              (context) => FractionallySizedBox(
-                                                            widthFactor: 1,
-                                                            child: BlocProvider(
-                                                              create: (_) => LoginCubit(dio: Dio()),
-                                                              child: const LoginBottomSheet(),
-                                                            ),
+                                                    } else {
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        isScrollControlled: true,
+                                                        backgroundColor: Colors.transparent,
+                                                        builder:
+                                                            (context) => FractionallySizedBox(
+                                                          widthFactor: 1,
+                                                          child: BlocProvider(
+                                                            create: (_) => LoginCubit(dio: Dio()),
+                                                            child: const LoginBottomSheet(),
                                                           ),
-                                                        );
-                                                      }
+                                                        ),
+                                                      );
+                                                    }
 
                                                   },
                                                   child: Text(
@@ -270,7 +283,17 @@ class _OffersScreenState extends State<OffersScreen> {
                         },
                       );
                     } else if (state is OffersError) {
-                      return Center(child: Text(state.message));
+                      return Center(
+                        child: Text(
+                          isArabic ? "لا توجد عروض متاحة" : "No offers available",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
                     }
                     return const SizedBox();
                   },
@@ -280,7 +303,7 @@ class _OffersScreenState extends State<OffersScreen> {
           ],
         ),
       ),
-      );
+    );
   }
 
 }

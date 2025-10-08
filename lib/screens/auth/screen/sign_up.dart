@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
@@ -99,6 +100,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
 
             },
             builder: (context, state) {
+
               return BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                 child: Container(
@@ -207,9 +209,12 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                 onPressed:
                                     state is RegisterLoading
                                         ? null
-                                        : () {
+                                        : ()async {
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            final prefs = await SharedPreferences.getInstance(); // ✅ هنا صح
+                                            await prefs.remove('token');
+
                                             final model = RegisterRequestModel(
                                               name: _nameController.text.trim(),
                                               name2: _name2Controller.text.trim(),
@@ -222,6 +227,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                             context
                                                 .read<RegisterCubit>()
                                                 .register(model);
+
                                           }
                                         },
                                 style: ElevatedButton.styleFrom(

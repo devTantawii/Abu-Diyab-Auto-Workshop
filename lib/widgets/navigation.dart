@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
+import '../screens/services/screen/car_check.dart';
 import '../screens/services/screen/change_battery.dart';
 import '../screens/services/screen/change_oil.dart';
 import '../screens/services/screen/change_tire.dart';
 import '../screens/services/screen/washing.dart';
-import '../screens/services/screen/car_check.dart';
 
-void navigateToServiceScreen(BuildContext context, int? id, String title) {
-  switch (id) {
-    case 6:
+void navigateToServiceScreen(BuildContext context, String slug, String title) {
+  switch (slug) {
+    case 'oils':
       Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeOil()));
       break;
-    case 5:
+    case 'tires':
       Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeTire()));
       break;
-    case 3:
+    case 'car-wash':
       Navigator.push(context, MaterialPageRoute(builder: (_) => Washing()));
       break;
-    case 9:
+    case 'car-checks':
       Navigator.push(context, MaterialPageRoute(builder: (_) => CarCheck()));
       break;
-    case 4:
+    case 'batteries':
       Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeBattery()));
       break;
     default:

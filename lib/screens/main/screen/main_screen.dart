@@ -45,8 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   final _profileRepository = ProfileRepository();
 
   void _fetchUser() async {
-    final user =
-        await _profileRepository.getUserProfile();
+    final user = await _profileRepository.getUserProfile();
     if (user != null) {
       setState(() {
         _username = user.name;
@@ -324,723 +323,689 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      body: BlocBuilder<ServicesCubit, ServicesState>(
-        builder: (context, state) {
-          if (state is ServicesLoading) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 6,
-                // عدد البليس هولدر
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 0.8, // عشان يكون شبه الكارت
-                ),
-                itemBuilder: (context, index) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // مكان الصورة
-                        Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ImageSlider(),
+              SizedBox(height: 15.h),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    textDirection:
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                    children: [
+                      Text(
+                        locale.isDirectionRTL(context)
+                            ? "الخدمات "
+                            : "Services",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          fontSize: 20.sp,
+                          fontFamily: 'GraphikArabic',
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(height: 10),
-                        // مكان النص
-                        Container(
-                          height: 12,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            );
-          } else if (state is ServicesError) {
-            return Center(child: Text(state.message));
-          } else if (state is ServicesLoaded) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ImageSlider(),
-                    SizedBox(height: 15.h),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          textDirection:
-                              Localizations.localeOf(context).languageCode ==
-                                      'ar'
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            showAllServices = !showAllServices;
+                          });
+                        },
+                        child: Row(
                           children: [
                             Text(
-                              locale.isDirectionRTL(context)
-                                  ? "الخدمات "
-                                  : "Services",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
-                                fontSize: 20.sp,
-                                fontFamily: 'GraphikArabic',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  showAllServices = !showAllServices;
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    showAllServices
-                                        ? (locale.isDirectionRTL(context)
-                                            ? "إخفاء"
-                                            : "Hide")
-                                        : (locale.isDirectionRTL(context)
-                                            ? "عرض الكل"
-                                            : "Show All"),
-                                    style: TextStyle(
-                                      color: const Color(0xFFBA1B1B),
-                                      fontSize: 16.h,
-                                      fontFamily: 'Graphik Arabic',
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Icon(
-                                    showAllServices
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down,
-                                    color: Color(0xFFBA1B1B),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
                               showAllServices
-                                  ? state.services.length
-                                  : (state.services.length > 3
-                                      ? 3
-                                      : state.services.length),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing:
-                                    MediaQuery.of(context).size.width *
-                                    0.01, // نسبة من العرض
-                                crossAxisSpacing:
-                                    MediaQuery.of(context).size.width *
-                                    0.04, // نسبة من العرض
-                                childAspectRatio: 1,
-                              ),
-
-                          itemBuilder: (context, index) {
-                            final service = state.services[index];
-                            return _buildServiceItem(
-                              title: service.title,
-                              imagePath: service.image,
-                              serviceId: service.id,
-                            );
-                          },
-                        ),
-                        SizedBox(height: 8.h),
-                        Center(
-                          child: Image.asset(
-                            'assets/images/main_pack.png',
-                            width: double.infinity,
-                            height: 140.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        SizedBox(height: 15.h),
-                        Row(
-                          children: [
-                            Text(
-                              locale.isDirectionRTL(context)
-                                  ? 'الصيانات القادمة'
-                                  : "Upcoming maintenance",
-                              textAlign: TextAlign.right,
+                                  ? (locale.isDirectionRTL(context)
+                                      ? "إخفاء"
+                                      : "Hide")
+                                  : (locale.isDirectionRTL(context)
+                                      ? "عرض الكل"
+                                      : "Show All"),
                               style: TextStyle(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
-                                fontSize: 16.sp,
+                                color: const Color(0xFFBA1B1B),
+                                fontSize: 16.h,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Image.asset(
-                              'assets/images/notifi.png',
-                              width: 24.w,
-                              height: 24.h,
+                            const SizedBox(width: 5),
+                            Icon(
+                              showAllServices
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              color: Color(0xFFBA1B1B),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        Container(
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  BlocBuilder<ServicesCubit, ServicesState>(
+                    builder: (context, state) {
+                      if (state is ServicesLoading) {
+                        return Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: 6,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 15,
+                              childAspectRatio: 0.8,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      height: 12,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (state is ServicesError) {
+                        return const Center(child: Text('حدث خطأ ما'));
+                      } else if (state is ServicesLoaded) {
+                        final List<Map<String, dynamic>> allItems = [
+                          ...state.products.map((p) => {
+                            'title': p.name,
+                            'icon': p.icon,
+                            'slug': p.slug,
+                          }),
+                          ...state.services.map((s) => {
+                            'title': s.name,
+                            'icon': s.icon,
+                            'slug': s.slug,
+                          }),
+                        ];
+
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: showAllServices
+                              ? allItems.length
+                              : (allItems.length > 3 ? 3 : allItems.length),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: MediaQuery.of(context).size.width * 0.01,
+                            crossAxisSpacing: MediaQuery.of(context).size.width * 0.04,
+                            childAspectRatio: 1,
+                          ),
+                          itemBuilder: (context, index) {
+                            final item = allItems[index];
+                            return _buildServiceItem(
+                              title: item['title'].toString(),
+                              imagePath: item['icon'].toString(),
+                              slug: item['slug'].toString(),
+                              context: context,
+                            );
+                          },
+
+                        );
+                      }
+
+                      return const SizedBox();
+                    },
+                  ),
+                  SizedBox(height: 8.h),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/main_pack.png',
+                      width: double.infinity,
+                      height: 140.h,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Row(
+                    children: [
+                      Text(
+                        locale.isDirectionRTL(context)
+                            ? 'الصيانات القادمة'
+                            : "Upcoming maintenance",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          fontSize: 16.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/images/notifi.png',
+                        width: 24.w,
+                        height: 24.h,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Container(
+                    width: double.infinity,
+                    height: isTablet ? 140.h : 100.h,
+                    decoration: BoxDecoration(
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.white.withOpacity(0.8)
+                              : Colors.black,
+                      borderRadius: BorderRadius.circular(12.sp),
+                      border: Border.all(
+                        width: 1,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.w),
+                      child: GestureDetector(
+                        ///
+                        child: Container(
                           width: double.infinity,
-                          height: isTablet ? 140.h : 100.h,
+                          height: double.infinity,
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white.withOpacity(0.8)
-                                    : Colors.black,
-                            borderRadius: BorderRadius.circular(12.sp),
-                            border: Border.all(
-                              width: 1,
-                              color:
-                                  Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/mintance_backg.png',
+                              ),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.w),
-                            child: GestureDetector(
-                              ///
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/mintance_backg.png',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    locale.isDirectionRTL(context)
-                                        ? "ذكّرني بصيانة سيارتي +"
-                                        : "maintenance my car +",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20.sp,
-                                      fontFamily: 'Graphik Arabic',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
+                          child: Center(
+                            child: Text(
+                              locale.isDirectionRTL(context)
+                                  ? "ذكّرني بصيانة سيارتي +"
+                                  : "maintenance my car +",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
 
-                        BlocBuilder<UserNotesCubit, UserNotesState>(
-                          builder: (context, state) {
-                            if (state is UserNotesLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (state is UserNotesLoaded) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: state.notes.length,
-                                itemBuilder: (context, index) {
-                                  final note = state.notes[index];
-                                  return Container(
-                                    width: double.infinity,
-                                    height: isTablet ? 120.h : 94.h,
-                                    margin: EdgeInsets.only(bottom: 12.h),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? Colors.white
-                                              : Colors.black,
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      border: Border.all(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? Colors.white
-                                                : Colors.transparent,
-                                        width: 1.0,
+                  BlocBuilder<UserNotesCubit, UserNotesState>(
+                    builder: (context, state) {
+                      if (state is UserNotesLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is UserNotesLoaded) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: state.notes.length,
+                          itemBuilder: (context, index) {
+                            final note = state.notes[index];
+                            return Container(
+                              width: double.infinity,
+                              height: isTablet ? 120.h : 94.h,
+                              margin: EdgeInsets.only(bottom: 12.h),
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 12.r,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                textDirection:
+                                    Localizations.localeOf(
+                                              context,
+                                            ).languageCode ==
+                                            'ar'
+                                        ? TextDirection.rtl
+                                        : TextDirection.ltr,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w,
+                                        vertical: 10.h,
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 12.r,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      textDirection:
-                                          Localizations.localeOf(
-                                                    context,
-                                                  ).languageCode ==
-                                                  'ar'
-                                              ? TextDirection.rtl
-                                              : TextDirection.ltr,
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 10.w,
-                                              vertical: 10.h,
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                // السطر الأول (Change Tires + أيقونة)
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      note.service.name,
-                                                      style: TextStyle(
-                                                        color:
-                                                            Theme.of(
-                                                                      context,
-                                                                    ).brightness ==
-                                                                    Brightness
-                                                                        .light
-                                                                ? Colors.black
-                                                                : Colors.white,
-                                                        fontSize: 14.sp,
-                                                        fontFamily:
-                                                            'Graphik Arabic',
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 5.w),
-                                                    Image.network(
-                                                      note.service.icon,
-                                                      // حط لينك الصورة هنا
-                                                      width: 22.w,
-                                                      height: 20.h,
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ],
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // السطر الأول (Change Tires + أيقونة)
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                note.service.name,
+                                                style: TextStyle(
+                                                  color:
+                                                      Theme.of(
+                                                                context,
+                                                              ).brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                  fontSize: 14.sp,
+                                                  fontFamily: 'Graphik Arabic',
+                                                  fontWeight: FontWeight.w600,
                                                 ),
+                                              ),
+                                              SizedBox(width: 5.w),
+                                              Image.network(
+                                                note.service.icon,
+                                                // حط لينك الصورة هنا
+                                                width: 22.w,
+                                                height: 20.h,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ],
+                                          ),
 
-                                                // السطر الثاني (البراند والموديل والسنة)
-                                                SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "${note.userCar.carBrand.name} , ${note.userCar.carModel.name}",
-                                                        style: TextStyle(
-                                                          color:
-                                                              Theme.of(
-                                                                        context,
-                                                                      ).brightness ==
-                                                                      Brightness
-                                                                          .light
-                                                                  ? Colors.black
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.70,
-                                                                      )
-                                                                  : Colors
-                                                                      .white,
-                                                          fontSize: 14.sp,
-                                                          fontFamily:
-                                                              'Graphik Arabic',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 1.60,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10.w),
-                                                      Text(
-                                                        note.userCar.year,
-                                                        style: TextStyle(
-                                                          color:
-                                                              Theme.of(
-                                                                        context,
-                                                                      ).brightness ==
-                                                                      Brightness
-                                                                          .light
-                                                                  ? Colors.black
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.70,
-                                                                      )
-                                                                  : Colors
-                                                                      .white,
-                                                          fontSize: 14.sp,
-                                                          fontFamily:
-                                                              'Graphik Arabic',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 1.60,
-                                                        ),
-                                                      ),
-                                                    ],
+                                          // السطر الثاني (البراند والموديل والسنة)
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "${note.userCar.carBrand.name} , ${note.userCar.carModel.name}",
+                                                  style: TextStyle(
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.light
+                                                            ? Colors.black
+                                                                .withValues(
+                                                                  alpha: 0.70,
+                                                                )
+                                                            : Colors.white,
+                                                    fontSize: 14.sp,
+                                                    fontFamily:
+                                                        'Graphik Arabic',
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 1.60,
                                                   ),
                                                 ),
-
-                                                // السطر الثالث (التاريخ + التنبيه)
-                                                SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      const Icon(
-                                                        Icons
-                                                            .notifications_none,
-                                                        size: 18,
-                                                        color: Colors.red,
-                                                      ),
-                                                      Text(
-                                                        // مجرد مثال بالتاريخ، ممكن تجيب من createdAt أو updatedAt
-                                                        note.remindMe
-                                                            .split(" ")
-                                                            .first,
-                                                        style: TextStyle(
-                                                          color:
-                                                              Theme.of(
-                                                                        context,
-                                                                      ).brightness ==
-                                                                      Brightness
-                                                                          .light
-                                                                  ? Colors.black
-                                                                  : Colors
-                                                                      .white,
-                                                          fontSize: 14.21.sp,
-                                                          fontFamily:
-                                                              'Graphik Arabic',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          height: 1.60,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10.w),
-                                                      Text(
-                                                        locale.isDirectionRTL(
-                                                              context,
-                                                            )
-                                                            ? "صيانتك بعد ${note.daysAgo} أيام"
-                                                            : "Your maintenance after ${note.daysAgo} days",
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFFBA1B1B,
-                                                          ),
-                                                          fontSize: 16.sp,
-                                                          fontFamily:
-                                                              'Graphik Arabic',
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          height: 1.60,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                SizedBox(width: 10.w),
+                                                Text(
+                                                  note.userCar.year,
+                                                  style: TextStyle(
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.light
+                                                            ? Colors.black
+                                                                .withValues(
+                                                                  alpha: 0.70,
+                                                                )
+                                                            : Colors.white,
+                                                    fontSize: 14.sp,
+                                                    fontFamily:
+                                                        'Graphik Arabic',
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 1.60,
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ),
 
-                                        // لوجو العربية
-                                        Container(
-                                          width: 99.w,
-                                          height: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(
-                                              0.06,
-                                            ),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12.r),
-                                              bottomLeft: Radius.circular(12.r),
+                                          // السطر الثالث (التاريخ + التنبيه)
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.notifications_none,
+                                                  size: 18,
+                                                  color: Colors.red,
+                                                ),
+                                                Text(
+                                                  // مجرد مثال بالتاريخ، ممكن تجيب من createdAt أو updatedAt
+                                                  note.remindMe
+                                                      .split(" ")
+                                                      .first,
+                                                  style: TextStyle(
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.light
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                    fontSize: 14.21.sp,
+                                                    fontFamily:
+                                                        'Graphik Arabic',
+                                                    fontWeight: FontWeight.w500,
+                                                    height: 1.60,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10.w),
+                                                Text(
+                                                  locale.isDirectionRTL(context)
+                                                      ? "صيانتك بعد ${note.daysAgo} أيام"
+                                                      : "Your maintenance after ${note.daysAgo} days",
+                                                  style: TextStyle(
+                                                    color: const Color(
+                                                      0xFFBA1B1B,
+                                                    ),
+                                                    fontSize: 16.sp,
+                                                    fontFamily:
+                                                        'Graphik Arabic',
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 1.60,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          child: Center(
-                                            child: Image.network(
-                                              note.userCar.carBrand.icon,
-                                              fit: BoxFit.contain,
-                                              width: 40.w,
-                                              height: 40.h,
-                                              errorBuilder: (
-                                                context,
-                                                error,
-                                                stackTrace,
-                                              ) {
-                                                return const Icon(
-                                                  Icons.directions_car,
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  );
-                                },
-                              );
-                            } else if (state is UserNotesError) {
-                              return const SizedBox.shrink();
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                        ),
-
-                        SizedBox(height: 10.h),
-                        Container(
-                          width: double.infinity,
-                          height: isTablet ? 120.h : 94.h,
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.transparent,
-                              width: 1.0,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 12.r,
-                                offset: Offset(0, 0),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            textDirection:
-                                Localizations.localeOf(context).languageCode ==
-                                        'ar'
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
-                                    vertical: 10.h,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+
+                                  // لوجو العربية
+                                  Container(
+                                    width: 99.w,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.06),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12.r),
+                                        bottomLeft: Radius.circular(12.r),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Image.network(
+                                        note.userCar.carBrand.icon,
+                                        fit: BoxFit.contain,
+                                        width: 40.w,
+                                        height: 40.h,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return const Icon(
+                                            Icons.directions_car,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else if (state is UserNotesError) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+
+                  SizedBox(height: 10.h),
+                  Container(
+                    width: double.infinity,
+                    height: isTablet ? 120.h : 94.h,
+                    decoration: BoxDecoration(
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.black,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : Colors.transparent,
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 12.r,
+                          offset: Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      textDirection:
+                          Localizations.localeOf(context).languageCode == 'ar'
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 10.h,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      locale.isDirectionRTL(context)
+                                          ? "تغيير إطارات "
+                                          : "Change tires",
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.black
+                                                : Colors.white,
+                                        fontSize: 14.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Image.asset(
+                                      "assets/icons/tire1.png",
+                                      width: 22.w,
+                                      height: 20.h,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ],
+                                ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      locale.isDirectionRTL(context)
+                                          ? 'جيلي , إمجراند'
+                                          : "Geely, Emgrand",
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.black.withValues(
+                                                  alpha: 0.70,
+                                                )
+                                                : Colors.white,
+
+                                        fontSize: 14.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.60,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    Text(
+                                      '2024',
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.black.withValues(
+                                                  alpha: 0.70,
+                                                )
+                                                : Colors.white,
+                                        fontSize: 14.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.60,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            locale.isDirectionRTL(context)
-                                                ? "تغيير إطارات "
-                                                : "Change tires",
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                              fontSize: 14.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          SizedBox(width: 5.w),
-                                          Image.asset(
-                                            "assets/icons/tire1.png",
-                                            width: 22.w,
-                                            height: 20.h,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ],
+                                      Icon(
+                                        Icons.notifications_none,
+                                        size: 18.sp,
+                                        color: Colors.red,
                                       ),
-
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            locale.isDirectionRTL(context)
-                                                ? 'جيلي , إمجراند'
-                                                : "Geely, Emgrand",
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black.withValues(
-                                                        alpha: 0.70,
-                                                      )
-                                                      : Colors.white,
-
-                                              fontSize: 14.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                              height: 1.60,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10.w),
-                                          Text(
-                                            '2024',
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black.withValues(
-                                                        alpha: 0.70,
-                                                      )
-                                                      : Colors.white,
-                                              fontSize: 14.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                              height: 1.60,
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        '17 / 9 / 2025',
+                                        style: TextStyle(
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                          fontSize: 14.21.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.60,
+                                        ),
                                       ),
-                                      SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.notifications_none,
-                                              size: 18.sp,
-                                              color: Colors.red,
-                                            ),
-                                            Text(
-                                              '17 / 9 / 2025',
-                                              style: TextStyle(
-                                                color:
-                                                    Theme.of(
-                                                              context,
-                                                            ).brightness ==
-                                                            Brightness.light
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                fontSize: 14.21.sp,
-                                                fontFamily: 'Graphik Arabic',
-                                                fontWeight: FontWeight.w500,
-                                                height: 1.60,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Text(
-                                              locale.isDirectionRTL(context)
-                                                  ? "صيانتك بعد 5 أيام"
-                                                  : "Your maintenance after 5 days",
-                                              style: TextStyle(
-                                                color: const Color(0xFFBA1B1B),
-                                                fontSize: 16.sp,
-                                                fontFamily: 'Graphik Arabic',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.60,
-                                              ),
-                                            ),
-                                          ],
+                                      SizedBox(width: 10.w),
+                                      Text(
+                                        locale.isDirectionRTL(context)
+                                            ? "صيانتك بعد 5 أيام"
+                                            : "Your maintenance after 5 days",
+                                        style: TextStyle(
+                                          color: const Color(0xFFBA1B1B),
+                                          fontSize: 16.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.60,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
+                              ],
+                            ),
+                          ),
+                        ),
 
-                              Container(
-                                width: 99.w,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.06),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(12.r),
-                                    bottomLeft: Radius.circular(12.r),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Image.asset(
-                                    "assets/icons/car_logo.png",
-                                    // width: 40.w, // حجم مناسب - تقدر تعدّله حسب الحاجة
-                                    // height: 40.h,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        Container(
+                          width: 99.w,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.06),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12.r),
+                              bottomLeft: Radius.circular(12.r),
+                            ),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/icons/car_logo.png",
+                              // width: 40.w, // حجم مناسب - تقدر تعدّله حسب الحاجة
+                              // height: 40.h,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          }
-          return SizedBox(); // Default return
-        },
+            ],
+          ),
+        ),
       ),
+      //
+      // // Default return
+      //
+      //
     );
   }
 
   Widget _buildServiceItem({
     required String title,
     required String imagePath,
-    int? serviceId,
+    required String slug,
+    bool isNetworkImage = true,
+    required BuildContext context,
   }) {
-    final isNetworkImage = imagePath.startsWith('http');
-
     return GestureDetector(
       onTap: () async {
         final prefs = await SharedPreferences.getInstance();
@@ -1048,40 +1013,36 @@ class _MainScreenState extends State<MainScreen> {
 
         if (token != null && token.isNotEmpty) {
           // لو عنده توكين
-          navigateToServiceScreen(context, serviceId, title);
+          navigateToServiceScreen(context, slug, title);
         } else {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder:
-                (context) => FractionallySizedBox(
-                  widthFactor: 1,
-                  child: BlocProvider(
-                    create: (_) => LoginCubit(dio: Dio()),
-                    child: const LoginBottomSheet(),
-                  ),
-                ),
+            builder: (context) => FractionallySizedBox(
+              widthFactor: 1,
+              child: BlocProvider(
+                create: (_) => LoginCubit(dio: Dio()),
+                child: const LoginBottomSheet(),
+              ),
+            ),
           );
         }
       },
-
       child: Column(
         children: [
           Container(
             width: 100.w,
             height: 100.h,
             decoration: BoxDecoration(
-              color:
-                  Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Colors.black,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.grey
-                        : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey
+                    : Colors.white,
                 width: 1.5.sp,
               ),
             ),
@@ -1091,29 +1052,25 @@ class _MainScreenState extends State<MainScreen> {
                 SizedBox(
                   width: 45.w,
                   height: 45.h,
-                  child:
-                      isNetworkImage
-                          ? Image.network(
-                            imagePath,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) => Image.asset(
-                                  'assets/images/water_rinse.png',
-                                ),
-                          )
-                          : Image.asset(imagePath, fit: BoxFit.cover),
+                  child: isNetworkImage
+                      ? Image.network(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Image.asset('assets/images/water_rinse.png'),
+                  )
+                      : Image.asset(imagePath, fit: BoxFit.cover),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  maxLines: 1, // أقصى عدد أسطر
-                  overflow: TextOverflow.ellipsis, // يحط "…" في الآخر
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
                     fontSize: 14.h,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
@@ -1126,4 +1083,5 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
 }

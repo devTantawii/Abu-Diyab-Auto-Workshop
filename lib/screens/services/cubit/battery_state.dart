@@ -1,15 +1,14 @@
-
 import '../model/battery_model.dart';
 
 abstract class BatteryState {}
 
 class BatteryInitial extends BatteryState {}
+
 class BatteryLoading extends BatteryState {}
 
-// بدل BatteryLoaded القديمة
 class BatteryLoaded extends BatteryState {
-  final List<Service> services; // <- هنا
-  BatteryLoaded(this.services);
+  final BatteryResponse response; // يشمل data + pagination
+  BatteryLoaded(this.response);
 }
 
 class BatteryError extends BatteryState {

@@ -1,31 +1,30 @@
-// oil_state.dart
-
 import '../model/oil_model.dart';
 
 abstract class OilState {}
 
 class OilInitial extends OilState {}
+
 class OilLoading extends OilState {}
+
 class OilLoaded extends OilState {
-  final List<SubOil> oils;
+  final List<OilProduct> oils;
   final List<bool> selections;
 
-  OilLoaded(
-      this.oils, {
-        List<bool>? selections,
-      }) : selections = selections ?? List<bool>.filled(oils.length, false);
+  OilLoaded(this.oils, {List<bool>? selections})
+      : selections = selections ?? List<bool>.filled(oils.length, false);
 
   OilLoaded copyWith({
-    List<SubOil>? oils,
+    List<OilProduct>? oils,
     List<bool>? selections,
   }) {
-    final newOils = oils ?? this.oils;
     return OilLoaded(
-      newOils,
+      oils ?? this.oils,
       selections: selections ?? this.selections,
     );
   }
 }
+
+
 
 class OilError extends OilState {
   final String message;

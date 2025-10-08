@@ -8,6 +8,7 @@ class UserModel {
   final num? wallet;
   final String confirmedAt;
   final String? fcm;
+  final String? referralCode;
 
   UserModel({
     required this.id,
@@ -19,6 +20,7 @@ class UserModel {
     this.wallet,
     required this.confirmedAt,
     this.fcm,
+    this.referralCode,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class UserModel {
       wallet: json['wallet'],
       confirmedAt: json['confirmed_at'] ?? '',
       fcm: json['fcm'],
+      referralCode: json['referral_code'],
     );
   }
 
@@ -46,6 +49,7 @@ class UserModel {
       "wallet": wallet,
       "confirmed_at": confirmedAt,
       "fcm": fcm,
+      "referral_code": referralCode,
     };
   }
 }

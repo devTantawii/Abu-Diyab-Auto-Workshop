@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/app_setup.dart';
 import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
@@ -309,7 +310,9 @@ class _MoreScreenState extends State<MoreScreen> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'إنشاء حساب جديد',
+                                  locale!.isDirectionRTL(context)
+                                      ? "إنشاء حساب جديد"
+                                      : "Create a new account",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
@@ -349,9 +352,11 @@ class _MoreScreenState extends State<MoreScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: const Center(
+                              child:  Center(
                                 child: Text(
-                                  'تسجيل الدخول',
+                                  locale!.isDirectionRTL(context)
+                                      ? "تسجيل الدخول"
+                                      : "Log in",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -472,12 +477,12 @@ class AnimatedThemeToggleButton extends StatelessWidget {
             height: 30.h,
             padding: EdgeInsets.only(left: 16, right: 16, top: 7, bottom: 10),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white : Colors.orangeAccent,
+              color: isDark ? Colors.white : Colors.black,
               borderRadius: BorderRadius.circular(50),
               boxShadow: [
                 BoxShadow(
                   color:
-                      isDark ? Colors.black26 : Colors.orange.withOpacity(0.5),
+                      isDark ? Colors.white54 : Colors.black54.withOpacity(0.5),
                   blurRadius: 10,
                   offset: Offset(0, 4),
                 ),
@@ -494,7 +499,7 @@ class AnimatedThemeToggleButton extends StatelessWidget {
                   child: Icon(
                     isDark ? Icons.dark_mode : Icons.light_mode,
                     key: ValueKey<bool>(isDark),
-                    color: Colors.black87,
+                    color: isDark ? Colors.black : Colors.white,
                     size: 14.sp,
                   ),
                 ),
@@ -502,7 +507,7 @@ class AnimatedThemeToggleButton extends StatelessWidget {
                 AnimatedDefaultTextStyle(
                   duration: Duration(milliseconds: 300),
                   style: TextStyle(
-                    color: Colors.black,
+                    color: isDark ? Colors.black : Colors.white,
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w500,
                   ),

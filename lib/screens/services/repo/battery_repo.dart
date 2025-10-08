@@ -11,22 +11,32 @@ class BatteryRepository {
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode,
-
       },
     ),
   );
 
-  Future<List<Service>> getServicesByModel(int modelId) async {
+  Future<BatteryResponse> getBatteries({
+    int page = 1,
+    int perPage = 10,
+    String? amper,
+  }) async {
     try {
+      final queryParams = {
+        "page": page,
+        "per_page": perPage,
+        if (amper != null && amper.isNotEmpty) "amper": amper,
+      };
+
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/services/get-subs-batterychange?car_model_id=$modelId&service_id=4",
+        "$mainApi/app/elwarsha/services/batteries",
+        queryParameters: queryParams,
       );
 
       if (response.statusCode == 200) {
         final body = response.data;
+
         if (body is Map && body['data'] is List) {
-          final servicesData = body['data'] as List;
-          return servicesData.map((e) => Service.fromJson(e)).toList();
+          return BatteryResponse.fromJson(Map<String, dynamic>.from(body));
         } else {
           throw Exception("Unexpected response format");
         }
@@ -34,10 +44,9 @@ class BatteryRepository {
         throw Exception("Failed with status ${response.statusCode}");
       }
     } on DioException catch (e) {
-      throw Exception(e.response?.data["msg"] ?? "Failed to load car batteries");
+      throw Exception(e.response?.data["msg"] ?? "Failed to load batteries");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
   }
 }
-
