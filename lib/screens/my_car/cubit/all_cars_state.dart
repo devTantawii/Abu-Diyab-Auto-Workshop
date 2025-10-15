@@ -33,3 +33,14 @@ class UpdateCarError extends CarState {
   final String message;
   UpdateCarError({required this.message});
 }
+class SingleCarLoading extends CarState {}
+
+class SingleCarLoaded extends CarState {
+  final Car car;
+  SingleCarLoaded(this.car);
+}
+
+class SingleCarError extends CarState {
+  final String message;
+  SingleCarError(this.message);
+}

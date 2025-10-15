@@ -1,7 +1,6 @@
 import 'dart:io';
-import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
-import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
 
+import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,38 +9,39 @@ import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/multi_image_picker.dart';
 import '../../../widgets/progress_bar.dart';
-import '../../my_car/cubit/CarModelCubit.dart';
-
 import '../../my_car/screen/widget/image_picker.dart';
 import '../cubit/car_check_cubit.dart';
-import '../cubit/car_check_state.dart';
-
 import '../widgets/Custom-Button.dart';
 import '../widgets/NotesAndCarCounter-Section.dart';
-import '../widgets/car_model_widget.dart';
 import '../widgets/car_selection_widget.dart';
 import '../widgets/custom_app_bar.dart';
 
-/// ---------------- Main UI ----------------
-class CarCheck extends StatefulWidget {
+class MaintenanceBreakdowns extends StatefulWidget {
   final String title;
   final String description;
   final String icon;
   final String slug;
-  const CarCheck({super.key, required this.title, required this.description, required this.icon, required this.slug});
+
+  const MaintenanceBreakdowns({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
 
   @override
-  State<CarCheck> createState() => _CarCheckState();
+  State<MaintenanceBreakdowns> createState() => _MaintenanceBreakdownsState();
 }
 
-class _CarCheckState extends State<CarCheck> {
+class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
   int? _selectedCarBrandId;
   int? _selectedCarModelId;
   List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
-  int? _selectedUserCarId;
   bool? selected;
+  int? _selectedUserCarId;
 
   @override
   void dispose() {
@@ -90,9 +90,9 @@ class _CarCheckState extends State<CarCheck> {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -107,7 +107,6 @@ class _CarCheckState extends State<CarCheck> {
                         return Icon(Icons.image_not_supported, size: 20.h);
                       },
                     ),
-
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -129,6 +128,7 @@ class _CarCheckState extends State<CarCheck> {
                 ),
 
                 SizedBox(height: 6.h),
+
                 /// -------------------- خطوات التقدم --------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,6 +152,10 @@ class _CarCheckState extends State<CarCheck> {
                 NotesAndCarCounterSection(
                   notesController: notesController,
                   kiloReadController: kiloReadController,
+                  showCarCounter: false,
+                  notesTitle: 'وصف العطل',
+                  // يظهر بدل الديفولت
+                  notesHintText: 'الرجاء كتابة وصف العطل ....',
                 ),
                 SizedBox(height: 10.h),
                 Text(
@@ -278,7 +282,8 @@ class _CarCheckState extends State<CarCheck> {
 
                   ],
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 15.h),
+
                 Align(
                   alignment:
                       locale.isDirectionRTL(context)
@@ -347,38 +352,36 @@ class _CarCheckState extends State<CarCheck> {
             );
             return;
           }
-          if (kiloReadController.text.isEmpty) {
+
+          if (selected == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
+              const SnackBar(
+                content: Text("يرجى اختيار ما إذا كانت السيارة تعمل أم لا"),
+              ),
             );
             return;
           }
-
-
-
-
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
                   (BuildContext context) => ReviewRequestPage(
-                title: widget.title,
-                icon: widget.icon,
-                slug: widget.slug,
-                selectedUserCarId: _selectedUserCarId,
-                selectedProduct: 0,
+                    title: widget.title,
+                    icon: widget.icon,
+                    slug: widget.slug,
+                    selectedUserCarId: _selectedUserCarId,
+                    selectedProduct: 0,
                     isCarWorking: selected.toString(),
-
                     notes:
-                notesController.text.isNotEmpty
-                    ? notesController.text
-                    : null,
-                kiloRead:
-                kiloReadController.text.isNotEmpty
-                    ? kiloReadController.text
-                    : null,
-                selectedCarDocs: selectedCarDocs,
-              ),
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : null,
+                    kiloRead:
+                        kiloReadController.text.isNotEmpty
+                            ? kiloReadController.text
+                            : null,
+                    selectedCarDocs: selectedCarDocs,
+                  ),
             ),
           );
         },

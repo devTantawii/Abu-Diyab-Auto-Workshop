@@ -4,36 +4,43 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadFormWidget extends StatefulWidget {
-  final void Function(File?) onImageSelected;
-  final String? existingImageUrl; // 👈 رابط من API لو موجود
+class MultiImagePickerWidget extends StatefulWidget {
+  final void Function(List<File>) onImagesSelected;
+  final List<String>? existingImageUrls;
 
-  const UploadFormWidget({
+  const MultiImagePickerWidget({
     Key? key,
-    required this.onImageSelected,
-    this.existingImageUrl,
+    required this.onImagesSelected,
+    this.existingImageUrls,
   }) : super(key: key);
 
   @override
-  _UploadFormWidgetState createState() => _UploadFormWidgetState();
+  _MultiImagePickerWidgetState createState() => _MultiImagePickerWidgetState();
 }
 
-class _UploadFormWidgetState extends State<UploadFormWidget> {
-  File? _selectedImage;
+class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
   final ImagePicker _picker = ImagePicker();
+  List<File> _selectedImages = [];
 
-  Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: await _showSourceDialog(),
-      imageQuality: 80,
-    );
+  Future<void> _pickImages() async {
+    final ImageSource source = await _showSourceDialog();
+    List<XFile>? pickedFiles = [];
 
-    if (pickedFile != null) {
+    if (source == ImageSource.gallery) {
+      // ✅ اختيار عدة صور من المعرض
+      pickedFiles = await _picker.pickMultiImage(imageQuality: 80);
+    } else {
+      // ✅ صورة واحدة من الكاميرا
+      final XFile? cameraFile =
+      await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+      if (cameraFile != null) pickedFiles = [cameraFile];
+    }
+
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
       setState(() {
-        _selectedImage = File(pickedFile.path);
+        _selectedImages = pickedFiles!.map((xfile) => File(xfile.path)).toList();
       });
-
-      widget.onImageSelected(_selectedImage);
+      widget.onImagesSelected(_selectedImages);
     }
   }
 
@@ -67,15 +74,13 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                     icon: Icons.camera_alt_rounded,
                     label: isArabic ? 'الكاميرا' : 'Camera',
                     color: Colors.blue,
-                    onTap: () =>
-                        Navigator.pop(context, ImageSource.camera),
+                    onTap: () => Navigator.pop(context, ImageSource.camera),
                   ),
                   _buildOptionButton(
                     icon: Icons.photo_library_rounded,
                     label: isArabic ? 'المعرض' : 'Gallery',
                     color: Colors.green,
-                    onTap: () =>
-                        Navigator.pop(context, ImageSource.gallery),
+                    onTap: () => Navigator.pop(context, ImageSource.gallery),
                   ),
                 ],
               ),
@@ -128,7 +133,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Container(
-      height: 140.h,
+      height: 150.h,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: ShapeDecoration(
@@ -140,7 +145,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         ),
       ),
       child: GestureDetector(
-        onTap: _pickImage,
+        onTap: _pickImages,
         child: DottedBorder(
           color: Colors.grey,
           strokeWidth: 3,
@@ -148,59 +153,60 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
           borderType: BorderType.RRect,
           radius: Radius.circular(8.r),
           padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: Center(
-            child: _selectedImage != null
-                ? ClipRRect(
+          child: _selectedImages.isNotEmpty
+              ? ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _selectedImages.length,
+            separatorBuilder: (_, __) => SizedBox(width: 8.w),
+            itemBuilder: (context, index) => ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: Image.file(
-                _selectedImage!,
+                _selectedImages[index],
                 fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
+                width: 100.w,
+                height: 100.h,
               ),
-            )
-                : (widget.existingImageUrl != null &&
-                widget.existingImageUrl!.isNotEmpty)
-                ? ClipRRect(
+            ),
+          )
+              : (widget.existingImageUrls != null &&
+              widget.existingImageUrls!.isNotEmpty)
+              ? ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: widget.existingImageUrls!.length,
+            separatorBuilder: (_, __) => SizedBox(width: 8.w),
+            itemBuilder: (context, index) => ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: Image.network(
-                widget.existingImageUrl!,
+                widget.existingImageUrls![index],
                 fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-                errorBuilder: (context, error, stackTrace) =>
+                width: 100.w,
+                height: 100.h,
+                errorBuilder: (_, __, ___) =>
                 const Icon(Icons.error, size: 40),
               ),
-            )
-                : Column(
+            ),
+          )
+              : Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.transparent
-                        : Colors.grey,
-                  ),
-                  child: Image.asset(
-                    'assets/icons/ep_upload.png',
-                    height: 46.32.h,
-                    width: 62.04.w,
-                    fit: BoxFit.fill,
-                  ),
+                Image.asset(
+                  'assets/icons/ep_upload.png',
+                  height: 46.32.h,
+                  width: 62.04.w,
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   isArabic
-                      ? 'يمكنك إضافة استمارة السيارة بالضغط هنا'
-                      : 'You can upload car registration here',
+                      ? 'يرجي إضافة المرفقات (صور السيارة,صورة نجم,تقدير..)'
+                      : 'Please add attachments (car photos, star photo, rating, etc.)',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).brightness ==
                         Brightness.light
                         ? Colors.black.withOpacity(0.7)
                         : Colors.white,
-                    fontSize: 13.sp,
+                    fontSize: 11.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
                   ),

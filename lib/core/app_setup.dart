@@ -34,6 +34,7 @@ import '../core/helpers/SharedPreference/pereferences.dart';
 import '../core/language/locale.dart';
 import '../core/theme.dart';
 import '../language/languageCubit.dart';
+import 'helpers/helper/dio_helper.dart';
 final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 String? initialToken;
 
@@ -128,6 +129,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return BlocBuilder<ThemeCubit, ThemeMode>(
               builder: (context, themeMode) {
                 return MaterialApp(
+                  navigatorKey: navigatorKey, // ✅ عشان DioHelper يقدر يوجّه المستخدم
                   locale: locale,
                   supportedLocales: const [Locale('en'), Locale('ar')],
                   localizationsDelegates: const [
@@ -147,6 +149,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     child: widget.initialScreen,
                   ),
                 );
+
               },
             );
           },

@@ -400,12 +400,13 @@ class _MainScreenState extends State<MainScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: 6,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 15,
-                              mainAxisSpacing: 15,
-                              childAspectRatio: 0.8,
-                            ),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 15,
+                                  childAspectRatio: 0.8,
+                                ),
                             itemBuilder: (context, index) {
                               return Shimmer.fromColors(
                                 baseColor: Colors.grey[300]!,
@@ -440,41 +441,57 @@ class _MainScreenState extends State<MainScreen> {
                         return const Center(child: Text('حدث خطأ ما'));
                       } else if (state is ServicesLoaded) {
                         final List<Map<String, dynamic>> allItems = [
-                          ...state.products.map((p) => {
-                            'title': p.name,
-                            'icon': p.icon,
-                            'slug': p.slug,
-                          }),
-                          ...state.services.map((s) => {
-                            'title': s.name,
-                            'icon': s.icon,
-                            'slug': s.slug,
-                          }),
+                          ...state.products
+                              .where(
+                                (p) => p.status == 1,
+                              )
+                              .map(
+                                (p) => {
+                                  'title': p.name,
+                                  'icon': p.icon,
+                                  'slug': p.slug,
+                                  'description': p.description,
+                                },
+                              ),
+                          ...state.services
+                              .where((s) => s.status == 1)
+                              .map(
+                                (s) => {
+                                  'title': s.name,
+                                  'icon': s.icon,
+                                  'slug': s.slug,
+                                  'description': s.description,
+                                },
+                              ),
                         ];
-
 
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: showAllServices
-                              ? allItems.length
-                              : (allItems.length > 3 ? 3 : allItems.length),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: MediaQuery.of(context).size.width * 0.01,
-                            crossAxisSpacing: MediaQuery.of(context).size.width * 0.04,
-                            childAspectRatio: 1,
-                          ),
+                          itemCount:
+                              showAllServices
+                                  ? allItems.length
+                                  : (allItems.length > 3 ? 3 : allItems.length),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing:
+                                    MediaQuery.of(context).size.width * 0.01,
+                                crossAxisSpacing:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                childAspectRatio: 1,
+                              ),
                           itemBuilder: (context, index) {
                             final item = allItems[index];
                             return _buildServiceItem(
                               title: item['title'].toString(),
                               imagePath: item['icon'].toString(),
                               slug: item['slug'].toString(),
+                              description:
+                                  item['description']?.toString() ?? '',
                               context: context,
                             );
                           },
-
                         );
                       }
 
@@ -649,13 +666,13 @@ class _MainScreenState extends State<MainScreen> {
                                                 ),
                                               ),
                                               SizedBox(width: 5.w),
-                                              Image.network(
-                                                note.service.icon,
-                                                // حط لينك الصورة هنا
-                                                width: 22.w,
-                                                height: 20.h,
-                                                fit: BoxFit.fill,
-                                              ),
+                                              //  Image.network(
+                                              //    note.service.icon,
+                                              //    // حط لينك الصورة هنا
+                                              //    width: 22.w,
+                                              //    height: 20.h,
+                                              //    fit: BoxFit.fill,
+                                              //  ),
                                             ],
                                           ),
 
@@ -1003,6 +1020,7 @@ class _MainScreenState extends State<MainScreen> {
     required String title,
     required String imagePath,
     required String slug,
+    required String description, // ✅ أضف دي
     bool isNetworkImage = true,
     required BuildContext context,
   }) {
@@ -1012,20 +1030,26 @@ class _MainScreenState extends State<MainScreen> {
         final token = prefs.getString('token');
 
         if (token != null && token.isNotEmpty) {
-          // لو عنده توكين
-          navigateToServiceScreen(context, slug, title);
+          navigateToServiceScreen(
+            context,
+            slug,
+            title,
+            description,
+            imagePath, // ✅ تمرير الأيقونة
+          ); // ✅ تمريرها هنا
         } else {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (context) => FractionallySizedBox(
-              widthFactor: 1,
-              child: BlocProvider(
-                create: (_) => LoginCubit(dio: Dio()),
-                child: const LoginBottomSheet(),
-              ),
-            ),
+            builder:
+                (context) => FractionallySizedBox(
+                  widthFactor: 1,
+                  child: BlocProvider(
+                    create: (_) => LoginCubit(dio: Dio()),
+                    child: const LoginBottomSheet(),
+                  ),
+                ),
           );
         }
       },
@@ -1035,14 +1059,16 @@ class _MainScreenState extends State<MainScreen> {
             width: 100.w,
             height: 100.h,
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.black,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey
-                    : Colors.white,
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.grey
+                        : Colors.white,
                 width: 1.5.sp,
               ),
             ),
@@ -1052,14 +1078,17 @@ class _MainScreenState extends State<MainScreen> {
                 SizedBox(
                   width: 45.w,
                   height: 45.h,
-                  child: isNetworkImage
-                      ? Image.network(
-                    imagePath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Image.asset('assets/images/water_rinse.png'),
-                  )
-                      : Image.asset(imagePath, fit: BoxFit.cover),
+                  child:
+                      isNetworkImage
+                          ? Image.network(
+                            imagePath,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (context, error, stackTrace) => Image.asset(
+                                  'assets/images/water_rinse.png',
+                                ),
+                          )
+                          : Image.asset(imagePath, fit: BoxFit.cover),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -1068,9 +1097,10 @@ class _MainScreenState extends State<MainScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.black
-                        : Colors.white,
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                     fontSize: 14.h,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
@@ -1083,5 +1113,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
 }

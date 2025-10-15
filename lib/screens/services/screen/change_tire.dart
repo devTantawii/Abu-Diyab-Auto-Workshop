@@ -1,13 +1,17 @@
 import 'dart:io';
 
 import 'package:abu_diyab_workshop/screens/services/cubit/tire_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
 import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
+import '../../../widgets/multi_image_picker.dart';
+import '../../../widgets/progress_bar.dart';
 import '../../my_car/cubit/CarModelCubit.dart';
 import '../../my_car/cubit/CarModelState.dart';
 import '../../my_car/cubit/car_brand_cubit.dart';
@@ -23,7 +27,12 @@ import '../widgets/car_selection_widget.dart';
 import '../widgets/custom_app_bar.dart';
 
 class ChangeTire extends StatefulWidget {
-  const ChangeTire({super.key});
+  final String title;
+  final String description;
+  final String icon;
+  final String slug; // ✅ أضف ده
+
+  const ChangeTire({super.key, required this.title, required this.description, required this.icon, required this.slug});
 
   @override
   State<ChangeTire> createState() => _ChangeTireState();
@@ -32,11 +41,12 @@ class ChangeTire extends StatefulWidget {
 class _ChangeTireState extends State<ChangeTire> {
   int? _selectedCarBrandId;
   int? _selectedCarModelId;
-  File? selectedCarDoc;
+  List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
   int count = 1;
   int? selectedTireIndex;
+  int? _selectedUserCarId;
 
   // متغيرات خارج الـ build
   int currentPage = 1;
@@ -86,25 +96,24 @@ class _ChangeTireState extends State<ChangeTire> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // أعلى الـ Column داخل build
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
                       onTap: () {
                         if (selectedTireSize != null) {
-                          // 🧹 لو في فلتر محدد، امسحه مباشرة
+                          // لو في فلتر محدد، إلغاؤه مباشرة
                           setState(() {
                             selectedTireSize = null;
                           });
-                          context.read<TireCubit>().fetchTires(); // تحميل كل الكفرات بدون فلتر
+                          context.read<TireCubit>().filterTiresBySize(null);
                         } else {
-                          // 🪟 عرض قائمة الفلترة في BottomSheet
+                          // عرض BottomSheet للاختيار
                           showModalBottomSheet(
                             context: context,
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16),
-                              ),
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                             ),
                             builder: (context) {
                               String? tempSelectedSize = selectedTireSize;
@@ -127,7 +136,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                       children: [
                                         Center(
                                           child: Text(
-                                            'فلترة المقاسات',
+                                            'الفلترة',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: const Color(0xFFBA1B1B),
@@ -137,19 +146,17 @@ class _ChangeTireState extends State<ChangeTire> {
                                             ),
                                           ),
                                         ),
+                                        SizedBox(height: 12),
                                         Text(
-                                          '-----------------------------------------------------------------------------------------------------------------------------------------',
-                                          maxLines: 1,
+                                          'مقاس الإطار',
                                           style: TextStyle(
-                                            color: const Color(0xFF9B9B9B),
-                                            fontSize: 16.sp,
+                                            color: const Color(0xFF474747),
+                                            fontSize: 18,
                                             fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                         const SizedBox(height: 12),
-
-                                        // 🧩 الأزرار داخل الشبكة
                                         Expanded(
                                           child: LayoutBuilder(
                                             builder: (context, constraints) {
@@ -159,69 +166,67 @@ class _ChangeTireState extends State<ChangeTire> {
                                               const double buttonHeight = 45;
                                               const double rowSpacing = 15;
                                               final double buttonWidth =
-                                                  (containerWidth - (spacing * (itemsPerRow - 1))) / itemsPerRow;
+                                                  (containerWidth - (spacing * (itemsPerRow - 1))) /
+                                                      itemsPerRow;
 
-                                              return Container(
-                                                width: double.infinity,
-                                                child: Stack(
-                                                  children: tireSizeOptions.asMap().entries.map((entry) {
-                                                    final index = entry.key;
-                                                    final String sizeValue = entry.value;
-                                                    final int row = index ~/ itemsPerRow;
-                                                    final int col = index % itemsPerRow;
+                                              return Stack(
+                                                children: tireSizeOptions.asMap().entries.map((entry) {
+                                                  final index = entry.key;
+                                                  final sizeValue = entry.value;
+                                                  final row = index ~/ itemsPerRow;
+                                                  final col = index % itemsPerRow;
+                                                  final left = col * (buttonWidth + spacing);
+                                                  final top = row * (buttonHeight + rowSpacing);
+                                                  final isSelected = tempSelectedSize == sizeValue;
 
-                                                    final double left = col * (buttonWidth + spacing);
-                                                    final double top = row * (buttonHeight + rowSpacing);
-                                                    final bool isSelected = tempSelectedSize == sizeValue;
-
-                                                    return Positioned(
-                                                      left: left,
-                                                      top: top,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          setModalState(() {
-                                                            tempSelectedSize = sizeValue;
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          width: buttonWidth,
-                                                          height: buttonHeight,
-                                                          decoration: ShapeDecoration(
-                                                            color: isSelected ? const Color(0x19BA1B1B) : null,
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                width: 1.5,
-                                                                color: isSelected
-                                                                    ? const Color(0xFFBA1B1B)
-                                                                    : const Color(0xFF9B9B9B),
-                                                              ),
-                                                              borderRadius: BorderRadius.circular(5),
+                                                  return Positioned(
+                                                    left: left,
+                                                    top: top,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          tempSelectedSize = sizeValue;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        width: buttonWidth,
+                                                        height: buttonHeight,
+                                                        decoration: ShapeDecoration(
+                                                          color: isSelected
+                                                              ? const Color(0x19BA1B1B)
+                                                              : null,
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                              width: 1.5,
+                                                              color: isSelected
+                                                                  ? const Color(0xFFBA1B1B)
+                                                                  : const Color(0xFF9B9B9B),
                                                             ),
+                                                            borderRadius: BorderRadius.circular(5),
                                                           ),
-                                                          child: Center(
-                                                            child: Text(
-                                                              sizeValue,
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                color: isSelected ? Colors.black : const Color(0xFF474747),
-                                                                fontSize: isSelected ? 18 : 16,
-                                                                fontFamily: 'Graphik Arabic',
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            sizeValue,
+                                                            style: TextStyle(
+                                                              color: isSelected
+                                                                  ? Colors.black
+                                                                  : const Color(0xFF474747),
+                                                              fontSize: isSelected ? 18 : 16,
+                                                              fontFamily: 'Graphik Arabic',
+                                                              fontWeight: FontWeight.w600,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    );
-                                                  }).toList(),
-                                                ),
+                                                    ),
+                                                  );
+                                                }).toList(),
                                               );
                                             },
                                           ),
                                         ),
                                         const SizedBox(height: 20),
-
-                                        // 🔘 زر عرض النتائج
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -231,7 +236,9 @@ class _ChangeTireState extends State<ChangeTire> {
                                                   selectedTireSize = tempSelectedSize;
                                                 });
                                                 Navigator.pop(context);
-                                                context.read<TireCubit>().fetchTires(size: selectedTireSize);
+                                                context
+                                                    .read<TireCubit>()
+                                                    .filterTiresBySize(selectedTireSize);
                                               },
                                               child: Container(
                                                 width: 240.w,
@@ -270,15 +277,22 @@ class _ChangeTireState extends State<ChangeTire> {
                         width: 50.w,
                         height: 50.h,
                         decoration: BoxDecoration(
-                          color: selectedTireSize != null ? const Color(0x67BA1B1B) : Colors.white,
+                          color: selectedTireSize != null
+                              ? const Color(0x67BA1B1B)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: selectedTireSize != null ? const Color(0xFFBA1B1B) : const Color(0xFFA4A4A4),
+                            color: selectedTireSize != null
+                                ? const Color(0xFFBA1B1B)
+                                : const Color(0xFFA4A4A4),
                             width: 1,
                           ),
                         ),
                         child: selectedTireSize != null
-                            ? const Icon(Icons.cancel_outlined, color: Colors.white)
+                            ? const Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.white,
+                        )
                             : Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Image.asset(
@@ -294,47 +308,69 @@ class _ChangeTireState extends State<ChangeTire> {
                 Row(
                   children: [
                     Text(
-                      'تغيير اطارات',
+                      widget.title,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(width: 5),
-                    Image.asset(
-                      'assets/icons/technical-support.png',
+                    Image.network(
+                      widget.icon,
                       height: 20.h,
                       width: 20.w,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.image_not_supported, size: 20.h);
+                      },
                     ),
+
                   ],
                 ),
                 SizedBox(height: 6.h),
+
+                Row(
+                  children: [
+                    Text(
+                      widget.description,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: borderColor(context),
+                        fontSize: 13.sp,
+                        fontFamily: 'Graphik Arabic',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                  ],
+                ),
+
+                SizedBox(height: 6.h),
+
                 /// -------------------- خطوات التقدم --------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _progressBar(active: true),
-                    _progressBar(),
-                    _progressBar(),
+                    ProgressBar(active: true),
+                    ProgressBar(),
+                    ProgressBar(),
                   ],
                 ),
 
+
                 /// -------------------- قسم السيارات --------------------
                 CarsSection(
-                  onCarSelected: (brandId, modelId) {
+                  onCarSelected: (userCarId) {
                     setState(() {
-                      _selectedCarBrandId = brandId;
-                      _selectedCarModelId = modelId;
+                      _selectedUserCarId = userCarId;
                     });
                   },
                 ),
-
                 /// ---------------- الزيوت ----------------
                 Align(
                   alignment:
@@ -392,138 +428,125 @@ class _ChangeTireState extends State<ChangeTire> {
                             itemBuilder: (context, index) {
                               final tire = currentItems[index];
                               final actualIndex = startIndex + index;
-                              bool isSelected =
-                                  selectedTireIndex == actualIndex;
+                              final isSelected = selectedTireIndex == actualIndex;
 
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: 8.h),
-                                padding: EdgeInsets.all(12.w),
-                                decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.white
-                                          : Colors.black,
-                                  borderRadius: BorderRadius.circular(15.r),
-                                  border: Border.all(
-                                    width: 1.5.w,
-                                    color: const Color(0xFF9B9B9B),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.25),
-                                      blurRadius: 12.r,
-                                      offset: Offset(0, 4.h),
+                              void toggleSelection() {
+                                setState(() {
+                                  if (isSelected) {
+                                    selectedTireIndex = null; // إلغاء الاختيار
+                                  } else {
+                                    selectedTireIndex = actualIndex; // اختيار الكفر
+                                  }
+                                });
+                              }
+
+                              return GestureDetector(
+                                onTap: toggleSelection,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(vertical: 8.h),
+                                  padding: EdgeInsets.all(12.w),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).brightness == Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    border: Border.all(
+                                      width: 1.5.w,
+                                      color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
                                     ),
-                                  ],
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.scale(
-                                      scale: 1.2.sp,
-                                      child: Checkbox(
-                                        value: isSelected,
-                                        onChanged: (v) {
-                                          setState(() {
-                                            if (v == true) {
-                                              selectedTireIndex =
-                                                  actualIndex; // اختيار هذا الكفر فقط
-                                            } else {
-                                              selectedTireIndex =
-                                                  null; // إلغاء الاختيار
-                                            }
-                                          });
-                                        },
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4.r,
-                                          ),
-                                        ),
-                                        side: const BorderSide(
-                                          color: Color(0xFF474747),
-                                          width: 1.2,
-                                        ),
-                                        checkColor: Colors.white,
-                                        activeColor: const Color(0xFF1FAF38),
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.25),
+                                        blurRadius: 12.r,
+                                        offset: Offset(0, 4.h),
                                       ),
-                                    ),
-                                    SizedBox(width: 12.w),
-
-                                    // تفاصيل الكفر
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  tire.name,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    color:
-                                                        Theme.of(
-                                                                  context,
-                                                                ).brightness ==
-                                                                Brightness.light
-                                                            ? Colors.black
-                                                            : Colors.white,
-                                                    fontSize: 14.sp,
-                                                    fontFamily:
-                                                        'Graphik Arabic',
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 8.w),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    "${tire.price}",
+                                    ],
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Transform.scale(
+                                        scale: 1.2.sp,
+                                        child: Checkbox(
+                                          value: isSelected,
+                                          onChanged: (_) {
+                                            toggleSelection(); // الضغط على الـ Checkbox يعمل نفس تأثير الـ Container
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(4.r),
+                                          ),
+                                          side: BorderSide(
+                                            color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                            width: 1.2,
+                                          ),
+                                          checkColor: Colors.white,
+                                          activeColor: const Color(0xFFBA1B1B),
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12.w),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    tire.name,
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                      color: const Color(
-                                                        0xFFBA1B1B,
-                                                      ),
-                                                      fontSize: 16.sp,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      color: Theme.of(context).brightness == Brightness.light
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                      fontSize: 14.sp,
+                                                      fontFamily: 'Graphik Arabic',
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
-                                                  SizedBox(width: 4.w),
-                                                  Image.asset(
-                                                    'assets/icons/ryal.png',
-                                                    width: 20.w,
-                                                    height: 20.h,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 6.h),
-                                          Text(
-                                            "المقاس: ${tire.size}",
-                                            style: TextStyle(fontSize: 12.sp),
-                                          ),
-                                          Text(
-                                            "البلد: ${tire.country}",
-                                            style: TextStyle(fontSize: 12.sp),
-                                          ),
-                                          Text(
-                                            "الكمية المتاحة: ${tire.quantity}",
-                                            style: TextStyle(fontSize: 12.sp),
-                                          ),
-                                        ],
+                                                ),
+                                                SizedBox(width: 8.w),
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      "${tire.price}",
+                                                      style: TextStyle(
+                                                        color: const Color(0xFFBA1B1B),
+                                                        fontSize: 16.sp,
+                                                        fontFamily: 'Poppins',
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 4.w),
+                                                    Image.asset(
+                                                      'assets/icons/ryal.png',
+                                                      width: 20.w,
+                                                      height: 20.h,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 6.h),
+                                            Text(
+                                              "المقاس: ${tire.size}",
+                                              style: TextStyle(fontSize: 12.sp),
+                                            ),
+                                            Text(
+                                              "البلد: ${tire.country}",
+                                              style: TextStyle(fontSize: 12.sp),
+                                            ),
+                                            Text(
+                                              "الكمية المتاحة: ${tire.quantity}",
+                                              style: TextStyle(fontSize: 12.sp),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               );
                             },
@@ -811,49 +834,130 @@ class _ChangeTireState extends State<ChangeTire> {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                UploadFormWidget(
-                  onImageSelected: (file) {
-                    selectedCarDoc = file;
+                MultiImagePickerWidget(
+                  onImagesSelected: (files) {
+                    selectedCarDocs = files;
+                    print('عدد الصور المختارة: ${selectedCarDocs.length}');
                   },
-                ),
-                SizedBox(height: 15.h),
+                ),                SizedBox(height: 15.h),
               ],
             ),
           ),
         ),
       ),
-      //هنا زرار التالي في اخر الصفحه
+      bottomNavigationBar: CustomBottomButton(
+        textAr: "التالي",
+        textEn: "Next",
+        onPressed: () {
+          // تحقق من البيانات المطلوبة
+          if (_selectedUserCarId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار السيارة")),
+            );
+            return;
+          }
+
+          if (selectedTireIndex == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار الإطار")),
+            );
+            return;
+          }
+
+          if (kiloReadController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
+            );
+            return;
+          }
+
+          // الحصول على الإطار المختار
+          final tireState = context.read<TireCubit>().state;
+          final selectedTire = (tireState is TireLoaded)
+              ? tireState.tires[selectedTireIndex!]
+              : null;
+
+          if (selectedTire == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار الإطار")),
+            );
+            return;
+          }
+
+          // الانتقال لصفحة مراجعة الطلب
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => ReviewRequestPage(
+                title: widget.title,
+                icon: widget.icon,
+                slug: widget.slug,
+                selectedUserCarId: _selectedUserCarId,
+                selectedProduct: selectedTire,
+                notes: notesController.text.isNotEmpty ? notesController.text : null,
+                kiloRead: kiloReadController.text.isNotEmpty ? kiloReadController.text : null,
+                selectedCarDocs: selectedCarDocs,
+                count: count.toString(), // عدد الإطارات
+              ),
+            ),
+          );
+        },
+      ),
+
+      /*   //هنا زرار التالي في اخر الصفحه
       bottomNavigationBar: CustomBottomButton(
         textAr: "التالي",
         textEn: "Add My Car",
         onPressed: () {
+          // تحديد الإطار المختار
           final tireCubit = context.read<TireCubit>();
-          final selectedTire =
-              (tireCubit.state is TireLoaded && selectedTireIndex != null)
-                  ? (tireCubit.state as TireLoaded).tires[selectedTireIndex!]
-                  : null;
+          final selectedTire = (tireCubit.state is TireLoaded && selectedTireIndex != null)
+              ? (tireCubit.state as TireLoaded).tires[selectedTireIndex!]
+              : null;
 
-          print("Selected Car Brand ID: $_selectedCarBrandId");
-          print("Selected Car Model ID: $_selectedCarModelId");
-          print(
-            "Selected Tire: ${selectedTire != null ? selectedTire.name : 'None'}",
-          );
-          print("Tire Count: $count");
-          print("Notes: ${notesController.text}");
-          print("Kilometer Reading: ${kiloReadController.text}");
-          print("Selected Car Document: ${selectedCarDoc?.path ?? 'None'}");
+          if (_selectedUserCarId == null) {
+            // رسالة خطأ إذا لم يتم اختيار سيارة
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("يرجى اختيار سيارة")),
+            );
+            return;
+          }
+
+          if (selectedTire == null) {
+            // رسالة خطأ إذا لم يتم اختيار إطار
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("يرجى اختيار إطار")),
+            );
+            return;
+          }
+
+          // الانتقال إلى صفحة مراجعة الطلب
+    //  Navigator.push(
+    //    context,
+    //    MaterialPageRoute(
+    //      builder: (context) => ReviewRequestPage(
+    //        selectedUserCarId: _selectedUserCarId,
+    //        selectedProduct: selectedTire,
+    //        notes: notesController.text,
+    //        kiloRead: kiloReadController.text,
+    //        selectedCarDoc: selectedCarDoc,
+    //        title: widget.title,
+    //        icon: widget.icon,
+    //      //  tireCount: count, // إضافة عدد الإطارات
+    //      ),
+    //    ),
+    // );
+
+          // طباعة البيانات للأغراض التجريبية
+          print("✅ Selected Car ID: $_selectedUserCarId");
+          print("✅ Selected Tire: ${selectedTire.name}");
+          print("📝 Notes: ${notesController.text}");
+          print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
+          print("🛞 Tire Count: $count");
+          print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
         },
       ),
-    );
-  }
-  Widget _progressBar({bool active = false}) {
-    return Container(
-      width: 100.w,
-      height: 6.h,
-      decoration: ShapeDecoration(
-        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      ),
+*/
     );
   }
 }

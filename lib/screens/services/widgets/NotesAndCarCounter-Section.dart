@@ -6,11 +6,24 @@ import '../../../core/language/locale.dart';
 class NotesAndCarCounterSection extends StatelessWidget {
   final TextEditingController? notesController;
   final TextEditingController? kiloReadController;
+  final bool showNotes;
+  final bool showCarCounter;
+
+  final String? notesTitle; // العنوان القابل للتغيير
+  final String? notesHintText; // الهينت تيكست القابل للتغيير
+  final String? carCounterTitle; // عنوان عداد السيارة القابل للتغيير
+  final String? carCounterHintText; // الهينت تيكست القابل للتغيير
 
   const NotesAndCarCounterSection({
     Key? key,
     this.notesController,
     this.kiloReadController,
+    this.showNotes = true,
+    this.showCarCounter = true,
+    this.notesTitle,
+    this.notesHintText,
+    this.carCounterTitle,
+    this.carCounterHintText,
   }) : super(key: key);
 
   @override
@@ -20,142 +33,164 @@ class NotesAndCarCounterSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-// هنا جزء الملاحظات يابا
-       Text(
-          'الملاحظات',
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
-            fontSize: 14.sp,
-            fontFamily: 'Graphik Arabic',
-            fontWeight: FontWeight.w600,
-            height: 1.43,
-          ),
-        ),
-        SizedBox(height: 10.h),
-        Container(
-          decoration: ShapeDecoration(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1.50, color: Color(0xFF9B9B9B)),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x3F000000),
-                blurRadius: 12,
-                offset: Offset(0, 4),
+        if (showNotes) ...[
+          Row(
+            children: [
+              Text(
+                notesTitle ?? 'الملاحظات', // الديفولت هنا
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
+                  fontSize: 14.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w600,
+                  height: 1.43,
+                ),
+              ),
+              Text(
+                ' (اختياري)',
+                style: TextStyle(
+                  color: const Color(0xFF474747),
+                  fontSize: 12,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: TextField(
-              controller: notesController,
-              maxLines: null,
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                hintText: "اكتب ملاحظاتك هنا...",
-                hintStyle: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Graphik Arabic',
-                  fontWeight: FontWeight.w500,
-                  height: 1.57,
-                  color: Colors.black.withOpacity(0.5),
+          SizedBox(height: 10.h),
+          Container(
+            height: 100.h,
+            decoration: ShapeDecoration(
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.black,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 1.50, color: Color(0xFF9B9B9B)),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0x3F000000),
+                  blurRadius: 12,
+                  offset: Offset(0, 4),
                 ),
-                border: InputBorder.none,
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: TextField(
+                controller: notesController,
+                maxLines: null,
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: notesHintText ?? "اكتب ملاحظاتك هنا...",
+                  // الديفولت هنا
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Graphik Arabic',
+                    fontWeight: FontWeight.w500,
+                    height: 1.57,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 15.h),
+          SizedBox(height: 15.h),
+        ],
 
-        /// ---------------- ممشى السيارة ----------------
-        Align(
-          alignment: locale.isDirectionRTL(context)
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
-          child: Text(
-            locale.isDirectionRTL(context) ? "ممشى السياره" : "Car counter",
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
+        if (showCarCounter) ...[
+          Align(
+            alignment:
+                locale.isDirectionRTL(context)
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+            child: Text(
+              carCounterTitle ??
+                  (locale.isDirectionRTL(context)
+                      ? "ممشى السياره"
+                      : "Car counter"),
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
             ),
           ),
-        ),
-        SizedBox(height: 10.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
+          SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.black,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: Colors.grey, width: 1.0),
             ),
-          ),
-          child: Row(
-            textDirection: locale.isDirectionRTL(context)
-                ? TextDirection.rtl
-                : TextDirection.ltr,
-            children: [
-              Expanded(
-                child: DottedBorder(
-                  color: Colors.grey,
-                  strokeWidth: 1,
-                  dashPattern: const [6, 3],
-                  borderType: BorderType.RRect,
-                  radius: Radius.circular(8.r),
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                  child: TextField(
-                    controller: kiloReadController,
-                    decoration: InputDecoration(
-                      hintText: '0000000',
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white38,
-                        fontSize: 13.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
+            child: Row(
+              textDirection:
+                  locale.isDirectionRTL(context)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
+              children: [
+                Expanded(
+                  child: DottedBorder(
+                    color: Colors.grey,
+                    strokeWidth: 1,
+                    dashPattern: const [6, 3],
+                    borderType: BorderType.RRect,
+                    radius: Radius.circular(8.r),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: TextField(
+                      controller: kiloReadController,
+                      decoration: InputDecoration(
+                        hintText: carCounterHintText ?? '0000000',
+                        // الديفولت هنا
+                        hintStyle: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white38,
+                          fontSize: 13.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hintTextDirection:
+                            locale.isDirectionRTL(context)
+                                ? TextDirection.rtl
+                                : TextDirection.ltr,
+                        contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                        border: InputBorder.none,
                       ),
-                      hintTextDirection: locale.isDirectionRTL(context)
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 12.h,
-                      ),
-                      border: InputBorder.none,
+                      textDirection:
+                          locale.isDirectionRTL(context)
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                      keyboardType: TextInputType.number,
                     ),
-                    textDirection: locale.isDirectionRTL(context)
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
-                    keyboardType: TextInputType.number,
                   ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
-                  fontSize: 15.sp,
-                  fontFamily: 'Graphik Arabic',
-                  fontWeight: FontWeight.w500,
+                SizedBox(width: 12.w),
+                Text(
+                  locale.isDirectionRTL(context) ? 'كم' : 'KM',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                    fontSize: 15.sp,
+                    fontFamily: 'Graphik Arabic',
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/langCode.dart';
 import '../model/all_cars_model.dart';
@@ -62,8 +63,43 @@ class CarCubit extends Cubit<CarState> {
     }
   }
 
-  // Update a car
-  // Update a car
+
+  Future<void> getUserCar(int id) async {
+    emit(SingleCarLoading());
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        emit(SingleCarError("لم يتم العثور على التوكن"));
+        return;
+      }
+
+      final response = await _dio.get(
+        "$mainApi/app/elwarsha/user-cars/show/$id",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['data'] != null) {
+        final car = Car.fromJson(response.data['data']);
+        emit(SingleCarLoaded(car));
+        print("✅ تم جلب السيارة بنجاح: ${car.name}");
+      } else {
+        emit(SingleCarError("فشل في تحميل بيانات السيارة"));
+      }
+    } catch (e, stack) {
+      print("⚠️ Exception: $e");
+      print(stack);
+      emit(SingleCarError("حدث خطأ أثناء تحميل السيارة"));
+    }
+  }
   Future<void> updateCar({
     required int carId,
     required String token,

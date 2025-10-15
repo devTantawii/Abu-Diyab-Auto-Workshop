@@ -2,46 +2,56 @@ import 'dart:io';
 
 import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart'
     hide BatteryLoaded;
-import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
-import '../../my_car/cubit/CarModelCubit.dart';
-import '../../my_car/cubit/CarModelState.dart';
+import '../../../widgets/multi_image_picker.dart';
+import '../../../widgets/progress_bar.dart';
+
 import '../../my_car/cubit/all_cars_cubit.dart';
-import '../../my_car/cubit/all_cars_state.dart';
-import '../../my_car/cubit/car_brand_cubit.dart';
-import '../../my_car/cubit/car_brand_state.dart';
-import '../../my_car/model/all_cars_model.dart';
-import '../../my_car/screen/widget/details_item.dart';
+
 import '../../my_car/screen/widget/image_picker.dart';
-import '../../my_car/widget/bottom_add_car.dart';
 import '../cubit/battery_state.dart';
 import '../widgets/Custom-Button.dart';
-import '../widgets/car_model_widget.dart';
+import '../widgets/NotesAndCarCounter-Section.dart';
 import '../widgets/car_selection_widget.dart';
 import '../widgets/custom_app_bar.dart';
 
 class ChangeBattery extends StatefulWidget {
-  const ChangeBattery({super.key});
+  final String title;
+  final String description;
+  final String icon;
+  final String slug; // ✅ أضف ده
+
+  const ChangeBattery({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
 
   @override
   State<ChangeBattery> createState() => _ChangeBatteryState();
 }
 
 class _ChangeBatteryState extends State<ChangeBattery> {
-  File? selectedCarDoc;
+  // File? selectedCarDoc;
+  List<File> selectedCarDocs = [];
+
   int? _selectedBatteryIndex;
   String? selectedAh; // ✅ متغير لتخزين القيمة المختارة
   late CarCubit _cubit;
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
-  int? _selectedCarBrandId;
-  int? _selectedCarModelId;
+
+  int? _selectedUserCarId;
   int currentPage = 1; // الصفحة الحالية
   final int itemsPerPage = 4; // عدد المنتجات لكل صفحة
 
@@ -68,33 +78,31 @@ class _ChangeBatteryState extends State<ChangeBattery> {
   Future<void> _loadCars() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
-    await _cubit.fetchCars(token); // 🔁 جلب البيانات
+    await _cubit.fetchCars(token);
   }
 
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
+        title_en: "Create Request",
         onBack: () => Navigator.pop(context),
       ),
       body: Container(
+        height: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
           ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          color: backgroundColor(context),
         ),
-
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,11 +112,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     GestureDetector(
                       onTap: () {
                         if (selectedAh != null) {
-                          // لو في فلتر محدد، امسحه مباشرة
                           setState(() {
                             selectedAh = null;
                           });
-                          // ممكن كمان تعمل fetch للبيانات بدون فلتر
                           context.read<BatteryCubit>().fetchBatteries(
                             amper: null,
                           );
@@ -121,17 +127,16 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                               ),
                             ),
                             builder: (context) {
-                              String? tempSelectedAh =
-                                  selectedAh; // قيمة مؤقتة للاختيار داخل الـ bottom sheet
+                              String? tempSelectedAh = selectedAh;
                               return StatefulBuilder(
                                 builder: (context, setModalState) {
                                   return Container(
                                     decoration: ShapeDecoration(
-                                      color: const Color(0xFFEAEAEA),
+                                      color: backgroundColor(context),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
+                                          topLeft: Radius.circular(20.sp),
+                                          topRight: Radius.circular(20.sp),
                                         ),
                                       ),
                                     ),
@@ -382,19 +387,21 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                             width: 1,
                           ),
                         ),
-                        child:
-                            selectedAh != null
-                                ? Icon(
-                                  Icons.cancel_outlined,
-                                  color: Colors.white,
-                                )
-                                : Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image.asset(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child:
+                              selectedAh != null
+                                  ? Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.white,
+                                  )
+                                  : Image.asset(
                                     'assets/icons/icon_filter.png',
-                                    color: Colors.grey,
+                                    color: textColor(context),
                                   ),
-                                ),
+
+                          //  color: textColor(context),
+                        ),
                       ),
                     ),
                   ],
@@ -402,7 +409,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                 Row(
                   children: [
                     Text(
-                      'تغيير بطارية',
+                      widget.title,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
@@ -415,39 +422,47 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       ),
                     ),
                     SizedBox(width: 5),
-                    SizedBox(width: 5),
-                    Image.asset(
-                      'assets/icons/technical-support.png',
+                    Image.network(
+                      widget.icon,
                       height: 20.h,
                       width: 20.w,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.image_not_supported, size: 20.h);
+                      },
                     ),
                   ],
                 ),
                 SizedBox(height: 6.h),
-                Text(
-                  'خدمة تغيير البطارية في مكانك اطلب وأختر المقاس والبراند المطلوب.',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: const Color(0xFF474747),
-                    fontSize: 13.sp,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w500,
-                  ),
+
+                Row(
+                  children: [
+                    Text(
+                      widget.description,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: borderColor(context),
+                        fontSize: 13.sp,
+                        fontFamily: 'Graphik Arabic',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                  ],
                 ),
+
                 SizedBox(height: 6.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _progressBar(active: true),
-                    _progressBar(),
-                    _progressBar(),
+                    ProgressBar(active: true),
+                    ProgressBar(),
+                    ProgressBar(),
                   ],
                 ),
                 CarsSection(
-                  onCarSelected: (brandId, modelId) {
+                  onCarSelected: (userCarId) {
                     setState(() {
-                      _selectedCarBrandId = brandId;
-                      _selectedCarModelId = modelId;
+                      _selectedUserCarId = userCarId;
                     });
                   },
                 ),
@@ -465,10 +480,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                           ? "الخدمات المتوفرة"
                           : 'Available Services',
                       style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        color: textColor(context),
                         fontSize: 14.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -477,446 +489,367 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                   ),
                 ),
                 SizedBox(height: 10.h),
+
                 // ---------------- عرض البيانات ----------------
+                BlocBuilder<BatteryCubit, BatteryState>(
+                  builder: (context, state) {
+                    if (state is BatteryLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is BatteryLoaded) {
+                      final batteries = state.response.data;
 
-              BlocBuilder<BatteryCubit, BatteryState>(
-          builder: (context, state) {
-            if (state is BatteryLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is BatteryLoaded) {
-              final batteries = state.response.data;
+                      if (batteries.isEmpty) {
+                        return const Center(
+                          child: Text("لا توجد بطاريات متاحة"),
+                        );
+                      }
 
-              if (batteries.isEmpty) {
-                return const Center(
-                  child: Text("لا توجد بطاريات متاحة"),
-                );
-              }
+                      // Pagination
+                      final totalPages =
+                          (batteries.length / itemsPerPage).ceil();
 
-              // Pagination
-              final totalPages = (batteries.length / itemsPerPage).ceil();
+                      if (currentPage > totalPages) {
+                        currentPage = totalPages > 0 ? totalPages : 1;
+                      }
+                      if (currentPage < 1) currentPage = 1;
 
-              if (currentPage > totalPages) {
-                currentPage = totalPages > 0 ? totalPages : 1;
-              }
-              if (currentPage < 1) currentPage = 1;
+                      final startIndex = (currentPage - 1) * itemsPerPage;
+                      final endIndex =
+                          (startIndex + itemsPerPage) > batteries.length
+                              ? batteries.length
+                              : startIndex + itemsPerPage;
 
-              final startIndex = (currentPage - 1) * itemsPerPage;
-              final endIndex = (startIndex + itemsPerPage) > batteries.length
-                  ? batteries.length
-                  : startIndex + itemsPerPage;
+                      final currentBatteries = batteries.sublist(
+                        startIndex.clamp(0, batteries.length),
+                        endIndex.clamp(0, batteries.length),
+                      );
 
-              final currentBatteries = batteries.sublist(
-                startIndex.clamp(0, batteries.length),
-                endIndex.clamp(0, batteries.length),
-              );
+                      return Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: currentBatteries.length,
+                            itemBuilder: (context, index) {
+                              final battery = currentBatteries[index];
+                              final actualIndex = startIndex + index;
+                              final isSelected =
+                                  _selectedBatteryIndex == actualIndex;
 
-              return Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: currentBatteries.length,
-                    itemBuilder: (context, index) {
-                      final battery = currentBatteries[index];
-                      final actualIndex = startIndex + index;
-                      final isSelected = _selectedBatteryIndex == actualIndex;
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedBatteryIndex = actualIndex;
-                          });
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 16.h),
-                          padding: EdgeInsets.all(12.w),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? Colors.white
-                                : Colors.black,
-                            borderRadius: BorderRadius.circular(15.r),
-                            border: Border.all(
-                              width: 1.5.w,
-                              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.25),
-                                blurRadius: 12.r,
-                                offset: Offset(0, 4.h),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Transform.scale(
-                                scale: 1.2.sp,
-                                child: Icon(
-                                  isSelected
-                                      ? Icons.check_box
-                                      : Icons.check_box_outline_blank,
-                                  color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            battery.name,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color: Theme.of(context).brightness == Brightness.light
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                              fontSize: 14.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "${battery.price} SAR",
-                                              style: TextStyle(
-                                                color: const Color(0xFFBA1B1B),
-                                                fontSize: 16.sp,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4.w),
-                                            Image.asset(
-                                              'assets/icons/ryal.png',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                          ],
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedBatteryIndex = actualIndex;
+                                  });
+                                },
+                                child: Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    margin: EdgeInsets.symmetric(
+                                      vertical: 16.h,
+                                    ),
+                                    padding: EdgeInsets.all(12.w),
+                                    decoration: BoxDecoration(
+                                      color: boxcolor(context),
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      border: Border.all(
+                                        width: 1.5.w,
+                                        color:
+                                            isSelected
+                                                ? const Color(0xFFBA1B1B)
+                                                : const Color(0xFF9B9B9B),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.25),
+                                          blurRadius: 12.r,
+                                          offset: Offset(0, 4.h),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 6.h),
-                                    Text("البلد: ${battery.country}"),
-                                    Text("الأمبير: ${battery.amper}"),
-                                    Text("الكمية المتاحة: ${battery.quantity}"),
-                                  ],
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Transform.scale(
+                                          scale: 1.2.sp,
+                                          child: Checkbox(
+                                            value: isSelected,
+                                            onChanged: (v) {
+                                              setState(() {
+                                                if (v == true) {
+                                                  _selectedBatteryIndex = actualIndex; // اختيار هذا العنصر فقط
+                                                } else {
+                                                  _selectedBatteryIndex = null; // إلغاء الاختيار
+                                                }
+                                              });
+                                            },
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(4.r),
+                                            ),
+                                            side: BorderSide(
+                                              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                              width: 1.2,
+                                            ),
+                                            checkColor: Colors.white, // لون الصح
+                                            activeColor: const Color(0xFFBA1B1B), // لون الخلفية لما متعلم
+                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                        ),
+
+                                        /*
+                                        Transform.scale(
+                                          scale: 1.2.sp,
+                                          child: Icon(
+                                            isSelected
+                                                ? Icons.check_box
+                                                : Icons.check_box_outline_blank,
+                                            color:
+                                                isSelected
+                                                    ? const Color(0xFFBA1B1B)
+                                                    : const Color(0xFF474747),
+                                          ),
+                                        ),
+                                      */  SizedBox(width: 12.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      battery.name,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                        color: textColor(
+                                                          context,
+                                                        ),
+                                                        fontSize: 16.sp,
+                                                        fontFamily:
+                                                            'Graphik Arabic',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "${battery.price} SAR",
+                                                        style: TextStyle(
+                                                          color: const Color(
+                                                            0xFFBA1B1B,
+                                                          ),
+                                                          fontSize: 16.sp,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 4.w),
+                                                      Image.asset(
+                                                        'assets/icons/ryal.png',
+                                                        width: 20.w,
+                                                        height: 20.h,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 6.h),
+                                              Text(
+                                                locale.isDirectionRTL(context)
+                                                    ? "النوع:${battery.name}"
+                                                    : "The kind: ${battery.name}",
+                                                style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: borderColor(context),
+                                                ),
+                                              ),
+                                              Text(
+                                                locale.isDirectionRTL(context)
+                                                    ? "بلد المنشى: ${battery.country}"
+                                                    : "Country of Origin:  ${battery.country}",
+                                                style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: borderColor(context),
+                                                ),
+                                              ),
+                                              Text(
+                                                locale.isDirectionRTL(context)
+                                                    ? "تفاصيل المقاس: ${battery.quantity}"
+                                                    : "Size details: ${battery.quantity}",
+                                                style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: borderColor(context),
+                                                ),
+                                              ),
+                                              Text(
+                                                locale.isDirectionRTL(context)
+                                                    ? "الكمية المتاحة: ${battery.quantity}"
+                                                    : "Available quantity: ${battery.quantity}",
+                                                style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: borderColor(context),
+                                                ),
+                                              ),
+                                              Text(
+                                                locale.isDirectionRTL(context)
+                                                    ? "الكمية المتاحة: ${battery.quantity}"
+                                                    : "Available quantity: ${battery.quantity}",
+                                                style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: borderColor(context),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 12.h),
+                          SizedBox(height: 12.h),
 
-                  // Pagination UI
-                  Container(
-                    width: double.infinity,
-                    height: 60.h,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: currentPage < totalPages
-                              ? () {
-                            setState(() {
-                              currentPage++;
-                            });
-                          }
-                              : null,
-                          child: Icon(
-                            Icons.arrow_left,
-                            size: 50.sp,
-                            color: currentPage < totalPages
-                                ? Colors.black
-                                : Colors.black.withOpacity(0.25),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        if (currentPage < totalPages)
+                          // Pagination UI
                           Container(
-                            width: 50.w,
-                            height: 50.h,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(8.r),
+                            width: double.infinity,
+                            height: 60.h,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap:
+                                      currentPage < totalPages
+                                          ? () {
+                                            setState(() {
+                                              currentPage++;
+                                            });
+                                          }
+                                          : null,
+                                  child: Icon(
+                                    Icons.arrow_left,
+                                    size: 50.sp,
+                                    color:
+                                        currentPage < totalPages
+                                            ? Colors.black
+                                            : Colors.black.withOpacity(0.25),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                if (currentPage < totalPages)
+                                  Container(
+                                    width: 50.w,
+                                    height: 50.h,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Text(
+                                      '${currentPage + 1}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                if (currentPage < totalPages)
+                                  SizedBox(width: 8.w),
+                                Container(
+                                  width: 50.w,
+                                  height: 50.h,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFBA1B1B),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Text(
+                                    '$currentPage',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                GestureDetector(
+                                  onTap:
+                                      currentPage > 1
+                                          ? () {
+                                            setState(() {
+                                              currentPage--;
+                                            });
+                                          }
+                                          : null,
+                                  child: Icon(
+                                    Icons.arrow_right,
+                                    size: 50.sp,
+                                    color:
+                                        currentPage > 1
+                                            ? Colors.black
+                                            : Colors.black.withOpacity(0.25),
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: Text(
-                              '${currentPage + 1}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
                           ),
-                        if (currentPage < totalPages) SizedBox(width: 8.w),
-                        Container(
-                          width: 50.w,
-                          height: 50.h,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFBA1B1B),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Text(
-                            '$currentPage',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        GestureDetector(
-                          onTap: currentPage > 1
-                              ? () {
-                            setState(() {
-                              currentPage--;
-                            });
-                          }
-                              : null,
-                          child: Icon(
-                            Icons.arrow_right,
-                            size: 50.sp,
-                            color: currentPage > 1
-                                ? Colors.black
-                                : Colors.black.withOpacity(0.25),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            } else if (state is BatteryError) {
-              return Center(child: Text(state.message));
-            }
-            return const SizedBox();
-          },
-          ),
-                SizedBox(height: 10.h),
-
-                SizedBox(
-                  width: 74.w,
-                  height: 20.h,
-                  child: Text(
-                    'الملاحظات',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
-                      fontSize: 14.sp,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30.h),
-
-                Container(
-                  decoration: ShapeDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.black,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1.50, color: Color(0xFF9B9B9B)),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    child: TextField(
-                      maxLines: null,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                        hint: Text('الرجاء كتابة ملاحظاتك ....',),
-                        hintStyle: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w500,
-                          height: 1.57,
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-
-                Align(
-                  alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                  child: Text(
-                    locale.isDirectionRTL(context)
-                        ? "ممشى السياره"
-                        : "Car counter",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textDirection: TextDirection.rtl,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 8.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.black,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey, width: 1.0),
-                  ),
-                  child: Row(
-                    textDirection:
-                        locale.isDirectionRTL(context)
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                    children: [
-                      Expanded(
-                        child: DottedBorder(
-                          color: Colors.grey,
-                          strokeWidth: 1,
-                          dashPattern: const [6, 3],
-                          borderType: BorderType.RRect,
-                          radius: Radius.circular(8.r),
-                          padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child: TextField(
-                            //  controller: kiloReadController,
-                            decoration: InputDecoration(
-                              hintText: '0000000',
-                              hintStyle: TextStyle(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white38,
-                                fontSize: 13.sp,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
-                              ),
-                              hintTextDirection:
-                                  locale.isDirectionRTL(context)
-                                      ? TextDirection.rtl
-                                      : TextDirection.ltr,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 12.h,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                            textDirection:
-                                locale.isDirectionRTL(context)
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                            keyboardType: TextInputType.number,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
-                          fontSize: 15.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 15.h),
-
-                // --- الاستمارة (اختياري) ---
-                Align(
-                  alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text:
-                              locale.isDirectionRTL(context)
-                                  ? 'إستمارة السيارة '
-                                  : 'Car Registration ',
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
-                            fontSize: 14.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              locale.isDirectionRTL(context)
-                                  ? '( أختياري )'
-                                  : '( Optional )',
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? const Color(0xFF4D4D4D)
-                                    : Colors.white,
-                            fontSize: 12.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    textAlign:
-                        locale.isDirectionRTL(context)
-                            ? TextAlign.right
-                            : TextAlign.left,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                UploadFormWidget(
-                  onImageSelected: (file) {
-                    selectedCarDoc = file;
+                        ],
+                      );
+                    } else if (state is BatteryError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox();
                   },
                 ),
+                NotesAndCarCounterSection(
+                  notesController: notesController,
+                  kiloReadController: kiloReadController,
+                ),
+                SizedBox(height: 15.h),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'المرفقات ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '(اختياري)',
+                        style: TextStyle(
+                          color: const Color(0xFF474747),
+                          fontSize: 12.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+                SizedBox(height: 10.h),
+
+                MultiImagePickerWidget(
+                  onImagesSelected: (files) {
+                    selectedCarDocs = files;
+                    print('عدد الصور المختارة: ${selectedCarDocs.length}');
+                  },
+                ),
+
                 SizedBox(height: 15.h),
               ],
             ),
@@ -926,50 +859,59 @@ class _ChangeBatteryState extends State<ChangeBattery> {
       //هنا زرار التالي في اخر الصفحه
       bottomNavigationBar: CustomBottomButton(
         textAr: "التالي",
-        textEn: "Add My Car",
+        textEn: "Next",
         onPressed: () {
-          // ✅ 1. طباعة ID السيارة المختارة
-          print("✅ Selected Car ID: $_selectedCarBrandId");
-
-          // ✅ 2. جلب البطارية المختارة (واحد فقط)
-          final battState = context.read<BatteryCubit>().state;
-          if (battState is BatteryLoaded) {
-            if (_selectedBatteryIndex != null) {
-              final battery = battState.response.data[_selectedBatteryIndex!];
-              final selectedBattery = {
-                "id": battery.id,
-                "name": battery.name,
-                "price": battery.price,
-              };
-
-              print("✅ Selected Battery:");
-              print(
-                " - ${selectedBattery['name']} (ID: ${selectedBattery['id']}, Price: ${selectedBattery['price']} ريال)",
-              );
-            } else {
-              print("⚠️ No battery selected yet.");
-            }
-          } else {
-            print("⚠️ No batteries loaded yet.");
+          // تحقق من البيانات المطلوبة
+          if (_selectedUserCarId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار السيارة")),
+            );
+            return;
           }
 
-          // ✅ 3. طباعة الملاحظات
-          print("📝 Notes: ${notesController.text}");
+          if (_selectedBatteryIndex == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار البطارية")),
+            );
+            return;
+          }
 
-          // ✅ 4. طباعة ممشى السيارة
-          print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
+          if (kiloReadController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
+            );
+            return;
+          }
+
+          // ✅ إذا كانت كل البيانات تمام
+          final selectedBattery =
+              (context.read<BatteryCubit>().state as BatteryLoaded)
+                  .response
+                  .data[_selectedBatteryIndex!];
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (BuildContext context) => ReviewRequestPage(
+                    title: widget.title,
+                    icon: widget.icon,
+                    slug: widget.slug,
+                    selectedUserCarId: _selectedUserCarId,
+                    selectedProduct: selectedBattery,
+                    notes:
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : null,
+                    kiloRead:
+                        kiloReadController.text.isNotEmpty
+                            ? kiloReadController.text
+                            : null,
+                    selectedCarDocs: selectedCarDocs,
+                  ),
+            ),
+          );
         },
-      ),
-    );
-  }
-
-  Widget _progressBar({bool active = false}) {
-    return Container(
-      width: 100.w,
-      height: 6.h,
-      decoration: ShapeDecoration(
-        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );
   }

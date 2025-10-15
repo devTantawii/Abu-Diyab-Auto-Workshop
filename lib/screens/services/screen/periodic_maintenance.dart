@@ -1,7 +1,6 @@
 import 'dart:io';
-import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
-import 'package:abu_diyab_workshop/screens/services/widgets/car_brand_widget.dart';
 
+import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,33 +9,26 @@ import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/multi_image_picker.dart';
 import '../../../widgets/progress_bar.dart';
-import '../../my_car/cubit/CarModelCubit.dart';
-
 import '../../my_car/screen/widget/image_picker.dart';
 import '../cubit/car_check_cubit.dart';
-import '../cubit/car_check_state.dart';
-
 import '../widgets/Custom-Button.dart';
 import '../widgets/NotesAndCarCounter-Section.dart';
-import '../widgets/car_model_widget.dart';
 import '../widgets/car_selection_widget.dart';
 import '../widgets/custom_app_bar.dart';
 
-/// ---------------- Main UI ----------------
-class CarCheck extends StatefulWidget {
+class PeriodicMaintenance extends StatefulWidget {
   final String title;
   final String description;
   final String icon;
   final String slug;
-  const CarCheck({super.key, required this.title, required this.description, required this.icon, required this.slug});
+  const PeriodicMaintenance({super.key, required this.title, required this.description, required this.icon, required this.slug});
 
   @override
-  State<CarCheck> createState() => _CarCheckState();
+  State<PeriodicMaintenance> createState() => _PeriodicMaintenanceState();
 }
 
-class _CarCheckState extends State<CarCheck> {
-  int? _selectedCarBrandId;
-  int? _selectedCarModelId;
+class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
+
   List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
@@ -58,7 +50,6 @@ class _CarCheckState extends State<CarCheck> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         onBack: () {
@@ -73,9 +64,9 @@ class _CarCheckState extends State<CarCheck> {
             topRight: Radius.circular(15),
           ),
           color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.black,
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -279,24 +270,25 @@ class _CarCheckState extends State<CarCheck> {
                   ],
                 ),
                 SizedBox(height: 10.h),
+
                 Align(
                   alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text:
-                              locale.isDirectionRTL(context)
-                                  ? 'المرفقات '
-                                  : 'Attatchment',
+                          locale.isDirectionRTL(context)
+                              ? 'المرفقات '
+                              : 'Attatchment',
                           style: TextStyle(
                             color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                             fontSize: 14.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -304,9 +296,9 @@ class _CarCheckState extends State<CarCheck> {
                         ),
                         TextSpan(
                           text:
-                              locale.isDirectionRTL(context)
-                                  ? '( أختياري )'
-                                  : '( Optional )',
+                          locale.isDirectionRTL(context)
+                              ? '( أختياري )'
+                              : '( Optional )',
                           style: TextStyle(
                             color: const Color(0xFF4D4D4D),
                             fontSize: 12.sp,
@@ -317,9 +309,9 @@ class _CarCheckState extends State<CarCheck> {
                       ],
                     ),
                     textAlign:
-                        locale.isDirectionRTL(context)
-                            ? TextAlign.right
-                            : TextAlign.left,
+                    locale.isDirectionRTL(context)
+                        ? TextAlign.right
+                        : TextAlign.left,
                   ),
                 ),
                 SizedBox(height: 10.h),
@@ -335,7 +327,6 @@ class _CarCheckState extends State<CarCheck> {
           ),
         ),
       ),
-      //هنا زرار التالي في اخر الصفحه
       bottomNavigationBar: CustomBottomButton(
         textAr: "التالي",
         textEn: "Next",
@@ -347,6 +338,10 @@ class _CarCheckState extends State<CarCheck> {
             );
             return;
           }
+
+
+
+
           if (kiloReadController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
@@ -354,7 +349,14 @@ class _CarCheckState extends State<CarCheck> {
             return;
           }
 
-
+          if (selected == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("يرجى اختيار ما إذا كانت السيارة تعمل أم لا"),
+              ),
+            );
+            return;
+          }
 
 
           Navigator.push(
@@ -365,11 +367,11 @@ class _CarCheckState extends State<CarCheck> {
                 title: widget.title,
                 icon: widget.icon,
                 slug: widget.slug,
-                selectedUserCarId: _selectedUserCarId,
-                selectedProduct: 0,
                     isCarWorking: selected.toString(),
 
-                    notes:
+                    selectedUserCarId: _selectedUserCarId,
+                    selectedProduct: 0,
+                notes:
                 notesController.text.isNotEmpty
                     ? notesController.text
                     : null,
@@ -383,6 +385,55 @@ class _CarCheckState extends State<CarCheck> {
           );
         },
       ),
-    );
+
+      /*    //هنا زرار التالي في اخر الصفحه
+      bottomNavigationBar: CustomBottomButton(
+        textAr: "التالي",
+        textEn: "Next",
+        onPressed: () {
+    //    final cubit = context.read<CarWashCubit>();
+    //    final selectedService = (_selectedServiceIndex != null &&
+    //        cubit.state is CarWashLoaded)
+    //        ? (cubit.state as CarWashLoaded).services[_selectedServiceIndex!]
+    //        : null;
+
+          if (_selectedUserCarId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("يرجى اختيار سيارة")),
+            );
+            return;
+          }
+
+      //   if (selectedService == null) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(content: Text("يرجى اختيار خدمة")),
+      //     );
+      //     return;
+      //   }
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => ReviewRequestPage(
+      //       selectedUserCarId: _selectedUserCarId,
+      //    //   selectedProduct: selectedService,
+      //       notes: notesController.text,
+      //       kiloRead: kiloReadController.text,
+      //       selectedCarDoc: selectedCarDoc,
+      //       title: widget.title,
+      //       icon: widget.icon,
+      //     ),
+      //   ),
+      // );
+
+          // طباعة بيانات للتجريب
+          print("✅ Selected Car ID: $_selectedUserCarId");
+       //   print("✅ Selected Service: ${selectedService.name}");
+          print("📝 Notes: ${notesController.text}");
+          print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
+          print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
+        },
+      ),
+    */);
   }
 }

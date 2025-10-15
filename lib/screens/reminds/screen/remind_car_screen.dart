@@ -329,10 +329,10 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                         children: [
                           SizedBox(height: 6.h),
                           DetailItem(
-                            value: car.carBrand['name'] ?? '', labelAr: 'ماركــة السيـــارة:', labelEn: 'Car Brand',
+                            value: car.carBrand.name ?? '', labelAr: 'ماركــة السيـــارة:', labelEn: 'Car Brand',
                           ),
                           DetailItem(
-                            value: car.carModel['name'] ?? '', labelAr: 'موديل السيـــارة:', labelEn: 'Car Model',
+                            value: car.carModel.name ?? '', labelAr: 'موديل السيـــارة:', labelEn: 'Car Model',
                           ),
                           DetailItem(
 
@@ -352,7 +352,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),
                               image: DecorationImage(
-                                image: NetworkImage(car.carBrand['icon'] ?? ''),
+                                image: NetworkImage(car.carBrand.icon ?? ''),
                                 fit: BoxFit.contain,
                               ),
                             ),

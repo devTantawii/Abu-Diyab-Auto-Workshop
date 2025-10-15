@@ -265,12 +265,12 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                             SizedBox(height: 6.h),
                             DetailItem(
                               labelAr: 'ماركــة السيـــارة:',
-                              value: car.carBrand['name'] ?? '',
+                              value: car.carBrand.name ?? '',
                               labelEn: 'car brand :',
                             ),
                             DetailItem(
                               labelAr: 'موديل السيـــارة:',
-                              value: car.carModel['name'] ?? '',
+                              value: car.carModel.name ?? '',
                               labelEn: 'Car Model :',
                             ),
                             DetailItem(
@@ -324,7 +324,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                   borderRadius: BorderRadius.circular(8.r),
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      car.carBrand['icon'] ?? '',
+                                      car.carBrand.icon ?? '',
                                     ),
                                     fit: BoxFit.contain,
                                   ),

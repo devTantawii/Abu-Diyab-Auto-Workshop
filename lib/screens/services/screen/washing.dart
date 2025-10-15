@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:abu_diyab_workshop/screens/services/cubit/washing_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/review-request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
+import '../../../widgets/progress_bar.dart';
 import '../../my_car/cubit/all_cars_cubit.dart';
 import '../../my_car/model/all_cars_model.dart';
 import '../../my_car/screen/widget/details_item.dart';
@@ -17,7 +20,12 @@ import '../widgets/car_selection_widget.dart';
 import '../widgets/custom_app_bar.dart';
 
 class Washing extends StatefulWidget {
-  const Washing({super.key});
+  final String title;
+  final String description;
+  final String icon;
+  final String slug; // ✅ أضف ده
+
+  const Washing({super.key, required this.title, required this.description, required this.icon, required this.slug});
 
   @override
   State<Washing> createState() => _WashingState();
@@ -28,11 +36,12 @@ class _WashingState extends State<Washing> {
 
   int? _selectedCarBrandId;
   int? _selectedCarModelId;
-  File? selectedCarDoc;
+  List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
   int? _selectedServiceIndex; // العنصر المختار فقط
   final int itemsPerPage = 4; // عدد المنتجات لكل صفحة
+  int? _selectedUserCarId;
 
   int currentPage = 1;
   final ScrollController _scrollController = ScrollController();
@@ -52,7 +61,7 @@ class _WashingState extends State<Washing> {
     _scrollController.addListener(() {
       final state = context.read<CarWashCubit>().state;
       if (_scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
+          _scrollController.position.maxScrollExtent &&
           state is CarWashLoaded &&
           state.pagination.hasMorePages) {
         currentPage++;
@@ -75,24 +84,22 @@ class _WashingState extends State<Washing> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-   //   backgroundColor:  Colors.transparent,
+      backgroundColor:scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
+        title_en: "Create Request",
         onBack: () {
           context.read<CarCheckCubit>().resetCarChecks();
           Navigator.pop(context);
         },
       ),
       body: Container(
+        height: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+          ),color:backgroundColor(context),
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -104,43 +111,63 @@ class _WashingState extends State<Washing> {
                 Row(
                   children: [
                     Text(
-                      'غسيل ونظافة',
+                      widget.title,
+                      textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: 5.w),
-                    Image.asset(
-                      'assets/icons/technical-support.png',
+                    SizedBox(width: 5),
+                    Image.network(
+                      widget.icon,
                       height: 20.h,
                       width: 20.w,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.image_not_supported, size: 20.h);
+                      },
                     ),
+
                   ],
                 ),
-                SizedBox(height: 15.h),
+                SizedBox(height: 6.h),
 
-                /// -------------------- خطوات التقدم --------------------
+                Row(
+                  children: [
+                    Text(
+                      widget.description,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: borderColor(context),
+                        fontSize: 13.sp,
+                        fontFamily: 'Graphik Arabic',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                  ],
+                ),
+
+                SizedBox(height: 6.h),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _progressBar(active: true),
-                    _progressBar(),
-                    _progressBar(),
+                    ProgressBar(active: true),
+                    ProgressBar(),
+                    ProgressBar(),
                   ],
                 ),
-
                 /// -------------------- قسم السيارات --------------------
                 CarsSection(
-                  onCarSelected: (brandId, modelId) {
+                  onCarSelected: (userCarId) {
                     setState(() {
-                      _selectedCarBrandId = brandId;
-                      _selectedCarModelId = modelId;
+                      _selectedUserCarId = userCarId;
                     });
                   },
                 ),
@@ -149,18 +176,15 @@ class _WashingState extends State<Washing> {
                 /// -------------------- الخدمات --------------------
                 Align(
                   alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Text(
                     locale.isDirectionRTL(context)
                         ? "الخدمات المتوفرة"
                         : 'Available Services',
                     style: TextStyle(
-                      color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
+                      color:textColor(context),
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -179,11 +203,8 @@ class _WashingState extends State<Washing> {
                       if (_selectedServiceIndex == null && data.isNotEmpty) {
                         _selectedServiceIndex = null;
                       }
-
                       // Pagination
                       final totalPages = (data.length / itemsPerPage).ceil();
-
-                      // تأكد أن currentPage ضمن الحدود
                       if (currentPage > totalPages) currentPage = totalPages > 0 ? totalPages : 1;
                       if (currentPage < 1) currentPage = 1;
 
@@ -191,10 +212,13 @@ class _WashingState extends State<Washing> {
                       final endIndex = (startIndex + itemsPerPage) > data.length
                           ? data.length
                           : startIndex + itemsPerPage;
-                      final currentItems = data.sublist(
+                      final currentItems = (data.isNotEmpty && startIndex < endIndex)
+                          ? data.sublist(
                         startIndex.clamp(0, data.length),
                         endIndex.clamp(0, data.length),
-                      );
+                      )
+                          : [];
+
 
                       return Column(
                         children: [
@@ -211,10 +235,9 @@ class _WashingState extends State<Washing> {
                           ),
                           SizedBox(height: 12.h),
 
-                          // Pagination UI مع المربعات والأسهم المعكوسة
                           Container(
                             width: double.infinity,
-                            height: 60.h,
+                            height: 120.h,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -238,7 +261,6 @@ class _WashingState extends State<Washing> {
                                 ),
                                 SizedBox(width: 12.w),
 
-                                // Next page (gray box) إذا موجود
                                 if (currentPage < totalPages)
                                   Container(
                                     width: 50.w,
@@ -251,7 +273,7 @@ class _WashingState extends State<Washing> {
                                     child: Text(
                                       '${currentPage + 1}',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: backgroundColor(context),
                                         fontSize: 22.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -316,54 +338,106 @@ class _WashingState extends State<Washing> {
           ),
         ),
       ),
+
       bottomNavigationBar: CustomBottomButton(
         textAr: "التالي",
         textEn: "Next",
         onPressed: () {
-          // ✅ 1. طباعة ID السيارة المختارة
-          print("✅ Selected Car ID: $_selectedCarBrandId");
-
-          if (selectedCarDoc != null) {
-            print("🖼️ Selected Car Document: ${selectedCarDoc!.path}");
-          } else {
-            print("⚠️ No car document selected yet.");
+          // تحقق من البيانات المطلوبة
+          if (_selectedUserCarId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار السيارة")),
+            );
+            return;
           }
 
-          // ✅ 2. جلب الخدمة المختارة (خدمة واحدة فقط)
-          final washState = context.read<CarWashCubit>().state;
-          if (washState is CarWashLoaded) {
-            if (_selectedServiceIndex != null) {
-              final item = washState.services[_selectedServiceIndex!];
-              print("✅ Selected Service:");
-              print(" - ${item.name} (${item.price} ريال)");
-            } else {
-              print("⚠️ No service selected yet.");
-            }
-
-            // ✅ 3. طباعة الملاحظات
-            print("📝 Notes: ${notesController.text}");
-
-            // ✅ 4. طباعة ممشى السيارة
-            print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
-          } else {
-            print("⚠️ No services loaded yet.");
+          // ✅ إذا كانت كل البيانات تمام
+          if (_selectedServiceIndex == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("يرجى اختيار الخدمة")),
+            );
+            return;
           }
+
+          final cubit = context.read<CarWashCubit>();
+          final selectedService = (cubit.state as CarWashLoaded).services[_selectedServiceIndex!];
+
+
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (BuildContext context) => ReviewRequestPage(
+                title: widget.title,
+                icon: widget.icon,
+                slug: widget.slug,
+                selectedUserCarId: _selectedUserCarId,
+                selectedProduct: selectedService,
+            //   notes:
+            //   notesController.text.isNotEmpty
+            //       ? notesController.text
+            //       : null,
+            //   kiloRead:
+            //    kiloReadController.text.isNotEmpty
+            //        ? kiloReadController.text
+            //        : null,
+               // selectedCarDocs: selectedCarDocs,
+              ),
+            ),
+          );
         },
       ),
-    );
-  }
 
-  /// ----------------------------------------------------------
-  /// 🔹 عناصر مساعدة
-  /// ----------------------------------------------------------
-  Widget _progressBar({bool active = false}) {
-    return Container(
-      width: 100.w,
-      height: 6.h,
-      decoration: ShapeDecoration(
-        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      /*
+      bottomNavigationBar: CustomBottomButton(
+        textAr: "التالي",
+        textEn: "Next",
+        onPressed: () {
+          final cubit = context.read<CarWashCubit>();
+          final selectedService = (_selectedServiceIndex != null &&
+              cubit.state is CarWashLoaded)
+              ? (cubit.state as CarWashLoaded).services[_selectedServiceIndex!]
+              : null;
+
+          if (_selectedUserCarId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("يرجى اختيار سيارة")),
+            );
+            return;
+          }
+
+          if (selectedService == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("يرجى اختيار خدمة")),
+            );
+            return;
+          }
+
+     //   Navigator.push(
+     //     context,
+     //     MaterialPageRoute(
+     //       builder: (context) => ReviewRequestPage(
+     //         selectedUserCarId: _selectedUserCarId,
+     //         selectedProduct: selectedService,
+     //         notes: notesController.text,
+     //         kiloRead: kiloReadController.text,
+     //         selectedCarDoc: selectedCarDoc,
+     //         title: widget.title,
+     //         icon: widget.icon,
+     //       ),
+     //     ),
+     //   );
+
+          // طباعة بيانات للتجريب
+          print("✅ Selected Car ID: $_selectedUserCarId");
+          print("✅ Selected Service: ${selectedService.name}");
+          print("📝 Notes: ${notesController.text}");
+          print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
+          print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
+        },
       ),
+      */
     );
   }
 
@@ -373,88 +447,87 @@ class _WashingState extends State<Washing> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedServiceIndex = index; // اختيار عنصر واحد فقط
+          _selectedServiceIndex = index;
         });
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10.h),
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
-          borderRadius: BorderRadius.circular(15.r),
-          border: Border.all(
-            width: 1.5.w,
-            color: const Color(0xFF9B9B9B),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Checkbox icon فقط يتغير لونه عند الاختيار
-            Icon(
-              isSelected ? Icons.check_box : Icons.check_box_outline_blank,
-              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+      child: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          margin: EdgeInsets.symmetric(vertical: 10.h),
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            color:boxcolor(context),
+            borderRadius: BorderRadius.circular(15.r),
+            border: Border.all(
+              width: 1.5.w,
+              color:borderColor(context),
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          item.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Text(
-                            item.price,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+                color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            item.name,
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: const Color(0xFFBA1B1B),
-                              fontSize: 16.sp,
+                              color: textColor(context),
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          SizedBox(width: 4.w),
-                          Image.asset(
-                            'assets/icons/ryal.png',
-                            width: 20.w,
-                            height: 20.h,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    item.description,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? const Color(0xFF474747)
-                          : Colors.white,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w500,
+                        ),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            Text(
+                              item.price,
+                              style: TextStyle(
+                                color: const Color(0xFFBA1B1B),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(width: 4.w),
+                            Image.asset(
+                              'assets/icons/ryal.png',
+                              width: 20.w,
+                              height: 20.h,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    Text(
+                      item.description,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFF474747)
+                            : Colors.white,
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

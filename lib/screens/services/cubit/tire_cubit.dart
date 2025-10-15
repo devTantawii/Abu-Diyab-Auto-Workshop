@@ -13,11 +13,13 @@ class TireCubit extends Cubit<TireState> {
     try {
       emit(TireLoading());
       final tires = await repository.getTires(size: size);
+      allTires = tires; // مهم جدًا
       emit(TireLoaded(tires));
     } catch (e) {
       emit(TireError(e.toString()));
     }
   }
+
 
 
   // فلترة حسب المقاس

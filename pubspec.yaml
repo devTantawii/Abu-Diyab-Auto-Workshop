@@ -37,7 +37,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_screenutil: ^5.9.3
   animations: ^2.0.11
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   bottom_picker: ^4.0.1
   dio: ^5.8.0+1
   shared_preferences: ^2.5.3
@@ -50,6 +50,10 @@ dependencies:
   checkbox_grouped: ^2.0.0
   flutter_html: ^3.0.0
   shimmer: ^3.0.0
+  omni_datetime_picker: ^2.3.1
+  google_maps_flutter: ^2.13.1
+  webview_flutter: ^4.13.0
+  flash: ^3.1.1
 
 dev_dependencies:
   flutter_test:
