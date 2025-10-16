@@ -1,3 +1,4 @@
+import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +24,7 @@ class CustomBottomButton extends StatelessWidget {
         color: Theme.of(context).brightness == Brightness.light
             ? Colors.white
             : Colors.black,
+
       ),
       child: Container(
         padding: EdgeInsets.all(12.w),
@@ -30,9 +32,15 @@ class CustomBottomButton extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.light
               ? Colors.white
               : Colors.black,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
+          borderRadius:  BorderRadius.only(
+            topLeft: Radius.circular(10.sp),
+            topRight: Radius.circular(10.sp),
+          ),
+          border: Border(
+            top: BorderSide(
+              color:borderColor(context),
+              width: 1.5.w,
+            ),
           ),
           boxShadow: const [
             BoxShadow(

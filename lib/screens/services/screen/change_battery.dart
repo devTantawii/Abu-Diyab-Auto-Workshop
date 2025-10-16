@@ -102,14 +102,13 @@ class _ChangeBatteryState extends State<ChangeBattery> {
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
+            padding:  EdgeInsets.all(15.sp),
+            child: Column( textDirection: locale.isDirectionRTL(context)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
+                GestureDetector(
                       onTap: () {
                         if (selectedAh != null) {
                           setState(() {
@@ -121,9 +120,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         } else {
                           showModalBottomSheet(
                             context: context,
-                            shape: const RoundedRectangleBorder(
+                            shape:  RoundedRectangleBorder(
                               borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16),
+                                top: Radius.circular(16.sp),
                               ),
                             ),
                             builder: (context) {
@@ -147,11 +146,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Center(
-                                          child: Text(
-                                            'الفلترة',
+                                          child: Text(             locale.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: const Color(0xFFBA1B1B),
+                                              color: accentColor,
                                               fontSize: 25.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -160,27 +158,26 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                         ),
 
                                         Text(
-                                          '-----------------------------------------------------------------------------------------------------------------------------------------',
+                                          '---------------------------------------------------------------------------',
                                           textAlign: TextAlign.right,
                                           maxLines: 1,
                                           style: TextStyle(
-                                            color: const Color(0xFF9B9B9B),
+                                            color:borderColor(context),
                                             fontSize: 16.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
                                         Text(
-                                          'الأمبير',
-                                          textAlign: TextAlign.right,
+                                          locale.isDirectionRTL(context) ? 'الامبير' : 'Ampere',
                                           style: TextStyle(
-                                            color: const Color(0xFF474747),
-                                            fontSize: 18,
+                                            color:  borderColor(context),
+                                            fontSize: 18.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                         SizedBox(height: 12.h),
                                         Expanded(
                                           child: LayoutBuilder(
                                             builder: (context, constraints) {
@@ -193,35 +190,24 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                       (spacing *
                                                           (itemsPerRow - 1))) /
                                                   itemsPerRow;
-                                              final double buttonHeight = 45;
-                                              final double rowSpacing = 15;
+                                              final double buttonHeight = 35.h;
+                                              final double rowSpacing = 25.h;
 
                                               return Container(
                                                 width: double.infinity,
                                                 height:
                                                     ((amperOptions.length /
-                                                            itemsPerRow)
-                                                        .ceil()) *
+                                                            itemsPerRow).ceil()) *
                                                     (buttonHeight + rowSpacing),
                                                 child: Stack(
-                                                  children:
-                                                      amperOptions.asMap().entries.map((
-                                                        entry,
-                                                      ) {
+                                                  children: amperOptions.asMap().entries.map((entry,) {
                                                         final index = entry.key;
                                                         final String
-                                                        amperValue =
-                                                            entry.value;
-                                                        final int row =
-                                                            index ~/
-                                                            itemsPerRow;
-                                                        final int col =
-                                                            index % itemsPerRow;
-
-                                                        final double left =
-                                                            col *
-                                                            (buttonWidth +
-                                                                spacing);
+                                                        amperValue = entry.value;
+                                                        final int row = index ~/ itemsPerRow;
+                                                        final int col = index % itemsPerRow;
+                                                        final double left = col *
+                                                            (buttonWidth +spacing);
                                                         final double top =
                                                             row *
                                                             (buttonHeight +
@@ -241,64 +227,30 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                               });
                                                             },
                                                             child: Container(
-                                                              width:
-                                                                  buttonWidth,
-                                                              height:
-                                                                  buttonHeight,
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10,
-                                                                    vertical: 9,
-                                                                  ),
+                                                              width: buttonWidth,
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9,),
                                                               decoration: ShapeDecoration(
                                                                 color:
                                                                     isSelected
-                                                                        ? const Color(
-                                                                          0x19BA1B1B,
-                                                                        )
+                                                                        ? const Color(0xffBA1B1B,)
                                                                         : null,
                                                                 shape: RoundedRectangleBorder(
                                                                   side: BorderSide(
-                                                                    width: 1.5,
-                                                                    color:
-                                                                        isSelected
-                                                                            ? const Color(
-                                                                              0xFFBA1B1B,
-                                                                            )
-                                                                            : const Color(
-                                                                              0xFF9B9B9B,
-                                                                            ),
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        5,
-                                                                      ),
-                                                                ),
+                                                                    width: 1.w,
+                                                                    color: isSelected ?accentColor :borderColor(context)),
+                                                                  borderRadius: BorderRadius.circular(5.sp),
+                                                                )
                                                               ),
                                                               child: Center(
-                                                                child: Text(
-                                                                  amperValue,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
+                                                                child: Text(amperValue,textAlign: TextAlign.center,
                                                                   style: TextStyle(
                                                                     color:
                                                                         isSelected
-                                                                            ? Colors.black
-                                                                            : const Color(
-                                                                              0xFF474747,
-                                                                            ),
-                                                                    fontSize:
-                                                                        isSelected
-                                                                            ? 18
-                                                                            : 16,
-                                                                    fontFamily:
-                                                                        'Graphik Arabic',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
+                                                                            ? textColor(context)
+                                                                            :borderColor(context),
+                                                                    fontSize: isSelected ? 14.sp : 12.sp,
+                                                                    fontFamily: 'Graphik Arabic',
+                                                                    fontWeight: FontWeight.w600,),
                                                                 ),
                                                               ),
                                                             ),
@@ -339,14 +291,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                     0xFFBA1B1B,
                                                   ),
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          15,
-                                                        ),
+                                                    borderRadius: BorderRadius.circular(15.sp),
                                                   ),
                                                 ),
-                                                child: Text(
-                                                  'عرض النتائج',
+                                                child: Text(  locale.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     color: Colors.white,
@@ -374,56 +322,40 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         width: 50.w,
                         height: 50.h,
                         decoration: BoxDecoration(
-                          color:
-                              selectedAh != null
-                                  ? const Color(0x67BA1B1B)
-                                  : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                          color: selectedAh != null
+                                  ? accentColor
+                                  :boxcolor(context),
+                          borderRadius: BorderRadius.circular(10.sp),
                           border: Border.all(
-                            color:
-                                selectedAh != null
-                                    ? const Color(0xFFBA1B1B)
-                                    : const Color(0xFFA4A4A4),
-                            width: 1,
-                          ),
-                        ),
+                            width: 1.5.w, // responsive border
+                            color:borderColor(context),
+                          ),                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child:
-                              selectedAh != null
-                                  ? Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.white,
-                                  )
-                                  : Image.asset(
+                          child: Image.asset(
                                     'assets/icons/icon_filter.png',
-                                    color: textColor(context),
+                                    color:textColor(context),
                                   ),
 
                           //  color: textColor(context),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                SizedBox(height: 12.h,),
                 Row(
                   children: [
                     Text(
                       widget.title,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        color:textColor(context),
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(width: 5),
-                    Image.network(
-                      widget.icon,
+                    Image.network(widget.icon,
                       height: 20.h,
                       width: 20.w,
                       errorBuilder: (context, error, stackTrace) {
@@ -499,11 +431,20 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       final batteries = state.response.data;
 
                       if (batteries.isEmpty) {
-                        return const Center(
-                          child: Text("لا توجد بطاريات متاحة"),
+                        return  Center(
+                          child:Text(locale.isDirectionRTL(context) ? ("لا توجد بطاريات متاحة") : "No batteries available",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22.sp,
+                              color:textColor(context),
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Graphik Arabic',
+                            ),
+                          ),
+
+
                         );
                       }
-
                       // Pagination
                       final totalPages =
                           (batteries.length / itemsPerPage).ceil();
@@ -820,18 +761,18 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'المرفقات ',
+                        text: locale.isDirectionRTL(context) ? "المرفقات:" : "Attachments:",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: textColor(context),
                           fontSize: 14.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       TextSpan(
-                        text: '(اختياري)',
+                        text: locale.isDirectionRTL(context) ? " (اختياري)" : " (optional)",
                         style: TextStyle(
-                          color: const Color(0xFF474747),
+                          color: borderColor(context),
                           fontSize: 12.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
@@ -856,26 +797,22 @@ class _ChangeBatteryState extends State<ChangeBattery> {
           ),
         ),
       ),
-      //هنا زرار التالي في اخر الصفحه
       bottomNavigationBar: CustomBottomButton(
         textAr: "التالي",
         textEn: "Next",
         onPressed: () {
-          // تحقق من البيانات المطلوبة
           if (_selectedUserCarId == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى اختيار السيارة")),
             );
             return;
           }
-
           if (_selectedBatteryIndex == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى اختيار البطارية")),
             );
             return;
           }
-
           if (kiloReadController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى إدخال قراءة العداد")),

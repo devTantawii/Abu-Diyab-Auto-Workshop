@@ -60,7 +60,7 @@ class _CarsSectionState extends State<CarsSection> {
         SizedBox(height: 10.h),
         Container(
           height: 120.h,
-          width: double.infinity,
+          width: MediaQuery.of(context).size.width * 0.9,
           child: BlocProvider.value(
             value: _cubit,
             child: BlocBuilder<CarCubit, CarState>(

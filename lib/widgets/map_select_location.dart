@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
+import '../core/language/locale.dart';
+
 const String googleApiKey = 'AIzaSyA1rfRh5d0HM8hZ34eL8vjgaT2zC4Vtr7o';
 
 class LocationPickerFull extends StatefulWidget {
@@ -105,10 +107,12 @@ class _LocationPickerFullState extends State<LocationPickerFull> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'تحديد الموقع',
+        title: Text(locale!.isDirectionRTL(context)?
+          'تحديد الموقع':"Location Selection",
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w500,

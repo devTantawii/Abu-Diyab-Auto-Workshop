@@ -86,12 +86,15 @@ class _OffersScreenState extends State<OffersScreen> {
                           ),
                         );
                       }
+
                       List<bool> isExpandedList = List.generate(state.offers.length, (_) => false);
 
                       return ListView.builder(
                         itemCount: state.offers.length,
                         itemBuilder: (context, index) {
                           final offer = state.offers[index];
+                          final relatedName = offer.service?.name ?? offer.product?.name ?? '';
+                          final relatedId = offer.service?.id ?? offer.product?.id ?? 0;
 
                           return StatefulBuilder(
                             builder: (context, setStateSB) {
@@ -163,7 +166,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(horizontal: 8.w),
                                             child: Text(
-                                              offer.offerService.name,
+                                              relatedName,
                                               textAlign: TextAlign.right,
                                               style: TextStyle(
                                                 color: Theme.of(context).brightness == Brightness.light
@@ -231,21 +234,19 @@ class _OffersScreenState extends State<OffersScreen> {
                                                     ),
                                                     padding: EdgeInsets.symmetric(vertical: 12.h),
                                                   ),
-                                                  onPressed: () async{
+                                                  onPressed: () async {
                                                     final prefs = await SharedPreferences.getInstance();
                                                     final token = prefs.getString('token');
 
                                                     if (token != null && token.isNotEmpty) {
                                                       // لو عنده توكين
-                                               //       navigateToServiceScreen(context,offer.offerService.id,offer.offerService.name);
-
+//                                                       navigateToServiceScreen(context, relatedId.toString(), relatedName.toString(),);
                                                     } else {
                                                       showModalBottomSheet(
                                                         context: context,
                                                         isScrollControlled: true,
                                                         backgroundColor: Colors.transparent,
-                                                        builder:
-                                                            (context) => FractionallySizedBox(
+                                                        builder: (context) => FractionallySizedBox(
                                                           widthFactor: 1,
                                                           child: BlocProvider(
                                                             create: (_) => LoginCubit(dio: Dio()),
@@ -254,7 +255,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                                         ),
                                                       );
                                                     }
-
                                                   },
                                                   child: Text(
                                                     isArabic ? 'استمتع بالعرض الآن' : 'Enjoy the offer now',

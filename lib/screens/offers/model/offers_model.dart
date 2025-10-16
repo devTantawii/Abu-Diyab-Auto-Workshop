@@ -31,7 +31,8 @@ class Offer {
   final String name;
   final String description;
   final String image;
-  final OfferService offerService;
+  final OfferItem? service;
+  final OfferItem? product;
   final String discount;
   final String type;
   final String startAt;
@@ -43,7 +44,8 @@ class Offer {
     required this.name,
     required this.description,
     required this.image,
-    required this.offerService,
+    this.service,
+    this.product,
     required this.discount,
     required this.type,
     required this.startAt,
@@ -57,7 +59,12 @@ class Offer {
       name: json['name'],
       description: json['description'],
       image: json['image'],
-      offerService: OfferService.fromJson(json['service']),
+      service: json['service'] != null
+          ? OfferItem.fromJson(json['service'])
+          : null,
+      product: json['product'] != null
+          ? OfferItem.fromJson(json['product'])
+          : null,
       discount: json['discount'],
       type: json['type'],
       startAt: json['start_at'],
@@ -72,7 +79,8 @@ class Offer {
       "name": name,
       "description": description,
       "image": image,
-      "service": offerService.toJson(),
+      "service": service?.toJson(),
+      "product": product?.toJson(),
       "discount": discount,
       "type": type,
       "start_at": startAt,
@@ -82,17 +90,17 @@ class Offer {
   }
 }
 
-class OfferService {
+class OfferItem {
   final int id;
   final String name;
 
-  OfferService({
+  OfferItem({
     required this.id,
     required this.name,
   });
 
-  factory OfferService.fromJson(Map<String, dynamic> json) {
-    return OfferService(
+  factory OfferItem.fromJson(Map<String, dynamic> json) {
+    return OfferItem(
       id: json['id'],
       name: json['name'],
     );

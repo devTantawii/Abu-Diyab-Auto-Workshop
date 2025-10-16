@@ -1,6 +1,9 @@
+import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+
+import '../../../core/language/locale.dart';
 
 class DateTimeSection extends StatelessWidget {
   final DateTime? selectedDateTime;
@@ -15,18 +18,15 @@ class DateTimeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final locale = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "اليوم و التاريخ",
+        Text(           locale!.isDirectionRTL(context) ? 'اليوم و التاريخ' : 'The day and the date',
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color:textColor(context),
           ),
         ),
         SizedBox(height: 10.h),
@@ -43,41 +43,52 @@ class DateTimeSection extends StatelessWidget {
                 colorScheme: isDark
                     ? const ColorScheme.dark(primary: Color(0xFFBA1B1B))
                     : const ColorScheme.light(primary: Color(0xFFBA1B1B)),
+
+                timePickerTheme: TimePickerThemeData(
+                  hourMinuteTextStyle: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  dayPeriodTextStyle: TextStyle(
+                    fontSize: 16.sp,
+                  ),
+                ),
+                textTheme: TextTheme(
+                  titleMedium: TextStyle(fontSize: 16.sp),
+                  bodyMedium: TextStyle(fontSize: 15.sp),
+                  labelLarge: TextStyle(fontSize: 16.sp),
+                ),
               ),
             );
+
             if (date != null) onSelected(date);
           },
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(12.sp),
               border: Border.all(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade400
-                    : Colors.white30,
+                color:borderColor(context),
+                width: 1.5.w
               ),
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : const Color(0xFF1E1E1E),
+              color:boxcolor(context)
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   selectedDateTime == null
-                      ? "اختر اليوم و التاريخ"
+                      ? locale.isDirectionRTL(context) ? 'اختر اليوم و التاريخ' : 'Choose the day and date'
                       : "${selectedDateTime!.day}/${selectedDateTime!.month}/${selectedDateTime!.year}  "
                       "${selectedDateTime!.hour}:${selectedDateTime!.minute.toString().padLeft(2, '0')}",
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.black87
-                        : Colors.white,
+                    color: borderColor(context)
                   ),
                 ),
-                const Icon(Icons.calendar_today_outlined,
-                    size: 20, color: Color(0xFFBA1B1B)),
+                 Icon(Icons.calendar_today_outlined,
+                    size: 20.sp, color: accentColor),
               ],
             ),
           ),

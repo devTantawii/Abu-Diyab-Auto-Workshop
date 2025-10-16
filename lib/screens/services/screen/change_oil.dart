@@ -90,45 +90,41 @@ class _ChangeOilState extends State<ChangeOil> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
+        title_en: "Create Request",
         onBack: () {
           context.read<OilCubit>().resetOils(); // هنا قبل ما نرجع
           Navigator.pop(context);
         },
       ),
       body: Container(
+        height: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
-        ),
-        child: SingleChildScrollView(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+          ),color:backgroundColor(context),    ),        child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            padding:  EdgeInsets.all(12.w),
+            child: Column( textDirection: locale.isDirectionRTL(context)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
               children: [
                 GestureDetector(
                   onTap: () {
                     if (selectedViscosity != null) {
-                      // 🧹 لو في فلتر محدد، امسحه مباشرة
                       setState(() {
                         selectedViscosity = null;
                       });
                       context.read<OilCubit>().filterOilsByViscosity(null);
                     } else {
-                      // 🪟 عرض قائمة الفلترة في BottomSheet
                       showModalBottomSheet(
                         context: context,
-                        shape: const RoundedRectangleBorder(
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
+                            top: Radius.circular(16.sp),
                           ),
                         ),
                         builder: (context) {
@@ -137,11 +133,11 @@ class _ChangeOilState extends State<ChangeOil> {
                             builder: (context, setModalState) {
                               return Container(
                                 decoration: ShapeDecoration(
-                                  color: const Color(0xFFEAEAEA),
+                                  color: backgroundColor(context),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20),
+                                      topLeft: Radius.circular(20.sp),
+                                      topRight: Radius.circular(20.sp),
                                     ),
                                   ),
                                 ),
@@ -151,11 +147,10 @@ class _ChangeOilState extends State<ChangeOil> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Center(
-                                      child: Text(
-                                        'الفلترة',
+                                      child: Text(             locale.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: const Color(0xFFBA1B1B),
+                                          color: accentColor,
                                           fontSize: 25.sp,
                                           fontFamily: 'Graphik Arabic',
                                           fontWeight: FontWeight.w600,
@@ -163,182 +158,143 @@ class _ChangeOilState extends State<ChangeOil> {
                                       ),
                                     ),
                                     Text(
-                                      '-----------------------------------------------------------------------------------------------------------------------------------------',
+                                      '---------------------------------------------------------------------------',
+                                      textAlign: TextAlign.right,
                                       maxLines: 1,
                                       style: TextStyle(
-                                        color: const Color(0xFF9B9B9B),
+                                        color: borderColor(context),
                                         fontSize: 16.sp,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     Text(
-                                      'لزوجة الزيت',
+                                      locale.isDirectionRTL(context) ? 'لزوجه الزيت' : 'Oil viscosity',
                                       style: TextStyle(
-                                        color: const Color(0xFF474747),
-                                        fontSize: 18,
+                                        color: borderColor(context),
+                                        fontSize: 18.sp,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const SizedBox(height: 12),
-
-                                    // 🧩 الأزرار داخل الشبكة
+                                    SizedBox(height: 12.h),
                                     Expanded(
                                       child: LayoutBuilder(
                                         builder: (context, constraints) {
-                                          final double containerWidth =
-                                              constraints.maxWidth;
-                                          const int itemsPerRow = 4;
-                                          const double spacing = 10;
-                                          const double buttonHeight = 45;
-                                          const double rowSpacing = 15;
-
+                                          final double containerWidth = constraints.maxWidth;
+                                          final int itemsPerRow = 4;
+                                          final double spacing = 10;
                                           final double buttonWidth =
-                                              (containerWidth -
-                                                  (spacing *
-                                                      (itemsPerRow - 1))) /
-                                              itemsPerRow;
+                                              (containerWidth - (spacing * (itemsPerRow - 1))) /
+                                                  itemsPerRow;
+                                          final double buttonHeight = 35.h;
+                                          final double rowSpacing = 25.h;
 
                                           return Container(
                                             width: double.infinity,
+                                            height: ((viscosityOptions.length / itemsPerRow)
+                                                .ceil()) *
+                                                (buttonHeight + rowSpacing),
                                             child: Stack(
-                                              children:
-                                                  viscosityOptions.asMap().entries.map((
-                                                    entry,
-                                                  ) {
-                                                    final index = entry.key;
-                                                    final String
-                                                    viscosityValue =
-                                                        entry.value;
-                                                    final int row =
-                                                        index ~/ itemsPerRow;
-                                                    final int col =
-                                                        index % itemsPerRow;
+                                              children: viscosityOptions.asMap().entries.map(
+                                                    (entry) {
+                                                  final index = entry.key;
+                                                  final String viscosityValue = entry.value;
+                                                  final int row = index ~/ itemsPerRow;
+                                                  final int col = index % itemsPerRow;
+                                                  final double left =
+                                                      col * (buttonWidth + spacing);
+                                                  final double top =
+                                                      row * (buttonHeight + rowSpacing);
+                                                  final bool isSelected =
+                                                      tempSelectedViscosity == viscosityValue;
 
-                                                    final double left =
-                                                        col *
-                                                        (buttonWidth + spacing);
-                                                    final double top =
-                                                        row *
-                                                        (buttonHeight +
-                                                            rowSpacing);
-                                                    final bool isSelected =
-                                                        tempSelectedViscosity ==
-                                                        viscosityValue;
-
-                                                    return Positioned(
-                                                      left: left,
-                                                      top: top,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          setModalState(() {
-                                                            tempSelectedViscosity =
-                                                                viscosityValue;
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          width: buttonWidth,
-                                                          height: buttonHeight,
-                                                          decoration: ShapeDecoration(
-                                                            color:
-                                                                isSelected
-                                                                    ? const Color(
-                                                                      0x19BA1B1B,
-                                                                    )
-                                                                    : null,
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                width: 1.5,
-                                                                color:
-                                                                    isSelected
-                                                                        ? const Color(
-                                                                          0xFFBA1B1B,
-                                                                        )
-                                                                        : const Color(
-                                                                          0xFF9B9B9B,
-                                                                        ),
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    5,
-                                                                  ),
+                                                  return Positioned(
+                                                    left: left,
+                                                    top: top,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          tempSelectedViscosity =
+                                                              viscosityValue;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        width: buttonWidth,
+                                                        padding: EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 9,
+                                                        ),
+                                                        decoration: ShapeDecoration(
+                                                          color: isSelected
+                                                              ? const Color(0xffBA1B1B)
+                                                              : null,
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                              width: 1.w,
+                                                              color: isSelected
+                                                                  ? accentColor
+                                                                  : borderColor(context),
                                                             ),
+                                                            borderRadius:
+                                                            BorderRadius.circular(5.sp),
                                                           ),
-                                                          child: Center(
-                                                            child: Text(
-                                                              viscosityValue,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                color:
-                                                                    isSelected
-                                                                        ? Colors
-                                                                            .black
-                                                                        : const Color(
-                                                                          0xFF474747,
-                                                                        ),
-                                                                fontSize:
-                                                                    isSelected
-                                                                        ? 18
-                                                                        : 16,
-                                                                fontFamily:
-                                                                    'Graphik Arabic',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            viscosityValue,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: isSelected
+                                                                  ? textColor(context)
+                                                                  : borderColor(context),
+                                                              fontSize: isSelected ? 14.sp : 12.sp,
+                                                              fontFamily: 'Graphik Arabic',
+                                                              fontWeight: FontWeight.w600,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    );
-                                                  }).toList(),
+                                                    ),
+                                                  );
+                                                },
+                                              ).toList(),
                                             ),
                                           );
                                         },
                                       ),
                                     ),
-                                    const SizedBox(height: 20),
-
-                                    // 🔘 زر عرض النتائج
+                                    const SizedBox(height: 12),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              selectedViscosity =
-                                                  tempSelectedViscosity;
+                                              selectedViscosity = tempSelectedViscosity;
                                             });
                                             Navigator.pop(context);
                                             context
                                                 .read<OilCubit>()
-                                                .filterOilsByViscosity(
-                                                  selectedViscosity,
-                                                );
+                                                .filterOilsByViscosity(selectedViscosity);
                                           },
                                           child: Container(
                                             width: 240.w,
                                             height: 50.h,
+                                            padding: const EdgeInsets.all(10),
                                             decoration: ShapeDecoration(
                                               color: const Color(0xFFBA1B1B),
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
+                                                borderRadius: BorderRadius.circular(15.sp),
                                               ),
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                'عرض النتائج',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.sp,
-                                                  fontFamily: 'Graphik Arabic',
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                            child: Text(  locale.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ),
@@ -354,39 +310,33 @@ class _ChangeOilState extends State<ChangeOil> {
                       );
                     }
                   },
-                  child: Container(
-                    width: 50.w,
-                    height: 50.h,
-                    decoration: BoxDecoration(
-                      color:
-                          selectedViscosity != null
-                              ? const Color(0x67BA1B1B)
-                              : Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color:
-                            selectedViscosity != null
-                                ? const Color(0xFFBA1B1B)
-                                : const Color(0xFFA4A4A4),
-                        width: 1,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 50.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                          color: selectedViscosity != null
+                              ? accentColor
+                              : boxcolor(context),
+                          borderRadius: BorderRadius.circular(10.sp),
+                          border: Border.all(
+                            width: 1.5.w,
+                            color: borderColor(context),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Image.asset(
+                            'assets/icons/icon_filter.png',
+                            color: textColor(context),
+                          ),
+                        ),
                       ),
-                    ),
-                    child:
-                        selectedViscosity != null
-                            ? const Icon(
-                              Icons.cancel_outlined,
-                              color: Colors.white,
-                            )
-                            : Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Image.asset(
-                                'assets/icons/icon_filter.png',
-                                color: Colors.grey,
-                              ),
-                            ),
+                    ],
                   ),
                 ),
-
+                SizedBox(height: 12.h),
                 Row(
                   children: [
                     Text(
@@ -530,107 +480,108 @@ class _ChangeOilState extends State<ChangeOil> {
 
                               return GestureDetector(
                                 onTap: toggleSelection,
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 16.h),
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).brightness == Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    border: Border.all(
-                                      width: 1.5.w,
-                                      color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.25),
-                                        blurRadius: 12.r,
-                                        offset: Offset(0, 4.h),
+                                child: Center(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    margin: EdgeInsets.symmetric(vertical: 16.h),
+                                    padding: EdgeInsets.symmetric( vertical : 12.h,  horizontal :12.h),
+                                    decoration: BoxDecoration(
+                                      color: boxcolor(context),
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      border: Border.all(
+                                        width: 1.5.w,
+                                        color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
                                       ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.2.sp,
-                                        child: Checkbox(
-                                          value: isSelected,
-                                          onChanged: (_) {
-                                            toggleSelection(); // هنا شغّل نفس الأكشن
-                                          },
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(4.r),
-                                          ),
-                                          side: BorderSide(
-                                            color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
-                                            width: 1.2,
-                                          ),
-                                          checkColor: Colors.white,
-                                          activeColor: const Color(0xFFBA1B1B),
-                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.25),
+                                          blurRadius: 12.r,
+                                          offset: Offset(0, 4.h),
                                         ),
-                                      ),
-                                      SizedBox(width: 12.w),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    oil.name,
-                                                    maxLines: 1,
-                                                    style: TextStyle(
-                                                      color: Theme.of(context).brightness == Brightness.light
-                                                          ? Colors.black
-                                                          : Colors.white,
-                                                      fontSize: 14.sp,
-                                                      fontFamily: 'Graphik Arabic',
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      oil.price,
+                                      ],
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Transform.scale(
+                                          scale: 1.2.sp,
+                                          child: Checkbox(
+                                            value: isSelected,
+                                            onChanged: (_) {
+                                              toggleSelection(); // هنا شغّل نفس الأكشن
+                                            },
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(4.r),
+                                            ),
+                                            side: BorderSide(
+                                              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                              width: 1.2,
+                                            ),
+                                            checkColor: Colors.white,
+                                            activeColor: const Color(0xFFBA1B1B),
+                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      oil.name,
+                                                      maxLines: 1,
                                                       style: TextStyle(
-                                                        color: const Color(0xFFBA1B1B),
-                                                        fontSize: 16.sp,
-                                                        fontFamily: 'Poppins',
+                                                        color: Theme.of(context).brightness == Brightness.light
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                        fontSize: 14.sp,
+                                                        fontFamily: 'Graphik Arabic',
                                                         fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
-                                                    SizedBox(width: 4.w),
-                                                    Image.asset(
-                                                      'assets/icons/ryal.png',
-                                                      width: 20.w,
-                                                      height: 20.h,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 6.h),
-                                            Text(
-                                              oil.description,
-                                              style: TextStyle(
-                                                color: Theme.of(context).brightness == Brightness.light
-                                                    ? const Color(0xFF474747)
-                                                    : Colors.white,
-                                                fontSize: 11.sp,
-                                                fontFamily: 'Graphik Arabic',
-                                                fontWeight: FontWeight.w500,
-                                                height: 1.6,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        oil.price,
+                                                        style: TextStyle(
+                                                          color: const Color(0xFFBA1B1B),
+                                                          fontSize: 16.sp,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 4.w),
+                                                      Image.asset(
+                                                        'assets/icons/ryal.png',
+                                                        width: 20.w,
+                                                        height: 20.h,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(height: 6.h),
+                                              Text(
+                                                oil.description,
+                                                style: TextStyle(
+                                                  color: Theme.of(context).brightness == Brightness.light
+                                                      ? const Color(0xFF474747)
+                                                      : Colors.white,
+                                                  fontSize: 11.sp,
+                                                  fontFamily: 'Graphik Arabic',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 1.6,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );

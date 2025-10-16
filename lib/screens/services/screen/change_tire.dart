@@ -74,46 +74,40 @@ class _ChangeTireState extends State<ChangeTire> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor:scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
+        title_en: "Create Request",
         onBack: () => Navigator.pop(context),
       ),
       body: Container(
+        height: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
-        ),
-        child: SingleChildScrollView(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+          ),color:backgroundColor(context),    ),        child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
+            padding: const EdgeInsets.all(20),
+            child: Column(textDirection: locale.isDirectionRTL(context)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // أعلى الـ Column داخل build
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
                     GestureDetector(
                       onTap: () {
                         if (selectedTireSize != null) {
-                          // لو في فلتر محدد، إلغاؤه مباشرة
                           setState(() {
                             selectedTireSize = null;
                           });
                           context.read<TireCubit>().filterTiresBySize(null);
                         } else {
-                          // عرض BottomSheet للاختيار
                           showModalBottomSheet(
                             context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(16.sp),
+                              ),
                             ),
                             builder: (context) {
                               String? tempSelectedSize = selectedTireSize;
@@ -121,11 +115,11 @@ class _ChangeTireState extends State<ChangeTire> {
                                 builder: (context, setModalState) {
                                   return Container(
                                     decoration: ShapeDecoration(
-                                      color: const Color(0xFFEAEAEA),
+                                      color: backgroundColor(context),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
+                                          topLeft: Radius.circular(20.sp),
+                                          topRight: Radius.circular(20.sp),
                                         ),
                                       ),
                                     ),
@@ -135,98 +129,126 @@ class _ChangeTireState extends State<ChangeTire> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Center(
-                                          child: Text(
-                                            'الفلترة',
+                                          child: Text(locale.isDirectionRTL(context)?
+                                            'الفلترة':"Filtering",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: const Color(0xFFBA1B1B),
+                                              color: accentColor,
                                               fontSize: 25.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 12),
                                         Text(
-                                          'مقاس الإطار',
+                                          '---------------------------------------------------------------------------',
+                                          textAlign: TextAlign.right,
+                                          maxLines: 1,
                                           style: TextStyle(
-                                            color: const Color(0xFF474747),
-                                            fontSize: 18,
+                                            color: borderColor(context),
+                                            fontSize: 16.sp,
+                                            fontFamily: 'Graphik Arabic',
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(locale.isDirectionRTL(context)?
+                                          'مقاس الإطار':"Tyre Size",
+                                          style: TextStyle(
+                                            color: borderColor(context),
+                                            fontSize: 18.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                        SizedBox(height: 12.h),
                                         Expanded(
                                           child: LayoutBuilder(
                                             builder: (context, constraints) {
                                               final double containerWidth = constraints.maxWidth;
-                                              const int itemsPerRow = 4;
-                                              const double spacing = 10;
-                                              const double buttonHeight = 45;
-                                              const double rowSpacing = 15;
+                                              final int itemsPerRow = 4;
+                                              final double spacing = 10;
                                               final double buttonWidth =
                                                   (containerWidth - (spacing * (itemsPerRow - 1))) /
                                                       itemsPerRow;
+                                              final double buttonHeight = 35.h;
+                                              final double rowSpacing = 25.h;
 
-                                              return Stack(
-                                                children: tireSizeOptions.asMap().entries.map((entry) {
-                                                  final index = entry.key;
-                                                  final sizeValue = entry.value;
-                                                  final row = index ~/ itemsPerRow;
-                                                  final col = index % itemsPerRow;
-                                                  final left = col * (buttonWidth + spacing);
-                                                  final top = row * (buttonHeight + rowSpacing);
-                                                  final isSelected = tempSelectedSize == sizeValue;
+                                              return Container(
+                                                width: double.infinity,
+                                                height: ((tireSizeOptions.length / itemsPerRow)
+                                                    .ceil()) *
+                                                    (buttonHeight + rowSpacing),
+                                                child: Stack(
+                                                  children: tireSizeOptions.asMap().entries.map(
+                                                        (entry) {
+                                                      final index = entry.key;
+                                                      final sizeValue = entry.value;
+                                                      final int row = index ~/ itemsPerRow;
+                                                      final int col = index % itemsPerRow;
+                                                      final double left =
+                                                          col * (buttonWidth + spacing);
+                                                      final double top =
+                                                          row * (buttonHeight + rowSpacing);
+                                                      final bool isSelected =
+                                                          tempSelectedSize == sizeValue;
 
-                                                  return Positioned(
-                                                    left: left,
-                                                    top: top,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          tempSelectedSize = sizeValue;
-                                                        });
-                                                      },
-                                                      child: Container(
-                                                        width: buttonWidth,
-                                                        height: buttonHeight,
-                                                        decoration: ShapeDecoration(
-                                                          color: isSelected
-                                                              ? const Color(0x19BA1B1B)
-                                                              : null,
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              width: 1.5,
-                                                              color: isSelected
-                                                                  ? const Color(0xFFBA1B1B)
-                                                                  : const Color(0xFF9B9B9B),
+                                                      return Positioned(
+                                                        left: left,
+                                                        top: top,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            setModalState(() {
+                                                              tempSelectedSize = sizeValue;
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width: buttonWidth,
+                                                            padding: EdgeInsets.symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 9,
                                                             ),
-                                                            borderRadius: BorderRadius.circular(5),
+                                                            decoration: ShapeDecoration(
+                                                              color: isSelected
+                                                                  ? const Color(0xffBA1B1B)
+                                                                  : null,
+                                                              shape: RoundedRectangleBorder(
+                                                                side: BorderSide(
+                                                                  width: 1.w,
+                                                                  color: isSelected
+                                                                      ? accentColor
+                                                                      : borderColor(context),
+                                                                ),
+                                                                borderRadius:
+                                                                BorderRadius.circular(5.sp),
+                                                              ),
+                                                            ),
+                                                            child: Center(
+                                                              child: Text(
+                                                                sizeValue,
+                                                                textAlign: TextAlign.center,
+                                                                style: TextStyle(
+                                                                  color: isSelected
+                                                                      ? textColor(context)
+                                                                      : borderColor(context),
+                                                                  fontSize: isSelected
+                                                                      ? 16.sp
+                                                                      : 14.sp,
+                                                                  fontFamily: 'Graphik Arabic',
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                        child: Center(
-                                                          child: Text(
-                                                            sizeValue,
-                                                            style: TextStyle(
-                                                              color: isSelected
-                                                                  ? Colors.black
-                                                                  : const Color(0xFF474747),
-                                                              fontSize: isSelected ? 18 : 16,
-                                                              fontFamily: 'Graphik Arabic',
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
+                                                      );
+                                                    },
+                                                  ).toList(),
+                                                ),
                                               );
                                             },
                                           ),
                                         ),
-                                        const SizedBox(height: 20),
+                                        const SizedBox(height: 12),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -243,21 +265,20 @@ class _ChangeTireState extends State<ChangeTire> {
                                               child: Container(
                                                 width: 240.w,
                                                 height: 50.h,
+                                                padding: const EdgeInsets.all(10),
                                                 decoration: ShapeDecoration(
                                                   color: const Color(0xFFBA1B1B),
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(15),
+                                                    borderRadius: BorderRadius.circular(15.sp),
                                                   ),
                                                 ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'عرض النتائج',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 20.sp,
-                                                      fontFamily: 'Graphik Arabic',
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                child: Text(  locale.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20.sp,
+                                                    fontFamily: 'Graphik Arabic',
+                                                    fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
                                               ),
@@ -273,38 +294,33 @@ class _ChangeTireState extends State<ChangeTire> {
                           );
                         }
                       },
-                      child: Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: selectedTireSize != null
-                              ? const Color(0x67BA1B1B)
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: selectedTireSize != null
-                                ? const Color(0xFFBA1B1B)
-                                : const Color(0xFFA4A4A4),
-                            width: 1,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: selectedTireSize != null
+                                  ? accentColor
+                                  : boxcolor(context),
+                              borderRadius: BorderRadius.circular(10.sp),
+                              border: Border.all(
+                                width: 1.5.w,
+                                color: borderColor(context),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'assets/icons/icon_filter.png',
+                                color: textColor(context),
+                              ),
+                            ),
                           ),
-                        ),
-                        child: selectedTireSize != null
-                            ? const Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.white,
-                        )
-                            : Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(
-                            'assets/icons/icon_filter.png',
-                            color: Colors.grey,
-                          ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-
+                SizedBox(height: 12.h,),
                 Row(
                   children: [
                     Text(
@@ -382,10 +398,7 @@ class _ChangeTireState extends State<ChangeTire> {
                         ? "الخدمات المتوفرة"
                         : 'Available Services',
                     style: TextStyle(
-                      color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
+                      color:textColor(context),
                       fontSize: 14.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -470,7 +483,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                         child: Checkbox(
                                           value: isSelected,
                                           onChanged: (_) {
-                                            toggleSelection(); // الضغط على الـ Checkbox يعمل نفس تأثير الـ Container
+                                            toggleSelection();
                                           },
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(4.r),
@@ -553,98 +566,97 @@ class _ChangeTireState extends State<ChangeTire> {
                           ),
 
                           SizedBox(height: 12.h),
-
-                          // Pagination UI (الأسهم معكوسة: يسار = Next، يمين = Previous)
-                          Container(
-                            width: double.infinity,
-                            height: 60.h,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Left arrow = Next
-                                GestureDetector(
-                                  onTap:
-                                      currentPage < totalPages
-                                          ? () {
-                                            setState(() {
-                                              currentPage++;
-                                            });
-                                          }
-                                          : null,
-                                  child: Icon(
-                                    Icons.arrow_left,
-                                    size: 50.sp,
-                                    color:
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: 60.h,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap:
                                         currentPage < totalPages
-                                            ? Colors.black
-                                            : Colors.black.withOpacity(0.25),
+                                            ? () {
+                                              setState(() {
+                                                currentPage++;
+                                              });
+                                            }
+                                            : null,
+                                    child: Icon(
+                                      Icons.arrow_left,
+                                      size: 50.sp,
+                                      color:
+                                          currentPage < totalPages
+                                              ? borderColor(context)
+                                              :  borderColor(context)
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 12.w),
+                                  SizedBox(width: 12.w),
 
-                                // Next page gray box
-                                if (currentPage < totalPages)
+                                  // Next page gray box
+                                  if (currentPage < totalPages)
+                                    Container(
+                                      width: 50.w,
+                                      height: 50.h,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color:  borderColor(context),
+                                        borderRadius: BorderRadius.circular(8.r),
+                                      ),
+                                      child: Text(
+                                        '${currentPage + 1}',
+                                        style: TextStyle(
+                                          color: textColor(context),
+                                          fontSize: 22.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  if (currentPage < totalPages)
+                                    SizedBox(width: 8.w),
+
+                                  // Current page red box
                                   Container(
                                     width: 50.w,
                                     height: 50.h,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey,
+                                      color: accentColor,
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Text(
-                                      '${currentPage + 1}',
+                                      '$currentPage',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: textColor(context),
                                         fontSize: 22.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
-                                if (currentPage < totalPages)
-                                  SizedBox(width: 8.w),
+                                  SizedBox(width: 12.w),
 
-                                // Current page red box
-                                Container(
-                                  width: 50.w,
-                                  height: 50.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFBA1B1B),
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Text(
-                                    '$currentPage',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600,
+                                  // Right arrow = Previous
+                                  GestureDetector(
+                                    onTap:
+                                        currentPage > 1
+                                            ? () {
+                                              setState(() {
+                                                currentPage--;
+                                              });
+                                            }
+                                            : null,
+                                    child: Icon(
+                                      Icons.arrow_right,
+                                      size: 50.sp,
+                                      color:
+                                          currentPage > 1
+                                              ? borderColor(context)
+                                              : borderColor(context)
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 12.w),
-
-                                // Right arrow = Previous
-                                GestureDetector(
-                                  onTap:
-                                      currentPage > 1
-                                          ? () {
-                                            setState(() {
-                                              currentPage--;
-                                            });
-                                          }
-                                          : null,
-                                  child: Icon(
-                                    Icons.arrow_right,
-                                    size: 50.sp,
-                                    color:
-                                        currentPage > 1
-                                            ? Colors.black
-                                            : Colors.black.withOpacity(0.25),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -667,52 +679,50 @@ class _ChangeTireState extends State<ChangeTire> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "عدد الإطارات",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                        locale.isDirectionRTL(context)?
+                        "عدد الإطارات":"Number of Tyres",
+                        style:  TextStyle(
+                          color:textColor(context),
+                          fontSize: 16.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w700,
-                          height: 1.5,
+                          height: 1.5.h,
                         ),
                       ),
                       SizedBox(height: 12.h),
 
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: const Color(0xFF9B9B9B)),
-                          borderRadius: BorderRadius.circular(12),
+                          color: backgroundColor(context),
+                          border: Border.all(color:borderColor(context),width: 1.5.w),
+                          borderRadius: BorderRadius.circular(12.sp),
                           boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x22000000),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
                           ],
                         ),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            double buttonSize = constraints.maxWidth * 0.18;
-                            buttonSize = buttonSize.clamp(40, 55);
+                            double buttonSize = constraints.maxWidth * 0.40;
+                            buttonSize = buttonSize.clamp(25.sp, 40.sp);
                             return Row(
                               children: [
                                 InkWell(
                                   onTap: () {
                                     setState(() => count++);
                                   },
-
                                   child: Container(
                                     width: buttonSize,
                                     height: buttonSize,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFBA1B1B),
+                                      color: const Color(0xFFBA1B1B),
                                       shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(0),
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(0),
-                                        bottomRight: Radius.circular(10),
+                                      borderRadius: Directionality.of(context) == TextDirection.rtl
+                                          ? BorderRadius.only(
+                                        topRight: Radius.circular(10.sp),
+                                        bottomRight: Radius.circular(10.sp),
+                                      )
+                                          : BorderRadius.only(
+                                        topLeft: Radius.circular(10.sp),
+                                        bottomLeft: Radius.circular(10.sp),
                                       ),
                                     ),
                                     child: Center(
@@ -732,11 +742,9 @@ class _ChangeTireState extends State<ChangeTire> {
                                 Expanded(
                                   child: Center(
                                     child: AnimatedDefaultTextStyle(
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
+                                      duration: const Duration(milliseconds: 250),
                                       style: TextStyle(
-                                        color: Colors.black,
+                                        color: textColor(context),
                                         fontSize: 26.sp,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w700,
@@ -745,25 +753,27 @@ class _ChangeTireState extends State<ChangeTire> {
                                     ),
                                   ),
                                 ),
-                                // زر الزيادة
+
                                 InkWell(
                                   onTap: () {
                                     if (count > 0) {
                                       setState(() => count--);
                                     }
                                   },
-
                                   child: Container(
                                     width: buttonSize,
                                     height: buttonSize,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFBA1B1B),
+                                      color: const Color(0xFFBA1B1B),
                                       shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(0),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(0),
+                                      borderRadius: Directionality.of(context) == TextDirection.rtl
+                                          ? BorderRadius.only(
+                                        topLeft: Radius.circular(10.sp),
+                                        bottomLeft: Radius.circular(10.sp),
+                                      )
+                                          : BorderRadius.only(
+                                        topRight: Radius.circular(10.sp),
+                                        bottomRight: Radius.circular(10.sp),
                                       ),
                                     ),
                                     child: Center(
@@ -771,7 +781,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                         "-",
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 26.sp,
+                                          fontSize: 30.sp,
                                           fontFamily: 'Graphik Arabic',
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -792,7 +802,7 @@ class _ChangeTireState extends State<ChangeTire> {
                   notesController: notesController,
                   kiloReadController: kiloReadController,
                 ),
-
+                SizedBox(height: 12.h,),
                 Align(
                   alignment:
                       locale.isDirectionRTL(context)
@@ -807,7 +817,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                   ? 'إستمارة السيارة '
                                   : 'Car Registration ',
                           style: TextStyle(
-                            color: Colors.black,
+                            color:textColor(context),
                             fontSize: 14.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -849,14 +859,12 @@ class _ChangeTireState extends State<ChangeTire> {
         textAr: "التالي",
         textEn: "Next",
         onPressed: () {
-          // تحقق من البيانات المطلوبة
           if (_selectedUserCarId == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى اختيار السيارة")),
             );
             return;
           }
-
           if (selectedTireIndex == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى اختيار الإطار")),

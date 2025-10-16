@@ -1,160 +1,13 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-//
-// class DeliveryMethodSelector extends StatelessWidget {
-//   final int selectedIndex;
-//   final Function(int index) onSelected;
-//
-//   const DeliveryMethodSelector({
-//     super.key,
-//     required this.selectedIndex,
-//     required this.onSelected,
-//   });
-//
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//       Row(
-//                 children: [
-//                   Text(
-//                     "طريقة التوصيل",
-//                     style: TextStyle(
-//                       fontSize: 14.sp,
-//                       fontWeight: FontWeight.w600,
-//                       color: Color(0xFFBA1B1B),
-//                     ),
-//                   ),
-//                   SizedBox(width: 7.w),
-//
-//                   Container(
-//                     width: 20.w,
-//                     height: 20.h,
-//                     decoration: ShapeDecoration(
-//                       color: const Color(0xFFBA1B1B),
-//                       shape: OvalBorder(),
-//                     ),
-//
-//                     child: Center(
-//                       child: Text(
-//                         '!',
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontSize: 16,
-//                           fontFamily: 'Graphik Arabic',
-//                           fontWeight: FontWeight.w600,
-//                           height: 1.38,
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(height: 10.h),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   buildSelectableButton(
-//                     index: 0,
-//                     width: buttonWidth,
-//                     height: buttonHeight,
-//                     text: 'سطحة',
-//                   ),
-//                   SizedBox(width: 16),
-//                   buildSelectableButton(
-//                     index: 1,
-//                     width: buttonWidth,
-//                     height: buttonHeight,
-//                     text: 'في المركز',
-//                   ),
-//                 ],
-//               ),
-//       ],
-//     );
-//   }
-//
-//   Widget buildSelectableButton({
-//     required int index,
-//     required double width,
-//     required double height,
-//     required String text,
-//   }) {
-//     bool isSelected = selectedIndex == index;
-//
-//     return GestureDetector(
-//       onTap: () {
-//         setState(() {
-//           selectedIndex = index;
-//         });
-//       },
-//       child: Container(
-//         width: width,
-//         height: height,
-//         clipBehavior: Clip.antiAlias,
-//         decoration: ShapeDecoration(
-//           color: Colors.white,
-//           shape: RoundedRectangleBorder(
-//             side: BorderSide(width: 1.5, color: Color(0xFF9B9B9B)),
-//             borderRadius: BorderRadius.circular(10),
-//           ),
-//           shadows: [
-//             BoxShadow(
-//               color: Color(0x3F000000),
-//               blurRadius: 12,
-//               offset: Offset(0, 4),
-//             ),
-//           ],
-//         ),
-//         child: Stack(
-//           alignment: Alignment.center,
-//           children: [
-//             Text(
-//               text,
-//               style: TextStyle(
-//                 color: Colors.black,
-//                 fontSize: 14,
-//                 fontFamily: 'Graphik Arabic',
-//                 fontWeight: FontWeight.w600,
-//                 height: 1.57,
-//               ),
-//             ),
-//             Positioned(
-//               right: 10,
-//               top: height / 2 - 10,
-//               child: AnimatedContainer(
-//                 duration: Duration(milliseconds: 200),
-//                 width: 20,
-//                 height: 20,
-//                 decoration: BoxDecoration(
-//                   shape: BoxShape.circle,
-//                   border: Border.all(color: Color(0xFFBA1B1B), width: 2),
-//                   color: isSelected ? Color(0xFFBA1B1B) : Colors.white,
-//                 ),
-//                 child:
-//                     isSelected
-//                         ? Icon(
-//                           Icons.check,
-//                           color: Colors.white,
-//                           size: 14, // حجم مناسب داخل الدائرة
-//                         )
-//                         : null,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../core/language/locale.dart';
 
 class DeliveryMethodSection extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onChanged;
+
   const DeliveryMethodSection({
     super.key,
     required this.selectedIndex,
@@ -163,8 +16,9 @@ class DeliveryMethodSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = (MediaQuery.of(context).size.width - 48) / 2;
-    double height = 50;
+    final locale = AppLocalizations.of(context);
+    double width = (MediaQuery.of(context).size.width - 60.w) / 2;
+    double height = MediaQuery.of(context).size.height * 0.05;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +26,9 @@ class DeliveryMethodSection extends StatelessWidget {
         Row(
           children: [
             Text(
-              "طريقة التوصيل",
+              (locale!.isDirectionRTL(context)
+                  ? "طريقة التوصيل "
+                  : "Delivery option "),
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -184,15 +40,15 @@ class DeliveryMethodSection extends StatelessWidget {
               width: 20.w,
               height: 20.h,
               decoration: const ShapeDecoration(
-                color: Color(0xFFBA1B1B),
+                color: accentColor,
                 shape: OvalBorder(),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   '!',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -200,13 +56,17 @@ class DeliveryMethodSection extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: 12.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _methodButton(context, 0, "سطحة", width, height),
-            SizedBox(width: 16),
-            _methodButton(context, 1, "في المركز", width, height),
+            _methodButton(context, 0,   (locale!.isDirectionRTL(context)
+                ? " سطحة "
+                : " Flatbed truck "), width, height),
+            SizedBox(width: 14.w),
+            _methodButton(context, 1, (locale!.isDirectionRTL(context)
+                ? " في المركز "
+                : "At the maintenance center "), width, height),
           ],
         ),
       ],
@@ -222,16 +82,16 @@ class DeliveryMethodSection extends StatelessWidget {
         width: width,
         height: height,
         decoration: ShapeDecoration(
-          color: Colors.white,
+          color: boxcolor(context),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1.5, color: Color(0xFF9B9B9B)),
-            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(width: 1.2.w, color: borderColor(context)),
+            borderRadius: BorderRadius.circular(10.r),
           ),
-          shadows: const [
+          shadows: [
             BoxShadow(
-              color: Color(0x3F000000),
-              blurRadius: 12,
-              offset: Offset(0, 4),
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 10.r,
+              offset: Offset(0, 4.h),
             ),
           ],
         ),
@@ -240,27 +100,26 @@ class DeliveryMethodSection extends StatelessWidget {
           children: [
             Text(
               text,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 14,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: textColor(context),
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Positioned(
-              right: 10,
-              top: height / 2 - 10,
+              right: 10.w,
+              top: height / 2 - 10.h,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: 20,
-                height: 20,
+                width: 20.w,
+                height: 20.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border:
-                  Border.all(color: const Color(0xFFBA1B1B), width: 2),
-                  color: isSelected ? const Color(0xFFBA1B1B) : Colors.white,
+                  color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
                 ),
                 child: isSelected
-                    ? const Icon(Icons.check, color: Colors.white, size: 14)
+                    ? Icon(Icons.check, color: Colors.white, size: 14.sp)
                     : null,
               ),
             ),

@@ -1,8 +1,10 @@
+import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../widgets/map_select_location.dart';
+import '../../../core/language/locale.dart';
 
 class AddressSection extends StatefulWidget {
   final Function(String, double, double) onAddressSelected;
@@ -15,6 +17,7 @@ class AddressSection extends StatefulWidget {
 class _AddressSectionState extends State<AddressSection> {
   String? _address;
   bool _loading = false;
+  late final locale = AppLocalizations.of(context);
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +26,20 @@ class _AddressSectionState extends State<AddressSection> {
         Row(
           children: [
             Text(
-              "العنوان",
+              locale!.isDirectionRTL(context) ? " العنوان " : "Address ",
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black
-                    : Colors.white,
+                color: textColor(context),
               ),
             ),
             const Spacer(),
             GestureDetector(
               onTap: _selectNewAddress,
               child: Text(
-                "+ إضافة عنوان جديد",
+                locale!.isDirectionRTL(context)
+                    ? " + إضافة عنوان جديد "
+                    : "+ Add new address  ",
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -57,11 +60,9 @@ class _AddressSectionState extends State<AddressSection> {
       width: double.infinity,
       padding: EdgeInsets.all(8.sp),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey, width: 1.5.w),
-        color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : const Color(0xff1D1D1D),
+        borderRadius: BorderRadius.circular(12.sp),
+        border: Border.all(color: borderColor(context), width: 1.5.w),
+        color: boxcolor(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,12 +71,7 @@ class _AddressSectionState extends State<AddressSection> {
             alignment: Alignment.centerRight,
             child: Text(
               _address ?? "",
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black
-                    : Colors.white,
-              ),
+              style: TextStyle(fontSize: 14.sp, color: textColor(context)),
             ),
           ),
           SizedBox(height: 6.h),
@@ -87,14 +83,16 @@ class _AddressSectionState extends State<AddressSection> {
                   : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.location_on, color: Color(0xFFBA1B1B)),
+                   Icon(Icons.location_on, color: Color(0xFFBA1B1B),size: 16.sp,),
                   SizedBox(width: 6.w),
                   Text(
-                    "العنوان الحالي",
+                    locale!.isDirectionRTL(context)
+                        ? "العنوان الحالي  "
+                        : "Current address",
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFFBA1B1B),
+                      color: accentColor,
                     ),
                   ),
                 ],
@@ -109,11 +107,37 @@ class _AddressSectionState extends State<AddressSection> {
   Future<void> _selectNewAddress() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) =>  LocationPickerFull()),
+      MaterialPageRoute(builder: (_) => LocationPickerFull()),
     );
+
     if (result != null && result is Map<String, dynamic>) {
-      setState(() => _address = result['address']);
-      widget.onAddressSelected(result['address'], result['lat'], result['lng']);
+      String rawAddress = result['address'] ?? '';
+      print('📍 Raw address from map: $rawAddress');
+
+      String cleanAddress(String text) {
+        String cleaned = text;
+        bool isArabic = locale!.isDirectionRTL(context);
+
+        cleaned = cleaned.replaceAll(RegExp(r'\b[A-Z0-9]{3,}\b'), '');
+        cleaned = cleaned.replaceAll(RegExp(r'\d{3,}'), '');
+        cleaned = cleaned.replaceAll(RegExp(r'[+]+'), '');
+        cleaned = cleaned.replaceAll(RegExp(r'(,){2,}'), ',');
+        cleaned = cleaned.replaceAll(RegExp(r'\s{2,}'), ' ').trim();
+
+        if (isArabic) {
+          cleaned = cleaned.replaceAll(RegExp(r'[A-Za-z]'), '');
+        } else {
+          cleaned = cleaned.replaceAll(RegExp(r'[\u0600-\u06FF]'), '');
+        }
+
+        return cleaned.trim();
+      }
+
+      String cleanedAddress = cleanAddress(rawAddress);
+      print('✅ Cleaned address: $cleanedAddress');
+
+      setState(() => _address = cleanedAddress);
+      widget.onAddressSelected(cleanedAddress, result['lat'], result['lng']);
     }
   }
 
@@ -130,12 +154,61 @@ class _AddressSectionState extends State<AddressSection> {
       }
       if (permission == LocationPermission.deniedForever) return;
 
-      Position pos =
-      await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       List<Placemark> places =
       await placemarkFromCoordinates(pos.latitude, pos.longitude);
-      String address =
-          "${places.first.street}, ${places.first.locality}, ${places.first.country}";
+
+      final place = places.last;
+
+      print('==================== 🧭 Placemark Data ====================');
+      print('name: ${place.name}');
+      print('street: ${place.street}');
+      print('subThoroughfare: ${place.subThoroughfare}');
+      print('thoroughfare: ${place.thoroughfare}');
+      print('subLocality: ${place.subLocality}');
+      print('locality: ${place.locality}');
+      print('subAdministrativeArea: ${place.subAdministrativeArea}');
+      print('administrativeArea: ${place.administrativeArea}');
+      print('postalCode: ${place.postalCode}');
+      print('country: ${place.country}');
+      print('isoCountryCode: ${place.isoCountryCode}');
+      print('===========================================================');
+
+      bool isArabic = locale!.isDirectionRTL(context);
+
+      String cleanText(String? text) {
+        if (text == null || text.isEmpty) return '';
+
+        text = text.replaceAll(RegExp(r'\d{3,}'), '');
+        text = text.replaceAll(RegExp(r'[+]+'), '').trim();
+        if (isArabic) {
+          text = text.replaceAll(RegExp(r'[A-Za-z]'), '');
+        } else {
+          text = text.replaceAll(RegExp(r'[\u0600-\u06FF]'), '');
+        }
+        text = text.replaceAll(RegExp(r'\s{2,}'), ' ').trim();
+        return text;
+      }
+
+      List<String> parts = [
+        cleanText(places.last.name),
+        cleanText(place.subLocality),
+        cleanText(place.subAdministrativeArea),
+        cleanText(place.administrativeArea),
+        cleanText(place.country),
+      ];
+
+      List<String> uniqueParts = [];
+      for (var part in parts) {
+        if (part.isNotEmpty && !uniqueParts.contains(part)) {
+          uniqueParts.add(part);
+        }
+      }
+
+      String address = uniqueParts.join("، ");
+      print('✅ Cleaned address: $address');
+
       setState(() => _address = address);
       widget.onAddressSelected(address, pos.latitude, pos.longitude);
     } finally {
