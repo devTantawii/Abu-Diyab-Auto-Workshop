@@ -22,11 +22,14 @@ class DateTimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(           locale!.isDirectionRTL(context) ? 'اليوم و التاريخ' : 'The day and the date',
+        Text(
+          locale!.isDirectionRTL(context)
+              ? 'اليوم و التاريخ'
+              : 'The day and the date',
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color:textColor(context),
+            color: textColor(context),
           ),
         ),
         SizedBox(height: 10.h),
@@ -35,23 +38,26 @@ class DateTimeSection extends StatelessWidget {
             DateTime? date = await showOmniDateTimePicker(
               context: context,
               initialDate: selectedDateTime ?? DateTime.now(),
-              firstDate: DateTime(2020),
-              lastDate: DateTime(2030),
+              firstDate: DateTime.now(),
+              lastDate: DateTime(
+                DateTime.now().year + 5,
+                DateTime.now().month,
+                DateTime.now().day,
+              ),
               is24HourMode: true,
               theme: ThemeData(
                 brightness: isDark ? Brightness.dark : Brightness.light,
-                colorScheme: isDark
-                    ? const ColorScheme.dark(primary: Color(0xFFBA1B1B))
-                    : const ColorScheme.light(primary: Color(0xFFBA1B1B)),
+                colorScheme:
+                    isDark
+                        ? const ColorScheme.dark(primary: Color(0xFFBA1B1B))
+                        : const ColorScheme.light(primary: Color(0xFFBA1B1B)),
 
                 timePickerTheme: TimePickerThemeData(
                   hourMinuteTextStyle: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                   ),
-                  dayPeriodTextStyle: TextStyle(
-                    fontSize: 16.sp,
-                  ),
+                  dayPeriodTextStyle: TextStyle(fontSize: 16.sp),
                 ),
                 textTheme: TextTheme(
                   titleMedium: TextStyle(fontSize: 16.sp),
@@ -68,27 +74,29 @@ class DateTimeSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.sp),
-              border: Border.all(
-                color:borderColor(context),
-                width: 1.5.w
-              ),
-              color:boxcolor(context)
+              border: Border.all(color: borderColor(context), width: 1.5.w),
+              color: boxcolor(context),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   selectedDateTime == null
-                      ? locale.isDirectionRTL(context) ? 'اختر اليوم و التاريخ' : 'Choose the day and date'
+                      ? locale.isDirectionRTL(context)
+                          ? 'اختر اليوم و التاريخ'
+                          : 'Choose the day and date'
                       : "${selectedDateTime!.day}/${selectedDateTime!.month}/${selectedDateTime!.year}  "
-                      "${selectedDateTime!.hour}:${selectedDateTime!.minute.toString().padLeft(2, '0')}",
+                          "${selectedDateTime!.hour}:${selectedDateTime!.minute.toString().padLeft(2, '0')}",
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: borderColor(context)
+                    color: textColor(context),
                   ),
                 ),
-                 Icon(Icons.calendar_today_outlined,
-                    size: 20.sp, color: accentColor),
+                Icon(
+                  Icons.calendar_today_outlined,
+                  size: 20.sp,
+                  color: accentColor,
+                ),
               ],
             ),
           ),

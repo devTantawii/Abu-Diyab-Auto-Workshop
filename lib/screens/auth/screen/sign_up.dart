@@ -27,6 +27,8 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
   final TextEditingController _name2Controller = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _referralController = TextEditingController(); // ✅ جديد
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -34,6 +36,8 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     _nameController.dispose();
     _name2Controller.dispose();
     _phoneController.dispose();
+    _referralController.dispose(); // ✅ جديد
+
     _passwordController.dispose();
     super.dispose();
   }
@@ -51,9 +55,29 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     }
     return null;
   }
+  String? _fcmToken;
 
   bool _isArabic(BuildContext context) =>
       Localizations.localeOf(context).languageCode == 'ar';
+
+  @override
+  void initState() {
+    super.initState();
+  //  _getFcmToken();
+  }
+/*
+  Future<void> _getFcmToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      setState(() {
+        _fcmToken = token;
+      });
+      print("✅ FCM Token: $_fcmToken");
+    } catch (e) {
+      print("❌ Error getting FCM token: $e");
+    }
+  }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +224,14 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                 return null;
                               },
                             ),
+                            SizedBox(height: 15.h),
+                            build_label(text: isArabic ? 'رمز الإحالة (اختياري)' : 'Referral Code (optional)'),
+                            _buildTextField(
+                              controller: _referralController,
+                              hint: isArabic ? " ABC123" : "e.g. ABC123",
+                              textInputType: TextInputType.text,
+                            ),
                             SizedBox(height: 20.h),
-
                             SizedBox(
                               height: 50.h,
                               width: double.infinity,
@@ -223,6 +253,10 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                               password:
                                                   _passwordController.text
                                                       .trim(),
+                                         //     fcm: _fcmToken ?? '',
+                                              referral: _referralController.text.trim().isEmpty
+                                                  ? null
+                                                  : _referralController.text.trim(),
                                             );
                                             context
                                                 .read<RegisterCubit>()

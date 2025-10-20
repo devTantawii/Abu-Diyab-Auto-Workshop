@@ -102,260 +102,306 @@ class _ChangeBatteryState extends State<ChangeBattery> {
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding:  EdgeInsets.all(15.sp),
-            child: Column( textDirection: locale.isDirectionRTL(context)
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+            padding: EdgeInsets.all(15.sp),
+            child: Column(
+              textDirection:
+                  locale.isDirectionRTL(context)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
-                      onTap: () {
-                        if (selectedAh != null) {
-                          setState(() {
-                            selectedAh = null;
-                          });
-                          context.read<BatteryCubit>().fetchBatteries(
-                            amper: null,
-                          );
-                        } else {
-                          showModalBottomSheet(
-                            context: context,
-                            shape:  RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16.sp),
-                              ),
-                            ),
-                            builder: (context) {
-                              String? tempSelectedAh = selectedAh;
-                              return StatefulBuilder(
-                                builder: (context, setModalState) {
-                                  return Container(
-                                    decoration: ShapeDecoration(
-                                      color: backgroundColor(context),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20.sp),
-                                          topRight: Radius.circular(20.sp),
+                  onTap: () {
+                    if (selectedAh != null) {
+                      setState(() {
+                        selectedAh = null;
+                      });
+                      context.read<BatteryCubit>().fetchBatteries(amper: null);
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16.sp),
+                          ),
+                        ),
+                        builder: (context) {
+                          String? tempSelectedAh = selectedAh;
+                          return StatefulBuilder(
+                            builder: (context, setModalState) {
+                              return Container(
+                                decoration: ShapeDecoration(
+                                  color: backgroundColor(context),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20.sp),
+                                      topRight: Radius.circular(20.sp),
+                                    ),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                height: 350.h,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        locale.isDirectionRTL(context)
+                                            ? 'الفلترة'
+                                            : 'Filtering',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: accentColor,
+                                          fontSize: 25.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),
-                                    padding: const EdgeInsets.all(16),
-                                    height: 350.h,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text(             locale.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: accentColor,
-                                              fontSize: 25.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
 
-                                        Text(
-                                          '---------------------------------------------------------------------------',
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            color:borderColor(context),
-                                            fontSize: 16.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          locale.isDirectionRTL(context) ? 'الامبير' : 'Ampere',
-                                          style: TextStyle(
-                                            color:  borderColor(context),
-                                            fontSize: 18.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                         SizedBox(height: 12.h),
-                                        Expanded(
-                                          child: LayoutBuilder(
-                                            builder: (context, constraints) {
-                                              final double containerWidth =
-                                                  constraints.maxWidth;
-                                              final int itemsPerRow = 4;
-                                              final double spacing = 10;
-                                              final double buttonWidth =
-                                                  (containerWidth -
-                                                      (spacing *
-                                                          (itemsPerRow - 1))) /
-                                                  itemsPerRow;
-                                              final double buttonHeight = 35.h;
-                                              final double rowSpacing = 25.h;
+                                    Text(
+                                      '---------------------------------------------------------------------------',
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: borderColor(context),
+                                        fontSize: 16.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      locale.isDirectionRTL(context)
+                                          ? 'الامبير'
+                                          : 'Ampere',
+                                      style: TextStyle(
+                                        color: Color(0xFF616465),
+                                        fontSize: 18.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Expanded(
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          final double containerWidth =
+                                              constraints.maxWidth;
+                                          final int itemsPerRow = 4;
+                                          final double spacing = 10;
+                                          final double buttonWidth =
+                                              (containerWidth -
+                                                  (spacing *
+                                                      (itemsPerRow - 1))) /
+                                              itemsPerRow;
+                                          final double buttonHeight = 35.h;
+                                          final double rowSpacing = 25.h;
 
-                                              return Container(
-                                                width: double.infinity,
-                                                height:
-                                                    ((amperOptions.length /
-                                                            itemsPerRow).ceil()) *
-                                                    (buttonHeight + rowSpacing),
-                                                child: Stack(
-                                                  children: amperOptions.asMap().entries.map((entry,) {
-                                                        final index = entry.key;
-                                                        final String
-                                                        amperValue = entry.value;
-                                                        final int row = index ~/ itemsPerRow;
-                                                        final int col = index % itemsPerRow;
-                                                        final double left = col *
-                                                            (buttonWidth +spacing);
-                                                        final double top =
-                                                            row *
-                                                            (buttonHeight +
-                                                                rowSpacing);
-                                                        final bool isSelected =
-                                                            tempSelectedAh ==
-                                                            amperValue;
+                                          return Container(
+                                            width: double.infinity,
+                                            height:
+                                                ((amperOptions.length /
+                                                        itemsPerRow)
+                                                    .ceil()) *
+                                                (buttonHeight + rowSpacing),
+                                            child: Stack(
+                                              children:
+                                                  amperOptions.asMap().entries.map((
+                                                    entry,
+                                                  ) {
+                                                    final index = entry.key;
+                                                    final String amperValue =
+                                                        entry.value;
+                                                    final int row =
+                                                        index ~/ itemsPerRow;
+                                                    final int col =
+                                                        index % itemsPerRow;
+                                                    final double left =
+                                                        col *
+                                                        (buttonWidth + spacing);
+                                                    final double top =
+                                                        row *
+                                                        (buttonHeight +
+                                                            rowSpacing);
+                                                    final bool isSelected =
+                                                        tempSelectedAh ==
+                                                        amperValue;
 
-                                                        return Positioned(
-                                                          left: left,
-                                                          top: top,
-                                                          child: GestureDetector(
-                                                            onTap: () {
-                                                              setModalState(() {
-                                                                tempSelectedAh =
-                                                                    amperValue;
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                              width: buttonWidth,
-                                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9,),
-                                                              decoration: ShapeDecoration(
+                                                    return Positioned(
+                                                      left: left,
+                                                      top: top,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setModalState(() {
+                                                            tempSelectedAh =
+                                                                amperValue;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          width: buttonWidth,
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 9,
+                                                              ),
+                                                          decoration: ShapeDecoration(
+                                                            color:
+                                                                isSelected
+                                                                    ? Color(0xFFBA1B1B).withOpacity(0.2)
+                                                                    : null,
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                width: 2.w,
                                                                 color:
                                                                     isSelected
-                                                                        ? const Color(0xffBA1B1B,)
-                                                                        : null,
-                                                                shape: RoundedRectangleBorder(
-                                                                  side: BorderSide(
-                                                                    width: 1.w,
-                                                                    color: isSelected ?accentColor :borderColor(context)),
-                                                                  borderRadius: BorderRadius.circular(5.sp),
-                                                                )
+                                                                        ? Color(0xFFBA1B1B)
+                                                                        : Colors.grey,
                                                               ),
-                                                              child: Center(
-                                                                child: Text(amperValue,textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color:
-                                                                        isSelected
-                                                                            ? textColor(context)
-                                                                            :borderColor(context),
-                                                                    fontSize: isSelected ? 14.sp : 12.sp,
-                                                                    fontFamily: 'Graphik Arabic',
-                                                                    fontWeight: FontWeight.w600,),
-                                                                ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    5.sp,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              amperValue,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                color:
+                                                                    isSelected
+                                                                        ? Colors.black
+                                                                        : Color(0xFF616465),
+                                                                fontSize:
+                                                                    isSelected
+                                                                        ? 14.sp
+                                                                        : 14.sp,
+                                                                fontFamily:
+                                                                    'Graphik Arabic',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
                                                               ),
                                                             ),
                                                           ),
-                                                        );
-                                                      }).toList(),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedAh = tempSelectedAh;
-                                                });
-                                                Navigator.pop(context);
-                                                context
-                                                    .read<BatteryCubit>()
-                                                    .fetchBatteries(
-                                                      amper: selectedAh,
+                                                        ),
+                                                      ),
                                                     );
-                                              },
-                                              child: Container(
-                                                width: 240.w,
-                                                height: 50.h,
-                                                padding: const EdgeInsets.all(
-                                                  10,
-                                                ),
-                                                decoration: ShapeDecoration(
-                                                  color: const Color(
-                                                    0xFFBA1B1B,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(15.sp),
-                                                  ),
-                                                ),
-                                                child: Text(  locale.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20.sp,
-                                                    fontFamily:
-                                                        'Graphik Arabic',
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
+                                                  }).toList(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedAh = tempSelectedAh;
+                                            });
+                                            Navigator.pop(context);
+                                            context
+                                                .read<BatteryCubit>()
+                                                .fetchBatteries(
+                                                  amper: selectedAh,
+                                                );
+                                          },
+                                          child: Container(
+                                            width: 240.w,
+                                            height: 50.h,
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: ShapeDecoration(
+                                              color: const Color(0xFFBA1B1B),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      15.sp,
+                                                    ),
                                               ),
                                             ),
-                                          ],
+                                            child: Text(
+                                              locale.isDirectionRTL(context)
+                                                  ? 'عرض النتائج'
+                                                  : 'Show Results',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  );
-                                },
+                                  ],
+                                ),
                               );
                             },
                           );
-                        }
-                      },
+                        },
+                      );
+                    }
+                  },
 
-                      child: Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: selectedAh != null
-                                  ? accentColor
-                                  :boxcolor(context),
-                          borderRadius: BorderRadius.circular(10.sp),
-                          border: Border.all(
-                            width: 1.5.w, // responsive border
-                            color:borderColor(context),
-                          ),                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(
-                                    'assets/icons/icon_filter.png',
-                                    color:textColor(context),
-                                  ),
-
-                          //  color: textColor(context),
-                        ),
+                  child: Container(
+                    width: 50.w,
+                    height: 50.h,
+                    decoration: BoxDecoration(
+                      color:
+                          selectedAh != null
+                              ? Color(0xFFBA1B1B).withOpacity(0.2)
+                              : boxcolor(context),
+                      borderRadius: BorderRadius.circular(10.sp),
+                      border: Border.all(
+                        width: 1.5.w, // responsive border
+                        color:
+                            selectedAh != null
+                                ? Color(0xFFBA1B1B)
+                                : borderColor(context),
                       ),
                     ),
-                SizedBox(height: 12.h,),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child:
+                          selectedAh != null
+                              ? Image.asset(
+                                'assets/icons/cancel.png',
+                                scale: 1.3.sp,
+                              )
+                              : Image.asset(
+                                'assets/icons/icon_filter.png',
+                                color: textColor(context),
+                              ),
+
+                      //  color: textColor(context),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
                 Row(
                   children: [
                     Text(
                       widget.title,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color:textColor(context),
+                        color: textColor(context),
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(width: 5),
-                    Image.network(widget.icon,
+                    Image.network(
+                      widget.icon,
                       height: 20.h,
                       width: 20.w,
                       errorBuilder: (context, error, stackTrace) {
@@ -431,18 +477,19 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       final batteries = state.response.data;
 
                       if (batteries.isEmpty) {
-                        return  Center(
-                          child:Text(locale.isDirectionRTL(context) ? ("لا توجد بطاريات متاحة") : "No batteries available",
+                        return Center(
+                          child: Text(
+                            locale.isDirectionRTL(context)
+                                ? ("لا توجد بطاريات متاحة")
+                                : "No batteries available",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 22.sp,
-                              color:textColor(context),
+                              color: textColor(context),
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Graphik Arabic',
                             ),
                           ),
-
-
                         );
                       }
                       // Pagination
@@ -520,22 +567,34 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                             onChanged: (v) {
                                               setState(() {
                                                 if (v == true) {
-                                                  _selectedBatteryIndex = actualIndex; // اختيار هذا العنصر فقط
+                                                  _selectedBatteryIndex =
+                                                      actualIndex; // اختيار هذا العنصر فقط
                                                 } else {
-                                                  _selectedBatteryIndex = null; // إلغاء الاختيار
+                                                  _selectedBatteryIndex =
+                                                      null; // إلغاء الاختيار
                                                 }
                                               });
                                             },
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(4.r),
+                                              borderRadius:
+                                                  BorderRadius.circular(4.r),
                                             ),
                                             side: BorderSide(
-                                              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                              color:
+                                                  isSelected
+                                                      ? const Color(0xFFBA1B1B)
+                                                      : const Color(0xFF474747),
                                               width: 1.2,
                                             ),
-                                            checkColor: Colors.white, // لون الصح
-                                            activeColor: const Color(0xFFBA1B1B), // لون الخلفية لما متعلم
-                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            checkColor: Colors.white,
+                                            // لون الصح
+                                            activeColor: const Color(
+                                              0xFFBA1B1B,
+                                            ),
+                                            // لون الخلفية لما متعلم
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
                                           ),
                                         ),
 
@@ -552,7 +611,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                     : const Color(0xFF474747),
                                           ),
                                         ),
-                                      */  SizedBox(width: 12.w),
+                                      */
+                                        SizedBox(width: 12.w),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -761,7 +821,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: locale.isDirectionRTL(context) ? "المرفقات:" : "Attachments:",
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? "المرفقات:"
+                                : "Attachments:",
                         style: TextStyle(
                           color: textColor(context),
                           fontSize: 14.sp,
@@ -770,7 +833,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         ),
                       ),
                       TextSpan(
-                        text: locale.isDirectionRTL(context) ? " (اختياري)" : " (optional)",
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? " (اختياري)"
+                                : " (optional)",
                         style: TextStyle(
                           color: borderColor(context),
                           fontSize: 12.sp,

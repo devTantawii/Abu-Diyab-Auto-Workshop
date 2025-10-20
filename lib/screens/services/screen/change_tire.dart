@@ -32,7 +32,13 @@ class ChangeTire extends StatefulWidget {
   final String icon;
   final String slug; // ✅ أضف ده
 
-  const ChangeTire({super.key, required this.title, required this.description, required this.icon, required this.slug});
+  const ChangeTire({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
 
   @override
   State<ChangeTire> createState() => _ChangeTireState();
@@ -74,7 +80,7 @@ class _ChangeTireState extends State<ChangeTire> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor:scaffoldBackgroundColor(context),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         title_en: "Create Request",
@@ -86,241 +92,294 @@ class _ChangeTireState extends State<ChangeTire> {
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
-          ),color:backgroundColor(context),    ),        child: SingleChildScrollView(
+          ),
+          color: backgroundColor(context),
+        ),
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(textDirection: locale.isDirectionRTL(context)
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+            child: Column(
+              textDirection:
+                  locale.isDirectionRTL(context)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (selectedTireSize != null) {
-                          setState(() {
-                            selectedTireSize = null;
-                          });
-                          context.read<TireCubit>().filterTiresBySize(null);
-                        } else {
-                          showModalBottomSheet(
-                            context: context,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16.sp),
-                              ),
-                            ),
-                            builder: (context) {
-                              String? tempSelectedSize = selectedTireSize;
-                              return StatefulBuilder(
-                                builder: (context, setModalState) {
-                                  return Container(
-                                    decoration: ShapeDecoration(
-                                      color: backgroundColor(context),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20.sp),
-                                          topRight: Radius.circular(20.sp),
+                GestureDetector(
+                  onTap: () {
+                    if (selectedTireSize != null) {
+                      setState(() {
+                        selectedTireSize = null;
+                      });
+                      context.read<TireCubit>().filterTiresBySize(null);
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16.sp),
+                          ),
+                        ),
+                        builder: (context) {
+                          String? tempSelectedSize = selectedTireSize;
+                          return StatefulBuilder(
+                            builder: (context, setModalState) {
+                              return Container(
+                                decoration: ShapeDecoration(
+                                  color: backgroundColor(context),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20.sp),
+                                      topRight: Radius.circular(20.sp),
+                                    ),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                height: 350.h,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        locale.isDirectionRTL(context)
+                                            ? 'الفلترة'
+                                            : "Filtering",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: accentColor,
+                                          fontSize: 25.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),
-                                    padding: const EdgeInsets.all(16),
-                                    height: 350.h,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text(locale.isDirectionRTL(context)?
-                                            'الفلترة':"Filtering",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: accentColor,
-                                              fontSize: 25.sp,
-                                              fontFamily: 'Graphik Arabic',
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          '---------------------------------------------------------------------------',
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            color: borderColor(context),
-                                            fontSize: 16.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(locale.isDirectionRTL(context)?
-                                          'مقاس الإطار':"Tyre Size",
-                                          style: TextStyle(
-                                            color: borderColor(context),
-                                            fontSize: 18.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        SizedBox(height: 12.h),
-                                        Expanded(
-                                          child: LayoutBuilder(
-                                            builder: (context, constraints) {
-                                              final double containerWidth = constraints.maxWidth;
-                                              final int itemsPerRow = 4;
-                                              final double spacing = 10;
-                                              final double buttonWidth =
-                                                  (containerWidth - (spacing * (itemsPerRow - 1))) /
-                                                      itemsPerRow;
-                                              final double buttonHeight = 35.h;
-                                              final double rowSpacing = 25.h;
+                                    Text(
+                                      '---------------------------------------------------------------------------',
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: borderColor(context),
+                                        fontSize: 16.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      locale.isDirectionRTL(context)
+                                          ? 'مقاس الإطار'
+                                          : "Tyre Size",
+                                      style: TextStyle(
+                                        color: Color(0xFF616465),
+                                        fontSize: 18.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Expanded(
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          final double containerWidth =
+                                              constraints.maxWidth;
+                                          final int itemsPerRow = 4;
+                                          final double spacing = 10;
+                                          final double buttonWidth =
+                                              (containerWidth -
+                                                  (spacing *
+                                                      (itemsPerRow - 1))) /
+                                              itemsPerRow;
+                                          final double buttonHeight = 35.h;
+                                          final double rowSpacing = 25.h;
 
-                                              return Container(
-                                                width: double.infinity,
-                                                height: ((tireSizeOptions.length / itemsPerRow)
+                                          return Container(
+                                            width: double.infinity,
+                                            height:
+                                                ((tireSizeOptions.length /
+                                                        itemsPerRow)
                                                     .ceil()) *
-                                                    (buttonHeight + rowSpacing),
-                                                child: Stack(
-                                                  children: tireSizeOptions.asMap().entries.map(
-                                                        (entry) {
-                                                      final index = entry.key;
-                                                      final sizeValue = entry.value;
-                                                      final int row = index ~/ itemsPerRow;
-                                                      final int col = index % itemsPerRow;
-                                                      final double left =
-                                                          col * (buttonWidth + spacing);
-                                                      final double top =
-                                                          row * (buttonHeight + rowSpacing);
-                                                      final bool isSelected =
-                                                          tempSelectedSize == sizeValue;
+                                                (buttonHeight + rowSpacing),
+                                            child: Stack(
+                                              children:
+                                                  tireSizeOptions.asMap().entries.map((
+                                                    entry,
+                                                  ) {
+                                                    final index = entry.key;
+                                                    final sizeValue =
+                                                        entry.value;
+                                                    final int row =
+                                                        index ~/ itemsPerRow;
+                                                    final int col =
+                                                        index % itemsPerRow;
+                                                    final double left =
+                                                        col *
+                                                        (buttonWidth + spacing);
+                                                    final double top =
+                                                        row *
+                                                        (buttonHeight +
+                                                            rowSpacing);
+                                                    final bool isSelected =
+                                                        tempSelectedSize ==
+                                                        sizeValue;
 
-                                                      return Positioned(
-                                                        left: left,
-                                                        top: top,
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            setModalState(() {
-                                                              tempSelectedSize = sizeValue;
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            width: buttonWidth,
-                                                            padding: EdgeInsets.symmetric(
-                                                              horizontal: 10,
-                                                              vertical: 9,
-                                                            ),
-                                                            decoration: ShapeDecoration(
-                                                              color: isSelected
-                                                                  ? const Color(0xffBA1B1B)
-                                                                  : null,
-                                                              shape: RoundedRectangleBorder(
-                                                                side: BorderSide(
-                                                                  width: 1.w,
-                                                                  color: isSelected
-                                                                      ? accentColor
-                                                                      : borderColor(context),
-                                                                ),
-                                                                borderRadius:
-                                                                BorderRadius.circular(5.sp),
+                                                    return Positioned(
+                                                      left: left,
+                                                      top: top,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setModalState(() {
+                                                            tempSelectedSize =
+                                                                sizeValue;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          width: buttonWidth,
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 9,
                                                               ),
+                                                          decoration: ShapeDecoration(
+                                                            color:
+                                                                isSelected
+                                                                    ? Color(0xFFBA1B1B).withOpacity(0.2)
+
+                                                                    : null,
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                width: 2.w,
+                                                                color:
+                                                                    isSelected
+                                                                        ? Color(0xFFBA1B1B)
+                                                                        : Colors.grey,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    5.sp,
+                                                                  ),
                                                             ),
-                                                            child: Center(
-                                                              child: Text(
-                                                                sizeValue,
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                  color: isSelected
-                                                                      ? textColor(context)
-                                                                      : borderColor(context),
-                                                                  fontSize: isSelected
-                                                                      ? 16.sp
-                                                                      : 14.sp,
-                                                                  fontFamily: 'Graphik Arabic',
-                                                                  fontWeight: FontWeight.w600,
-                                                                ),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              sizeValue,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                color:
+                                                                    isSelected
+                                                                        ? Colors.black
+                                                                        : Color(0xFF616465),
+                                                                fontSize:
+                                                                    isSelected
+                                                                        ? 14.sp
+                                                                        : 14.sp,
+                                                                fontFamily:
+                                                                    'Graphik Arabic',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                      );
-                                                    },
-                                                  ).toList(),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedTireSize = tempSelectedSize;
-                                                });
-                                                Navigator.pop(context);
-                                                context
-                                                    .read<TireCubit>()
-                                                    .filterTiresBySize(selectedTireSize);
-                                              },
-                                              child: Container(
-                                                width: 240.w,
-                                                height: 50.h,
-                                                padding: const EdgeInsets.all(10),
-                                                decoration: ShapeDecoration(
-                                                  color: const Color(0xFFBA1B1B),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(15.sp),
-                                                  ),
-                                                ),
-                                                child: Text(  locale.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20.sp,
-                                                    fontFamily: 'Graphik Arabic',
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedTireSize =
+                                                  tempSelectedSize;
+                                            });
+                                            Navigator.pop(context);
+                                            context
+                                                .read<TireCubit>()
+                                                .filterTiresBySize(
+                                                  selectedTireSize,
+                                                );
+                                          },
+                                          child: Container(
+                                            width: 240.w,
+                                            height: 50.h,
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: ShapeDecoration(
+                                              color: const Color(0xFFBA1B1B),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      15.sp,
+                                                    ),
                                               ),
                                             ),
-                                          ],
+                                            child: Text(
+                                              locale.isDirectionRTL(context)
+                                                  ? 'عرض النتائج'
+                                                  : 'Show Results',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  );
-                                },
+                                  ],
+                                ),
                               );
                             },
                           );
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 50.w,
-                            height: 50.h,
-                            decoration: BoxDecoration(
-                              color: selectedTireSize != null
-                                  ? accentColor
+                        },
+                      );
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 50.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                          color:
+                              selectedTireSize != null
+                                  ? Color(0xFFBA1B1B).withOpacity(0.2)
                                   : boxcolor(context),
-                              borderRadius: BorderRadius.circular(10.sp),
-                              border: Border.all(
-                                width: 1.5.w,
-                                color: borderColor(context),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Image.asset(
-                                'assets/icons/icon_filter.png',
-                                color: textColor(context),
-                              ),
-                            ),
+                          borderRadius: BorderRadius.circular(10.sp),
+                          border: Border.all(
+                            width: 1.5.w,
+                            color:
+                                selectedTireSize != null
+                                    ? Color(0xFFBA1B1B)
+                                    : borderColor(context),
                           ),
-                        ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child:
+                              selectedTireSize != null
+                                  ? Icon(Icons.cancel_outlined)
+                                  : Image.asset(
+                                    'assets/icons/icon_filter.png',
+                                    color: textColor(context),
+                                  ),
+                        ),
                       ),
-                    ),
-                SizedBox(height: 12.h,),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 12.h),
                 Row(
                   children: [
                     Text(
@@ -328,9 +387,9 @@ class _ChangeTireState extends State<ChangeTire> {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -345,7 +404,6 @@ class _ChangeTireState extends State<ChangeTire> {
                         return Icon(Icons.image_not_supported, size: 20.h);
                       },
                     ),
-
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -378,7 +436,6 @@ class _ChangeTireState extends State<ChangeTire> {
                   ],
                 ),
 
-
                 /// -------------------- قسم السيارات --------------------
                 CarsSection(
                   onCarSelected: (userCarId) {
@@ -387,6 +444,7 @@ class _ChangeTireState extends State<ChangeTire> {
                     });
                   },
                 ),
+
                 /// ---------------- الزيوت ----------------
                 Align(
                   alignment:
@@ -398,7 +456,7 @@ class _ChangeTireState extends State<ChangeTire> {
                         ? "الخدمات المتوفرة"
                         : 'Available Services',
                     style: TextStyle(
-                      color:textColor(context),
+                      color: textColor(context),
                       fontSize: 14.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -441,14 +499,16 @@ class _ChangeTireState extends State<ChangeTire> {
                             itemBuilder: (context, index) {
                               final tire = currentItems[index];
                               final actualIndex = startIndex + index;
-                              final isSelected = selectedTireIndex == actualIndex;
+                              final isSelected =
+                                  selectedTireIndex == actualIndex;
 
                               void toggleSelection() {
                                 setState(() {
                                   if (isSelected) {
                                     selectedTireIndex = null; // إلغاء الاختيار
                                   } else {
-                                    selectedTireIndex = actualIndex; // اختيار الكفر
+                                    selectedTireIndex =
+                                        actualIndex; // اختيار الكفر
                                   }
                                 });
                               }
@@ -459,13 +519,18 @@ class _ChangeTireState extends State<ChangeTire> {
                                   margin: EdgeInsets.symmetric(vertical: 8.h),
                                   padding: EdgeInsets.all(12.w),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).brightness == Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
                                     borderRadius: BorderRadius.circular(15.r),
                                     border: Border.all(
                                       width: 1.5.w,
-                                      color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
+                                      color:
+                                          isSelected
+                                              ? const Color(0xFFBA1B1B)
+                                              : const Color(0xFF9B9B9B),
                                     ),
                                     boxShadow: [
                                       BoxShadow(
@@ -476,7 +541,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                     ],
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Transform.scale(
                                         scale: 1.2.sp,
@@ -486,21 +552,28 @@ class _ChangeTireState extends State<ChangeTire> {
                                             toggleSelection();
                                           },
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(4.r),
+                                            borderRadius: BorderRadius.circular(
+                                              4.r,
+                                            ),
                                           ),
                                           side: BorderSide(
-                                            color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                            color:
+                                                isSelected
+                                                    ? const Color(0xFFBA1B1B)
+                                                    : const Color(0xFF474747),
                                             width: 1.2,
                                           ),
                                           checkColor: Colors.white,
                                           activeColor: const Color(0xFFBA1B1B),
-                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
                                         ),
                                       ),
                                       SizedBox(width: 12.w),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
                                               children: [
@@ -508,28 +581,40 @@ class _ChangeTireState extends State<ChangeTire> {
                                                   child: Text(
                                                     tire.name,
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                      color: Theme.of(context).brightness == Brightness.light
-                                                          ? Colors.black
-                                                          : Colors.white,
+                                                      color:
+                                                          Theme.of(
+                                                                    context,
+                                                                  ).brightness ==
+                                                                  Brightness
+                                                                      .light
+                                                              ? Colors.black
+                                                              : Colors.white,
                                                       fontSize: 14.sp,
-                                                      fontFamily: 'Graphik Arabic',
-                                                      fontWeight: FontWeight.w600,
+                                                      fontFamily:
+                                                          'Graphik Arabic',
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                 ),
                                                 SizedBox(width: 8.w),
                                                 Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     Text(
                                                       "${tire.price}",
                                                       style: TextStyle(
-                                                        color: const Color(0xFFBA1B1B),
+                                                        color: const Color(
+                                                          0xFFBA1B1B,
+                                                        ),
                                                         fontSize: 16.sp,
                                                         fontFamily: 'Poppins',
-                                                        fontWeight: FontWeight.w600,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                       ),
                                                     ),
                                                     SizedBox(width: 4.w),
@@ -589,7 +674,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                       color:
                                           currentPage < totalPages
                                               ? borderColor(context)
-                                              :  borderColor(context)
+                                              : borderColor(context),
                                     ),
                                   ),
                                   SizedBox(width: 12.w),
@@ -601,8 +686,10 @@ class _ChangeTireState extends State<ChangeTire> {
                                       height: 50.h,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color:  borderColor(context),
-                                        borderRadius: BorderRadius.circular(8.r),
+                                        color: borderColor(context),
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
                                       ),
                                       child: Text(
                                         '${currentPage + 1}',
@@ -652,7 +739,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                       color:
                                           currentPage > 1
                                               ? borderColor(context)
-                                              : borderColor(context)
+                                              : borderColor(context),
                                     ),
                                   ),
                                 ],
@@ -679,10 +766,11 @@ class _ChangeTireState extends State<ChangeTire> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        locale.isDirectionRTL(context)?
-                        "عدد الإطارات":"Number of Tyres",
-                        style:  TextStyle(
-                          color:textColor(context),
+                        locale.isDirectionRTL(context)
+                            ? "عدد الإطارات"
+                            : "Number of Tyres",
+                        style: TextStyle(
+                          color: textColor(context),
                           fontSize: 16.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w700,
@@ -694,10 +782,12 @@ class _ChangeTireState extends State<ChangeTire> {
                       Container(
                         decoration: BoxDecoration(
                           color: backgroundColor(context),
-                          border: Border.all(color:borderColor(context),width: 1.5.w),
+                          border: Border.all(
+                            color: borderColor(context),
+                            width: 1.5.w,
+                          ),
                           borderRadius: BorderRadius.circular(12.sp),
-                          boxShadow: const [
-                          ],
+                          boxShadow: const [],
                         ),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
@@ -715,15 +805,23 @@ class _ChangeTireState extends State<ChangeTire> {
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFBA1B1B),
                                       shape: BoxShape.rectangle,
-                                      borderRadius: Directionality.of(context) == TextDirection.rtl
-                                          ? BorderRadius.only(
-                                        topRight: Radius.circular(10.sp),
-                                        bottomRight: Radius.circular(10.sp),
-                                      )
-                                          : BorderRadius.only(
-                                        topLeft: Radius.circular(10.sp),
-                                        bottomLeft: Radius.circular(10.sp),
-                                      ),
+                                      borderRadius:
+                                          Directionality.of(context) ==
+                                                  TextDirection.rtl
+                                              ? BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                                bottomRight: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                              )
+                                              : BorderRadius.only(
+                                                topLeft: Radius.circular(10.sp),
+                                                bottomLeft: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                              ),
                                     ),
                                     child: Center(
                                       child: Text(
@@ -742,7 +840,9 @@ class _ChangeTireState extends State<ChangeTire> {
                                 Expanded(
                                   child: Center(
                                     child: AnimatedDefaultTextStyle(
-                                      duration: const Duration(milliseconds: 250),
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
                                       style: TextStyle(
                                         color: textColor(context),
                                         fontSize: 26.sp,
@@ -766,15 +866,23 @@ class _ChangeTireState extends State<ChangeTire> {
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFBA1B1B),
                                       shape: BoxShape.rectangle,
-                                      borderRadius: Directionality.of(context) == TextDirection.rtl
-                                          ? BorderRadius.only(
-                                        topLeft: Radius.circular(10.sp),
-                                        bottomLeft: Radius.circular(10.sp),
-                                      )
-                                          : BorderRadius.only(
-                                        topRight: Radius.circular(10.sp),
-                                        bottomRight: Radius.circular(10.sp),
-                                      ),
+                                      borderRadius:
+                                          Directionality.of(context) ==
+                                                  TextDirection.rtl
+                                              ? BorderRadius.only(
+                                                topLeft: Radius.circular(10.sp),
+                                                bottomLeft: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                              )
+                                              : BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                                bottomRight: Radius.circular(
+                                                  10.sp,
+                                                ),
+                                              ),
                                     ),
                                     child: Center(
                                       child: Text(
@@ -802,7 +910,7 @@ class _ChangeTireState extends State<ChangeTire> {
                   notesController: notesController,
                   kiloReadController: kiloReadController,
                 ),
-                SizedBox(height: 12.h,),
+                SizedBox(height: 12.h),
                 Align(
                   alignment:
                       locale.isDirectionRTL(context)
@@ -817,7 +925,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                   ? 'إستمارة السيارة '
                                   : 'Car Registration ',
                           style: TextStyle(
-                            color:textColor(context),
+                            color: textColor(context),
                             fontSize: 14.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -849,7 +957,8 @@ class _ChangeTireState extends State<ChangeTire> {
                     selectedCarDocs = files;
                     print('عدد الصور المختارة: ${selectedCarDocs.length}');
                   },
-                ),                SizedBox(height: 15.h),
+                ),
+                SizedBox(height: 15.h),
               ],
             ),
           ),
@@ -866,9 +975,9 @@ class _ChangeTireState extends State<ChangeTire> {
             return;
           }
           if (selectedTireIndex == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار الإطار")),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("يرجى اختيار الإطار")));
             return;
           }
 
@@ -881,14 +990,15 @@ class _ChangeTireState extends State<ChangeTire> {
 
           // الحصول على الإطار المختار
           final tireState = context.read<TireCubit>().state;
-          final selectedTire = (tireState is TireLoaded)
-              ? tireState.tires[selectedTireIndex!]
-              : null;
+          final selectedTire =
+              (tireState is TireLoaded)
+                  ? tireState.tires[selectedTireIndex!]
+                  : null;
 
           if (selectedTire == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار الإطار")),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("يرجى اختيار الإطار")));
             return;
           }
 
@@ -896,17 +1006,24 @@ class _ChangeTireState extends State<ChangeTire> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => ReviewRequestPage(
-                title: widget.title,
-                icon: widget.icon,
-                slug: widget.slug,
-                selectedUserCarId: _selectedUserCarId,
-                selectedProduct: selectedTire,
-                notes: notesController.text.isNotEmpty ? notesController.text : null,
-                kiloRead: kiloReadController.text.isNotEmpty ? kiloReadController.text : null,
-                selectedCarDocs: selectedCarDocs,
-                count: count.toString(), // عدد الإطارات
-              ),
+              builder:
+                  (BuildContext context) => ReviewRequestPage(
+                    title: widget.title,
+                    icon: widget.icon,
+                    slug: widget.slug,
+                    selectedUserCarId: _selectedUserCarId,
+                    selectedProduct: selectedTire,
+                    notes:
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : null,
+                    kiloRead:
+                        kiloReadController.text.isNotEmpty
+                            ? kiloReadController.text
+                            : null,
+                    selectedCarDocs: selectedCarDocs,
+                    count: count.toString(), // عدد الإطارات
+                  ),
             ),
           );
         },

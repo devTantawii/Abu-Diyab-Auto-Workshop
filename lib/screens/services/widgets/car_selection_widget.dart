@@ -11,7 +11,7 @@ import '../../my_car/screen/widget/details_item.dart';
 import '../../my_car/widget/bottom_add_car.dart';
 
 class CarsSection extends StatefulWidget {
-  /// ✅ هنخلي الكول باك يرجع user_car_id فقط
+
   final Function(int userCarId)? onCarSelected;
 
   const CarsSection({super.key, this.onCarSelected});
@@ -190,7 +190,7 @@ class _CarsSectionState extends State<CarsSection> {
           _selectedUserCarId = isSelected ? null : car.id;
         });
 
-        /// ✅ نرسل الـ user_car_id فقط للـ parent
+
         if (widget.onCarSelected != null && _selectedUserCarId != null) {
           widget.onCarSelected!(_selectedUserCarId!);
         }

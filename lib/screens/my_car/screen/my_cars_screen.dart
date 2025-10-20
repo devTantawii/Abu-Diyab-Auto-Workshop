@@ -92,8 +92,8 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         },
                         child: Text(
                           locale!.isDirectionRTL(context)
-                              ? "سجل الدخول مره اخري من فضلك"
-                              : "Log in again please",
+                              ? "سجل الدخول من فضلك"
+                              : "Log in please",
                         ),
                       ),
                     ],

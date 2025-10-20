@@ -9,32 +9,10 @@ import '../main.dart';
 import '../screens/auth/cubit/login_cubit.dart';
 import '../screens/home/screen/home_screen.dart';
 import '../screens/on_boarding/screen/on_boarding_screen.dart';
-import '../screens/main/cubit/car_cubit.dart';
-import '../screens/main/cubit/services_cubit.dart';
-import '../screens/more/Cubit/bakat_cubit.dart';
-import '../screens/my_car/cubit/CarModelCubit.dart';
-import '../screens/my_car/cubit/add_car_cubit.dart';
-import '../screens/my_car/cubit/all_cars_cubit.dart';
-import '../screens/my_car/cubit/car_brand_cubit.dart';
-import '../screens/reminds/cubit/maintenance_cubit.dart';
-import '../screens/reminds/cubit/notes_details_cubit.dart';
-import '../screens/reminds/cubit/user_car_note_cubit.dart';
-import '../screens/services/cubit/battery_cubit.dart';
-import '../screens/services/cubit/car_check_cubit.dart';
-import '../screens/services/cubit/oil_cubit.dart';
-import '../screens/services/cubit/tire_cubit.dart';
-import '../screens/services/cubit/washing_cubit.dart';
-import '../screens/services/repo/battery_repo.dart';
-import '../screens/services/repo/car_check_repo.dart';
-import '../screens/services/repo/oil_repo.dart';
-import '../screens/services/repo/tire_repo.dart';
-import '../screens/services/repo/washing_repo.dart';
-import '../core/constant/api.dart';
-import '../core/helpers/SharedPreference/pereferences.dart';
+
 import '../core/language/locale.dart';
 import '../core/theme.dart';
 import '../language/languageCubit.dart';
-import 'helpers/helper/dio_helper.dart';
 final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 String? initialToken;
 
@@ -65,10 +43,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final prefs = await SharedPreferences.getInstance();
     final currentToken = prefs.getString('token');
 
-    if (currentToken != initialToken) {
-      await prefs.clear();
-      initialToken = null;
 
+    if (currentToken == null || currentToken.isEmpty) {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => OnboardingScreen()),
@@ -77,6 +53,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       }
     }
   }
+
 
   void navigateToHome() {
     if (mounted) {
@@ -129,7 +106,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return BlocBuilder<ThemeCubit, ThemeMode>(
               builder: (context, themeMode) {
                 return MaterialApp(
-                  navigatorKey: navigatorKey, // ✅ عشان DioHelper يقدر يوجّه المستخدم
                   locale: locale,
                   supportedLocales: const [Locale('en'), Locale('ar')],
                   localizationsDelegates: const [

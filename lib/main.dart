@@ -7,8 +7,12 @@ import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/car_brand_cubit.dart';
 import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen.dart';
+import 'package:abu_diyab_workshop/screens/orders/cubit/get_order_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/payment_preview_cubit.dart';
+import 'package:abu_diyab_workshop/screens/orders/repo/get_order_repo.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/payment_service.dart';
+import 'package:abu_diyab_workshop/screens/profile/cubit/profile_cubit.dart';
+import 'package:abu_diyab_workshop/screens/profile/repositorie/profile_repository.dart';
 import 'package:abu_diyab_workshop/screens/reminds/cubit/maintenance_cubit.dart';
 import 'package:abu_diyab_workshop/screens/reminds/cubit/user_car_note_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
@@ -29,11 +33,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/app_setup.dart';
 import 'core/constant/api.dart';
 import 'core/helpers/SharedPreference/pereferences.dart';
-import 'core/helpers/helper/dio_helper.dart';
 import 'core/theme.dart';
 import 'language/languageCubit.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -43,14 +47,9 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final prefs = await SharedPreferences.getInstance();
-  String? savedToken = prefs.getString('token');
+  initialToken = prefs.getString('token');
 
-  if (savedToken != null && savedToken.contains('|')) {
-    savedToken = savedToken.split('|')[1];
-  }
-
-  initialToken = savedToken;
-  print('🔑 Saved Token: $savedToken');
+  print('🔑 Saved Token: $initialToken');
 
   final sharedPrefHelper = SharedPreferencesHelper();
   final dio = Dio();
@@ -64,8 +63,8 @@ void main() async {
           create: (_) => LanguageCubit(sharedPrefHelper),
         ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(create: (_) => LoginCubit(dio: DioHelper.init()),
-        ),
+        BlocProvider(create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders()),
+
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
           create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
@@ -88,6 +87,8 @@ void main() async {
         BlocProvider(create: (_) => MaintenanceCubit()),
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
+  BlocProvider(
+  create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),),
       ],
       child: MyApp(
         key: myAppKey,

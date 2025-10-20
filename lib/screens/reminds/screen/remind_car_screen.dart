@@ -14,7 +14,7 @@ import '../cubit/user_car_note_cubit.dart';
 import '../cubit/user_car_note_state.dart';
 import '../model/user_car_note_model.dart';
 
-// شاشة التذكير
+
 class RemindCarScreen extends StatefulWidget {
   final Car car;
 
@@ -277,6 +277,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                 return const SizedBox();
               },
             ),
+
           ],
         ),
       ),

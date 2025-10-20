@@ -171,7 +171,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                     Text(
                                       locale.isDirectionRTL(context) ? 'لزوجه الزيت' : 'Oil viscosity',
                                       style: TextStyle(
-                                        color: borderColor(context),
+                                        color: Color(0xFF616465),
                                         fontSize: 18.sp,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w600,
@@ -227,14 +227,14 @@ class _ChangeOilState extends State<ChangeOil> {
                                                         ),
                                                         decoration: ShapeDecoration(
                                                           color: isSelected
-                                                              ? const Color(0xffBA1B1B)
+                                                              ? Color(0xFFBA1B1B).withOpacity(0.2)
                                                               : null,
                                                           shape: RoundedRectangleBorder(
                                                             side: BorderSide(
-                                                              width: 1.w,
+                                                              width: 2.w,
                                                               color: isSelected
-                                                                  ? accentColor
-                                                                  : borderColor(context),
+                                                                  ? Color(0xFFBA1B1B)
+                                                                  : Colors.grey,
                                                             ),
                                                             borderRadius:
                                                             BorderRadius.circular(5.sp),
@@ -246,9 +246,9 @@ class _ChangeOilState extends State<ChangeOil> {
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
                                                               color: isSelected
-                                                                  ? textColor(context)
-                                                                  : borderColor(context),
-                                                              fontSize: isSelected ? 14.sp : 12.sp,
+                                                                  ? Colors.black
+                                                                  : Color(0xFF616465),
+                                                              fontSize: isSelected ? 14.sp : 14.sp,
                                                               fontFamily: 'Graphik Arabic',
                                                               fontWeight: FontWeight.w600,
                                                             ),
@@ -317,20 +317,26 @@ class _ChangeOilState extends State<ChangeOil> {
                         height: 50.h,
                         decoration: BoxDecoration(
                           color: selectedViscosity != null
-                              ? accentColor
+                              ? Color(0xFFBA1B1B).withOpacity(0.2)
                               : boxcolor(context),
                           borderRadius: BorderRadius.circular(10.sp),
                           border: Border.all(
                             width: 1.5.w,
-                            color: borderColor(context),
+                            color:  selectedViscosity != null
+                                ? Color(0xFFBA1B1B)
+                                :borderColor(context),
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(
+                          padding:  EdgeInsets.all(10.0),
+                          child:
+                          selectedViscosity != null
+                              ? Icon(Icons.cancel_outlined)
+                              : Image.asset(
                             'assets/icons/icon_filter.png',
                             color: textColor(context),
                           ),
+                          
                         ),
                       ),
                     ],

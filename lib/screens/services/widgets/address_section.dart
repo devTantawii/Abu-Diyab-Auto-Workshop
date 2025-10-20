@@ -114,30 +114,10 @@ class _AddressSectionState extends State<AddressSection> {
       String rawAddress = result['address'] ?? '';
       print('📍 Raw address from map: $rawAddress');
 
-      String cleanAddress(String text) {
-        String cleaned = text;
-        bool isArabic = locale!.isDirectionRTL(context);
 
-        cleaned = cleaned.replaceAll(RegExp(r'\b[A-Z0-9]{3,}\b'), '');
-        cleaned = cleaned.replaceAll(RegExp(r'\d{3,}'), '');
-        cleaned = cleaned.replaceAll(RegExp(r'[+]+'), '');
-        cleaned = cleaned.replaceAll(RegExp(r'(,){2,}'), ',');
-        cleaned = cleaned.replaceAll(RegExp(r'\s{2,}'), ' ').trim();
+      setState(() => _address = rawAddress);
+      widget.onAddressSelected(rawAddress, result['lat'], result['lng']);
 
-        if (isArabic) {
-          cleaned = cleaned.replaceAll(RegExp(r'[A-Za-z]'), '');
-        } else {
-          cleaned = cleaned.replaceAll(RegExp(r'[\u0600-\u06FF]'), '');
-        }
-
-        return cleaned.trim();
-      }
-
-      String cleanedAddress = cleanAddress(rawAddress);
-      print('✅ Cleaned address: $cleanedAddress');
-
-      setState(() => _address = cleanedAddress);
-      widget.onAddressSelected(cleanedAddress, result['lat'], result['lng']);
     }
   }
 
@@ -161,19 +141,19 @@ class _AddressSectionState extends State<AddressSection> {
 
       final place = places.last;
 
-      print('==================== 🧭 Placemark Data ====================');
-      print('name: ${place.name}');
-      print('street: ${place.street}');
-      print('subThoroughfare: ${place.subThoroughfare}');
-      print('thoroughfare: ${place.thoroughfare}');
-      print('subLocality: ${place.subLocality}');
-      print('locality: ${place.locality}');
-      print('subAdministrativeArea: ${place.subAdministrativeArea}');
-      print('administrativeArea: ${place.administrativeArea}');
-      print('postalCode: ${place.postalCode}');
-      print('country: ${place.country}');
-      print('isoCountryCode: ${place.isoCountryCode}');
-      print('===========================================================');
+      // print('==================== 🧭 Placemark Data ====================');
+      // print('name: ${place.name}');
+      // print('street: ${place.street}');
+      // print('subThoroughfare: ${place.subThoroughfare}');
+      // print('thoroughfare: ${place.thoroughfare}');
+      // print('subLocality: ${place.subLocality}');
+      // print('locality: ${place.locality}');
+      // print('subAdministrativeArea: ${place.subAdministrativeArea}');
+      // print('administrativeArea: ${place.administrativeArea}');
+      // print('postalCode: ${place.postalCode}');
+      // print('country: ${place.country}');
+      // print('isoCountryCode: ${place.isoCountryCode}');
+      // print('===========================================================');
 
       bool isArabic = locale!.isDirectionRTL(context);
 
@@ -206,11 +186,12 @@ class _AddressSectionState extends State<AddressSection> {
         }
       }
 
-      String address = uniqueParts.join("، ");
-      print('✅ Cleaned address: $address');
+      String fullAddress = '${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+      print('📍 Full address: $fullAddress');
 
-      setState(() => _address = address);
-      widget.onAddressSelected(address, pos.latitude, pos.longitude);
+      setState(() => _address = fullAddress);
+      widget.onAddressSelected(fullAddress, pos.latitude, pos.longitude);
+
     } finally {
       setState(() => _loading = false);
     }

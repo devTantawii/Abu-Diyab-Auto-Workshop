@@ -36,8 +36,18 @@ class ProfileRepository {
       }
     } on DioException catch (e) {
       debugPrint("❌ Dio error: ${e.response?.data}");
+
+      // 👇 تحقق من حالة انتهاء التوكن
+      if (e.response?.statusCode == 401) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('token');
+        debugPrint("🔒 Token expired and removed from storage.");
+        return null;
+      }
+
       throw Exception(e.response?.data['message'] ?? 'خطأ في جلب البروفايل');
     }
+
     return null;
   }
 
