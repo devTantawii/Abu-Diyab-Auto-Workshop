@@ -92,17 +92,26 @@ class Offer {
 
 class OfferItem {
   final int id;
-  final String name;
+  final String? name;
+  final String? slug;
+  final String? icon;
+  final String? description;
 
   OfferItem({
     required this.id,
-    required this.name,
+    this.name,
+    this.slug,
+    this.icon,
+    this.description,
   });
 
   factory OfferItem.fromJson(Map<String, dynamic> json) {
     return OfferItem(
       id: json['id'],
       name: json['name'],
+      slug: json['slug'],
+      icon: json['icon'],
+      description: json['description'],
     );
   }
 
@@ -110,6 +119,9 @@ class OfferItem {
     return {
       "id": id,
       "name": name,
+      "slug": slug,
+      "icon": icon,
+      "description": description,
     };
   }
 }

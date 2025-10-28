@@ -933,7 +933,10 @@ class _FinalReviewState extends State<FinalReview> {
                                           final paymentUrl =
                                           response.data["data"]["payment_url"];
                                           debugPrint("✅ Payment URL: $paymentUrl");
-            
+                                          final token =
+                                          response.data["data"]["token"];
+                                          debugPrint("✅ Payment URL: $token");
+
                                           navigateTo(
                                             context,
                                             WebPayment(url: paymentUrl),

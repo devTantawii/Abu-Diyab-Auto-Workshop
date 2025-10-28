@@ -239,8 +239,19 @@ class _OffersScreenState extends State<OffersScreen> {
                                                     final token = prefs.getString('token');
 
                                                     if (token != null && token.isNotEmpty) {
-                                                      // لو عنده توكين
-//                                                       navigateToServiceScreen(context, relatedId.toString(), relatedName.toString(),);
+                                                      // نحصل على القيم من العرض الحالي
+                                                      final slug = offer.service?.slug ?? offer.product?.slug ?? '';
+                                                      final title = offer.service?.name ?? offer.product?.name ?? '';
+                                                      final description = offer.service?.description ?? offer.product?.description ?? '';
+                                                      final imagePath = offer.service?.icon ?? offer.product?.icon ?? '';
+
+                                                      navigateToServiceScreen(
+                                                        context,
+                                                        slug,
+                                                        title,
+                                                        description,
+                                                        imagePath,
+                                                      );
                                                     } else {
                                                       showModalBottomSheet(
                                                         context: context,

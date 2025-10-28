@@ -5,13 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomBottomButton extends StatelessWidget {
   final String textAr;
   final String textEn;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final bool isEnabled; // ✅ إضافة جديدة
 
   const CustomBottomButton({
     Key? key,
     required this.textAr,
     required this.textEn,
     required this.onPressed,
+    this.isEnabled = true, // ✅ افتراضي الزر مفعل
   }) : super(key: key);
 
   @override
@@ -24,7 +26,6 @@ class CustomBottomButton extends StatelessWidget {
         color: Theme.of(context).brightness == Brightness.light
             ? Colors.white
             : Colors.black,
-
       ),
       child: Container(
         padding: EdgeInsets.all(12.w),
@@ -32,13 +33,13 @@ class CustomBottomButton extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.light
               ? Colors.white
               : Colors.black,
-          borderRadius:  BorderRadius.only(
+          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10.sp),
             topRight: Radius.circular(10.sp),
           ),
           border: Border(
             top: BorderSide(
-              color:borderColor(context),
+              color: borderColor(context),
               width: 1.5.w,
             ),
           ),
@@ -57,13 +58,15 @@ class CustomBottomButton extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 10.h),
-              backgroundColor: const Color(0xFFBA1B1B),
+              backgroundColor: isEnabled
+                  ? const Color(0xFFBA1B1B) // اللون الطبيعي لو الزر شغال
+                  : Colors.grey.shade400, // رمادي لو الزر مقفول
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
               elevation: 3,
             ),
-            onPressed: onPressed,
+            onPressed: isEnabled ? onPressed : null, // ✅ يتعطل الزر هنا
             child: Text(
               locale == 'ar' ? textAr : textEn,
               textAlign: TextAlign.center,

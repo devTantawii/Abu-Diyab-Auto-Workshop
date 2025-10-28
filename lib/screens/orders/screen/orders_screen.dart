@@ -1,35 +1,47 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+  import 'package:flutter/material.dart';
+  import 'package:flutter_bloc/flutter_bloc.dart';
+  import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/language/locale.dart';
-import '../../../widgets/app_bar_widget.dart';
-import '../../main/screen/main_screen.dart';
+  import '../../../core/language/locale.dart';
+  import '../../../widgets/app_bar_widget.dart';
+  import '../cubit/get_order_cubit.dart';
+  import '../cubit/get_order_state.dart';
+  import '../cubit/old_orders_cubit.dart';
+  import '../cubit/old_orders_state.dart';
+  import '../widget/active_order.dart';
+  import '../widget/old_order.dart';
 
-import '../cubit/get_order_cubit.dart';
-import '../cubit/get_order_state.dart';
-import '../repo/get_order_repo.dart';
-import '../widget/active_order.dart';
-import '../widget/old_order.dart';
+  class OrderScreen extends StatefulWidget {
+    const OrderScreen({super.key});
 
-class OrderScreen extends StatefulWidget {
-  const OrderScreen({super.key});
+    @override
+    State<OrderScreen> createState() => _OrderScreenState();
+  }
 
-  @override
-  State<OrderScreen> createState() => _OrderScreenState();
-}
+  class _OrderScreenState extends State<OrderScreen> {
+    bool _showActiveOrders = true;
 
-bool _showActiveOrders = true;
+    @override
+    void initState() {
+      super.initState();
+      // ✅ تحميل البيانات عند دخول الشاشة
+      context.read<OrdersCubit>().getAllOrders();
+      context.read<OldOrdersCubit>().getOldOrders();
+    }
 
-class _OrderScreenState extends State<OrderScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context);
+    Future<void> _refresh() async {
+      if (_showActiveOrders) {
+        await context.read<OrdersCubit>().getAllOrders();
+      } else {
+        await context.read<OldOrdersCubit>().getOldOrders();
+      }
+    }
 
-    return BlocProvider(
-      create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders(),
-      child: Scaffold(
+    @override
+    Widget build(BuildContext context) {
+      final locale = AppLocalizations.of(context);
+
+      return Scaffold(
         appBar: AppBar(
           toolbarHeight: 130.h,
           backgroundColor: Colors.transparent,
@@ -60,8 +72,10 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
         ),
+
         body: Column(
           children: [
+            // ✅ أزرار التبديل بين الطلبات النشطة والقديمة
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -69,13 +83,10 @@ class _OrderScreenState extends State<OrderScreen> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _showActiveOrders = true;
-                        });
+                        setState(() => _showActiveOrders = true);
                       },
                       child: Container(
                         height: 50,
-                        padding: const EdgeInsets.all(10),
                         decoration: ShapeDecoration(
                           color: _showActiveOrders
                               ? const Color(0xFFBA1B1B)
@@ -104,13 +115,10 @@ class _OrderScreenState extends State<OrderScreen> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _showActiveOrders = false;
-                        });
+                        setState(() => _showActiveOrders = false);
                       },
                       child: Container(
                         height: 50,
-                        padding: const EdgeInsets.all(10),
                         decoration: ShapeDecoration(
                           color: !_showActiveOrders
                               ? const Color(0xFFBA1B1B)
@@ -138,47 +146,114 @@ class _OrderScreenState extends State<OrderScreen> {
                 ],
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // ✅ المحتوى داخل RefreshIndicator
             Expanded(
-              child: BlocBuilder<OrdersCubit, OrdersState>(
-                builder: (context, state) {
-                  if (state is OrdersLoading) {
-                    return const Center(
-                        child: CircularProgressIndicator(color: Colors.red));
-                  } else if (state is OrdersSuccess) {
-                    final orders = _showActiveOrders
-                        ? state.orders
-                        .where((o) => o.status == 'pending')
-                        .toList()
-                        : state.orders
-                        .where((o) => o.status != 'pending')
-                        .toList();
+              child: RefreshIndicator(
+                onRefresh: _refresh, // ← هنا التحديث عند السحب
+                child: _showActiveOrders
+                    ? BlocBuilder<OrdersCubit, OrdersState>(
+                  builder: (context, state) {
+                    if (state is OrdersLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.red),
+                      );
+                    } else if (state is OrdersSuccess) {
+                      final allowedStatuses = [
+                        'pending',
+                        'admin_approved',
+                        'car_delivered',
+                        'inspection_done',
+                        'agree_inspection',
+                        'maintenance_done',
+                      ];
 
-                    if (orders.isEmpty) {
-                      return const Center(child: Text('لا توجد طلبات حالياً'));
-                    }
+                      final activeOrders = state.orders
+                          .where((o) => allowedStatuses.contains(o.status))
+                          .toList();
 
-                    return ListView.builder(
-                      itemCount: orders.length,
-                      itemBuilder: (context, index) {
-                        final order = orders[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ActiveOrder(order: order),
+                      if (activeOrders.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/no_orders.png',
+                                width: 250.w,
+                                height: 192.h,
+                              ),
+                              Text(
+                                'ما عندك طلبات نشطة الحين',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Graphik Arabic',
+                                ),
+                              ),
+                            ],
+                          ),
                         );
-                      },
-                    );
-                  } else if (state is OrdersError) {
-                    return Center(child: Text("خطأ: ${state.message}"));
-                  } else {
-                    return const SizedBox();
-                  }
-                },
+                      }
+
+                      return ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: activeOrders.length,
+                        itemBuilder: (context, index) {
+                          final order = activeOrders[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ActiveOrder(order: order),
+                          );
+                        },
+                      );
+                    } else if (state is OrdersError) {
+                      return Center(
+                        child: Text('حدث خطأ: ${state.message}'),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                )
+                    : BlocBuilder<OldOrdersCubit, OldOrdersState>(
+                  builder: (context, state) {
+                    if (state is OldOrdersLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.red),
+                      );
+                    } else if (state is OldOrdersSuccess) {
+                      if (state.orders.isEmpty) {
+                        return const Center(
+                          child: Text('لا توجد طلبات قديمة'),
+                        );
+                      }
+                      return ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: state.orders.length,
+                        itemBuilder: (context, index) {
+                          final order = state.orders[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: OldOrder(order: order),
+                          );
+                        },
+                      );
+                    } else if (state is OldOrdersError) {
+                      return Center(
+                        child: Text('حدث خطأ: ${state.message}'),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
+    }
   }
-}

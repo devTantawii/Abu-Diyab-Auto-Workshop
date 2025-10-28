@@ -1,179 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../core/language/locale.dart';
+import '../model/old_order_model.dart';
+import 'order_details_screen.dart';
 
 class OldOrder extends StatelessWidget {
-  const OldOrder({super.key});
+  final OldOrderModel order;
+
+  const OldOrder({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+    final car = order.userCar;
+    final serviceName = order.items != null && order.items!.isNotEmpty
+        ? order.items!.first.item?.name ?? ''
+        : locale!.isDirectionRTL(context)
+        ? 'خدمة غير محددة'
+        : 'Undefined Service';
 
     return Container(
       width: 350.w,
-      height: 454.h,
-      // Makes container responsive
-      padding: EdgeInsets.all(12),
-      // Add padding instead of hardcoded positions
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color:
-            Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Color(0x3F000000)
-                    : Color(0xFF9B8989),
+            color: Theme.of(context).brightness == Brightness.light
+                ? const Color(0x3F000000)
+                : const Color(0xFF9B8989),
             blurRadius: 12,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Service name row
+          // 🧩 اسم الخدمة
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'اسم الخدمة :',
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.light
-                          ?Colors.black
-                          :Colors.white,
-
-                        fontSize: 15.h,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: locale!.isDirectionRTL(context)
+                            ? 'اسم الخدمة: '
+                            : 'Service Name: ',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                          fontSize: 15.h,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: ' ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                        height: 1.10,
+                      TextSpan(
+                        text: serviceName,
+                        style: TextStyle(
+                          color: const Color(0xFFBA1B1B),
+                          fontSize: 22.h,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: 'غسيل ونظافة',
-                      style: TextStyle(
-                        color: const Color(0xFFBA1B1B),
-                        fontSize: 22.h,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.right,
-              ),
-              SizedBox(width: 8),
-              Container(
-                width: 23.w,
-                height: 23.h,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/icons/car_fact.png"),
-                    fit: BoxFit.cover,
+                    ],
                   ),
                 ),
               ),
+        //      if (car?.carBrand?.icon != null)
+        //        Image.network(
+        //          car!.carBrand!.icon,
+        //          width: 23.w,
+        //          height: 23.h,
+        //          errorBuilder: (_, __, ___) => const Icon(Icons.car_repair),
+        //        ),
             ],
           ),
 
-          SizedBox(height: 3),
-          Center(
-            child: Text(
-              "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
-            ),
-          ),
-          SizedBox(height: 3),
+          const Divider(thickness: 0.7),
 
-          // Status and order number row
+          // 🔢 رقم الطلب + الحالة
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
                   Text(
-                    'رقــم الطلـب : ',
-                    textAlign: TextAlign.right,
+                    locale.isDirectionRTL(context)
+                        ? 'رقم الطلب: '
+                        : 'Order No: ',
                     style: TextStyle(
                       color: Theme.of(context).brightness == Brightness.light
-                          ?Colors.black
-                          :Colors.white,                      fontSize: 16.h,
-                      fontFamily: 'Graphik Arabic',
+                          ? Colors.black
+                          : Colors.white,
+                      fontSize: 16.h,
                       fontWeight: FontWeight.w600,
-                      height: 1.38,
                     ),
                   ),
-                  SizedBox(width: 4),
                   Text(
-                    '9704#',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: const Color(0xFFBA1B1B),
-                      fontSize: 16.h,
-                      fontFamily: 'Graphik Arabic',
+                    order.code,
+                    style: const TextStyle(
+                      color: Color(0xFFBA1B1B),
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      height: 1.38,
                     ),
                   ),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: ShapeDecoration(
-                  color: const Color(0xFF00B441),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: Text(
-                  'قيد التنفيذ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.h,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w600,
-                    height: 1.38,
-                  ),
-                ),
-              ),
             ],
           ),
 
-          SizedBox(height: 3),
-          Center(
-            child: Text(
-              "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
-            ),
-          ),
-          SizedBox(height: 3),
+          const Divider(thickness: 0.7),
 
-          // Vehicle details section
+          // 🚗 بيانات السيارة
           Row(
-            //      mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Vehicle image placeholder
               Container(
                 width: 93.w,
                 height: 85.h,
@@ -181,293 +128,229 @@ class OldOrder extends StatelessWidget {
                   color: Colors.black.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Image.asset(
-                  'assets/icons/car_logo.png',
-                  fit: BoxFit.cover,
-                ),
+                child: car?.carBrand?.icon != null
+                    ? Image.network(car!.carBrand!.icon, fit: BoxFit.cover)
+                    : Image.asset('assets/icons/car_logo.png'),
               ),
-              SizedBox(width: 10),
-
-              // Vehicle details
+              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'المــوديــل : ',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light
-                              ?Colors.black
-                              :Colors.white,                          fontSize: 12.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.83,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-
-                      Text(
-                        'جيلي اميجراند 2023',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: const Color(0xFFBA1B1B),
-                          fontSize: 13.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.69,
-                        ),
-                      ),
-                    ],
+                  _infoRow(
+                    context,
+                    locale.isDirectionRTL(context) ? 'الماركة:' : 'Brand:',
+                    car?.carBrand?.name ??
+                        (locale.isDirectionRTL(context)
+                            ? 'غير محدد'
+                            : 'Undefined'),
                   ),
-
-                  SizedBox(height: 9),
-
-                  Row(
-                    children: [
-                      Text(
-                        'المــوديــل : ',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light
-                              ?Colors.black
-                              :Colors.white,                          fontSize: 12.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.83,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-
-                      Text(
-                        'جيلي اميجراند 2023',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: const Color(0xFFBA1B1B),
-                          fontSize: 13.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.69,
-                        ),
-                      ),
-                    ],
+                  _infoRow(
+                    context,
+                    locale.isDirectionRTL(context) ? 'الموديل:' : 'Model:',
+                    car?.year ??
+                        (locale.isDirectionRTL(context)
+                            ? 'غير محدد'
+                            : 'Undefined'),
                   ),
-
-                  SizedBox(height: 9),
-
-                  Row(
-                    children: [
-                      Text(
-                        'المــوديــل : ',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light
-                              ?Colors.black
-                              :Colors.white,                          fontSize: 12.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.83,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-
-                      Text(
-                        'جيلي اميجراند 2023',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: const Color(0xFFBA1B1B),
-                          fontSize: 13.h,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                          height: 1.69,
-                        ),
-                      ),
-                    ],
+                  _infoRow(
+                    context,
+                    locale.isDirectionRTL(context)
+                        ? 'رقم اللوحة:'
+                        : 'Plate Number:',
+                    car?.licencePlate ??
+                        (locale.isDirectionRTL(context)
+                            ? 'غير متوفر'
+                            : 'Unavailable'),
                   ),
                 ],
               ),
             ],
           ),
 
-          SizedBox(height: 3),
-          Center(
-            child: Text(
-              "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
-            ),
+          const Divider(thickness: 0.7),
+          Row(
+            children: [
+              Text(
+                locale.isDirectionRTL(context)
+                    ? 'حاله الطلب : '
+                    : 'Order status : ',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 16.h,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(width: 20.w,),
+              Container(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: ShapeDecoration(
+                  color: _getStatusColor(order.status),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  locale.isDirectionRTL(context)
+                      ? _translateStatusAr(order.status)
+                      : _translateStatusEn(order.status),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+            ],
           ),
-          SizedBox(height: 3),
-          // Delivery estimate
+          const Divider(thickness: 0.7),
+
+          // 📅 التاريخ
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'تاريخ الإنجاز :',
-                textAlign: TextAlign.right,
+                locale.isDirectionRTL(context)
+                    ? 'تاريخ الإنجاز:'
+                    : 'Completion Date:',
                 style: TextStyle(
                   color: Theme.of(context).brightness == Brightness.light
-                      ?Colors.black
-                      :Colors.white,                  fontSize: 16,
-                  fontFamily: 'Graphik Arabic',
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  height: 1.38,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                ' 5 / 9',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: const Color(0xFFBA1B1B),
+                order.date,
+                style: const TextStyle(
+                  color: Color(0xFFBA1B1B),
                   fontSize: 22,
-                  fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
-                  height: 1,
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: 3),
-          Center(
-            child: Text(
-              "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
-            ),
-          ),
-          SizedBox(height: 3),
+          const Divider(thickness: 0.7),
+
+          // 💰 إجمالي الفاتورة
           Center(
             child: Container(
               width: double.infinity,
               constraints: BoxConstraints(maxWidth: 327.w),
               height: 55.h,
               decoration: BoxDecoration(
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        : Colors.black,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   width: 1.5,
-                  color:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
               ),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/icons/design_money.png',
-                      width: 22.w,
-                      height: 22.h,
-                    ),
+                    Image.asset('assets/icons/design_money.png',
+                        width: 22.w, height: 22.h),
                     SizedBox(width: 8.w),
-
                     Text(
-                      'إجمالي الفاتورة:',
-                      textAlign: TextAlign.right,
+                      locale.isDirectionRTL(context)
+                          ? 'إجمالي الفاتورة:'
+                          : 'Total Invoice:',
                       style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 18.sp,
-                        fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
-                        height: 1.22,
                       ),
                     ),
                     SizedBox(width: 8.w),
-
                     Text(
-                      '1923',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: const Color(0xFFBA1B1B),
-                        fontSize: 25.sp,
-                        fontFamily: 'Poppins',
+                      order.finalTotal,
+                      style: const TextStyle(
+                        color: Color(0xFFBA1B1B),
+                        fontSize: 25,
                         fontWeight: FontWeight.w600,
-                        height: 1.60,
                       ),
                     ),
-                    SizedBox(width: 8.w),
-
-                    Image.asset(
-                      'assets/icons/ryal.png',
-                      width: 22.w,
-                      height: 22.h,
-                    ),
+                    SizedBox(width: 4.w),
+                    Image.asset('assets/icons/ryal.png',
+                        width: 22.w, height: 22.h),
                   ],
                 ),
               ),
             ),
           ),
-          SizedBox(height: 3),
-          Center(
-            child: Text(
-              "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
-            ),
-          ),
-          SizedBox(height: 3),
 
-          // Buttons row
+          const Divider(thickness: 0.7),
+
+          // 🔘 الأزرار
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: Container(
-                  height: 45,
-                  padding: const EdgeInsets.all(10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFBA1B1B),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OrderDetailsScreen(orderId: order.id),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 45,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFBA1B1B),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'إعادة الطلب',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                      height: 1.47,
+                    child: Center(
+                      child: Text(
+                        locale.isDirectionRTL(context)
+                            ? 'التفاصيل'
+                            : 'Order',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 22),
+              const SizedBox(width: 22),
               Expanded(
                 child: Container(
                   height: 45,
-                  padding: const EdgeInsets.all(10),
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.30,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ?Colors.black
-                            :Colors.white,
-
-                      ),
+                      side: const BorderSide(width: 1.3, color: Colors.black),
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Text(
-                    'وش رأيك بالخدمة؟',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ?Colors.black
-                          :Colors.white,
-                      fontSize: 15,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                      height: 1.47,
+                  child: Center(
+                    child: Text(
+                      locale.isDirectionRTL(context)
+                          ? 'وش رأيك بالخدمة؟'
+                          : 'How was the service?',
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -477,5 +360,60 @@ class OldOrder extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _infoRow(BuildContext context, String title, String value) {
+    return Row(
+      children: [
+        Text(title,
+            style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            )),
+        const SizedBox(width: 8),
+        Text(value,
+            style: const TextStyle(
+              color: Color(0xFFBA1B1B),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            )),
+      ],
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'completed':
+        return Colors.green;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _translateStatusAr(String status) {
+    switch (status) {
+      case 'completed':
+        return 'مكتمل';
+      case 'rejected':
+        return 'مرفوض';
+      default:
+        return 'غير معروف';
+    }
+  }
+
+  String _translateStatusEn(String status) {
+    switch (status) {
+      case 'completed':
+        return 'Completed';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return 'Unknown';
+    }
   }
 }

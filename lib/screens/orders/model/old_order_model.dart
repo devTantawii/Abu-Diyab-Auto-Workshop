@@ -1,26 +1,4 @@
-class OrdersResponse {
-  final int status;
-  final String msg;
-  final List<OrderSummary> data;
-
-  OrdersResponse({
-    required this.status,
-    required this.msg,
-    required this.data,
-  });
-
-  factory OrdersResponse.fromJson(Map<String, dynamic> json) {
-    return OrdersResponse(
-      status: json['status'],
-      msg: json['msg'],
-      data: (json['data'] as List)
-          .map((order) => OrderSummary.fromJson(order))
-          .toList(),
-    );
-  }
-}
-
-class OrderSummary {
+class OldOrderModel {
   final int id;
   final int userId;
   final String code;
@@ -29,10 +7,10 @@ class OrderSummary {
   final String finalTotal;
   final String status;
   final int userCarId;
-  final UserCar userCar;
-  final List<OrderItem> items;
+  final Car? userCar;
+  final List<OrderItem>? items;
 
-  OrderSummary({
+  OldOrderModel({
     required this.id,
     required this.userId,
     required this.code,
@@ -41,12 +19,12 @@ class OrderSummary {
     required this.finalTotal,
     required this.status,
     required this.userCarId,
-    required this.userCar,
-    required this.items,
+    this.userCar,
+    this.items,
   });
 
-  factory OrderSummary.fromJson(Map<String, dynamic> json) {
-    return OrderSummary(
+  factory OldOrderModel.fromJson(Map<String, dynamic> json) {
+    return OldOrderModel(
       id: json['id'],
       userId: json['user_id'],
       code: json['code'],
@@ -55,39 +33,43 @@ class OrderSummary {
       finalTotal: json['final_total'],
       status: json['status'],
       userCarId: json['user_car_id'],
-      userCar: UserCar.fromJson(json['user_car']),
-      items: (json['items'] as List)
-          .map((item) => OrderItem.fromJson(item))
-          .toList(),
+      userCar: json['user_car'] != null ? Car.fromJson(json['user_car']) : null,
+      items: json['items'] != null
+          ? (json['items'] as List)
+          .map((e) => OrderItem.fromJson(e))
+          .toList()
+          : [],
     );
   }
 }
 
-class UserCar {
+class Car {
   final int id;
   final int userId;
-  final String? name;
-  final String licencePlate;
-  final String kilometer;
+  final String? name; // ✅ كان String، صار String?
+  final String? licencePlate; // ✅ احتياطيًا لأنها ممكن تكون null في بعض الـ APIs
+  final String? kilometer;
   final int carModelId;
   final int carBrandId;
-  final CarBrand carBrand;
-  final CarModel carModel;
+  final String? year; // ✅ احتياطيًا لأنها sometimes ممكن تكون null
+  final CarBrand? carBrand;
+  final CarModel? carModel;
 
-  UserCar({
+  Car({
     required this.id,
     required this.userId,
     this.name,
-    required this.licencePlate,
-    required this.kilometer,
+    this.licencePlate,
+    this.kilometer,
     required this.carModelId,
     required this.carBrandId,
-    required this.carBrand,
-    required this.carModel,
+    this.year,
+    this.carBrand,
+    this.carModel,
   });
 
-  factory UserCar.fromJson(Map<String, dynamic> json) {
-    return UserCar(
+  factory Car.fromJson(Map<String, dynamic> json) {
+    return Car(
       id: json['id'],
       userId: json['user_id'],
       name: json['name'],
@@ -95,8 +77,13 @@ class UserCar {
       kilometer: json['kilometer'],
       carModelId: json['car_model_id'],
       carBrandId: json['car_brand_id'],
-      carBrand: CarBrand.fromJson(json['car_brand']),
-      carModel: CarModel.fromJson(json['car_model']),
+      year: json['year'],
+      carBrand: json['car_brand'] != null
+          ? CarBrand.fromJson(json['car_brand'])
+          : null,
+      carModel: json['car_model'] != null
+          ? CarModel.fromJson(json['car_model'])
+          : null,
     );
   }
 }
@@ -106,11 +93,7 @@ class CarBrand {
   final String name;
   final String icon;
 
-  CarBrand({
-    required this.id,
-    required this.name,
-    required this.icon,
-  });
+  CarBrand({required this.id, required this.name, required this.icon});
 
   factory CarBrand.fromJson(Map<String, dynamic> json) {
     return CarBrand(
@@ -125,10 +108,7 @@ class CarModel {
   final int id;
   final String name;
 
-  CarModel({
-    required this.id,
-    required this.name,
-  });
+  CarModel({required this.id, required this.name});
 
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
@@ -143,14 +123,14 @@ class OrderItem {
   final int orderId;
   final String itemType;
   final int itemId;
-  final Item item;
+  final ItemData? item;
 
   OrderItem({
     required this.id,
     required this.orderId,
     required this.itemType,
     required this.itemId,
-    required this.item,
+    this.item,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
@@ -159,22 +139,19 @@ class OrderItem {
       orderId: json['order_id'],
       itemType: json['item_type'],
       itemId: json['item_id'],
-      item: Item.fromJson(json['item']),
+      item: json['item'] != null ? ItemData.fromJson(json['item']) : null,
     );
   }
 }
 
-class Item {
+class ItemData {
   final int id;
   final String name;
 
-  Item({
-    required this.id,
-    required this.name,
-  });
+  ItemData({required this.id, required this.name});
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
+  factory ItemData.fromJson(Map<String, dynamic> json) {
+    return ItemData(
       id: json['id'],
       name: json['name'],
     );

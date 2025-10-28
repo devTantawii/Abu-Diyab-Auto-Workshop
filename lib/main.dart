@@ -8,7 +8,9 @@ import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/car_brand_cubit.dart';
 import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/get_order_cubit.dart';
+import 'package:abu_diyab_workshop/screens/orders/cubit/old_orders_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/payment_preview_cubit.dart';
+import 'package:abu_diyab_workshop/screens/orders/cubit/repair_card_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/get_order_repo.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/payment_service.dart';
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_cubit.dart';
@@ -80,6 +82,7 @@ void main() async {
 
         BlocProvider(create: (_) => OilCubit(OilRepository())),
         BlocProvider(create: (_) => CarWashCubit(repo)),
+        BlocProvider(create: (_) => RepairCardsCubit()),
         BlocProvider(create: (_) => CarCheckCubit(CarCheckRepository())),
         BlocProvider(create: (_) => TireCubit(TireRepository())),
         BlocProvider(create: (_) => BatteryCubit(BatteryRepository())),
@@ -87,6 +90,7 @@ void main() async {
         BlocProvider(create: (_) => MaintenanceCubit()),
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
+        BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
   BlocProvider(
   create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),),
       ],

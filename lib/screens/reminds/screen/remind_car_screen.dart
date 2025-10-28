@@ -129,12 +129,14 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                         itemCount: state.services.length,
                         itemBuilder: (context, index) {
                           final service = state.services[index];
-                          final serviceNotes =
-                              allNotes
-                                  .where(
-                                    (note) => note.service.id == service.id,
-                                  )
-                                  .toList();
+                          final serviceNotes = allNotes
+                              .where(
+                                (note) =>
+                            note.service.id == service.id &&
+                                note.userCar.id == widget.car.id,
+                          )
+                              .toList();
+
 
                           return GestureDetector(
                             onTap: () {
