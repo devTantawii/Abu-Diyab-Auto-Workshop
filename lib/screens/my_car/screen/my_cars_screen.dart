@@ -13,6 +13,7 @@ import '../../../widgets/app_bar_widget.dart';
 import '../../auth/cubit/login_cubit.dart';
 import '../../auth/screen/login.dart';
 import '../../main/screen/main_screen.dart';
+import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/all_cars_cubit.dart';
 import '../cubit/all_cars_state.dart';
 import '../model/all_cars_model.dart';
@@ -49,122 +50,140 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       create: (_) => _cubit,
       child: Scaffold(
         backgroundColor:
-        Theme.of(context).brightness == Brightness.light
-            ? Color(0xFFEAEAEA)
-            : Colors.black54,
-        appBar: _buildAppBar(context, locale),
-        body: Padding(
-          padding: EdgeInsets.all(20.w),
-          child:
-          BlocBuilder<CarCubit, CarState>(
-            builder: (context, state) {
-              if (state is CarLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.red,
-                  ),
-                );
-              } else if (state is CarError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.red,
-                        size: 40,
-                      ),
-                      SizedBox(height: 15.h),
-                      //    Text(state.message),
-                      ElevatedButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder:
-                                (context) => BlocProvider(
-                              create: (_) => LoginCubit(dio: Dio()),
-                              child: const LoginBottomSheet(),
-                            ),
-                          );
-                        },
-                        child: Text(
+        //   Theme.of(context).brightness == Brightness.light
+        //  ?
+        Color(0xFFD27A7A)
+        //  :  Color(0xFF6F5252)
+        ,
+        appBar:  CustomGradientAppBar(
+          title_ar:  "سياراتي",
+          title_en: "My Cars",
+          showBackIcon: false,
+
+        ),
+        body: Container(height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white: Colors.black,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child:
+            BlocBuilder<CarCubit, CarState>(
+              builder: (context, state) {
+                if (state is CarLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: Colors.red,
+                    ),
+                  );
+                } else if (state is CarError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 40,
+                        ),
+                        SizedBox(height: 15.h),
+                        //    Text(state.message),
+                        ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder:
+                                  (context) => BlocProvider(
+                                create: (_) => LoginCubit(dio: Dio()),
+                                child: const LoginBottomSheet(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            locale!.isDirectionRTL(context)
+                                ? "سجل الدخول من فضلك"
+                                : "Log in please",
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is CarLoaded) {
+                  if (state.cars.isEmpty) {
+                    return Column(
+                      children: [
+                        SizedBox(height: 120.h),
+                        Image.asset(
+                          'assets/icons/car_gar.png',
+                          width: 115.w,
+                          height: 115.h,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 20.h),
+                        Text(
                           locale!.isDirectionRTL(context)
-                              ? "سجل الدخول من فضلك"
-                              : "Log in please",
+                              ? 'خلّي سيارتك عندنا، وريح بالك'
+                              : 'Leave your car with us, and relax',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white70,
+                            fontSize: 18.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (state is CarLoaded) {
-                if (state.cars.isEmpty) {
-                  return Column(
-                    children: [
-                      SizedBox(height: 120.h),
-                      Image.asset(
-                        'assets/icons/car_gar.png',
-                        width: 115.w,
-                        height: 115.h,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(height: 20.h),
-                      Text(
-                        locale!.isDirectionRTL(context)
-                            ? 'خلّي سيارتك عندنا، وريح بالك'
-                            : 'Leave your car with us, and relax',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white70,
-                          fontSize: 18.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Text(
-                        locale!.isDirectionRTL(context)
-                            ? 'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.'
-                            : "To serve you properly, add your car and we will provide you with everything you need from maintenance, offers, and reminders.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Color(0xFF474747)
-                              : Colors.white54,
+                        SizedBox(height: 20.h),
+                        Text(
+                          locale!.isDirectionRTL(context)
+                              ? 'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.'
+                              : "To serve you properly, add your car and we will provide you with everything you need from maintenance, offers, and reminders.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Color(0xFF474747)
+                                : Colors.white54,
 
-                          fontSize: 16.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 40.h),
+                        SizedBox(height: 40.h),
 
-                      _addCarButton(locale!),
-                    ],
+                        _addCarButton(locale!),
+                      ],
+                    );
+                  }
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ...state.cars.map(
+                              (car) => Padding(
+                            padding: EdgeInsets.only(bottom: 20.h),
+                            child: _carCard(context, car, true, locale!),
+                          ),
+                        ),
+                        _addCarButton(locale!),
+                      ],
+                    ),
                   );
                 }
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ...state.cars.map(
-                            (car) => Padding(
-                          padding: EdgeInsets.only(bottom: 20.h),
-                          child: _carCard(context, car, true, locale!),
-                        ),
-                      ),
-                      _addCarButton(locale!),
-                    ],
-                  ),
-                );
-              }
-              return Container();
-            },
+                return Container();
+              },
+            ),
           ),
         ),
       ),

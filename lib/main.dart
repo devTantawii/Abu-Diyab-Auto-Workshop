@@ -39,14 +39,17 @@ import 'core/theme.dart';
 import 'language/languageCubit.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(statusBarColor: Colors.redAccent),
+    const SystemUiOverlayStyle(
+      statusBarColor: Color(0xFFBA1B1B),
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ),
   );
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');
@@ -65,7 +68,9 @@ void main() async {
           create: (_) => LanguageCubit(sharedPrefHelper),
         ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders()),
+        BlocProvider(
+          create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders(),
+        ),
 
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
@@ -74,12 +79,7 @@ void main() async {
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
         BlocProvider(create: (_) => CarCubit()),
-        BlocProvider(
-          create: (_) => PaymentPreviewCubit(
-            PaymentService(dio: Dio(), mainApi: mainApi),
-          ),
-        ),
-
+        BlocProvider(create: (_) => PaymentPreviewCubit(PaymentService())),
         BlocProvider(create: (_) => OilCubit(OilRepository())),
         BlocProvider(create: (_) => CarWashCubit(repo)),
         BlocProvider(create: (_) => RepairCardsCubit()),
@@ -91,8 +91,9 @@ void main() async {
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
-  BlocProvider(
-  create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),),
+        BlocProvider(
+          create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
+        ),
       ],
       child: MyApp(
         key: myAppKey,

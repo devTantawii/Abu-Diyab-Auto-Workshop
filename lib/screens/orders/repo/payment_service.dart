@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PaymentService {
-  final Dio dio;
-  final String mainApi;
+import '../../../core/constant/api.dart';
 
-  PaymentService({required this.dio, required this.mainApi});
+class PaymentService {
+
+  PaymentService();
 
   Future<Map<String, dynamic>> previewPayment({
     required String deliveryMethod,
@@ -13,10 +13,12 @@ class PaymentService {
     required String id,
     required int quantity,
   }) async {
+
     final url = "$mainApi/app/elwarsha/payments/preview";
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
+    final Dio dio =Dio();
 
     final data = {
       "payment_method": "card",

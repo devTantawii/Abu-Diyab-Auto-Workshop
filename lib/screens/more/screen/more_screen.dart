@@ -67,9 +67,11 @@ class _MoreScreenState extends State<MoreScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor:
-        Theme.of(context).brightness == Brightness.light
-            ? Color(0xFFD27A7A)
-            : const Color(0xFF6F5252),
+     //   Theme.of(context).brightness == Brightness.light
+          //  ?
+        Color(0xFFD27A7A)
+          //  :  Color(0xFF6F5252)
+        ,
         appBar:  CustomGradientAppBar(
           title_ar:  "المزيد",
           title_en: " More",

@@ -10,10 +10,10 @@ import '../../../widgets/app_bar_widget.dart';
 import '../../main/cubit/services_cubit.dart';
 import '../../main/cubit/services_state.dart';
 import '../../my_car/screen/widget/details_item.dart';
+import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/user_car_note_cubit.dart';
 import '../cubit/user_car_note_state.dart';
 import '../model/user_car_note_model.dart';
-
 
 class RemindCarScreen extends StatefulWidget {
   final Car car;
@@ -30,257 +30,224 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
     final locale = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100.h,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: Directionality(
-          textDirection:
-              locale!.isDirectionRTL(context)
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-          child: Container(
-            height: 130.h,
-            padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-            decoration: buildAppBarDecoration(context),
-
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Text(
-                    locale.isDirectionRTL(context)
-                        ? 'ملف السياره'
-                        : 'Car Profiel',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontFamily: 'Graphik Arabic',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 36),
-              ],
-            ),
-          ),
-        ),
+      backgroundColor: Color(0xFFD27A7A),
+      appBar: CustomGradientAppBar(
+        title_ar: "ملف السياره",
+        title_en: " Car Profile",
+        showBackIcon: true,
+        onBack: () {
+          Navigator.pop(context);
+        },
       ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: _carCard(
-                context,
-                widget.car,
-                false,
-                AppLocalizations.of(context)!,
+      body: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+          ),
+          color:
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _carCard(
+                  context,
+                  widget.car,
+                  false,
+                  AppLocalizations.of(context)!,
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            BlocBuilder<ServicesCubit, ServicesState>(
-              builder: (context, state) {
-                if (state is ServicesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ServicesError) {
-                  return Center(child: Text(state.message));
-                } else if (state is ServicesLoaded) {
-                  return BlocBuilder<UserNotesCubit, UserNotesState>(
-                    builder: (context, notesState) {
-                      List<UserNote> allNotes = [];
-                      if (notesState is UserNotesLoaded) {
-                        allNotes = notesState.notes;
-                      }
+              SizedBox(height: 20.h),
+              BlocBuilder<ServicesCubit, ServicesState>(
+                builder: (context, state) {
+                  if (state is ServicesLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ServicesError) {
+                    return Center(child: Text(state.message));
+                  } else if (state is ServicesLoaded) {
+                    return BlocBuilder<UserNotesCubit, UserNotesState>(
+                      builder: (context, notesState) {
+                        List<UserNote> allNotes = [];
+                        if (notesState is UserNotesLoaded) {
+                          allNotes = notesState.notes;
+                        }
 
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: 165 / 150,
-                            ),
-                        itemCount: state.services.length,
-                        itemBuilder: (context, index) {
-                          final service = state.services[index];
-                          final serviceNotes = allNotes
-                              .where(
-                                (note) =>
-                            note.service.id == service.id &&
-                                note.userCar.id == widget.car.id,
-                          )
-                              .toList();
-
-
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (_) => AddRemindToCar(
-                                        service: service,
-                                        car: widget.car,
-                                        // notes: serviceNotes,
-                                      ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              width: 165.w,
-                              height: 150.h,
-                              decoration: ShapeDecoration(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Color(0xff1D1D1D),
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    width: 1.50,
-                                    color: Color(0xFF9B9B9B),
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 8.sp,
-                                    offset: Offset(0, 0),
-                                    spreadRadius: 0,
-                                  ),
-                                ],
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 165 / 150,
                               ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
+                          itemCount: state.services.length,
+                          itemBuilder: (context, index) {
+                            final service = state.services[index];
+                            final serviceNotes =
+                                allNotes
+                                    .where(
+                                      (note) =>
+                                          note.service.id == service.id &&
+                                          note.userCar.id == widget.car.id,
+                                    )
+                                    .toList();
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => AddRemindToCar(
+                                          service: service,
+                                          car: widget.car,
+                                          // notes: serviceNotes,
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 165.w,
+                                height: 150.h,
+                                decoration: ShapeDecoration(
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Color(0xff1D1D1D),
+                                  shape: RoundedRectangleBorder(
+                                    side: const BorderSide(
+                                      width: 1.50,
+                                      color: Color(0xFF9B9B9B),
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  shadows: [
+                                    BoxShadow(
+                                      color: Color(0x3F000000),
+                                      blurRadius: 8.sp,
+                                      offset: Offset(0, 0),
+                                      spreadRadius: 0,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              service.name,
+                                              style: TextStyle(
+                                                color:
+                                                    Theme.of(
+                                                              context,
+                                                            ).brightness ==
+                                                            Brightness.light
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                fontSize: 14.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          Image.network(
+                                            service.icon,
+                                            height: 18.h,
+                                            width: 18.w,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Icon(
+                                                      Icons.broken_image,
+                                                      size: 18.sp,
+                                                      color: Colors.grey,
+                                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (serviceNotes.isNotEmpty)
+                                      Expanded(
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: serviceNotes.length,
+                                          itemBuilder: (context, noteIndex) {
+                                            final note =
+                                                serviceNotes[noteIndex];
+                                            return Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(height: 8.h),
+                                                  CardNotesDetails(
+                                                    imagePath:
+                                                        'assets/icons/attatch.png',
+                                                    text: 'المرفقات 1',
+                                                  ),
+                                                  SizedBox(height: 8.h),
+                                                  CardNotesDetails(
+                                                    imagePath:
+                                                        'assets/icons/ui_calender.png',
+                                                    text:
+                                                        '${note.lastMaintenance}',
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  CardNotesDetails(
+                                                    imagePath:
+                                                        'assets/icons/notific.png',
+                                                    text: '${note.remindMe}',
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    else
+                                      Expanded(
+                                        child: Center(
                                           child: Text(
-                                            service.name,
+                                            '+ إضافة صيانة جديدة',
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                            context,
-                                                          ).brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white,
+                                              color: Color(0xFFBA1B1B),
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
+                                              height: 1.60.h,
                                             ),
                                           ),
                                         ),
-                                        Image.network(
-                                          service.icon,
-                                          height: 18.h,
-                                          width: 18.w,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Icon(
-                                                    Icons.broken_image,
-                                                    size: 18.sp,
-                                                    color: Colors.grey,
-                                                  ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (serviceNotes.isNotEmpty)
-                                    Expanded(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: serviceNotes.length,
-                                        itemBuilder: (context, noteIndex) {
-                                          final note = serviceNotes[noteIndex];
-                                          return Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 8.h),
-                                                CardNotesDetails(
-                                                  imagePath:
-                                                      'assets/icons/attatch.png',
-                                                  text: 'المرفقات 1',
-                                                ),
-                                                SizedBox(height: 8.h),
-                                                CardNotesDetails(
-                                                  imagePath:
-                                                      'assets/icons/ui_calender.png',
-                                                  text:
-                                                      '${note.lastMaintenance}',
-                                                ),
-                                                const SizedBox(height: 8),
-                                                CardNotesDetails(
-                                                  imagePath:
-                                                      'assets/icons/notific.png',
-                                                  text: '${note.remindMe}',
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
                                       ),
-                                    )
-                                  else
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          '+ إضافة صيانة جديدة',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Color(0xFFBA1B1B),
-                                            fontSize: 14.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.60.h,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-
-          ],
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -332,14 +299,19 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                         children: [
                           SizedBox(height: 6.h),
                           DetailItem(
-                            value: car.carBrand.name ?? '', labelAr: 'ماركــة السيـــارة:', labelEn: 'Car Brand',
+                            value: car.carBrand.name ?? '',
+                            labelAr: 'ماركــة السيـــارة:',
+                            labelEn: 'Car Brand',
                           ),
                           DetailItem(
-                            value: car.carModel.name ?? '', labelAr: 'موديل السيـــارة:', labelEn: 'Car Model',
+                            value: car.carModel.name ?? '',
+                            labelAr: 'موديل السيـــارة:',
+                            labelEn: 'Car Model',
                           ),
                           DetailItem(
-
-                            value: car.year?.toString() ?? '', labelAr: 'سنة الصنع:', labelEn: 'Year',
+                            value: car.year?.toString() ?? '',
+                            labelAr: 'سنة الصنع:',
+                            labelEn: 'Year',
                           ),
                         ],
                       ),
