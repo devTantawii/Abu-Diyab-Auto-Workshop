@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart' ;
+import '../../../core/constant/api.dart';
 import '../../../core/langCode.dart';
-import '../Models/static-pages-model.dart';
+import '../model/static-pages-model.dart';
 
 part 'static_pages_state.dart';
 
@@ -10,7 +11,7 @@ class StaticPagesCubit extends Cubit<StaticPagesState> {
 
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://devapi.a-vsc.com/api/app/elwarsha/",
+      baseUrl: "$mainApi/app/elwarsha/",
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode

@@ -4,11 +4,31 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/langCode.dart';
+import '../../more/model/reward_log_model.dart';
 import '../model/user_model.dart';
 
 class ProfileRepository {
   final Dio _dio = Dio();
 
+  Future<RewardLogsResponse?> getRewardLogs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await _dio.get(
+        '$mainApi/app/elwarsha/profile/get-logs-points',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          "Accept-Language": langCode == '' ? "en" : langCode,
+        }),
+      );      if (response.statusCode == 200) {
+        return RewardLogsResponse.fromJson(response.data);
+      }
+    } catch (e) {
+      print('Error fetching reward logs: $e');
+    }
+    return null;
+  }
   Future<UserModel?> getUserProfile() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

@@ -12,9 +12,14 @@ class ActiveOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     final car = order.userCar;
-    final serviceName =
-    order.items.isNotEmpty ? order.items.first.item.name :
-    (locale!.isDirectionRTL(context) ? 'خدمة غير محددة' : 'Undefined Service');
+    final serviceName = order.items.isNotEmpty
+        ? (order.items.first.item?.name ??
+        (locale?.isDirectionRTL(context) == true
+            ? 'خدمة غير محددة'
+            : 'Undefined Service'))
+        : (locale?.isDirectionRTL(context) == true
+        ? 'خدمة غير محددة'
+        : 'Undefined Service');
 
     return Container(
       width: 350.w,

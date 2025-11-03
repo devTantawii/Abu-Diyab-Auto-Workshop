@@ -1,3 +1,5 @@
+import 'dart:developer'; // لاستخدام log بدل print (أنظف في الـ console)
+
 class OrdersResponse {
   final int status;
   final String msg;
@@ -10,11 +12,12 @@ class OrdersResponse {
   });
 
   factory OrdersResponse.fromJson(Map<String, dynamic> json) {
+    log('📦 [OrdersResponse] Parsing response...');
     return OrdersResponse(
-      status: json['status'],
-      msg: json['msg'],
-      data: (json['data'] as List)
-          .map((order) => OrderSummary.fromJson(order))
+      status: json['status'] ?? 0,
+      msg: json['msg']?.toString() ?? '',
+      data: (json['data'] as List<dynamic>? ?? [])
+          .map((order) => OrderSummary.fromJson(order as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -46,18 +49,33 @@ class OrderSummary {
   });
 
   factory OrderSummary.fromJson(Map<String, dynamic> json) {
+    log('📋 [OrderSummary] Parsing order id=${json['id']} ...');
     return OrderSummary(
-      id: json['id'],
-      userId: json['user_id'],
-      code: json['code'],
-      date: json['date'],
-      time: json['time'],
-      finalTotal: json['final_total'],
-      status: json['status'],
-      userCarId: json['user_car_id'],
-      userCar: UserCar.fromJson(json['user_car']),
-      items: (json['items'] as List)
-          .map((item) => OrderItem.fromJson(item))
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      code: json['code']?.toString() ?? '',
+      date: json['date']?.toString() ?? '',
+      time: json['time']?.toString() ?? '',
+      finalTotal: json['final_total']?.toString() ?? '0',
+      status: json['status']?.toString() ?? '',
+      userCarId: json['user_car_id'] ?? 0,
+      userCar: json['user_car'] != null
+          ? UserCar.fromJson(json['user_car'] as Map<String, dynamic>)
+          : UserCar.empty(),
+      items: (json['items'] as List<dynamic>? ?? [])
+          .map((item) {
+        if (item == null) {
+          log('⚠️ [OrderSummary] عنصر item=null تم تجاهله');
+          return null;
+        }
+        try {
+          return OrderItem.fromJson(item as Map<String, dynamic>);
+        } catch (e) {
+          log('❌ [OrderSummary] فشل تحويل item: $e');
+          return null;
+        }
+      })
+          .whereType<OrderItem>() // يحذف أي nulls من القائمة
           .toList(),
     );
   }
@@ -88,17 +106,33 @@ class UserCar {
 
   factory UserCar.fromJson(Map<String, dynamic> json) {
     return UserCar(
-      id: json['id'],
-      userId: json['user_id'],
-      name: json['name'],
-      licencePlate: json['licence_plate'],
-      kilometer: json['kilometer'],
-      carModelId: json['car_model_id'],
-      carBrandId: json['car_brand_id'],
-      carBrand: CarBrand.fromJson(json['car_brand']),
-      carModel: CarModel.fromJson(json['car_model']),
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      name: json['name']?.toString(),
+      licencePlate: json['licence_plate']?.toString() ?? '',
+      kilometer: json['kilometer']?.toString() ?? '',
+      carModelId: json['car_model_id'] ?? 0,
+      carBrandId: json['car_brand_id'] ?? 0,
+      carBrand: json['car_brand'] != null
+          ? CarBrand.fromJson(json['car_brand'] as Map<String, dynamic>)
+          : CarBrand.empty(),
+      carModel: json['car_model'] != null
+          ? CarModel.fromJson(json['car_model'] as Map<String, dynamic>)
+          : CarModel.empty(),
     );
   }
+
+  factory UserCar.empty() => UserCar(
+    id: 0,
+    userId: 0,
+    name: '',
+    licencePlate: '',
+    kilometer: '',
+    carModelId: 0,
+    carBrandId: 0,
+    carBrand: CarBrand.empty(),
+    carModel: CarModel.empty(),
+  );
 }
 
 class CarBrand {
@@ -114,11 +148,13 @@ class CarBrand {
 
   factory CarBrand.fromJson(Map<String, dynamic> json) {
     return CarBrand(
-      id: json['id'],
-      name: json['name'],
-      icon: json['icon'],
+      id: json['id'] ?? 0,
+      name: json['name']?.toString() ?? '',
+      icon: json['icon']?.toString() ?? '',
     );
   }
+
+  factory CarBrand.empty() => CarBrand(id: 0, name: '', icon: '');
 }
 
 class CarModel {
@@ -132,10 +168,12 @@ class CarModel {
 
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name']?.toString() ?? '',
     );
   }
+
+  factory CarModel.empty() => CarModel(id: 0, name: '');
 }
 
 class OrderItem {
@@ -143,23 +181,26 @@ class OrderItem {
   final int orderId;
   final String itemType;
   final int itemId;
-  final Item item;
+  final Item? item;
 
   OrderItem({
     required this.id,
     required this.orderId,
     required this.itemType,
     required this.itemId,
-    required this.item,
+    this.item,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
+    log('🧾 [OrderItem] Parsing item id=${json['id']} ...');
     return OrderItem(
-      id: json['id'],
-      orderId: json['order_id'],
-      itemType: json['item_type'],
-      itemId: json['item_id'],
-      item: Item.fromJson(json['item']),
+      id: json['id'] ?? 0,
+      orderId: json['order_id'] ?? 0,
+      itemType: json['item_type']?.toString() ?? '',
+      itemId: json['item_id'] ?? 0,
+      item: json['item'] != null
+          ? Item.fromJson(json['item'] as Map<String, dynamic>)
+          : null,
     );
   }
 }
@@ -175,8 +216,10 @@ class Item {
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name']?.toString() ?? '',
     );
   }
+
+  factory Item.empty() => Item(id: 0, name: '');
 }

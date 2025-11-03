@@ -52,6 +52,7 @@
 // }
 import 'package:dio/dio.dart';
 
+import '../../../core/constant/api.dart';
 import '../../../core/langCode.dart';
 import '../model/washing_model.dart';
 
@@ -66,7 +67,7 @@ class CarWashServiceRepo {
   }) async {
     try {
       final response = await dio.get(
-        'https://devapi.a-vsc.com/api/app/elwarsha/services/car-washs',
+        '$mainApi/app/elwarsha/services/car-washs',
         queryParameters: {
           'per_page': perPage,
           'page': page,

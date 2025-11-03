@@ -14,8 +14,8 @@ enum OtpState { idle, loading, success, error }
 
 class OtpBottomSheet extends StatefulWidget {
   final String phone;
-
-  const OtpBottomSheet({Key? key, required this.phone}) : super(key: key);
+  final String? referral; // جديد
+  const OtpBottomSheet({Key? key, required this.phone, this.referral}) : super(key: key);
 
   @override
   State<OtpBottomSheet> createState() => _OtpBottomSheetState();
@@ -47,6 +47,8 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
         data: {
           'phone': widget.phone,
           'otp': _otpCode,
+          if (widget.referral != null && widget.referral!.trim().isNotEmpty)
+            'referral': widget.referral!.trim(),
         },
         options: Options(
           headers: {

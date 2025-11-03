@@ -1,6 +1,6 @@
-part of 'bakat_cubit.dart';
 
-@immutable
+import '../model/bakat_model.dart';
+
 sealed class BakatState {}
 
 final class BakatInitial extends BakatState {}

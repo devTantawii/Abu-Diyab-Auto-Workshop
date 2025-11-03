@@ -10,15 +10,25 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this.repository) : super(ProfileInitial());
 
   Future<void> fetchProfile() async {
+    print('📡 [fetchProfile] بدأ جلب بيانات المستخدم...');
     emit(ProfileLoading());
+
     try {
       final user = await repository.getUserProfile();
+      print('✅ [fetchProfile] تم استرجاع بيانات المستخدم: $user');
+
       if (user != null) {
         emit(ProfileLoaded(user));
+        print('🎯 [fetchProfile] تم إرسال الحالة: ProfileLoaded');
       } else {
+        print('⚠️ [fetchProfile] لم يتم العثور على بيانات المستخدم');
         emit(ProfileError('لم يتم العثور على البيانات'));
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print('❌ [fetchProfile] حدث خطأ أثناء الجلب: $e');
+      if (kDebugMode) {
+        print(stack);
+      }
       emit(ProfileError(e.toString()));
     }
   }
@@ -30,8 +40,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String phone,
     File? imageFile,
   }) async {
+    print('🛠️ [updateProfile] بدء تحديث الملف الشخصي...');
+    print('🧾 البيانات: id=$id, firstName=$firstName, lastName=$lastName, phone=$phone');
+    if (imageFile != null) {
+      print('🖼️ تم اختيار صورة: ${imageFile.path}');
+    }
+
     final currentState = state;
     if (currentState is ProfileLoaded) {
+      print('🔄 [updateProfile] الحالة الحالية ProfileLoaded → سيتم التحديث...');
       emit(ProfileUpdating(currentState.user));
     }
 
@@ -45,12 +62,19 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
 
       if (updatedUser != null) {
+        print('✅ [updateProfile] تم تحديث البيانات بنجاح: $updatedUser');
         emit(ProfileUpdated(updatedUser));
         emit(ProfileLoaded(updatedUser));
+        print('🎯 [updateProfile] تم إرسال الحالة: ProfileLoaded بعد التحديث');
       } else {
+        print('⚠️ [updateProfile] فشل تحديث البيانات – returned null');
         emit(ProfileError('فشل تحديث البيانات'));
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print('❌ [updateProfile] حدث خطأ أثناء التحديث: $e');
+      if (kDebugMode) {
+        print(stack);
+      }
       emit(ProfileError(e.toString()));
     }
   }

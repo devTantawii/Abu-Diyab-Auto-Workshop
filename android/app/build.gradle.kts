@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.abu_diyab_workshop"
-        minSdk = 21 // أو flutter.minSdkVersion لو بتستخدمه من flutter.gradle
+        minSdk = flutter.minSdkVersion // أو flutter.minSdkVersion لو بتستخدمه من flutter.gradle
         targetSdk = 34 // أو flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

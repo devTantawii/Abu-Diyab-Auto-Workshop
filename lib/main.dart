@@ -2,6 +2,7 @@ import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:abu_diyab_workshop/screens/main/cubit/services_cubit.dart';
 import 'package:abu_diyab_workshop/screens/more/Cubit/bakat_cubit.dart';
+import 'package:abu_diyab_workshop/screens/more/cubit/reward_logs_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/CarModelCubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
@@ -49,7 +50,7 @@ void main() async {
     ),
   );
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');
@@ -60,7 +61,7 @@ void main() async {
   final dio = Dio();
 
   final repo = CarWashServiceRepo(dio);
-
+  final profileRepository = ProfileRepository();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -91,6 +92,9 @@ void main() async {
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
+        BlocProvider<RewardLogsCubit>(
+          create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),
+        ),
         BlocProvider(
           create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
         ),

@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,7 +122,6 @@ class _ReviewRequestPageState extends State<ReviewRequestPage> {
         "notes": widget.notes ?? "",
         "kilometers": int.tryParse(widget.kiloRead ?? "0") ?? 0,
         "is_car_working": widget.isCarWorking == true ? 1 : 0,
-
         "items": [
           {
             "type": widget.slug,
@@ -135,6 +135,12 @@ class _ReviewRequestPageState extends State<ReviewRequestPage> {
       "points": 0,
     };
 
+    // طباعة الداتا بشكل مرتب (JSON formatted)
+    debugPrint("Request URL: $url");
+    debugPrint("Token: Bearer $token");
+    debugPrint("FormData (JSON):");
+    debugPrint(const JsonEncoder.withIndent('  ').convert(formData));
+
     try {
       final response = await dio.post(
         url,
@@ -143,6 +149,11 @@ class _ReviewRequestPageState extends State<ReviewRequestPage> {
           headers: {"Authorization": "Bearer $token"},
         ),
       );
+
+      // طباعة الـ Response كمان (اختياري)
+      debugPrint("Response Status: ${response.statusCode}");
+      debugPrint("Response Data:");
+      debugPrint(const JsonEncoder.withIndent('  ').convert(response.data));
 
       final data = response.data['data'];
       final model = PaymentPreviewModel.fromJson(data);
@@ -171,10 +182,12 @@ class _ReviewRequestPageState extends State<ReviewRequestPage> {
         ),
       );
     } catch (e) {
-      print("❌ Error sending preview: $e");
+      debugPrint("Error sending preview: $e");
+      if (e is DioException) {
+        debugPrint("Response error data: ${e.response?.data}");
+      }
     }
-  }
-}
+  }}
 /*
 import 'dart:io';
 

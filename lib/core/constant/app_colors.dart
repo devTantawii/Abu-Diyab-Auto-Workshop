@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 Color borderColor (BuildContext context) {
   return Theme.of(context).brightness == Brightness.light
-      ? Color(0xffA4A4A4)
+      ? Color(0xff7e7e7e)
       : Color(0xff9B9B9B);
 }
 Color textColor(BuildContext context) {

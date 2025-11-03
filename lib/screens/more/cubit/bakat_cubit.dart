@@ -1,13 +1,12 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/langCode.dart';
-import '../Models/bakat_model.dart';
+import '../model/bakat_model.dart';
+import 'bakat_state.dart';
 
-part 'bakat_state.dart';
 
 class BakatCubit extends Cubit<BakatState> {
   BakatCubit() : super(BakatInitial());

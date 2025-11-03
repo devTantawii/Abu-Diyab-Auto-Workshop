@@ -7,6 +7,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../core/helpers/helper_fun.dart';
 import '../core/language/locale.dart';
+import '../screens/home/screen/home_screen.dart';
 
 class WebPayment extends StatefulWidget {
   const WebPayment({Key? key, required this.url}) : super(key: key);
@@ -57,18 +58,35 @@ class _WebPaymentState extends State<WebPayment> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: Colors.white,
         title: Text(
           locale!.continuePaymentProcess,
           style: TextStyle(
-            fontFamily: 'Cairo',
+            fontFamily: 'Graphik Arabic',
             fontSize: 20.sp,
             fontWeight: FontWeight.w700,
             color: Colors.indigo,
           ),
         ),
-    //    leading: const ADBackButton(),
-    //    actions: const [AdHomeButton()],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.indigo),
+          onPressed: () {
+            Navigator.pop(context); // بيرجع للصفحة السابقة
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home, color: Colors.indigo),
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+              // أو لو عندك HomeScreen معين:
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HomeScreen()),
+              // );
+            },
+          ),
+        ],
       ),
       body: WillPopScope(
         onWillPop: () async {

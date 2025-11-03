@@ -102,7 +102,12 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                   builder:
                       (context) => FractionallySizedBox(
                         widthFactor: 1,
-                        child: OtpBottomSheet(phone: _phoneController.text),
+                        child:OtpBottomSheet(
+                          phone: _phoneController.text,
+                          referral: _referralController.text.trim().isEmpty
+                              ? null
+                              : _referralController.text.trim(),
+                        ),
                       ),
                 );
               } else if (state is RegisterFailure) {
@@ -110,7 +115,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text(" خطأ"),
-                    content: Text(state.error), // أو state.msg حسب اللي معرفه
+                    content: Text(state.error),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
@@ -254,9 +259,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                                   _passwordController.text
                                                       .trim(),
                                          //     fcm: _fcmToken ?? '',
-                                              referral: _referralController.text.trim().isEmpty
-                                                  ? null
-                                                  : _referralController.text.trim(),
+
                                             );
                                             context
                                                 .read<RegisterCubit>()
