@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/language/locale.dart';
 import '../../services/widgets/Custom-Button.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/repair_card_cubit.dart';
@@ -17,7 +18,7 @@ class CheckResultScreen extends StatefulWidget {
 
 class _CheckResultScreenState extends State<CheckResultScreen> {
   late RepairCardsCubit cubit;
-  final Set<int> selectedDetails = {}; // لحفظ العناصر المختارة
+  final Set<int> selectedDetails = {}; // To store selected items
 
   @override
   void initState() {
@@ -27,8 +28,12 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey[100]
+          : Colors.black,
       appBar: CustomGradientAppBar(
         title_ar: "نتيجة الفحص",
         title_en: "Check Result",
@@ -57,13 +62,15 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
 
             return ListView.separated(
               padding: const EdgeInsets.all(16),
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
               itemCount: state.cards.length,
               itemBuilder: (context, index) {
                 final card = state.cards[index];
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Colors.black,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
@@ -79,19 +86,28 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "تقرير سيارتك صار جاهز !",
+                          locale!.isDirectionRTL(context)
+                              ? 'تقرير سيارتك صار جاهز !'
+                              : 'Your car report is ready!',
                           style: TextStyle(
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 8),
-
                         Text(
-                          "يمكنك تحميل نتيجة الفحص من هنا >>",
+                          locale!.isDirectionRTL(context)
+                              ? 'يمكنك تحميل نتيجة الفحص من هنا >>'
+                              : 'You can download the test results from here >>',
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                           ),
                         ),
                         // ===== INFO =====
@@ -99,7 +115,6 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 8),
-
                             // ===== DETAILS =====
                             ...card.details.map((d) {
                               final isSelected = selectedDetails.contains(d.id);
@@ -119,18 +134,16 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                   margin: const EdgeInsets.symmetric(vertical: 8),
                                   padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
-                                    color:
-                                        isSelected
-                                            ? const Color(
-                                              0xFFBA1B1B,
-                                            ).withOpacity(0.08)
-                                            : Colors.white,
+                                    color: isSelected
+                                        ? const Color(0xFFBA1B1B).withOpacity(0.08)
+                                        : Theme.of(context).brightness == Brightness.light
+                                        ? Colors.white
+                                        : const Color(0xFF1A1A1A),
                                     borderRadius: BorderRadius.circular(14),
                                     border: Border.all(
-                                      color:
-                                          isSelected
-                                              ? const Color(0xFFBA1B1B)
-                                              : Colors.grey.shade300,
+                                      color: isSelected
+                                          ? const Color(0xFFBA1B1B)
+                                          : Colors.grey.shade300,
                                       width: 1.3,
                                     ),
                                     boxShadow: [
@@ -144,46 +157,38 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                     AnimatedContainer(
-                                          duration: const Duration(
-                                            milliseconds: 250,
+                                      AnimatedContainer(
+                                        duration: const Duration(milliseconds: 250),
+                                        height: 26.h,
+                                        width: 26.w,
+                                        margin: EdgeInsets.only(top: 4.h),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? const Color(0xFFBA1B1B)
+                                              : Colors.transparent,
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? const Color(0xFFBA1B1B)
+                                                : Colors.grey.shade400,
+                                            width: 2.w,
                                           ),
-                                          height: 26,
-                                          width: 26,
-                                          margin: EdgeInsets.only(top: 4.h),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                isSelected
-                                                    ? const Color(0xFFBA1B1B)
-                                                    : Colors.transparent,
-                                            border: Border.all(
-                                              color:
-                                                  isSelected
-                                                      ? const Color(0xFFBA1B1B)
-                                                      : Colors.grey.shade400,
-                                              width: 2.w,
-                                            ),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child:
-                                              isSelected
-                                                  ? Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                    size: 16.sp,
-                                                  )
-                                                  : null,
+                                          shape: BoxShape.circle,
                                         ),
-
+                                        child: isSelected
+                                            ? Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 16.sp,
+                                        )
+                                            : null,
+                                      ),
                                       SizedBox(width: 12.w),
-
                                       // ========= النصوص =========
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            // 🔸 العنوان
+                                            // العنوان
                                             SingleChildScrollView(
                                               scrollDirection: Axis.horizontal,
                                               child: Row(
@@ -193,20 +198,17 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 15.sp,
-                                                      color: Color(0xFFBA1B1B),
+                                                      color: const Color(0xFFBA1B1B),
                                                     ),
                                                   ),
-                                                  if (d.isUrgent)
-                                                    SizedBox(width: 4.w),
-
+                                                  if (d.isUrgent) SizedBox(width: 4.w),
                                                   if (d.isUrgent)
                                                     Text(
                                                       "(عاجل)",
                                                       style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                         fontSize: 11.sp,
-                                                        color: Color(0xFFBA1B1B),
+                                                        color: const Color(0xFFBA1B1B),
                                                       ),
                                                     ),
                                                 ],
@@ -218,14 +220,13 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                 Text(
                                                   " ${d.price}",
                                                   style: TextStyle(
-                                                    color: Color(0xFFBA1B1B),
+                                                    color: const Color(0xFFBA1B1B),
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: 'Graphik Arabic',
                                                   ),
                                                 ),
                                                 SizedBox(width: 3.w),
-
                                                 Image.asset(
                                                   'assets/icons/ryal.png',
                                                   width: 17.w,
@@ -234,62 +235,50 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                               ],
                                             ),
                                             SizedBox(height: 10.h),
-
                                             if (d.clauseDetails.isNotEmpty)
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children:
-                                                    d.clauseDetails.map((c) {
-                                                      return Padding(
-                                                        padding: EdgeInsets.only(
-                                                          bottom: 2,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: d.clauseDetails.map((c) {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.only(bottom: 2),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          "${c.name} ",
+                                                          style: TextStyle(
+                                                            fontSize: 13.sp,
+                                                            color: Theme.of(context).brightness == Brightness.light
+                                                                ? Colors.black87
+                                                                : Colors.white70,
+                                                            fontWeight: FontWeight.w400,
+                                                            fontFamily: 'Graphik Arabic',
+                                                          ),
                                                         ),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              "${c.name} ",
-                                                              style: TextStyle(
-                                                                fontSize: 13.sp,
-                                                                color:
-                                                                    Colors
-                                                                        .black87,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontFamily:
-                                                                    'Graphik Arabic',
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 3.w),
-
-                                                            Text(
-                                                              "${c.price}",
-                                                              style: TextStyle(
-                                                                fontSize: 13.sp,
-                                                                color:
-                                                                    Colors
-                                                                        .black87,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontFamily:
-                                                                    'Graphik Arabic',
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 3.w),
-
-                                                            Image.asset(
-                                                              'assets/icons/ryal.png',
-                                                              width: 16.w,
-                                                              height: 16.h,
-                                                              color:
-                                                                  Colors.black87,
-                                                            ),
-                                                          ],
+                                                        SizedBox(width: 3.w),
+                                                        Text(
+                                                          "${c.price}",
+                                                          style: TextStyle(
+                                                            fontSize: 13.sp,
+                                                            color: Theme.of(context).brightness == Brightness.light
+                                                                ? Colors.black87
+                                                                : Colors.white70,
+                                                            fontWeight: FontWeight.w500,
+                                                            fontFamily: 'Graphik Arabic',
+                                                          ),
                                                         ),
-                                                      );
-                                                    }).toList(),
+                                                        SizedBox(width: 3.w),
+                                                        Image.asset(
+                                                          'assets/icons/ryal.png',
+                                                          width: 16.w,
+                                                          height: 16.h,
+                                                          color: Theme.of(context).brightness == Brightness.light
+                                                              ? null
+                                                              : Colors.white70,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }).toList(),
                                               ),
                                           ],
                                         ),
@@ -313,9 +302,11 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
         },
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding:  EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : const Color(0xFF1A1A1A),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -336,7 +327,7 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                   backgroundColor: const Color(0xFFBA1B1B),
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding:  EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -350,7 +341,7 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                     for (var card in stateSuccess.cards) {
                       for (var detail in card.details) {
                         repairClauseMap["repair_clause[${detail.id}]"] =
-                            selectedDetails.contains(detail.id) ? 1 : 0;
+                        selectedDetails.contains(detail.id) ? 1 : 0;
                       }
                     }
 
@@ -363,25 +354,31 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                     cubit.updateRepairCheck(widget.orderId, repairClauseMap);
                   }
                 },
-                child: const Text(
-                  "تأكيد الطلب",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                child: Text(
+                  locale!.isDirectionRTL(context) ? "تأكيد الطلب" : "Confirm Order",
+                  style:  TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
                 ),
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : const Color(0xFF1A1A1A),
+                  foregroundColor: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding:  EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.black54),
+                    side: BorderSide(
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black54
+                          : Colors.white54,
+                    ),
                   ),
                 ),
                 onPressed: () {
@@ -405,9 +402,9 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                     cubit.updateRepairCheck(widget.orderId, repairClauseMap);
                   }
                 },
-                child: const Text(
-                  "رفض الكل",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                child: Text(
+                  locale!.isDirectionRTL(context) ? "رفض الكل" : "Reject All",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
                 ),
               ),
             ),

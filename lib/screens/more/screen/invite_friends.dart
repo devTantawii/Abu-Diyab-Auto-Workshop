@@ -23,6 +23,8 @@ class _InviteFriendsState extends State<InviteFriends> {
     super.initState();
 
     context.read<ProfileCubit>().fetchProfile();
+    context.read<RewardLogsCubit>().fetchRewardLogs();
+
   }
 
   @override
@@ -52,11 +54,13 @@ class _InviteFriendsState extends State<InviteFriends> {
                 child: Padding(
                   padding: EdgeInsets.all(20.w),
                   child: Column(
+
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // العنوان + زر الرجوع
                       Row(
-                        textDirection: TextDirection.ltr,
+                        textDirection: locale!.isDirectionRTL(context)
+                            ? TextDirection.ltr
+                            : TextDirection.rtl,
                         children: [
                           Expanded(
                             child: Text(
@@ -421,36 +425,53 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     child: Container(
                                       height: 50.h,
                                       decoration: ShapeDecoration(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.white70
-                                                : Colors.black54,
+                                        color: Theme.of(context).brightness == Brightness.light
+                                            ? Colors.white70
+                                            : Colors.black54,
                                         shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                             width: 1.5.w,
                                             color: const Color(0xFF9B9B9B),
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                            15.r,
-                                          ),
+                                          borderRadius: BorderRadius.circular(15.r),
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          '77',
-                                          // هنا ممكن تحط state.user.referralCount
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.light
-                                                    ? Colors.black
-                                                    : Colors.white70,
-                                            fontSize: 18.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
+                                      child: BlocBuilder<RewardLogsCubit, RewardLogsState>(
+                                        builder: (context, rewardState) {
+                                          if (rewardState is RewardLogsLoading) {
+                                            return const Center(child: CircularProgressIndicator());
+                                          } else if (rewardState is RewardLogsLoaded) {
+                                            final logs = rewardState.data.logs;
+                                            final referralsCount = logs.length; // ← احسب العدد اللي يناسبك هنا
+                                            return Center(
+                                              child: Text(
+                                                '$referralsCount',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).brightness == Brightness.light
+                                                      ? Colors.black
+                                                      : Colors.white70,
+                                                  fontSize: 18.sp,
+                                                  fontFamily: 'Graphik Arabic',
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            return Center(
+                                              child: Text(
+                                                '-',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).brightness == Brightness.light
+                                                      ? Colors.black
+                                                      : Colors.white70,
+                                                  fontSize: 18.sp,
+                                                  fontFamily: 'Graphik Arabic',
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
                                       ),
                                     ),
                                   ),
@@ -656,13 +677,14 @@ class _InviteFriendsState extends State<InviteFriends> {
               ),
 
               Text(
-                '$sign${log.points}',
+                '${log.isAddition ? '+' : '-'}${log.points}',
                 style: TextStyle(
-                  color: color,
+                  color: log.isAddition ? Colors.green : Colors.red,
                   fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
+
 
               Image.asset(
                 'assets/icons/ryal.png',
@@ -680,17 +702,21 @@ class _InviteFriendsState extends State<InviteFriends> {
       ),
     );
   }
-
   String _getTypeText(String type, AppLocalizations locale) {
+    final isRTL = locale.isDirectionRTL(context);
+
     switch (type) {
       case 'referral':
-        return locale.isDirectionRTL(context) ? 'دعوة صديق' : 'Invite a friend';
+        return isRTL ? 'دعوة صديق' : 'Invite a friend';
       case 'task':
-        return locale.isDirectionRTL(context) ? 'مهمة' : 'Task';
+        return isRTL ? 'مهمة' : 'Task';
+      case 'order':
+        return isRTL ? 'طلب' : 'Order';
       default:
         return type;
     }
   }
+
 }
 
 class _StepIcon extends StatelessWidget {

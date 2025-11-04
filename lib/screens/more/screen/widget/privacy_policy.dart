@@ -18,9 +18,9 @@ class PrivacyPolicy extends StatelessWidget {
       create: (_) => StaticPagesCubit()..fetchStaticPages(),
       child: Scaffold(
         backgroundColor:
-            Theme.of(context).brightness == Brightness.light
-                ? const Color(0xFFD27A7A)
-                : const Color(0xFF6F5252),
+        Theme.of(context).brightness == Brightness.light
+            ? const Color(0xFFD27A7A)
+            : const Color(0xFF6F5252),
 
         appBar: CustomGradientAppBar(
           title_ar: "سياسة الخصوصية",
@@ -35,10 +35,9 @@ class PrivacyPolicy extends StatelessWidget {
               topLeft: Radius.circular(15.sp),
               topRight: Radius.circular(15.sp),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
           ),
           child: BlocBuilder<StaticPagesCubit, StaticPagesState>(
             builder: (context, state) {
@@ -50,52 +49,51 @@ class PrivacyPolicy extends StatelessWidget {
                     horizontal: 16.w,
                     vertical: 20.h,
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        state.pages.privacyPolicy ?? "",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          height: 1.6,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
-                        ),
+                  child:
+                  Html(
+                    data: state.pages.privacyPolicy ?? "",
+                    style: {
+                      "body": Style(
+                        fontSize: FontSize.medium,
+                        lineHeight: LineHeight.number(1.6),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                        textAlign: TextAlign.justify,
+                      ),
+                      "p": Style(
+                        textAlign: TextAlign.justify,
+                        margin: Margins.symmetric(vertical: 8),
+                      ),
+                      "h1": Style(
+                        fontSize: FontSize.xxLarge,
+                        fontWeight: FontWeight.bold,
+                        textAlign: TextAlign.center,
+                        margin: Margins.only(bottom: 12),
+                      ),
+                      "h2": Style(
+                        fontSize: FontSize.xLarge,
+                        fontWeight: FontWeight.w600,
+                        textAlign: TextAlign.center,
+                        margin: Margins.only(bottom: 10),
+                      ),
+                      "h3": Style(
+                        fontSize: FontSize.large,
+                        fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.start,
+                        margin: Margins.only(bottom: 8),
+                      ),
+                      "li": Style(
+                        fontSize: FontSize.medium,
+                        margin: Margins.only(bottom: 6),
                         textAlign: TextAlign.start,
                       ),
-                      Html(
-                        data:
-                            """ <h1>عنوان رئيسي</h1> <p>فقرة <b>بخط عريض</b> و <i>مائل</i>.</p> <ul> <li>أول عنصر</li> <li>تاني عنصر</li> </ul> <a href="https://flutter.dev">رابط لفلتر</a> <img src="https://via.placeholder.com/150" /> """,
-                      ),
-                      Html(
-                        data: """
-<h1><ul><li style="text-align: center;">h1</li></ul></h1>
-<h2><ul><li>h2</li></ul></h2>
-<h3><ol><li><span style="background-color: transparent; font-size: 0.875rem;">h3</span></li></ol></h3>
-<h4><ol><li><span style="background-color: transparent; font-size: 0.875rem;">h4</span></li></ol></h4>
-<p><ol><li><span style="background-color: transparent; font-size: 0.875rem;">per</span></li></ol></p>
-<ol>
-  <li><span style="background-color: transparent; font-size: 0.875rem;">hfs</span></li>
-  <li style="text-align: center;"><span style="background-color: transparent; font-size: 0.875rem;">fsedf</span></li>
-  <li style="text-align: left;"><span style="background-color: transparent; font-size: 0.875rem;">sf</span></li>
-  <li><span style="background-color: transparent; font-size: 0.875rem;">sdf</span></li>
-  <li><span style="background-color: transparent; font-size: 0.875rem;"><u>sdfe</u></span></li>
-  <li><span style="background-color: transparent; font-size: 0.875rem;"><i>sdf</i></span></li>
-</ol>
-""",
-                        style: {
-                          "h1": Style(fontSize: FontSize.xxLarge, color: Colors.red),
-                          "h2": Style(fontSize: FontSize.xLarge, color: Colors.blue),
-                          "h3": Style(fontSize: FontSize.large),
-                          "h4": Style(fontSize: FontSize.medium),
-                          "p": Style(fontSize: FontSize.medium, lineHeight: LineHeight.number(1.6)),
-                          "li": Style(fontSize: FontSize.medium, margin: Margins.only(bottom: 8)),
-                        },
-                      ),
+                      "ol": Style(margin: Margins.symmetric(vertical: 6)),
+                      "ul": Style(margin: Margins.symmetric(vertical: 6)),
+                      "span": Style(textAlign: TextAlign.justify),
+                    },
+                  )
 
-                    ],
-                  ),
                 );
               } else if (state is StaticPagesError) {
                 return Center(

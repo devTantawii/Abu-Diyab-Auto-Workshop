@@ -32,7 +32,8 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
     final locale = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(16.sp),
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.8,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: backgroundColor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.sp)),
@@ -41,7 +42,11 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [ProgressBar(), ProgressBar(), ProgressBar(active: true)],
+            children: [
+              ProgressBarr(),
+              ProgressBarr(),
+              ProgressBarr(active: true),
+            ],
           ),
           SizedBox(height: 15.h),
 
@@ -50,7 +55,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
               margin: EdgeInsets.symmetric(horizontal: 8.w),
               padding: EdgeInsets.all(16.sp),
               decoration: BoxDecoration(
-                color: Colors.white, // خلفية بيضاء
+                color: backgroundColor(context), // خلفية بيضاء
                 borderRadius: BorderRadius.circular(16.sp),
                 border: Border.all(
                   color: Colors.grey, // بوردر رمادي فاتح
@@ -116,7 +121,9 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                         horizontal: 12.w,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Theme.of(context).brightness == Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
                                         borderRadius: BorderRadius.circular(15),
                                         border: Border.all(
                                           color: borderColor(context),
@@ -228,91 +235,6 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                       ),
                     ),
                   ),
-
-                  /*       // قائمة طرق الدفع
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: widget.paymentMethods.length,
-                      itemBuilder: (_, i) {
-                        final method = widget.paymentMethods[i];
-                        final isSelected = selected == method.key;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() => selected = method.key);
-                            widget.onSelect(method.key);
-                          },
-                          child: Container(
-                            height: 55.h,
-                            margin: EdgeInsets.symmetric(vertical: 6),
-                            decoration: BoxDecoration(
-                              color: backgroundColor(context),
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(
-                                color: borderColor(context),
-                                width: 1.5.w,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: shadowcolor(context),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                textDirection:
-                                    locale.isDirectionRTL(context)
-                                        ? TextDirection.rtl
-                                        : TextDirection.ltr,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      method.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 26.w,
-                                    height: 26.h,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          isSelected
-                                              ? Color(0xFFBA1B1B)
-                                              : Colors.transparent,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color:
-                                            isSelected
-                                                ? Color(0xFFBA1B1B)
-                                                : Colors.grey,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child:
-                                        isSelected
-                                            ? Icon(
-                                              Icons.check,
-                                              size: 14.sp,
-                                              color: Colors.white,
-                                            )
-                                            : SizedBox(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-         */
                 ],
               ),
             ),
@@ -340,6 +262,24 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ProgressBarr extends StatelessWidget {
+  final bool active;
+
+  const ProgressBarr({super.key, this.active = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 75.w,
+      height: 6.h,
+      decoration: ShapeDecoration(
+        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );
   }

@@ -6,9 +6,12 @@ import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
 
 class ResetPasswordFlow {
-  // 📌 BottomSheet رقم الهاتف
+  bool isArabic(BuildContext context) =>
+      Localizations.localeOf(context).languageCode == 'ar';
+
   void showPhoneBottomSheet(BuildContext context) {
     final phoneController = TextEditingController();
+    final bool rtl = isArabic(context);
 
     showModalBottomSheet(
       context: context,
@@ -40,7 +43,7 @@ class ResetPasswordFlow {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "إعادة تعيين كلمة المرور",
+                    rtl ? "إعادة تعيين كلمة المرور" : "Reset Password",
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -54,7 +57,7 @@ class ResetPasswordFlow {
                     keyboardType: TextInputType.phone,
                     style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 16.sp),
                     decoration: InputDecoration(
-                      hintText: "رقم الهاتف",
+                      hintText: rtl ? "رقم الهاتف" : "Phone number",
                       hintStyle: TextStyle(
                         fontFamily: 'Graphik Arabic',
                         color: Colors.grey,
@@ -88,7 +91,9 @@ class ResetPasswordFlow {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "يرجى إدخال رقم الهاتف",
+                                rtl
+                                    ? "يرجى إدخال رقم الهاتف"
+                                    : "Please enter your phone number",
                                 style: TextStyle(fontFamily: 'Graphik Arabic'),
                               ),
                             ),
@@ -110,7 +115,7 @@ class ResetPasswordFlow {
                     child: state is RequestResetLoading
                         ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                      "إرسال الكود",
+                      rtl ? "إرسال الكود" : "Send Code",
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Graphik Arabic',
@@ -133,6 +138,7 @@ class ResetPasswordFlow {
   void showOtpBottomSheet(BuildContext context, String phone) {
     final otpControllers = List.generate(4, (_) => TextEditingController());
     final focusNodes = List.generate(4, (_) => FocusNode());
+    final bool rtl = isArabic(context);
 
     showModalBottomSheet(
       context: context,
@@ -165,10 +171,15 @@ class ResetPasswordFlow {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'تحققنا منك بس باقي خطوة ',
+                    rtl
+                        ? 'تحققنا منك، فقط خطوة أخيرة'
+                        : 'We’ve verified you, one last step',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      color: Colors.black,
+                      color:Theme.of(context).brightness ==
+                          Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                       fontSize: 15.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -178,7 +189,9 @@ class ResetPasswordFlow {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'ادخل الكود اللي أرسلناه على رقمك ',
+                          text:  rtl
+                              ? 'ادخل الكود الذي أرسلناه إلى رقمك $phone'
+                              : 'Enter the code sent to your number $phone',
                           style: TextStyle(
                             color: const Color(0xFF474747),
                             fontSize: 12.sp,
@@ -257,7 +270,9 @@ class ResetPasswordFlow {
                         String otp = otpControllers.map((c) => c.text).join();
                         if (otp.length < 4) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("أدخل الكود كاملاً", style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                            SnackBar(content: Text( rtl
+                                ? "أدخل الكود كاملاً"
+                                : "Please enter full code", style: TextStyle(fontFamily: 'Graphik Arabic'))),
                           );
                           return;
                         }
@@ -274,7 +289,7 @@ class ResetPasswordFlow {
                     child: state is VerifyResetLoading
                         ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                      "تأكيد",
+                      rtl ? "تأكيد" : "Confirm",
                       style: TextStyle(
                         fontFamily: 'Graphik Arabic',
                         fontSize: 16.sp,
@@ -297,6 +312,7 @@ class ResetPasswordFlow {
   void showNewPasswordBottomSheet(BuildContext context, String phone) {
     final passwordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
+    final bool rtl = isArabic(context);
 
     showModalBottomSheet(
       context: context,
@@ -310,7 +326,9 @@ class ResetPasswordFlow {
             if (state is SubmitNewPasswordSuccess) {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("تم تغيير كلمة المرور بنجاح", style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                SnackBar(content: Text(  rtl
+                    ? "تم تغيير كلمة المرور بنجاح"
+                    : "Password changed successfully", style: TextStyle(fontFamily: 'Graphik Arabic'))),
               );
             } else if (state is SubmitNewPasswordFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -330,8 +348,9 @@ class ResetPasswordFlow {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "أدخل كلمة المرور الجديدة",
-                    style: TextStyle(
+                    rtl
+                        ? "أدخل كلمة المرور الجديدة"
+                        : "Enter new password",                    style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Graphik Arabic',
@@ -344,7 +363,7 @@ class ResetPasswordFlow {
                     obscureText: true,
                     style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                     decoration: InputDecoration(
-                      hintText: "كلمة المرور",
+                      hintText: rtl ? "كلمة المرور" : "Password",
                       hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
@@ -363,7 +382,8 @@ class ResetPasswordFlow {
                     obscureText: true,
                     style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                     decoration: InputDecoration(
-                      hintText: "تأكيد كلمة المرور",
+                      hintText:                               rtl ? "تأكيد كلمة المرور" : "Confirm Password",
+
                       hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
@@ -392,13 +412,17 @@ class ResetPasswordFlow {
                         if (passwordController.text.trim().isEmpty ||
                             confirmPasswordController.text.trim().isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("املأ كل الحقول", style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                            SnackBar(content: Text( rtl
+                                ? "املأ كل الحقول"
+                                : "Please fill all fields", style: TextStyle(fontFamily: 'Graphik Arabic'))),
                           );
                           return;
                         }
                         if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("كلمتا المرور غير متطابقتين", style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                            SnackBar(content: Text(      rtl
+                                ? "كلمتا المرور غير متطابقتين"
+                                : "Passwords do not match", style: TextStyle(fontFamily: 'Graphik Arabic'))),
                           );
                           return;
                         }
@@ -418,7 +442,7 @@ class ResetPasswordFlow {
                     child: state is SubmitNewPasswordLoading
                         ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                      "حفظ",
+                      rtl ? "حفظ" : "Save",
                       style: TextStyle(
                         fontFamily: 'Graphik Arabic',
                         fontSize: 16.sp,

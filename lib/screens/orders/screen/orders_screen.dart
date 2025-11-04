@@ -25,7 +25,6 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-    // ✅ تحميل البيانات عند دخول الشاشة
     context.read<OrdersCubit>().getAllOrders();
     context.read<OldOrdersCubit>().getOldOrders();
   }
@@ -42,55 +41,19 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    return Scaffold(backgroundColor:
-    //   Theme.of(context).brightness == Brightness.light
-    //  ?
-    Color(0xFFD27A7A)
-      //  :  Color(0xFF6F5252)
-      ,
+    return Scaffold(
+      backgroundColor:
+      //   Theme.of(context).brightness == Brightness.light
+      //  ?
+      Color(0xFFD27A7A),
 
-      appBar:  CustomGradientAppBar(
-        title_ar:  "طلباتي",
+      //  :  Color(0xFF6F5252)
+      appBar: CustomGradientAppBar(
+        title_ar: "طلباتي",
         title_en: " My Orders",
         showBackIcon: false,
-
       ),
 
-
-
-      /*
-      appBar: AppBar(
-        toolbarHeight: 130.h,
-        backgroundColor: Color(0xFFD27A7A),
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: Directionality(
-          textDirection:
-              Localizations.localeOf(context).languageCode == 'ar'
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-          child: Container(
-            padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
-            decoration: buildAppBarDecoration(context),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  locale!.isDirectionRTL(context) ? "طلباتي" : "My Orders",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22.sp,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-*/
       body: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -98,14 +61,14 @@ class _OrderScreenState extends State<OrderScreen> {
             topRight: Radius.circular(15.sp),
           ),
           color:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white: Colors.black,
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
         ),
         child: Column(
           children: [
-            // ✅ أزرار التبديل بين الطلبات النشطة والقديمة
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Expanded(
@@ -114,23 +77,27 @@ class _OrderScreenState extends State<OrderScreen> {
                         setState(() => _showActiveOrders = true);
                       },
                       child: Container(
-                        height: 50,
+                        height: 50.h,
                         decoration: ShapeDecoration(
                           color:
                               _showActiveOrders
                                   ? const Color(0xFFBA1B1B)
                                   : const Color(0xFFE0E0E0),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20.r),
                           ),
                         ),
                         child: Center(
                           child: Text(
-                            'الطلبات النشطة',
+                            locale!.isDirectionRTL(context)
+                                ? 'الطلبات النشطة'
+                                : 'Active Orders',
                             style: TextStyle(
                               color:
-                                  _showActiveOrders ? Colors.white : Colors.black,
-                              fontSize: 18,
+                                  _showActiveOrders
+                                      ? Colors.white
+                                      : Colors.black,
+                              fontSize: 18.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
                             ),
@@ -139,14 +106,14 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
                         setState(() => _showActiveOrders = false);
                       },
                       child: Container(
-                        height: 50,
+                        height: 50.h,
                         decoration: ShapeDecoration(
                           color:
                               !_showActiveOrders
@@ -158,13 +125,15 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            'الطلبات القديمة',
+                            locale!.isDirectionRTL(context)
+                                ? 'الطلبات القديمة'
+                                : 'Old Orders',
                             style: TextStyle(
                               color:
                                   !_showActiveOrders
                                       ? Colors.white
                                       : Colors.black,
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
                             ),
@@ -177,7 +146,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ✅ المحتوى داخل RefreshIndicator
             Expanded(
@@ -206,7 +175,8 @@ class _OrderScreenState extends State<OrderScreen> {
                               final activeOrders =
                                   state.orders
                                       .where(
-                                        (o) => allowedStatuses.contains(o.status),
+                                        (o) =>
+                                            allowedStatuses.contains(o.status),
                                       )
                                       .toList();
 
@@ -221,9 +191,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                         height: 192.h,
                                       ),
                                       Text(
-                                        'ما عندك طلبات نشطة الحين',
+                                        locale.isDirectionRTL(context)
+                                            ? ' ما عندك طلبات نشطة الحين'
+                                            : 'You have no active orders right now.',
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.light
+                                                  ? Colors.black
+                                                  : Colors.white,
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.w500,
                                           fontFamily: 'Graphik Arabic',

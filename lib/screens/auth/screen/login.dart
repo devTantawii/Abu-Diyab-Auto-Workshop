@@ -210,7 +210,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                       color: Colors.white,
                                     )
                                     : Text(
-                                      'تسجيل الدخول',
+                                  locale!.isDirectionRTL(context)
+                                      ? 'تسجيل الدخول'
+                                      : 'Login',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.sp,
@@ -228,41 +230,17 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         ResetPasswordFlow().showPhoneBottomSheet(context);
                       },
                       child: Text(
-                        "نسيت كلمة المرور؟",
+                        locale!.isDirectionRTL(context)
+                            ? 'نسيت كلمة المرور؟'
+                            : 'Forgot your password?',
                         style: TextStyle(
                           color: Color(0xFFBA1B1B),
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
 
-                    /*   GestureDetector(
-                      onTap: () async {
-                        if (_phoneController.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("يرجى إدخال رقم الهاتف أولاً"),
-                            ),
-                          );
-                          return;
-                        }
-
-                        await   context.read<LoginCubit>().requestResetPassword(_phoneController.text.trim());
-
-                      },
-                      child: Text(
-                        locale.isDirectionRTL(context)
-                            ? "نسيت كلمة المرور؟"
-                            : "Forget password?",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 14.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),*/
                     SizedBox(height: 8.h),
                     Center(
                       child: Row(

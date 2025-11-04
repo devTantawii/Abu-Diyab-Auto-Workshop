@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../auth/cubit/login_cubit.dart';
 import '../../auth/screen/login.dart';
@@ -39,63 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title_en: "profile",
           onBack: () => Navigator.pop(context),
         ),
-        /*  appBar: AppBar(
-          toolbarHeight: 100.h,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Container(
-              height: 130.h,
-              padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
-                ),
-              ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Text(
-                      locale!.isDirectionRTL(context)
-                          ? 'الملف الشخصي'
-                          : "profile",
-
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 36),
-                ],
-              ),
-            ),
-          ),
-        ),*/
         body: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileLoaded) {
@@ -114,8 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               );
-            }
-            else if (state is ProfileError) {
+            } else if (state is ProfileError) {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
@@ -158,7 +101,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       locale!.isDirectionRTL(context)
                                           ? 'اختيار من المعرض'
                                           : 'Selection from the gallery',
-                                      style: TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.black,
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
                                     ),
                                     onTap: () async {
                                       Navigator.of(context).pop();
@@ -182,7 +129,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       locale!.isDirectionRTL(context)
                                           ? 'التقاط صورة بالكاميرا'
                                           : 'Take a picture with the camera',
-                                      style: TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.black,
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
                                     ),
                                     onTap: () async {
                                       Navigator.of(context).pop();
@@ -282,10 +233,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   : "First name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Colors.black,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                 fontSize: 13.sp,
                                 fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             SizedBox(height: 5.h),
@@ -338,10 +293,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   : "Last name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
+                                fontSize: 13.sp,
                                 fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             SizedBox(height: 5.h),
@@ -398,10 +357,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : "Mobile number",
                           textAlign: TextAlign.right,
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                            fontSize: 13.sp,
                             fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         SizedBox(height: 5.h),
@@ -450,46 +412,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     SizedBox(height: 20.h),
-
-                    // زر التحديث
-                    GestureDetector(
-                      onTap: () {
-                        print('firstName: ${_firstNameController.text}');
-                        print('lastName: ${_lastNameController.text}');
-                        print('phone: ${_phoneController.text}');
-                        print('imageFile: ${_pickedImage?.path}');
-
-                        context.read<ProfileCubit>().updateProfile(
-                          id: user.id,
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
-                          phone: _phoneController.text,
-                          imageFile: _pickedImage,
-                        );
-                      },
-                      child: Container(
-                        width: 350,
-                        height: 50,
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFFBA1B1B),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          locale!.isDirectionRTL(context) ? 'تحديث' : "Update",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
                     ChangePasswordWidget(),
                   ],
                 ),
@@ -521,10 +443,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             backgroundColor: Colors.transparent,
                             builder:
                                 (context) => BlocProvider(
-                              create: (_) => LoginCubit(dio: Dio()),
-                              child: const LoginBottomSheet(),
-                            ),
-                          );                        },
+                                  create: (_) => LoginCubit(dio: Dio()),
+                                  child: const LoginBottomSheet(),
+                                ),
+                          );
+                        },
                         icon: Icon(Icons.refresh),
                         label: Text(
                           locale!.isDirectionRTL(context)
@@ -541,6 +464,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }
 
+            return const SizedBox.shrink();
+          },
+        ),
+        bottomNavigationBar: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoaded || state is ProfileUpdating) {
+              final user =
+                  (state is ProfileLoaded)
+                      ? state.user
+                      : (state as ProfileUpdating).user;
+
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.white10,
+
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<ProfileCubit>().updateProfile(
+                            id: user.id,
+                            firstName: _firstNameController.text,
+                            lastName: _lastNameController.text,
+                            phone: _phoneController.text,
+                            imageFile: _pickedImage,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFBA1B1B),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          locale!.isDirectionRTL(context) ? "تحديث" : "Update",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          // هنا كود تسجيل الخروج
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: const Color(0xFFBA1B1B)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          locale!.isDirectionRTL(context)
+                              ? "حذف الحساب"
+                              : "Delete Account",
+                          style: TextStyle(
+                            color: const Color(0xFFBA1B1B),
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
             return const SizedBox.shrink();
           },
         ),

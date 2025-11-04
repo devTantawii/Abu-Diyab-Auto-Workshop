@@ -222,7 +222,10 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                       Expanded(
                                         child: Center(
                                           child: Text(
-                                            '+ إضافة صيانة جديدة',
+
+                                            locale!.isDirectionRTL(context)
+                                                ? '+ إضافة صيانة جديدة'
+                                                : '+ Add new maintenance',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: Color(0xFFBA1B1B),
@@ -351,7 +354,10 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                 child: Row(
                   children: [
                     Text(
-                      'رقم اللوحة:',
+
+                      locale!.isDirectionRTL(context)
+                          ? 'رقم اللوحة:'
+                          : 'Plate Number',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,

@@ -87,8 +87,15 @@ class _OffersScreenState extends State<OffersScreen> {
                             final relatedName = offer.service?.name ?? offer.product?.name ?? '';
                             final relatedId = offer.service?.id ?? offer.product?.id ?? 0;
 
+                            // تأكد من أن isExpandedList معرفة خارج الـ builder (مثلاً في الـ State)
+                            // أو استخدم StatefulWidget بدلاً من StatefulBuilder إذا كان هناك مشكلة في الحالة
+
                             return StatefulBuilder(
                               builder: (context, setStateSB) {
+                                final locale = AppLocalizations.of(context)!;
+                                final isArabic = locale.isDirectionRTL(context);
+                                final isDark = Theme.of(context).brightness == Brightness.dark;
+
                                 return Column(
                                   children: [
                                     Padding(
@@ -97,140 +104,157 @@ class _OffersScreenState extends State<OffersScreen> {
                                         duration: const Duration(milliseconds: 300),
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                          color: Theme.of(context).brightness == Brightness.light
-                                              ? Colors.white
-                                              : Colors.black,
+                                          color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
                                           border: Border.all(color: const Color(0xFFAFAFAF)),
                                           borderRadius: BorderRadius.circular(15.r),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.2),
+                                              color: Colors.black.withOpacity(isDark ? 0.3 : 0.15),
                                               blurRadius: 12.r,
+                                              offset: const Offset(0, 4),
                                             ),
                                           ],
                                         ),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
+                                            // الصورة
                                             ClipRRect(
-                                              borderRadius: BorderRadius.circular(12.r),
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(15.r)),
                                               child: Image.network(
                                                 offer.image,
                                                 width: double.infinity,
                                                 height: 140.h,
                                                 fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) => Container(
+                                                  height: 140.h,
+                                                  color: Colors.grey[300],
+                                                  child: Icon(Icons.broken_image, size: 50.sp, color: Colors.grey),
+                                                ),
                                               ),
                                             ),
-                                            Row(
-                                              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                                  child: Text(
-                                                    offer.name,
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      color: const Color(0xFFBA1B1B),
-                                                      fontSize: 14.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                      fontFamily: 'Graphik Arabic',
+
+                                            // العنوان + زر التوسيع
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                              child: Row(
+                                                textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      offer.name,
+                                                      style: TextStyle(
+                                                        color: const Color(0xFFBA1B1B),
+                                                        fontSize: 15.sp,
+                                                        fontWeight: FontWeight.w600,
+                                                        fontFamily: 'Graphik Arabic',
+                                                      ),
+                                                      textAlign: isArabic ? TextAlign.right : TextAlign.left,
                                                     ),
                                                   ),
-                                                ),
-                                                const Spacer(),
-                                                IconButton(
-                                                  icon: Icon(
-                                                    isExpandedList[index]
-                                                        ? Icons.keyboard_arrow_up
-                                                        : Icons.keyboard_arrow_down,
-                                                    color: const Color(0xFFBA1B1B),
-                                                    size: 28.sp,
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      isExpandedList[index]
+                                                          ? Icons.keyboard_arrow_up
+                                                          : Icons.keyboard_arrow_down,
+                                                      color: const Color(0xFFBA1B1B),
+                                                      size: 28.sp,
+                                                    ),
+                                                    onPressed: () {
+                                                      setStateSB(() {
+                                                        isExpandedList[index] = !isExpandedList[index];
+                                                      });
+                                                    },
                                                   ),
-                                                  onPressed: () {
-                                                    setStateSB(() {
-                                                      isExpandedList[index] = !isExpandedList[index];
-                                                    });
-                                                  },
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
+
+                                            // اسم الخدمة/المنتج
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                              padding: EdgeInsets.symmetric(horizontal: 12.w),
                                               child: Text(
                                                 relatedName,
-                                                textAlign: TextAlign.right,
                                                 style: TextStyle(
-                                                  color: Theme.of(context).brightness == Brightness.light
-                                                      ? Colors.black.withOpacity(0.7)
-                                                      : Colors.white,
+                                                  color: isDark ? Colors.white70 : Colors.black87,
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily: 'Graphik Arabic',
                                                 ),
+                                                textAlign: isArabic ? TextAlign.right : TextAlign.left,
                                               ),
                                             ),
+
+                                            // التفاصيل عند التوسيع
                                             if (isExpandedList[index]) ...[
                                               SizedBox(height: 12.h),
                                               Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                                padding: EdgeInsets.symmetric(horizontal: 12.w),
                                                 child: Text(
-                                                  'محتوي العرض !',
-                                                  textAlign: TextAlign.right,
+                                                  isArabic ? 'محتوى العرض!' : 'Offer Content!',
                                                   style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontFamily: 'Graphik Arabic',
+                                                    color: isDark ? Colors.white : Colors.black,
+                                                    fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
-                                                    height: 1.60,
+                                                    fontFamily: 'Graphik Arabic',
+                                                    height: 1.6,
                                                   ),
+                                                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
                                                 ),
                                               ),
                                               SizedBox(height: 6.h),
                                               Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                                padding: EdgeInsets.symmetric(horizontal: 12.w),
                                                 child: Text(
                                                   offer.description,
-                                                  textAlign: TextAlign.right,
                                                   style: TextStyle(
-                                                    color: const Color(0xFF474747),
-                                                    fontSize: 12,
+                                                    color: isDark ? Colors.white70 : const Color(0xFF474747),
+                                                    fontSize: 13.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Graphik Arabic',
+                                                    height: 1.5,
+                                                  ),
+                                                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                                                ),
+                                              ),
+                                              SizedBox(height: 6.h),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                                child: Text(
+                                                  isArabic
+                                                      ? 'ينتهي العرض في ${offer.expiredAt}'
+                                                      : 'Offer expires on ${offer.expiredAt}',
+                                                  style: TextStyle(
+                                                    color: const Color(0xFFBA1B1B),
+                                                    fontSize: 12.sp,
                                                     fontFamily: 'Graphik Arabic',
                                                     fontWeight: FontWeight.w500,
                                                   ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 6.h),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                                child: Text(
-                                                  'ينتهي العرض في ${offer.expiredAt}',
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: const Color(0xFFBA1B1B),
-                                                    fontFamily: 'Graphik Arabic',
-                                                  ),
+                                                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
                                                 ),
                                               ),
                                               SizedBox(height: 16.h),
+
+                                              // زر "استمتع بالعرض"
                                               Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                                padding: EdgeInsets.symmetric(horizontal: 12.w),
                                                 child: SizedBox(
                                                   width: double.infinity,
                                                   child: ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor: const Color(0xFFBA1B1B),
+                                                      foregroundColor: Colors.white,
                                                       shape: RoundedRectangleBorder(
                                                         borderRadius: BorderRadius.circular(15.r),
                                                       ),
-                                                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                                                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                                                      elevation: 2,
                                                     ),
                                                     onPressed: () async {
                                                       final prefs = await SharedPreferences.getInstance();
                                                       final token = prefs.getString('token');
 
                                                       if (token != null && token.isNotEmpty) {
-                                                        // نحصل على القيم من العرض الحالي
                                                         final slug = offer.service?.slug ?? offer.product?.slug ?? '';
                                                         final title = offer.service?.name ?? offer.product?.name ?? '';
                                                         final description = offer.service?.description ?? offer.product?.description ?? '';
@@ -248,7 +272,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                                           context: context,
                                                           isScrollControlled: true,
                                                           backgroundColor: Colors.transparent,
-                                                          builder: (context) => FractionallySizedBox(
+                                                          builder: (_) => FractionallySizedBox(
                                                             widthFactor: 1,
                                                             child: BlocProvider(
                                                               create: (_) => LoginCubit(dio: Dio()),
@@ -261,30 +285,28 @@ class _OffersScreenState extends State<OffersScreen> {
                                                     child: Text(
                                                       isArabic ? 'استمتع بالعرض الآن' : 'Enjoy the offer now',
                                                       style: TextStyle(
-                                                        color: Colors.white,
                                                         fontSize: 15.sp,
-                                                        fontFamily: 'Graphik Arabic',
                                                         fontWeight: FontWeight.w600,
+                                                        fontFamily: 'Graphik Arabic',
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ],
-                                            SizedBox(height: 10.h),
+
+                                            SizedBox(height: 12.h),
                                           ],
                                         ),
                                       ),
                                     ),
-                                    // مسافة بين العناصر
                                     SizedBox(height: 16.h),
                                   ],
                                 );
                               },
                             );
                           },
-                        );
-                      } else if (state is OffersError) {
+                        );                      } else if (state is OffersError) {
                         return Center(
                           child: Text(
                             isArabic ? "لا توجد عروض متاحة" : "No offers available",

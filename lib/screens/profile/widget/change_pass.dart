@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constant/api.dart';
@@ -55,11 +56,11 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 // العنوان
                 Text(
                   locale!.isDirectionRTL(context)
-                      ? " تغيير كلمة المرور"
-                      : " Change Password",
+                      ? "تغيير كلة السر ؟"
+                      : "Change Password ?",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style:  TextStyle(
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -255,11 +256,14 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
               },
       child: Text(
         locale!.isDirectionRTL(context)
-            ? 'تغيير كلمه المرور '
-            : "Change password",
+            ? "تغيير كلة السر ؟"
+            : "Change Password ?",
         style: TextStyle(
-          color: token == null ? Colors.grey : Colors.red,
-          fontWeight: FontWeight.w400,
+          color: token == null ? Colors.grey : Color(0xFFBA1B1B),
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Graphik Arabic',
+          fontSize: 18.sp
+
         ),
       ),
     );

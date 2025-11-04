@@ -11,6 +11,7 @@ import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen
 import 'package:abu_diyab_workshop/screens/orders/cubit/get_order_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/old_orders_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/payment_preview_cubit.dart';
+import 'package:abu_diyab_workshop/screens/orders/cubit/rate_service_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/repair_card_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/get_order_repo.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/payment_service.dart';
@@ -50,7 +51,7 @@ void main() async {
     ),
   );
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');
@@ -97,6 +98,8 @@ void main() async {
         ),
         BlocProvider(
           create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
+        ),BlocProvider<RateServiceCubit>(
+          create: (_) => RateServiceCubit(), // تمرير الـ dio
         ),
       ],
       child: MyApp(

@@ -21,19 +21,25 @@ class PeriodicMaintenance extends StatefulWidget {
   final String description;
   final String icon;
   final String slug;
-  const PeriodicMaintenance({super.key, required this.title, required this.description, required this.icon, required this.slug});
+
+  const PeriodicMaintenance({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
 
   @override
   State<PeriodicMaintenance> createState() => _PeriodicMaintenanceState();
 }
 
 class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
-
   List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
   int? _selectedUserCarId;
-  bool? selected;
+  bool selected = false;
 
   @override
   void dispose() {
@@ -64,9 +70,9 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
             topRight: Radius.circular(15),
           ),
           color:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -81,9 +87,9 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -98,7 +104,6 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                         return Icon(Icons.image_not_supported, size: 20.h);
                       },
                     ),
-
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -120,6 +125,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                 ),
 
                 SizedBox(height: 6.h),
+
                 /// -------------------- خطوات التقدم --------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -146,11 +152,17 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  'هل السيارة تعمل!',
+                  locale.isDirectionRTL(context)
+                      ? " هل السيارة تعمل!"
+                      : "Does the car work?",
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color:
+                    Theme.of(context).brightness ==
+                        Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
                     height: 1.57,
@@ -171,7 +183,10 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                           height: 55.h,
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:      Theme.of(context).brightness ==
+                              Brightness.light
+                              ? Colors.white
+                              : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -193,18 +208,33 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                                   width: 22.w,
                                   height: 22.h,
                                   decoration: BoxDecoration(
-                                    color: selected == true ? Color(0xFFBA1B1B) : Color(0xFFD9D9D9),
+                                    color:
+                                        selected == true
+                                            ? Color(0xFFBA1B1B)
+                                            : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(Icons.check, size: 16, color: Colors.white),
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 16.sp,
+                                    color:
+                                    Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.white
+                                      : Colors.black,
+                                  ),
                                 ),
                               ),
                               Text(
-                                "نعم",
+                                locale.isDirectionRTL(context) ? " نعم" : "Yes",
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                             ],
@@ -213,7 +243,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                       ),
                     ),
 
-// زر لا
+                    // زر لا
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -225,7 +255,11 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                           height: 55.h,
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:
+                            Theme.of(context).brightness ==
+                                Brightness.light
+                                ? Colors.white
+                                : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -247,18 +281,33 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                                   width: 22.w,
                                   height: 22.h,
                                   decoration: BoxDecoration(
-                                    color: selected == false ? Color(0xFFBA1B1B) : Color(0xFFD9D9D9),
+                                    color:
+                                        selected == false
+                                            ? Color(0xFFBA1B1B)
+                                            : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(Icons.check, size: 16, color: Colors.white),
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 16.sp,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
+                                  ),
                                 ),
                               ),
                               Text(
-                                "لا",
+                                locale.isDirectionRTL(context) ? " لا" : "No",
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
                                 ),
                               ),
                             ],
@@ -266,29 +315,28 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
                 SizedBox(height: 10.h),
 
                 Align(
                   alignment:
-                  locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                   child: Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text:
-                          locale.isDirectionRTL(context)
-                              ? 'المرفقات '
-                              : 'Attatchment',
+                              locale.isDirectionRTL(context)
+                                  ? 'المرفقات '
+                                  : 'Attatchment',
                           style: TextStyle(
                             color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
                             fontSize: 14.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -296,9 +344,9 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                         ),
                         TextSpan(
                           text:
-                          locale.isDirectionRTL(context)
-                              ? '( أختياري )'
-                              : '( Optional )',
+                              locale.isDirectionRTL(context)
+                                  ? '( أختياري )'
+                                  : '( Optional )',
                           style: TextStyle(
                             color: const Color(0xFF4D4D4D),
                             fontSize: 12.sp,
@@ -309,9 +357,9 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                       ],
                     ),
                     textAlign:
-                    locale.isDirectionRTL(context)
-                        ? TextAlign.right
-                        : TextAlign.left,
+                        locale.isDirectionRTL(context)
+                            ? TextAlign.right
+                            : TextAlign.left,
                   ),
                 ),
                 SizedBox(height: 10.h),
@@ -339,9 +387,6 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
             return;
           }
 
-
-
-
           if (kiloReadController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
@@ -358,29 +403,28 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
             return;
           }
 
-
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
                   (BuildContext context) => ReviewRequestPage(
-                title: widget.title,
-                icon: widget.icon,
-                slug: widget.slug,
+                    title: widget.title,
+                    icon: widget.icon,
+                    slug: widget.slug,
                     isCarWorking: selected.toString(),
 
                     selectedUserCarId: _selectedUserCarId,
                     selectedProduct: 0,
-                notes:
-                notesController.text.isNotEmpty
-                    ? notesController.text
-                    : null,
-                kiloRead:
-                kiloReadController.text.isNotEmpty
-                    ? kiloReadController.text
-                    : null,
-                selectedCarDocs: selectedCarDocs,
-              ),
+                    notes:
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : null,
+                    kiloRead:
+                        kiloReadController.text.isNotEmpty
+                            ? kiloReadController.text
+                            : null,
+                    selectedCarDocs: selectedCarDocs,
+                  ),
             ),
           );
         },
@@ -434,6 +478,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
           print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
         },
       ),
-    */);
+    */
+    );
   }
 }

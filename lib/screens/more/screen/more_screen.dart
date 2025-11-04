@@ -137,12 +137,12 @@ class _MoreScreenState extends State<MoreScreen> {
                       textEn: "My Packages",
                       iconPath: 'assets/icons/gift_card1.png',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BakatScreen(),
-                          ),
-                        );
+                   //     Navigator.push(
+                   //       context,
+                   //       MaterialPageRoute(
+                   //         builder: (context) => BakatScreen(),
+                   //       ),
+                   //     );
                       },
                     ),
                   if (_isLoggedIn)

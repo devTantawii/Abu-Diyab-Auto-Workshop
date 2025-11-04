@@ -36,7 +36,7 @@ class widget_ITN extends StatelessWidget {
           textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
           children: [
             if (iconPath != null) ...[
-              Image.asset(iconPath!, width: 20.w, height: 20.h,fit: BoxFit.fill,),
+              Image.asset(iconPath!, width: 20.w, height: 20.h,fit: BoxFit.contain,),
               SizedBox(width: 5.w),
             ],
             Text(

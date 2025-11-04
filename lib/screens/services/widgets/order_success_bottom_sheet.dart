@@ -54,10 +54,12 @@ class OrderSuccessBottomSheet extends StatelessWidget {
             Text(
               locale.isDirectionRTL(context)
                   ? "شكراً لإستخدامك تطبيق أبوذياب.\nنحن في طريقنا إليك في الوقت المحدد، لا تقلق!"
-                  : "Thank you for using the Abu Dhiab app.\nWe are on our way to you on time, don't worry!",
+                  : "Thank you for using the Abu Diyab app.\nWe are on our way to you on time, don't worry!",
               style: TextStyle(
                 fontSize: 18.sp,
-                color: Colors.black,
+                color:  Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white70,
                 fontFamily: 'Graphik Arabic',
                 height: 1.4,
               ),

@@ -9,6 +9,8 @@ class TextIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -23,7 +25,7 @@ class TextIcon extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              color: Colors.black,
+              color: isDark ? Colors.white : Colors.black,
               fontSize: 15.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,
