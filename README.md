@@ -1,16 +1,35 @@
-# abu_diyab_workshop
+# 🧰 abu_diyab_workshop
 
-A new Flutter project.
+A Flutter project by **Hady Elsawah** 💻  
+Built with passion and precision.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 About the Project
 
-A few resources to get you started if this is your first Flutter project:
+`abu_diyab_workshop` is a Flutter-based application designed to deliver a clean structure, elegant design, and smooth performance — following best practices for scalable mobile apps.
+
+---
+
+## 🛠 Getting Started
+
+If this is your first Flutter project, here are some resources to help you get started:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For detailed documentation, check out the  
+👉 [Flutter official docs](https://docs.flutter.dev/)
+
+---
+
+## 👨‍💻 Developer
+
+**Hady Elsawah**  
+📍 Flutter Developer  
+📧 [hadyalsawah52@gmail.com]  
+💼 [LinkedIn Profile  ]
+
+---
+
+> 💡 “Clean code is not written by chance, but by choice.” – Hady Elsawah
