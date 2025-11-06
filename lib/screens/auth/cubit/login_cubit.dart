@@ -2,6 +2,7 @@
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app_setup.dart';
 import '../../../core/langCode.dart';
@@ -16,13 +17,20 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> login({required String phone, required String password}) async {
     emit(LoginLoading());
+    final firebaseMessaging = FirebaseMessaging.instance;
+
+    await firebaseMessaging.requestPermission();
+
+    final fcmToken = await firebaseMessaging.getToken();
+
     print('📡 جاري محاولة تسجيل الدخول...');
     print('➡️ البيانات المرسلة: phone $phone, password $password');
+    print(' fcmToken $fcmToken');
 
     try {
       final response = await dio.post(
         mainApi + loginApi,
-        data: {'phone': phone, 'password': password},
+        data: {'phone': phone, 'password': password,'fcm':fcmToken},
         options: Options(
           validateStatus: (status) {
             // يخلي Dio ما يرمش Error لو رجع 403

@@ -1,3 +1,4 @@
+import 'package:abu_diyab_workshop/fcm_api.dart';
 import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:abu_diyab_workshop/screens/main/cubit/services_cubit.dart';
@@ -30,6 +31,7 @@ import 'package:abu_diyab_workshop/screens/services/repo/oil_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/tire_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/washing_repo.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +44,8 @@ import 'language/languageCubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp();
+await FcmApi().initNotifications();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

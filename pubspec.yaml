@@ -54,6 +54,9 @@ dependencies:
   google_maps_flutter: ^2.13.1
   webview_flutter: ^4.13.0
   flash: ^3.1.1
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^17.1.2
 
 dev_dependencies:
   flutter_test:
