@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constant/api.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
@@ -259,7 +260,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
             ? "تغيير كلة السر ؟"
             : "Change Password ?",
         style: TextStyle(
-          color: token == null ? Colors.grey : Color(0xFFBA1B1B),
+          color: buttonPrimaryBgColor(context),
           fontWeight: FontWeight.w600,
           fontFamily: 'Graphik Arabic',
           fontSize: 18.sp

@@ -23,7 +23,7 @@ class CarInfoSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: textColor(context),
+            color: headingColor(context),
           ),
         ),
         SizedBox(height: 10.h),
@@ -36,8 +36,8 @@ class CarInfoSection extends StatelessWidget {
               return Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: boxcolor(context),
-                  border: Border.all(color: borderColor(context), width: 1.5.w),
+                  color: buttonBgWhiteColor(context),
+                  border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
                   borderRadius: BorderRadius.circular(12.sp),
                 ),
                 padding: EdgeInsets.all(8.w),
@@ -99,7 +99,7 @@ class CarInfoSection extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: textColor(context),
+            color: headingColor(context),
             fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),

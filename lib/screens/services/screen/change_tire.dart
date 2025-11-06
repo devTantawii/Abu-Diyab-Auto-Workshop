@@ -118,10 +118,10 @@ class _ChangeTireState extends State<ChangeTire> {
                           height: 50.h,
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
                           decoration: BoxDecoration(
-                            color: boxcolor(context),
+                            color: buttonBgWhiteColor(context),
                             borderRadius: BorderRadius.circular(10.sp),
                             border: Border.all(
-                              color: borderColor(context),
+                              color: buttonSecondaryBorderColor(context),
                               width: 1.5.w,
                             ),
                           ),
@@ -151,9 +151,9 @@ class _ChangeTireState extends State<ChangeTire> {
                                             ? 'ابحث عن إطار...'
                                             : 'Search tire...',
                                     hintStyle: TextStyle(
-                                      color: textColor(
+                                      color: paragraphColor(
                                         context,
-                                      ).withOpacity(0.5),
+                                      ),
                                       fontSize: 14.sp,
                                     ),
                                     border: InputBorder.none,
@@ -162,7 +162,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                   ),
 
                                   style: TextStyle(
-                                    color: textColor(context),
+                                    color: headingColor(context),
                                     fontSize: 14.sp,
                                   ),
                                 ),
@@ -258,7 +258,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                             textAlign: TextAlign.right,
                                             maxLines: 1,
                                             style: TextStyle(
-                                              color: borderColor(context),
+                                              color: iconGrayColor(context),
                                               fontSize: 16.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w700,
@@ -489,14 +489,14 @@ class _ChangeTireState extends State<ChangeTire> {
                                 color:
                                     selectedTireSize != null
                                         ? Color(0xFFBA1B1B).withOpacity(0.2)
-                                        : boxcolor(context),
+                                        : buttonBgWhiteColor(context),
                                 borderRadius: BorderRadius.circular(10.sp),
                                 border: Border.all(
                                   width: 1.5.w,
                                   color:
                                       selectedTireSize != null
                                           ? Color(0xFFBA1B1B)
-                                          : borderColor(context),
+                                          : buttonSecondaryBorderColor(context),
                                 ),
                               ),
                               child: Padding(
@@ -506,7 +506,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                         ? Icon(Icons.cancel_outlined)
                                         : Image.asset(
                                           'assets/icons/icon_filter.png',
-                                          color: textColor(context),
+                                          color: iconGrayColor(context),
                                         ),
                               ),
                             ),
@@ -571,7 +571,7 @@ class _ChangeTireState extends State<ChangeTire> {
                             widget.description,
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                              color: borderColor(context),
+                              color: paragraphColor(context),
                               fontSize: 13.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
@@ -613,7 +613,7 @@ class _ChangeTireState extends State<ChangeTire> {
                               ? "الخدمات المتوفرة"
                               : 'Available Services',
                           style: TextStyle(
-                            color: textColor(context),
+                            color: headingColor(context),
                             fontSize: 14.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -853,8 +853,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                             size: 50.sp,
                                             color:
                                                 currentPage < totalPages
-                                                    ? borderColor(context)
-                                                    : borderColor(context),
+                                                    ? iconGrayColor(context)
+                                                    : iconGrayColor(context),
                                           ),
                                         ),
                                         SizedBox(width: 12.w),
@@ -864,14 +864,14 @@ class _ChangeTireState extends State<ChangeTire> {
                                             height: 50.h,
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
-                                              color: borderColor(context),
+                                              color: iconGrayColor(context),
                                               borderRadius:
                                                   BorderRadius.circular(8.r),
                                             ),
                                             child: Text(
                                               '${currentPage + 1}',
                                               style: TextStyle(
-                                                color: textColor(context),
+                                                color: headingColor(context),
                                                 fontSize: 22.sp,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -892,7 +892,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                           child: Text(
                                             '$currentPage',
                                             style: TextStyle(
-                                              color: textColor(context),
+                                              color: headingColor(context),
                                               fontSize: 22.sp,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -911,8 +911,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                             size: 50.sp,
                                             color:
                                                 currentPage > 1
-                                                    ? borderColor(context)
-                                                    : borderColor(context),
+                                                    ? iconGrayColor(context)
+                                                    : iconGrayColor(context),
                                           ),
                                         ),
                                       ],
@@ -941,7 +941,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                   ? "عدد الإطارات"
                                   : "Number of Tyres",
                               style: TextStyle(
-                                color: textColor(context),
+                                color: headingColor(context),
                                 fontSize: 16.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w700,
@@ -953,7 +953,7 @@ class _ChangeTireState extends State<ChangeTire> {
                               decoration: BoxDecoration(
                                 color: backgroundColor(context),
                                 border: Border.all(
-                                  color: borderColor(context),
+                                  color: iconGrayColor(context),
                                   width: 1.5.w,
                                 ),
                                 borderRadius: BorderRadius.circular(12.sp),
@@ -1015,7 +1015,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                               milliseconds: 250,
                                             ),
                                             style: TextStyle(
-                                              color: textColor(context),
+                                              color: headingColor(context),
                                               fontSize: 26.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w700,
@@ -1100,7 +1100,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                         ? 'إستمارة السيارة '
                                         : 'Car Registration ',
                                 style: TextStyle(
-                                  color: textColor(context),
+                                  color: headingColor(context),
                                   fontSize: 14.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w600,

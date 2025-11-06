@@ -41,7 +41,7 @@ class NotesAndCarCounterSection extends StatelessWidget {
                  locale.isDirectionRTL(context) ? "الملاحظات:  "  : " notes:  ",
                 textAlign: TextAlign.right,
                 style: TextStyle(
-                  color:textColor(context),
+                  color:headingColor(context),
                   fontSize: 16.sp,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
@@ -51,7 +51,7 @@ class NotesAndCarCounterSection extends StatelessWidget {
               Text(
                 locale.isDirectionRTL(context) ? "(اختياري) " : " (optionl)",
                 style: TextStyle(
-                  color: borderColor(context),
+                  color: paragraphColor(context),
                   fontSize: 12.sp,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w500,
@@ -62,9 +62,9 @@ class NotesAndCarCounterSection extends StatelessWidget {
           SizedBox(height: 10.h),
           Container(
             decoration: ShapeDecoration(
-              color:boxcolor(context),
+              color:buttonBgWhiteColor(context),
               shape: RoundedRectangleBorder(
-                side:  BorderSide(width: 1.50.w, color:borderColor(context)),
+                side:  BorderSide(width: 1.50.w, color:buttonSecondaryBorderColor(context)),
                 borderRadius: BorderRadius.circular(12.sp),
               ),
             ),
@@ -91,7 +91,7 @@ class NotesAndCarCounterSection extends StatelessWidget {
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,
                     height: 1.2.h,
-                    color: borderColor(context),
+                    color: paragraphColor(context),
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
@@ -120,9 +120,9 @@ class NotesAndCarCounterSection extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color:boxcolor(context),
+              color:buttonBgWhiteColor(context),
               borderRadius: BorderRadius.circular(12.sp),
-              border: Border.all(color:borderColor(context), width: 1.5.w),
+              border: Border.all(color:buttonSecondaryBorderColor(context), width: 1.5.w),
             ),
             child: Row(
               textDirection:
@@ -143,7 +143,7 @@ class NotesAndCarCounterSection extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '0000000',
                         hintStyle: TextStyle(
-                          color: borderColor(context),
+                          color: paragraphColor(context),
                           fontSize: 13.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
@@ -168,7 +168,7 @@ class NotesAndCarCounterSection extends StatelessWidget {
                   locale.isDirectionRTL(context) ? 'كم' : 'KM',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color:textColor(context),
+                    color:headingColor(context),
                     fontSize: 15.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,

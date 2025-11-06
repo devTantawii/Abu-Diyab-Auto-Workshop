@@ -83,7 +83,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
-                      color: textColor(context),
+                      color: headingColor(context),
                     ),
                   ),
                   SizedBox(height: 6.h),
@@ -96,7 +96,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: borderColor(context),
+                      color: paragraphColor(context),
                     ),
                   ),
                   SizedBox(height: 16.h),
@@ -126,12 +126,12 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                             : Colors.black,
                                         borderRadius: BorderRadius.circular(15),
                                         border: Border.all(
-                                          color: borderColor(context),
+                                          color: paragraphColor(context),
                                           width: 1.5.w,
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: shadowcolor(context),
+                                            color: paragraphColor(context),
                                             blurRadius: 4,
                                             offset: Offset(0, 2),
                                           ),
@@ -203,7 +203,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: borderColor(context),
+                                          color: paragraphColor(context),
                                         ),
                                       )
                                     else if (method.key == "madfu")
@@ -214,7 +214,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: borderColor(context),
+                                          color: paragraphColor(context),
                                         ),
                                       )
                                     else if (method.key == "cash")
@@ -225,7 +225,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: borderColor(context),
+                                          color: paragraphColor(context),
                                         ),
                                       ),
                                   ],

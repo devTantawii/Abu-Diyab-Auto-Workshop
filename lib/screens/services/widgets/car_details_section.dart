@@ -26,7 +26,7 @@ class CarDetailsSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor(context),
+                color: headingColor(context),
               ),
             ),
           ],
@@ -56,8 +56,8 @@ class CarDetailsSection extends StatelessWidget {
   Widget _buildCarCard(BuildContext context, dynamic car, AppLocalizations locale) {
     return Container(
       decoration: BoxDecoration(
-        color: boxcolor(context),
-        border: Border.all(color: borderColor(context), width: 1.5.w),
+        color: buttonBgWhiteColor(context),
+        border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
         borderRadius: BorderRadius.circular(12.sp),
       ),
       padding: EdgeInsets.all(8.sp),
@@ -88,7 +88,7 @@ class CarDetailsSection extends StatelessWidget {
                     Text(
                       locale.isDirectionRTL(context) ? "الموديل:" : "Model:",
                       style: TextStyle(
-                        color: textColor(context),
+                        color: headingColor(context),
                         fontSize: 12.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -115,7 +115,7 @@ class CarDetailsSection extends StatelessWidget {
                     Text(
                       locale.isDirectionRTL(context) ? "رقم اللوحة:" : "license plate number:",
                       style: TextStyle(
-                        color: textColor(context),
+                        color: headingColor(context),
                         fontSize: 12.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -142,7 +142,7 @@ class CarDetailsSection extends StatelessWidget {
                     Text(
                       locale.isDirectionRTL(context) ? "الممشي:" : "Car mileage:",
                       style: TextStyle(
-                        color: textColor(context),
+                        color: headingColor(context),
                         fontSize: 12.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,

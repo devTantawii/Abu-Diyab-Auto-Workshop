@@ -114,7 +114,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                       widget.description,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: borderColor(context),
+                        color: paragraphColor(context),
                         fontSize: 13.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,

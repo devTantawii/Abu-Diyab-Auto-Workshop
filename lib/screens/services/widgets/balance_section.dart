@@ -41,7 +41,7 @@ class _BalanceSectionState extends State<BalanceSection> {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor(context),
+                color: headingColor(context),
               ),
             ),
             const Spacer(),
@@ -52,7 +52,7 @@ class _BalanceSectionState extends State<BalanceSection> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: borderColor(context),
+                color: paragraphColor(context),
               ),
             ),
           ],
@@ -62,8 +62,8 @@ class _BalanceSectionState extends State<BalanceSection> {
           height: 50.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.sp),
-            border: Border.all(color: borderColor(context), width: 1.w),
-            color: boxcolor(context),
+            border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.w),
+            color: buttonBgWhiteColor(context),
           ),
           child: Row(
             textDirection: locale.isDirectionRTL(context)

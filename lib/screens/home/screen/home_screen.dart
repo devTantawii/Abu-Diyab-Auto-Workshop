@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:animations/animations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../more/screen/more_screen.dart';
 import '../../auth/screen/sign_up.dart';
 import '../../../core/language/locale.dart';
@@ -115,8 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: true,
               currentIndex: _currentIndex,
-              selectedItemColor: Color(0xFFBA1B1B),
-              unselectedItemColor: Color(0xFF474747),
+              selectedItemColor: buttonPrimaryBgColor(context),
+              unselectedItemColor: navbarTextColor(context),
               selectedLabelStyle: TextStyle(
                 fontSize: 16.sp,
                 height: 2,
@@ -154,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: isRTL ? 'طلباتي' : 'Orders',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.more_horiz_rounded),
+                  icon: ImageIcon(AssetImage('assets/icons/tab5.png')),
                   label: isRTL ? 'المزيد' : 'More',
                 ),
               ],

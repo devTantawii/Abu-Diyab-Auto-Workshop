@@ -353,7 +353,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                   decoration: ShapeDecoration(
                     color: isDark ? Colors.grey[900] : Colors.white,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1.5.w, color: borderColor(context)),
+                      side: BorderSide(width: 1.5.w, color: paragraphColor(context)),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(15.r),
                         topRight: Radius.circular(15.r),
@@ -361,7 +361,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                     ),
                     shadows: [
                       BoxShadow(
-                        color: shadowcolor(context),
+                        color: paragraphColor(context),
                         blurRadius: 12.r,
                         offset: Offset(0, 5),
                         spreadRadius: 6.r,

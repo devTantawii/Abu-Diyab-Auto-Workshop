@@ -29,7 +29,7 @@ class DateTimeSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: textColor(context),
+            color: headingColor(context),
           ),
         ),
         SizedBox(height: 10.h),
@@ -74,8 +74,8 @@ class DateTimeSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.sp),
-              border: Border.all(color: borderColor(context), width: 1.5.w),
-              color: boxcolor(context),
+              border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
+              color: buttonBgWhiteColor(context),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,7 +89,7 @@ class DateTimeSection extends StatelessWidget {
                           "${selectedDateTime!.hour}:${selectedDateTime!.minute.toString().padLeft(2, '0')}",
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: textColor(context),
+                    color: headingColor(context),
                   ),
                 ),
                 Icon(

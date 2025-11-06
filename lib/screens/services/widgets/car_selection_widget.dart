@@ -49,7 +49,7 @@ class _CarsSectionState extends State<CarsSection> {
             Text(
               locale.isDirectionRTL(context) ? "السيارة" : 'Car',
               style: TextStyle(
-                color: accentColor,
+                color: headingColor(context),
                 fontSize: 15.sp,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w600,
@@ -97,11 +97,11 @@ class _CarsSectionState extends State<CarsSection> {
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.87,
                           decoration: ShapeDecoration(
-                            color: boxcolor(context),
+                            color: buttonBgWhiteColor(context),
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
                                 width: 1.50.w,
-                                color: borderColor(context),
+                                color: buttonSecondaryBorderColor(context),
                               ),
                               borderRadius: BorderRadius.circular(15.r),
                             ),
@@ -147,11 +147,11 @@ class _CarsSectionState extends State<CarsSection> {
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.87,
                           decoration: ShapeDecoration(
-                            color: boxcolor(context),
+                            color: buttonBgWhiteColor(context),
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
                                 width: 1.50.w,
-                                color: borderColor(context),
+                                color: buttonSecondaryBorderColor(context),
                               ),
                               borderRadius: BorderRadius.circular(15.r),
                             ),
@@ -200,11 +200,11 @@ class _CarsSectionState extends State<CarsSection> {
         decoration: ShapeDecoration(
           color: isSelected
               ? const Color(0xFFBA1B1B).withOpacity(0.2)
-              : boxcolor(context),
+              : buttonBgWhiteColor(context),
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1.50.w,
-              color: isSelected ? accentColor : borderColor(context),
+              color: isSelected ? accentColor : buttonSecondaryBorderColor(context),
             ),
             borderRadius: BorderRadius.circular(15.r),
           ),

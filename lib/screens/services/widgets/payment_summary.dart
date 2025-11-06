@@ -26,7 +26,7 @@ class PaymentSummary extends StatelessWidget {
       decoration: ShapeDecoration(
         color: backgroundColor(context),
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1.5.w, color: borderColor(context)),
+          side: BorderSide(width: 1.5.w, color: paragraphColor(context)),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
@@ -89,12 +89,12 @@ class PaymentSummary extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 14.sp, color: textColor(context)),
+            style: TextStyle(fontSize: 14.sp, color: headingColor(context)),
           ),
           const Spacer(),
           Text(
             value,
-            style: TextStyle(fontSize: 14.sp, color: textColor(context)),
+            style: TextStyle(fontSize: 14.sp, color: headingColor(context)),
           ),
         ],
       ),

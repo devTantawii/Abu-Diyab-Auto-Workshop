@@ -124,10 +124,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       height: 50.h,
                       padding: EdgeInsets.symmetric(horizontal: 12.w),
                       decoration: BoxDecoration(
-                        color: boxcolor(context),
+                        color: buttonBgWhiteColor(context),
                         borderRadius: BorderRadius.circular(10.sp),
                         border: Border.all(
-                          color: borderColor(context),
+                          color: buttonSecondaryBorderColor(context),
                           width: 1.5.w,
                         ),
                       ),
@@ -158,15 +158,17 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                         ? 'ابحث عن بطارية...'
                                         : 'Search battery...',
                                 hintStyle: TextStyle(
-                                  color: textColor(context).withOpacity(0.5),
+                                  color: paragraphColor(context),
                                   fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Graphik Arabic',
                                 ),
                                 border: InputBorder.none,
                                 isDense: true,
                                 contentPadding: EdgeInsets.zero,
                               ),
                               style: TextStyle(
-                                color: textColor(context),
+                                color: paragraphColor(context),
                                 fontSize: 14.sp,
                               ),
                             ),
@@ -261,7 +263,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                         textAlign: TextAlign.right,
                                         maxLines: 1,
                                         style: TextStyle(
-                                          color: borderColor(context),
+                                          color: paragraphColor(context),
                                           fontSize: 16.sp,
                                           fontFamily: 'Graphik Arabic',
                                           fontWeight: FontWeight.w700,
@@ -468,14 +470,14 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         color:
                             selectedAh != null
                                 ? Color(0xFFBA1B1B).withOpacity(0.2)
-                                : boxcolor(context),
+                                : buttonBgWhiteColor(context),
                         borderRadius: BorderRadius.circular(10.sp),
                         border: Border.all(
                           width: 1.5.w, // responsive border
                           color:
                               selectedAh != null
                                   ? Color(0xFFBA1B1B)
-                                  : borderColor(context),
+                                  : buttonSecondaryBorderColor(context),
                         ),
                       ),
                       child: Padding(
@@ -488,7 +490,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                 )
                                 : Image.asset(
                                   'assets/icons/icon_filter.png',
-                                  color: textColor(context),
+                                  color: iconGrayColor(context),
                                 ),
 
                         //  color: textColor(context),
@@ -514,7 +516,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                             widget.title,
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                              color: textColor(context),
+                              color: headingColor(context),
                               fontSize: 18.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
@@ -541,7 +543,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                             widget.description,
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                              color: borderColor(context),
+                              color: paragraphColor(context),
                               fontSize: 13.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
@@ -577,7 +579,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                 ? "الخدمات المتوفرة"
                                 : 'Available Services',
                             style: TextStyle(
-                              color: textColor(context),
+                              color: headingColor(context),
                               fontSize: 14.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
@@ -606,7 +608,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 22.sp,
-                                    color: textColor(context),
+                                    color: headingColor(context),
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'Graphik Arabic',
                                   ),
@@ -662,7 +664,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                           ),
                                           padding: EdgeInsets.all(12.w),
                                           decoration: BoxDecoration(
-                                            color: boxcolor(context),
+                                            color: buttonBgWhiteColor(context),
                                             borderRadius: BorderRadius.circular(
                                               15.r,
                                             ),
@@ -738,7 +740,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                             battery.name,
                                                             maxLines: 1,
                                                             style: TextStyle(
-                                                              color: textColor(
+                                                              color: headingColor(
                                                                 context,
                                                               ),
                                                               fontSize: 16.sp,
@@ -788,7 +790,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                           : "The kind: ${battery.name}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: borderColor(
+                                                        color: paragraphColor(
                                                           context,
                                                         ),
                                                       ),
@@ -801,7 +803,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                           : "Country of Origin: ${battery.country}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: borderColor(
+                                                        color: paragraphColor(
                                                           context,
                                                         ),
                                                       ),
@@ -814,7 +816,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                           : "Size details: ${battery.quantity}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: borderColor(
+                                                        color: paragraphColor(
                                                           context,
                                                         ),
                                                       ),
@@ -827,7 +829,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                           : "Available quantity: ${battery.quantity}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: borderColor(
+                                                        color: paragraphColor(
                                                           context,
                                                         ),
                                                       ),
@@ -957,7 +959,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                       ? "المرفقات:"
                                       : "Attachments:",
                               style: TextStyle(
-                                color: textColor(context),
+                                color: headingColor(context),
                                 fontSize: 14.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -969,7 +971,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                       ? " (اختياري)"
                                       : " (optional)",
                               style: TextStyle(
-                                color: borderColor(context),
+                                color: paragraphColor(context),
                                 fontSize: 12.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,

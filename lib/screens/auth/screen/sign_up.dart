@@ -28,6 +28,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _referralController = TextEditingController(); // ✅ جديد
+  final TextEditingController _IDController = TextEditingController(); // ✅ جديد
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -78,6 +79,19 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     }
   }
 */
+  String? _validateID(String? value) {
+    if (value == null || value.isEmpty) {
+      return _isArabic(context)
+          ? "يرجى إدخال رقم الهوية"
+          : "Please enter ID number";
+    }
+    if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+      return _isArabic(context)
+          ? "رقم الهوية يجب أن يكون 10 أرقام"
+          : "ID must be 10 digits";
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,345 +99,362 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
 
     return Directionality(
       textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-      child: FractionallySizedBox(
-        widthFactor: 1, // عرض كامل
-        child: BlocProvider(
-          create: (_) => RegisterCubit(dio: Dio()),
-          child: BlocConsumer<RegisterCubit, RegisterState>(
-            listener: (context, state) {
-              if (state is RegisterSuccess) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder:
-                      (context) => FractionallySizedBox(
-                        widthFactor: 1,
-                        child:OtpBottomSheet(
-                          phone: _phoneController.text,
-                          referral: _referralController.text.trim().isEmpty
-                              ? null
-                              : _referralController.text.trim(),
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85, // 75% من الشاشة كحد أقصى
+        ),
+        child: FractionallySizedBox(
+          widthFactor: 1, // عرض كامل
+          child: BlocProvider(
+            create: (_) => RegisterCubit(dio: Dio()),
+            child: BlocConsumer<RegisterCubit, RegisterState>(
+              listener: (context, state) {
+                if (state is RegisterSuccess) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder:
+                        (context) => FractionallySizedBox(
+                          widthFactor: 1,
+                          child:OtpBottomSheet(
+                            phone: _phoneController.text,
+                            referral: _referralController.text.trim().isEmpty
+                                ? null
+                                : _referralController.text.trim(),
+                          ),
                         ),
-                      ),
-                );
-              } else if (state is RegisterFailure) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text(" خطأ"),
-                    content: Text(state.error),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("موافق"),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-
-            },
-            builder: (context, state) {
-
-              return BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(
-                  padding: EdgeInsets.all(20.sp),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors. white
-                        : Colors. black,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20.r),
+                  );
+                } else if (state is RegisterFailure) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text(" خطأ"),
+                      content: Text(state.error),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("موافق"),
+                        ),
+                      ],
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                  );
+                }
+
+
+              },
+              builder: (context, state) {
+
+                return BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(
+                    padding: EdgeInsets.all(20.sp),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors. white
+                          : Colors. black,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.r),
+                      ),
                     ),
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              isArabic ? 'انضم إلينا الآن !' : 'Join us now!',
-                              style: TextStyle(
-                                color:Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
-                                fontSize: 18.sp,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: 10.h),
-                            Text(
-                              isArabic
-                                  ? 'يرجى إنشاء حساب لتتمكن من تقديم طلب جديد 🚀'
-                                  : 'Please create an account to place a new request 🚀',
-                              style: TextStyle(
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ?  Colors.black.withOpacity(0.7)
-                                    : Colors.white,
-                                fontSize: 14.h,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 20.h),
-
-                            build_label(text: isArabic ? 'الإسم الأول' : 'Frist Name'),
-                            _buildTextField(
-                              controller: _nameController,
-                              hint: isArabic ? "XXXX " : "John Doe",
-                              textInputType: TextInputType.name,
-                            ),
-                            SizedBox(height: 15.h),
-
-                            build_label(text: isArabic ? 'اسم العائله' : 'Family Name'),
-                            _buildTextField(
-                              controller: _name2Controller,
-                              hint: isArabic ? "XXXX " : "John Doe",
-                              textInputType: TextInputType.name,
-                            ),
-                            SizedBox(height: 15.h),
-
-                            build_label(
-                              text: isArabic ? 'رقم الهاتف' : 'Phone Number',
-                            ),
-                            _buildTextField(
-                              controller: _phoneController,
-                              hint: isArabic ? "5XXXXXXX" : "5XXXXXXX",
-                              textInputType: TextInputType.phone,
-                              maxLength: 15,
-                              validator: _validatePhone,
-                            ),
-                            SizedBox(height: 15.h),
-
-                            build_label(
-                              text: isArabic ? 'كلمة المرور' : 'Password',
-                            ),
-                            _buildTextField(
-                              controller: _passwordController,
-                              hint: "********",
-                              textInputType: TextInputType.visiblePassword,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return isArabic
-                                      ? "يرجى إدخال كلمة المرور"
-                                      : "Please enter password";
-                                }
-                                if (value.length < 6) {
-                                  return isArabic
-                                      ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-                                      : "Password must be at least 6 characters";
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 15.h),
-                            build_label(text: isArabic ? 'رمز الإحالة (اختياري)' : 'Referral Code (optional)'),
-                            _buildTextField(
-                              controller: _referralController,
-                              hint: isArabic ? " ABC123" : "e.g. ABC123",
-                              textInputType: TextInputType.text,
-                            ),
-                            SizedBox(height: 20.h),
-                            SizedBox(
-                              height: 50.h,
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed:
-                                    state is RegisterLoading
-                                        ? null
-                                        : ()async {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            final prefs = await SharedPreferences.getInstance(); // ✅ هنا صح
-                                            await prefs.remove('token');
-
-                                            final model = RegisterRequestModel(
-                                              name: _nameController.text.trim(),
-                                              name2: _name2Controller.text.trim(),
-                                              phone:
-                                                  _phoneController.text.trim(),
-                                              password:
-                                                  _passwordController.text
-                                                      .trim(),
-                                         //     fcm: _fcmToken ?? '',
-
-                                            );
-                                            context
-                                                .read<RegisterCubit>()
-                                                .register(model);
-
-                                          }
-                                        },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFFBA1B1B),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                isArabic ? 'انضم إلينا الآن !' : 'Join us now!',
+                                style: TextStyle(
+                                  color:Theme.of(context).brightness == Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                                  fontSize: 18.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                child:
-                                    state is RegisterLoading
-                                        ? CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                        : Text(
-                                          isArabic
-                                              ? 'أنشئ حسابك'
-                                              : 'Create Account',
-                                          style: TextStyle(
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                isArabic
+                                    ? 'يرجى إنشاء حساب لتتمكن من تقديم طلب جديد 🚀'
+                                    : 'Please create an account to place a new request 🚀',
+                                style: TextStyle(
+                                  color: Theme.of(context).brightness == Brightness.light
+                                      ?  Colors.black.withOpacity(0.7)
+                                      : Colors.white,
+                                  fontSize: 14.h,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
+
+                              build_label(text: isArabic ? 'الإسم الأول' : 'Frist Name'),
+                              _buildTextField(
+                                controller: _nameController,
+                                hint: isArabic ? "XXXX " : "John Doe",
+                                textInputType: TextInputType.name,
+                              ),
+                              SizedBox(height: 15.h),
+
+                              build_label(text: isArabic ? 'اسم العائله' : 'Family Name'),
+                              _buildTextField(
+                                controller: _name2Controller,
+                                hint: isArabic ? "XXXX " : "John Doe",
+                                textInputType: TextInputType.name,
+                              ),
+                              SizedBox(height: 15.h),
+
+                              build_label(
+                                text: isArabic ? 'رقم الهاتف' : 'Phone Number',
+                              ),
+                              _buildTextField(
+                                controller: _phoneController,
+                                hint: isArabic ? "5XXXXXXX" : "5XXXXXXX",
+                                textInputType: TextInputType.phone,
+                                maxLength: 15,
+                                validator: _validatePhone,
+                              ),
+                              SizedBox(height: 15.h),
+
+                              build_label(
+                                text: isArabic ? 'كلمة المرور' : 'Password',
+                              ),
+                              _buildTextField(
+                                controller: _passwordController,
+                                hint: "********",
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return isArabic
+                                        ? "يرجى إدخال كلمة المرور"
+                                        : "Please enter password";
+                                  }
+                                  if (value.length < 6) {
+                                    return isArabic
+                                        ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+                                        : "Password must be at least 6 characters";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 15.h),
+                              build_label(text: isArabic ? 'رمز الإحالة (اختياري)' : 'Referral Code (optional)'),
+                              _buildTextField(
+                                controller: _referralController,
+                                hint: isArabic ? " ABC123" : "e.g. ABC123",
+                                textInputType: TextInputType.text,
+                              ),
+                              SizedBox(height: 20.h),
+                              build_label(text: isArabic ? 'رقم الهويه' : 'ID'),
+                              _buildTextField(
+                                controller: _IDController,
+                                validator: _validateID,
+                                maxLength: 10,
+                                hint: isArabic ? " 1020304050" : "e.g. 1020304050",
+                                textInputType: TextInputType.text,
+                              ),
+                              SizedBox(height: 20.h),
+                              SizedBox(
+                                height: 50.h,
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed:
+                                      state is RegisterLoading
+                                          ? null
+                                          : ()async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              final prefs = await SharedPreferences.getInstance(); // ✅ هنا صح
+                                              await prefs.remove('token');
+
+                                              final model = RegisterRequestModel(
+                                                name: _nameController.text.trim(),
+                                                name2: _name2Controller.text.trim(),
+                                                phone:
+                                                    _phoneController.text.trim(),
+                                                idNumber: _IDController.text.trim().isEmpty
+                                                  ? null
+                                                  : _IDController.text.trim(),
+                                                password:
+                                                    _passwordController.text
+                                                        .trim(),
+                                           //     fcm: _fcmToken ?? '',
+
+                                              );
+                                              context
+                                                  .read<RegisterCubit>()
+                                                  .register(model);
+
+                                            }
+                                          },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFFBA1B1B),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                  ),
+                                  child:
+                                      state is RegisterLoading
+                                          ? CircularProgressIndicator(
                                             color: Colors.white,
-                                            fontSize: 18.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w500,
+                                          )
+                                          : Text(
+                                            isArabic
+                                                ? 'أنشئ حسابك'
+                                                : 'Create Account',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
+                                ),
                               ),
-                            ),
 
-                            SizedBox(height: 10.h),
+                              SizedBox(height: 10.h),
 
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  isArabic
-                                      ? 'عندك حساب ؟ '
-                                      : 'Already have an account? ',
-                                  style: TextStyle(
-                                    color: Theme.of(context).brightness == Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
-                                    fontSize: 15.h,
-                                    fontFamily: 'Graphik Arabic',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Future.delayed(
-                                      Duration(milliseconds: 100),
-                                      () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder:
-                                              (context) => FractionallySizedBox(
-                                                widthFactor: 1,
-                                                child: BlocProvider(
-                                                  create:
-                                                      (_) => LoginCubit(
-                                                        dio: Dio(),
-                                                      ),
-                                                  child:
-                                                      const LoginBottomSheet(),
-                                                ),
-                                              ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Text(
-                                    isArabic ? 'سجّل دخولك' : 'Login',
-                                    style: TextStyle(
-                                      color: const Color(0xFFBA1B1B),
-                                      fontSize: 16.h,
-                                      fontFamily: 'Graphik Arabic',
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 15.h),
-                              child: Row(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: Divider(color: Colors.grey.shade300),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w,
-                                    ),
-                                    child: Text(
-                                      isArabic ? "أو" : "OR",
-                                      style: GoogleFonts.almarai(
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).brightness == Brightness.light
-                                            ? Colors.black
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Divider(color: Colors.grey.shade300),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/icons/technical-support.png',
-                                  height: 22.h,
-                                  width: 22.w,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(width: 8.w),
-                                TextButton(
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      builder:
-                                          (context) => FractionallySizedBox(
-                                            widthFactor: 1,
-                                            child: const SupportBottomSheet(),
-                                          ),
-                                    );
-                                  },
-                                  child: Text(
+                                  Text(
                                     isArabic
-                                        ? 'تواصل معنا لو تبي مساعدة'
-                                        : 'Contact us for support',
-                                    textAlign: TextAlign.center,
+                                        ? 'عندك حساب ؟ '
+                                        : 'Already have an account? ',
                                     style: TextStyle(
-                                      color: const Color(0xFFBA1B1B),
-                                      fontSize: 16.h,
+                                      color: Theme.of(context).brightness == Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
+                                      fontSize: 15.h,
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Future.delayed(
+                                        Duration(milliseconds: 100),
+                                        () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            builder:
+                                                (context) => FractionallySizedBox(
+                                                  widthFactor: 1,
+                                                  child: BlocProvider(
+                                                    create:
+                                                        (_) => LoginCubit(
+                                                          dio: Dio(),
+                                                        ),
+                                                    child:
+                                                        const LoginBottomSheet(),
+                                                  ),
+                                                ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text(
+                                      isArabic ? 'سجّل دخولك' : 'Login',
+                                      style: TextStyle(
+                                        color: const Color(0xFFBA1B1B),
+                                        fontSize: 16.h,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15.h),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Divider(color: Colors.grey.shade300),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w,
+                                      ),
+                                      child: Text(
+                                        isArabic ? "أو" : "OR",
+                                        style: GoogleFonts.almarai(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Theme.of(context).brightness == Brightness.light
+                                              ? Colors.black
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Divider(color: Colors.grey.shade300),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/technical-support.png',
+                                    height: 22.h,
+                                    width: 22.w,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  TextButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder:
+                                            (context) => FractionallySizedBox(
+                                              widthFactor: 1,
+                                              child: const SupportBottomSheet(),
+                                            ),
+                                      );
+                                    },
+                                    child: Text(
+                                      isArabic
+                                          ? 'تواصل معنا لو تبي مساعدة'
+                                          : 'Contact us for support',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: const Color(0xFFBA1B1B),
+                                        fontSize: 16.h,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

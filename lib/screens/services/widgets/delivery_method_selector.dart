@@ -101,11 +101,11 @@ class DeliveryMethodSection extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         margin: EdgeInsets.symmetric(vertical: 6.h),
         decoration: BoxDecoration(
-          color: boxcolor(context),
+          color: buttonBgWhiteColor(context),
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             width: 1.2.w,
-            color: borderColor(context),
+            color: buttonSecondaryBorderColor(context),
           ),
           boxShadow: [
             BoxShadow(
@@ -124,7 +124,7 @@ class DeliveryMethodSection extends StatelessWidget {
                 text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: textColor(context),
+                  color: headingColor(context),
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                 ),

@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ListTile(
                                     leading: Icon(
                                       Icons.photo_library,
-                                      color: Color(0xFFBA1B1B),
+                                      color: buttonPrimaryBgColor(context),
                                     ),
                                     title: Text(
                                       locale!.isDirectionRTL(context)
@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ListTile(
                                     leading: Icon(
                                       Icons.camera_alt,
-                                      color: Color(0xFFBA1B1B),
+                                      color: buttonPrimaryBgColor(context),
                                     ),
                                     title: Text(
                                       locale!.isDirectionRTL(context)
@@ -207,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Color(0xFFBA1B1B),
+                                color: buttonPrimaryBgColor(context),
                               ),
                               padding: EdgeInsets.all(8),
                               child: Icon(
@@ -233,14 +233,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   : "First name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
+                                color: headingColor(context),
                                 fontSize: 13.sp,
                                 fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             SizedBox(height: 5.h),
@@ -293,14 +289,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   : "Last name",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
+                                color: headingColor(context),
+
                                 fontSize: 13.sp,
                                 fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             SizedBox(height: 5.h),
@@ -357,13 +350,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : "Mobile number",
                           textAlign: TextAlign.right,
                           style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
+                            color: headingColor(context),
+
                             fontSize: 13.sp,
                             fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(height: 5.h),
@@ -506,7 +497,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFBA1B1B),
+                          backgroundColor: buttonPrimaryBgColor(context),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -528,7 +519,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           // هنا كود تسجيل الخروج
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: const Color(0xFFBA1B1B)),
+                          side: BorderSide(
+                            color: buttonPrimaryBgColor(context),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -538,7 +531,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? "حذف الحساب"
                               : "Delete Account",
                           style: TextStyle(
-                            color: const Color(0xFFBA1B1B),
+                            color: buttonPrimaryBgColor(context),
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                           ),

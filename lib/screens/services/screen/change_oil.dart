@@ -114,7 +114,7 @@ class _ChangeOilState extends State<ChangeOil> {
                 AppLocalizations.of(context)!.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
                 style: TextStyle(fontSize: 25.sp, color: accentColor, fontWeight: FontWeight.w600),
               ),
-              Divider(color: borderColor(context)),
+              Divider(color: buttonSecondaryBorderColor(context)),
               Text(
                 AppLocalizations.of(context)!.isDirectionRTL(context) ? 'لزوجة الزيت' : 'Oil viscosity',
                 style: TextStyle(fontSize: 18.sp, color: Color(0xFF616465), fontWeight: FontWeight.w600),
@@ -222,9 +222,9 @@ class _ChangeOilState extends State<ChangeOil> {
                           height: 50.h,
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
                           decoration: BoxDecoration(
-                            color: boxcolor(context),
+                            color: buttonBgWhiteColor(context),
                             borderRadius: BorderRadius.circular(10.sp),
-                            border: Border.all(color: borderColor(context), width: 1.5.w),
+                            border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
                           ),
                           child: Row(
                             children: [
@@ -239,11 +239,11 @@ class _ChangeOilState extends State<ChangeOil> {
                                   textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
                                   decoration: InputDecoration(
                                     hintText: locale.isDirectionRTL(context) ? 'ابحث عن زيت...' : 'Search oil...',
-                                    hintStyle: TextStyle(color: textColor(context).withOpacity(0.5), fontSize: 14.sp),
+                                    hintStyle: TextStyle(color: paragraphColor(context).withOpacity(0.5), fontSize: 14.sp),
                                     border: InputBorder.none,
                                     isDense: true,
                                   ),
-                                  style: TextStyle(color: textColor(context), fontSize: 14.sp),
+                                  style: TextStyle(color: headingColor(context), fontSize: 14.sp),
                                 ),
                               ),
                               ValueListenableBuilder<TextEditingValue>(
@@ -283,18 +283,18 @@ class _ChangeOilState extends State<ChangeOil> {
                           decoration: BoxDecoration(
                             color: selectedViscosity != null
                                 ? Color(0xFFBA1B1B).withOpacity(0.2)
-                                : boxcolor(context),
+                                : buttonBgWhiteColor(context),
                             borderRadius: BorderRadius.circular(10.sp),
                             border: Border.all(
                               width: 1.5.w,
-                              color: selectedViscosity != null ? Color(0xFFBA1B1B) : borderColor(context),
+                              color: selectedViscosity != null ? Color(0xFFBA1B1B) : buttonSecondaryBorderColor(context),
                             ),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(10),
                             child: selectedViscosity != null
                                 ? Icon(Icons.cancel_outlined, color: Colors.black)
-                                : Image.asset('assets/icons/icon_filter.png', color: textColor(context)),
+                                : Image.asset('assets/icons/icon_filter.png', color: paragraphColor(context)),
                           ),
                         ),
                       ),
@@ -340,7 +340,7 @@ class _ChangeOilState extends State<ChangeOil> {
                           Text(
                             widget.description,
                             style: TextStyle(
-                              color: borderColor(context),
+                              color: paragraphColor(context),
                               fontSize: 13.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
@@ -394,7 +394,7 @@ class _ChangeOilState extends State<ChangeOil> {
                               return Center(
                                 child: Text(
                                   locale.isDirectionRTL(context) ? "لا توجد زيوت متاحة" : "No oils available",
-                                  style: TextStyle(fontSize: 18.sp, color: textColor(context)),
+                                  style: TextStyle(fontSize: 18.sp, color: headingColor(context)),
                                 ),
                               );
                             }
@@ -431,11 +431,11 @@ class _ChangeOilState extends State<ChangeOil> {
                                           margin: EdgeInsets.symmetric(vertical: 16.h),
                                           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
                                           decoration: BoxDecoration(
-                                            color: boxcolor(context),
+                                            color: buttonBgWhiteColor(context),
                                             borderRadius: BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1.5.w,
-                                              color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
+                                              color: isSelected ? const Color(0xFFBA1B1B) : buttonSecondaryBorderColor(context)
                                             ),
                                             boxShadow: [
                                               BoxShadow(
@@ -480,7 +480,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
-                                                              color: textColor(context),
+                                                              color: headingColor(context),
                                                               fontSize: 14.sp,
                                                               fontFamily: 'Graphik Arabic',
                                                               fontWeight: FontWeight.w600,
@@ -513,7 +513,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                                     Text(
                                                       oil.description,
                                                       style: TextStyle(
-                                                        color: borderColor(context),
+                                                        color: paragraphColor(context),
                                                         fontSize: 11.sp,
                                                         fontFamily: 'Graphik Arabic',
                                                         fontWeight: FontWeight.w500,

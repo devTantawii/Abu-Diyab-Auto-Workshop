@@ -29,7 +29,7 @@ class AppointmentDetails extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor(context),
+                color: headingColor(context),
               ),
             ),
           ],
@@ -37,8 +37,8 @@ class AppointmentDetails extends StatelessWidget {
         SizedBox(height: 12.h),
         Container(
           decoration: BoxDecoration(
-            color: boxcolor(context),
-            border: Border.all(color: borderColor(context), width: 1.5.w),
+            color: buttonBgWhiteColor(context),
+            border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
             borderRadius: BorderRadius.circular(12.sp),
           ),
           padding: EdgeInsets.all(8.sp),
@@ -61,15 +61,15 @@ class AppointmentDetails extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
-                          color: textColor(context),
+                          color: headingColor(context),
                         ),
                       ),
                       Text(
                         deliveryMethod,
                         style: TextStyle(
                           fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: borderColor(context),
+                          fontWeight: FontWeight.w500,
+                          color: paragraphColor(context),
                         ),
                       ),
                     ],
@@ -96,7 +96,7 @@ class AppointmentDetails extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
-                            color: textColor(context),
+                            color: headingColor(context),
                           ),
                         ),
                         Text(
@@ -107,8 +107,8 @@ class AppointmentDetails extends StatelessWidget {
                           softWrap: false,
                           style: TextStyle(
                             fontSize: 11.sp,
-                            fontWeight: FontWeight.w600,
-                            color: borderColor(context),
+                            fontWeight: FontWeight.w500,
+                            color: paragraphColor(context),
                           ),
                         ),
                       ],
@@ -133,23 +133,23 @@ class AppointmentDetails extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
-                          color: textColor(context),
+                          color: headingColor(context),
                         ),
                       ),
                       Text(
                         '${dateTime!.hour}:${dateTime!.minute}',
                         style: TextStyle(
                           fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: borderColor(context),
+                          fontWeight: FontWeight.w500,
+                          color: paragraphColor(context),
                         ),
                       ),
                       Text(
                         "${dateTime!.day}/${dateTime!.month}/${dateTime!.year} ",
                         style: TextStyle(
                           fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: borderColor(context),
+                          fontWeight: FontWeight.w500,
+                          color: paragraphColor(context),
                         ),
                       ),
                     ],

@@ -29,7 +29,7 @@ class FinalReviewHeader extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor(context),
+                color: headingColor(context),
               ),
             ),
             SizedBox(width: 5),

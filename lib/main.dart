@@ -55,7 +55,6 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');
-
   print('🔑 Saved Token: $initialToken');
 
   final sharedPrefHelper = SharedPreferencesHelper();
@@ -63,6 +62,7 @@ void main() async {
 
   final repo = CarWashServiceRepo(dio);
   final profileRepository = ProfileRepository();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -70,10 +70,7 @@ void main() async {
           create: (_) => LanguageCubit(sharedPrefHelper),
         ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(
-          create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders(),
-        ),
-
+        BlocProvider(create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders()),
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
           create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
@@ -96,16 +93,12 @@ void main() async {
         BlocProvider<RewardLogsCubit>(
           create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),
         ),
-        BlocProvider(
-          create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
-        ),BlocProvider<RateServiceCubit>(
-          create: (_) => RateServiceCubit(), // تمرير الـ dio
-        ),
+        BlocProvider(create: (_) => ProfileCubit(ProfileRepository())..fetchProfile()),
+        BlocProvider<RateServiceCubit>(create: (_) => RateServiceCubit()),
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen:
-            initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
       ),
     ),
   );

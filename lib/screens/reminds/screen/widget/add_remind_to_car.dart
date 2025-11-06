@@ -96,7 +96,7 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                               color: backgroundColor(context),
                               border: Border.all(
                                 width: 1.5.w,
-                                color: borderColor(context),
+                                color: paragraphColor(context),
                               ),
                               borderRadius: BorderRadius.circular(15.sp),
                             ),
@@ -118,7 +118,7 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                                             widget.service.name,
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
-                                              color: textColor(context),
+                                              color: headingColor(context),
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,

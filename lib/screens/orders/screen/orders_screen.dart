@@ -65,208 +65,211 @@ class _OrderScreenState extends State<OrderScreen> {
                   ? Colors.white
                   : Colors.black,
         ),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() => _showActiveOrders = true);
-                      },
-                      child: Container(
-                        height: 50.h,
-                        decoration: ShapeDecoration(
-                          color:
-                              _showActiveOrders
-                                  ? const Color(0xFFBA1B1B)
-                                  : const Color(0xFFE0E0E0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.r),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() => _showActiveOrders = true);
+                        },
+                        child: Container(
+                          height: 50.h,
+                          decoration: ShapeDecoration(
+                            color:
+                                _showActiveOrders
+                                    ? const Color(0xFFBA1B1B)
+                                    : const Color(0xFFE0E0E0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? 'الطلبات النشطة'
-                                : 'Active Orders',
-                            style: TextStyle(
-                              color:
-                                  _showActiveOrders
-                                      ? Colors.white
-                                      : Colors.black,
-                              fontSize: 18.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w600,
+                          child: Center(
+                            child: Text(
+                              locale!.isDirectionRTL(context)
+                                  ? 'الطلبات النشطة'
+                                  : 'Active Orders',
+                              style: TextStyle(
+                                color:
+                                    _showActiveOrders
+                                        ? Colors.white
+                                        : Colors.black,
+                                fontSize: 18.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() => _showActiveOrders = false);
-                      },
-                      child: Container(
-                        height: 50.h,
-                        decoration: ShapeDecoration(
-                          color:
-                              !_showActiveOrders
-                                  ? const Color(0xFFBA1B1B)
-                                  : const Color(0xFFE0E0E0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() => _showActiveOrders = false);
+                        },
+                        child: Container(
+                          height: 50.h,
+                          decoration: ShapeDecoration(
+                            color:
+                                !_showActiveOrders
+                                    ? const Color(0xFFBA1B1B)
+                                    : const Color(0xFFE0E0E0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? 'الطلبات القديمة'
-                                : 'Old Orders',
-                            style: TextStyle(
-                              color:
-                                  !_showActiveOrders
-                                      ? Colors.white
-                                      : Colors.black,
-                              fontSize: 18.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w600,
+                          child: Center(
+                            child: Text(
+                              locale!.isDirectionRTL(context)
+                                  ? 'الطلبات القديمة'
+                                  : 'Old Orders',
+                              style: TextStyle(
+                                color:
+                                    !_showActiveOrders
+                                        ? Colors.white
+                                        : Colors.black,
+                                fontSize: 18.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            SizedBox(height: 16.h),
+              SizedBox(height: 16.h),
 
-            // ✅ المحتوى داخل RefreshIndicator
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _refresh, // ← هنا التحديث عند السحب
-                child:
-                    _showActiveOrders
-                        ? BlocBuilder<OrdersCubit, OrdersState>(
-                          builder: (context, state) {
-                            if (state is OrdersLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.red,
-                                ),
-                              );
-                            } else if (state is OrdersSuccess) {
-                              final allowedStatuses = [
-                                'pending',
-                                'admin_approved',
-                                'car_delivered',
-                                'inspection_done',
-                                'agree_inspection',
-                                'maintenance_done',
-                              ];
-
-                              final activeOrders =
-                                  state.orders
-                                      .where(
-                                        (o) =>
-                                            allowedStatuses.contains(o.status),
-                                      )
-                                      .toList();
-
-                              if (activeOrders.isEmpty) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/no_orders.png',
-                                        width: 250.w,
-                                        height: 192.h,
-                                      ),
-                                      Text(
-                                        locale.isDirectionRTL(context)
-                                            ? ' ما عندك طلبات نشطة الحين'
-                                            : 'You have no active orders right now.',
-                                        style: TextStyle(
-                                          color:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Graphik Arabic',
-                                        ),
-                                      ),
-                                    ],
+              // ✅ المحتوى داخل RefreshIndicator
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh, // ← هنا التحديث عند السحب
+                  child:
+                      _showActiveOrders
+                          ? BlocBuilder<OrdersCubit, OrdersState>(
+                            builder: (context, state) {
+                              if (state is OrdersLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.red,
                                   ),
                                 );
-                              }
+                              } else if (state is OrdersSuccess) {
+                                final allowedStatuses = [
+                                  'pending',
+                                  'admin_approved',
+                                  'car_delivered',
+                                  'inspection_done',
+                                  'agree_inspection',
+                                  'maintenance_done',
+                                ];
 
-                              return ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: activeOrders.length,
-                                itemBuilder: (context, index) {
-                                  final order = activeOrders[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ActiveOrder(order: order),
+                                final activeOrders =
+                                    state.orders
+                                        .where(
+                                          (o) =>
+                                              allowedStatuses.contains(o.status),
+                                        )
+                                        .toList();
+
+                                if (activeOrders.isEmpty) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/no_orders.png',
+                                          width: 250.w,
+                                          height: 192.h,
+                                        ),
+                                        Text(
+                                          locale.isDirectionRTL(context)
+                                              ? ' ما عندك طلبات نشطة الحين'
+                                              : 'You have no active orders right now.',
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: 'Graphik Arabic',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
-                                },
-                              );
-                            } else if (state is OrdersError) {
-                              return Center(
-                                child: Text('حدث خطأ: ${state.message}'),
-                              );
-                            } else {
-                              return const SizedBox();
-                            }
-                          },
-                        )
-                        : BlocBuilder<OldOrdersCubit, OldOrdersState>(
-                          builder: (context, state) {
-                            if (state is OldOrdersLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.red,
-                                ),
-                              );
-                            } else if (state is OldOrdersSuccess) {
-                              if (state.orders.isEmpty) {
-                                return const Center(
-                                  child: Text('لا توجد طلبات قديمة'),
+                                }
+
+                                return ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  itemCount: activeOrders.length,
+                                  itemBuilder: (context, index) {
+                                    final order = activeOrders[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ActiveOrder(order: order),
+                                    );
+                                  },
                                 );
+                              } else if (state is OrdersError) {
+                                return Center(
+                                  child: Text('حدث خطأ: ${state.message}'),
+                                );
+                              } else {
+                                return const SizedBox();
                               }
-                              return ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: state.orders.length,
-                                itemBuilder: (context, index) {
-                                  final order = state.orders[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: OldOrder(order: order),
+                            },
+                          )
+                          : BlocBuilder<OldOrdersCubit, OldOrdersState>(
+                            builder: (context, state) {
+                              if (state is OldOrdersLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.red,
+                                  ),
+                                );
+                              } else if (state is OldOrdersSuccess) {
+                                if (state.orders.isEmpty) {
+                                  return const Center(
+                                    child: Text('لا توجد طلبات قديمة'),
                                   );
-                                },
-                              );
-                            } else if (state is OldOrdersError) {
-                              return Center(
-                                child: Text('حدث خطأ: ${state.message}'),
-                              );
-                            } else {
-                              return const SizedBox();
-                            }
-                          },
-                        ),
+                                }
+                                return ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  itemCount: state.orders.length,
+                                  itemBuilder: (context, index) {
+                                    final order = state.orders[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: OldOrder(order: order),
+                                    );
+                                  },
+                                );
+                              } else if (state is OldOrdersError) {
+                                return Center(
+                                  child: Text('حدث خطأ: ${state.message}'),
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
