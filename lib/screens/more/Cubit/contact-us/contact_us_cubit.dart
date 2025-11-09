@@ -1,10 +1,11 @@
+import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/langCode.dart';
-import '../../Models/contact-us-model.dart';
+import '../../model/contact-us-model.dart';
 
 part 'contact_us_state.dart';
 
@@ -25,7 +26,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       final token = prefs.getString("token");
 
       final response = await _dio.post(
-        "https://devapi.a-vsc.com/api/app/elwarsha/contact-us/create",
+        "$mainApi/app/elwarsha/contact-us/create",
         options: Options(
           headers: {
             "Content-Type": "application/json",

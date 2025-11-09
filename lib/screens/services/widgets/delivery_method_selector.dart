@@ -60,13 +60,23 @@ class DeliveryMethodSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _methodButton(context, 0,   (locale!.isDirectionRTL(context)
-                ? " سطحة "
-                : " Flatbed truck "), width, height),
+            _methodButton(
+              context,
+              0,
+              (locale!.isDirectionRTL(context) ? " سطحة " : " Flatbed truck "),
+              width,
+              height,
+            ),
             SizedBox(width: 14.w),
-            _methodButton(context, 1, (locale!.isDirectionRTL(context)
-                ? " في المركز "
-                : "At the maintenance center "), width, height),
+            _methodButton(
+              context,
+              1,
+              (locale!.isDirectionRTL(context)
+                  ? " في المركز "
+                  : "In the center"),
+              width,
+              height,
+            ),
           ],
         ),
       ],
@@ -74,58 +84,71 @@ class DeliveryMethodSection extends StatelessWidget {
   }
 
   Widget _methodButton(
-      BuildContext context, int index, String text, double width, double height) {
+      BuildContext context,
+      int index,
+      String text,
+      double width,
+      double height,
+      ) {
     bool isSelected = selectedIndex == index;
+
     return GestureDetector(
       onTap: () => onChanged(index),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         width: width,
         height: height,
-        decoration: ShapeDecoration(
-          color: boxcolor(context),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1.2.w, color: borderColor(context)),
-            borderRadius: BorderRadius.circular(10.r),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+        margin: EdgeInsets.symmetric(vertical: 6.h),
+        decoration: BoxDecoration(
+          color: buttonBgWhiteColor(context),
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            width: 1.2.w,
+            color: buttonSecondaryBorderColor(context),
           ),
-          shadows: [
+          boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              blurRadius: 10.r,
-              offset: Offset(0, 4.h),
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 6.r,
+              offset: Offset(0, 3.h),
             ),
           ],
         ),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textColor(context),
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
+            // النص في المنتصف تقريباً
+            Expanded(
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: headingColor(context),
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-            Positioned(
-              right: 10.w,
-              top: height / 2 - 10.h,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 20.w,
-                height: 20.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF9B9B9B),
-                ),
-                child: isSelected
-                    ? Icon(Icons.check, color: Colors.white, size: 14.sp)
-                    : null,
+
+            // الدائرة في الطرف الأيمن
+            Container(
+              width: 20.w,
+              height: 20.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? const Color(0xFFBA1B1B)
+                    : const Color(0xFF9B9B9B),
               ),
+              child: isSelected
+                  ? Icon(Icons.check, color: Colors.white, size: 12.sp)
+                  : null,
             ),
           ],
         ),
       ),
     );
   }
+
 }

@@ -163,7 +163,6 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
-    bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
       padding: EdgeInsets.all(20),
@@ -183,7 +182,6 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                   ? "وش تبي نساعدك فيه؟"
                   : "What do you want us to help you with?",
 
-              textAlign: TextAlign.right,
               style: TextStyle(
                 color:Theme.of(context).brightness == Brightness.light
                     ? Colors.black
@@ -199,7 +197,6 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                   ? "كل وسائل التواصل تحت خدمتك، اختار اللي يناسبك ."
                   : "All means of communication are at your service, choose what suits you.",
 
-              textAlign: TextAlign.right,
               style: TextStyle(
                 color: Theme.of(context).brightness == Brightness.light
                     ?Colors.black.withValues(alpha: 0.70)

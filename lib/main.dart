@@ -1,7 +1,9 @@
+import 'package:abu_diyab_workshop/fcm_api.dart';
 import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:abu_diyab_workshop/screens/main/cubit/services_cubit.dart';
 import 'package:abu_diyab_workshop/screens/more/Cubit/bakat_cubit.dart';
+import 'package:abu_diyab_workshop/screens/more/cubit/reward_logs_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/CarModelCubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
@@ -10,6 +12,7 @@ import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen
 import 'package:abu_diyab_workshop/screens/orders/cubit/get_order_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/old_orders_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/payment_preview_cubit.dart';
+import 'package:abu_diyab_workshop/screens/orders/cubit/rate_service_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/cubit/repair_card_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/get_order_repo.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/payment_service.dart';
@@ -28,6 +31,7 @@ import 'package:abu_diyab_workshop/screens/services/repo/oil_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/tire_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/washing_repo.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +44,8 @@ import 'language/languageCubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp();
+await FcmApi().initNotifications();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -49,17 +55,17 @@ void main() async {
     ),
   );
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');
-
   print('🔑 Saved Token: $initialToken');
 
   final sharedPrefHelper = SharedPreferencesHelper();
   final dio = Dio();
 
   final repo = CarWashServiceRepo(dio);
+  final profileRepository = ProfileRepository();
 
   runApp(
     MultiBlocProvider(
@@ -68,10 +74,7 @@ void main() async {
           create: (_) => LanguageCubit(sharedPrefHelper),
         ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(
-          create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders(),
-        ),
-
+        BlocProvider(create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders()),
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
           create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
@@ -91,14 +94,15 @@ void main() async {
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
-        BlocProvider(
-          create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
+        BlocProvider<RewardLogsCubit>(
+          create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),
         ),
+        BlocProvider(create: (_) => ProfileCubit(ProfileRepository())..fetchProfile()),
+        BlocProvider<RateServiceCubit>(create: (_) => RateServiceCubit()),
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen:
-            initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
       ),
     ),
   );

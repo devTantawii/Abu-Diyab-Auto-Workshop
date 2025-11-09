@@ -5,31 +5,29 @@ import '../model/tire_model.dart';
 
 class TireCubit extends Cubit<TireState> {
   final TireRepository repository;
-  List<Tire> allTires = []; // لتخزين كل الكفرات عند التحميل
+  List<Tire> allTires = [];
 
   TireCubit(this.repository) : super(TireInitial());
 
-  Future<void> fetchTires({String? size}) async {
+  Future<void> fetchTires() async {
     try {
       emit(TireLoading());
-      final tires = await repository.getTires(size: size);
-      allTires = tires; // مهم جدًا
+      final tires = await repository.getTires();
+      allTires = tires;
       emit(TireLoaded(tires));
     } catch (e) {
       emit(TireError(e.toString()));
     }
   }
 
-
-
-  // فلترة حسب المقاس
-  void filterTiresBySize(String? size) {
-    if (size == null) {
-      emit(TireLoaded(allTires)); // لو مفيش فلتر، عرض كل الكفرات
-    } else {
-      final filtered = allTires.where((t) => t.size == size).toList();
-      emit(TireLoaded(filtered));
+  Future<void> searchAndFilter({String? search, String? size}) async {
+    try {
+      emit(TireLoading());
+      final tires = await repository.getTires(size: size, search: search);
+      allTires = tires;
+      emit(TireLoaded(tires));
+    } catch (e) {
+      emit(TireError(e.toString()));
     }
   }
-
 }

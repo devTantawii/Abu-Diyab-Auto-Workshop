@@ -1,12 +1,21 @@
+import 'dart:io';
+
 import 'package:abu_diyab_workshop/screens/main/screen/main_screen.dart';
 import 'package:abu_diyab_workshop/screens/my_car/screen/my_cars_screen.dart';
 import 'package:abu_diyab_workshop/screens/offers/screen/offers_screen.dart';
 import 'package:abu_diyab_workshop/screens/orders/screen/orders_screen.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:animations/animations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:version/version.dart';
 
+import '../../../core/constant/api.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../more/screen/more_screen.dart';
 import '../../auth/screen/sign_up.dart';
 import '../../../core/language/locale.dart';
@@ -20,6 +29,189 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkAuthStatus();
+    });
+    checkVersion();
+  }
+  Future<void> checkVersion() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+
+      var response = await Dio().get(checkVersionUpdate);
+      var data = response.data;
+
+      String serverAndroidVersion = data['android'];
+      String serverIOSVersion = data['ios'];
+
+      Version current = Version.parse(currentVersion);
+
+      if (Platform.isAndroid) {
+        if (await _isHuaweiDevice()) {
+          Version serverHuawei = Version.parse(serverAndroidVersion);
+          if (current < serverHuawei) {
+            _showUpdateDialog('huawei');
+            print('huawei version Available');
+          }
+        } else {
+          Version serverAndroid = Version.parse(serverAndroidVersion);
+          if (current < serverAndroid) {
+            _showUpdateDialog('android');
+            print('android version Available');
+          }
+        }
+      } else if (Platform.isIOS) {
+        Version serverIOS = Version.parse(serverIOSVersion);
+        if (current < serverIOS) {
+          _showUpdateDialog('ios');
+          print('ios version Available');
+        }
+      }
+    } catch (e) {
+      print("Error fetching version: $e");
+    }
+  }
+
+  Future<bool> _isHuaweiDevice() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.manufacturer.toLowerCase() == 'huawei';
+    } catch (e) {
+      print("Error detecting Huawei device: $e");
+      return false;
+    }
+  }
+
+  void _showUpdateDialog(String platform) {
+    String url = '';
+    if (platform == 'android') {
+      url =
+          'https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab';
+      print("android version Available");
+    } else if (platform == 'ios') {
+      print("IOS version Available");
+      url =
+          'https://apps.apple.com/us/app/%D8%A3%D8%A8%D9%88%D8%B0%D9%8A%D8%A7%D8%A8-%D9%84%D8%AA%D8%A3%D8%AC%D9%8A%D8%B1-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA/id1570665182';
+    } else if (platform == 'huawei') {
+      url = 'https://appgallery.huawei.com/#/app/C104414053';
+      print("huawei version Available");
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        final locale = AppLocalizations.of(context);
+
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          titlePadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                 decoration: BoxDecoration(
+                   shape: BoxShape.circle,
+                   gradient: LinearGradient(
+                     colors: [Color(0xFFBA1B1B), Color(0xFF5C0000)],
+                     begin: Alignment.topLeft,
+                     end: Alignment.bottomRight,
+                   ),
+                 ),
+                padding: EdgeInsets.all(16.0),
+                child: Image.asset(
+                  'assets/icons/update_icon.png',
+                  height: 70.h,
+                //  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                locale!.isDirectionRTL(context)
+                    ? "✨ تحديث جديد متاح!"
+                    : "✨ New Update Available!",
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFBA1B1B),
+                  fontFamily: "Cairo",
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                locale.isDirectionRTL(context)
+                    ? "لقد تم إصدار نسخة جديدة من التطبيق تتضمن تحسينات وإصلاحات مهمة. قم بالتحديث الآن!"
+                    : "A new version of the app is available with important improvements. Update now!",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.black87,
+                  fontFamily: "Cairo",
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20.0),
+              GestureDetector(
+                onTap: () {
+                  _launchURL(url);
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFBA1B1B), Color(0xFF5C0000)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.indigo.withOpacity(0.3),
+                        offset: Offset(0, 3),
+                        blurRadius: 6,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      locale.isDirectionRTL(context)
+                          ? "تحديث الآن"
+                          : "Update Now",
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: "Cairo",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   final List<Widget> _screens = [
     MainScreen(),
@@ -29,13 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MoreScreen(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkAuthStatus();
-    });
-  }
+
 
   Future<void> _checkAuthStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -107,7 +293,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Directionality(
           textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
           child: SingleChildScrollView(
-            child: BottomNavigationBar(iconSize: 25.sp,
+            child: BottomNavigationBar(
+              iconSize: 25.sp,
               backgroundColor:
                   Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -115,8 +302,8 @@ class _HomeScreenState extends State<HomeScreen> {
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: true,
               currentIndex: _currentIndex,
-              selectedItemColor: Color(0xFFBA1B1B),
-              unselectedItemColor: Color(0xFF474747),
+              selectedItemColor: buttonPrimaryBgColor(context),
+              unselectedItemColor: navbarTextColor(context),
               selectedLabelStyle: TextStyle(
                 fontSize: 16.sp,
                 height: 2,
@@ -154,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: isRTL ? 'طلباتي' : 'Orders',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.more_horiz_rounded),
+                  icon: ImageIcon(AssetImage('assets/icons/tab5.png')),
                   label: isRTL ? 'المزيد' : 'More',
                 ),
               ],

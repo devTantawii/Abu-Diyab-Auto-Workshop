@@ -4,29 +4,38 @@ import '../../../core/langCode.dart';
 import '../model/battery_model.dart';
 
 class BatteryRepository {
-  final Dio _dio = Dio(
-    BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      headers: {
-        "Accept": "application/json",
-        "Accept-Language": langCode == '' ? "en" : langCode,
-      },
-    ),
-  );
+  final Dio _dio;
+
+  BatteryRepository() : _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
+  ));
+
+  // دالة لتحديث الـ headers قبل كل طلب
+  void _updateHeaders() {
+    final lang = langCode.isEmpty ? 'en' : langCode; // من ملفك langCode.dart
+    _dio.options.headers = {
+      "Accept": "application/json",
+      "Accept-Language": lang,
+    };
+  }
 
   Future<BatteryResponse> getBatteries({
     int page = 1,
     int perPage = 10,
     String? amper,
+    String? search,
   }) async {
-    try {
-      final queryParams = {
-        "page": page,
-        "per_page": perPage,
-        if (amper != null && amper.isNotEmpty) "amper": amper,
-      };
+    _updateHeaders(); // ← حدّث اللغة قبل كل طلب
 
+    final queryParams = {
+      "page": page,
+      "per_page": perPage,
+      if (amper != null && amper.isNotEmpty) "amper": amper,
+      if (search != null && search.isNotEmpty) "search": search,
+    };
+
+    try {
       final response = await _dio.get(
         "$mainApi/app/elwarsha/services/batteries",
         queryParameters: queryParams,
@@ -34,7 +43,6 @@ class BatteryRepository {
 
       if (response.statusCode == 200) {
         final body = response.data;
-
         if (body is Map && body['data'] is List) {
           return BatteryResponse.fromJson(Map<String, dynamic>.from(body));
         } else {

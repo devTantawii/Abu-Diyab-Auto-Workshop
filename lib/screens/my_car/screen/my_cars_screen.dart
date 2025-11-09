@@ -20,7 +20,9 @@ import '../model/all_cars_model.dart';
 import 'widget/add_car.dart';
 
 class MyCarsScreen extends StatefulWidget {
-  const MyCarsScreen({super.key});
+  final bool showBack ;
+
+  const MyCarsScreen({super.key, this.showBack = false});
 
   @override
   State<MyCarsScreen> createState() => _MyCarsScreenState();
@@ -58,7 +60,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         appBar:  CustomGradientAppBar(
           title_ar:  "سياراتي",
           title_en: "My Cars",
-          showBackIcon: false,
+          showBackIcon: widget.showBack,
+          onBack: () {
+            Navigator.pop(context);
+          },
 
         ),
         body: Container(height: double.infinity,

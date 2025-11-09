@@ -54,6 +54,12 @@ dependencies:
   google_maps_flutter: ^2.13.1
   webview_flutter: ^4.13.0
   flash: ^3.1.1
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^17.1.2
+  device_info_plus: ^12.2.0
+  version: ^3.0.2
+  package_info_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +71,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

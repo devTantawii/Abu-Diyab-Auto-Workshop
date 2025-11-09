@@ -18,7 +18,8 @@
   import '../../../../widgets/app_bar_widget.dart';
   import '../../../main/screen/main_screen.dart';
   import '../../../services/widgets/car_model_widget.dart';
-  import '../../cubit/CarModelCubit.dart';
+  import '../../../services/widgets/custom_app_bar.dart';
+import '../../cubit/CarModelCubit.dart';
   import '../../cubit/CarModelState.dart';
   import '../../cubit/add_car_cubit.dart';
   import '../../cubit/add_car_state.dart';
@@ -206,69 +207,19 @@
 
       return Scaffold(
         backgroundColor: isLight ? Color(0xFFEAEAEA) : Colors.black,
-        appBar: AppBar(
-          toolbarHeight: 100.h,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Directionality(
-            textDirection:
-                locale!.isDirectionRTL(context)
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
-            child: Container(
-              height: 130.h,
-              padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-              decoration: buildAppBarDecoration(context),
-
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Text(
-                      locale.isDirectionRTL(context)
-                          ? 'أضف سيارتك'
-                          : 'Add Your Car',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 36),
-                ],
-              ),
-            ),
-          ),
+        appBar: CustomGradientAppBar(
+          title_ar: "ضيف سيارتك",
+          title_en: "Add Your Car",
+          onBack: () {
+            Navigator.pop(context);
+          },
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
             child: Column(
               textDirection:
-                  locale.isDirectionRTL(context)
+                  locale!.isDirectionRTL(context)
                       ? TextDirection.rtl
                       : TextDirection.ltr,
               children: [
@@ -283,7 +234,7 @@
                         : 'Car plate number',
                     style: TextStyle(
                       color: textColor,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
                     ),

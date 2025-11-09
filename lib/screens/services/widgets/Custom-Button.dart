@@ -39,7 +39,7 @@ class CustomBottomButton extends StatelessWidget {
           ),
           border: Border(
             top: BorderSide(
-              color: borderColor(context),
+              color: paragraphColor(context),
               width: 1.5.w,
             ),
           ),

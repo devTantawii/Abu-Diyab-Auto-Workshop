@@ -188,7 +188,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
-                    color: textColor(context),
+                    color: headingColor(context),
                   ),
                 ),
                 SizedBox(width: 24.w),
@@ -245,7 +245,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                           ? 'اسم السيارة '
                           : 'Car name ',
                       style: TextStyle(
-                        color: textColor(context),
+                        color: headingColor(context),
                         fontSize: 14.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -257,7 +257,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                           ? '( اختياري )'
                           : '( Optional )',
                       style: TextStyle(
-                        color: borderColor(context),
+                        color: paragraphColor(context),
                         fontSize: 12.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -273,12 +273,12 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
               decoration: BoxDecoration(
                 color: backgroundColor(context),
                 borderRadius: BorderRadius.circular(12.sp),
-                border: Border.all(color: borderColor(context), width: 1.w),
+                border: Border.all(color: paragraphColor(context), width: 1.w),
               ),
               child: TextField(
                 controller: carNameController,
                 style: TextStyle(
-                  color: textColor(context),
+                  color: headingColor(context),
                   fontSize: 12.sp,
                 ),
                 textAlignVertical: TextAlignVertical.center,
@@ -287,7 +287,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                       ? "سيارة الدوام، سيارة العائلة..."
                       : "Work car, family car...",
                   hintStyle: TextStyle(
-                    color: borderColor(context),
+                    color: paragraphColor(context),
                     fontSize: 12.sp,
                   ),
                   border: InputBorder.none,
@@ -309,7 +309,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     ? "سنة الصنع"
                     : "Year of manufacture",
                 style: TextStyle(
-                  color: textColor(context),
+                  color: headingColor(context),
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -330,7 +330,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     return Container(
                       color:
                       isSelected
-                          ?borderColor(context)
+                          ?paragraphColor(context)
                           : Colors.transparent,
                       child: Center(
                         child: Text(
@@ -338,7 +338,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
-                            color: isSelected ? textColor(context) : borderColor(context),
+                            color: isSelected ? headingColor(context) : paragraphColor(context),
                           ),
                         ),
                       ),
@@ -359,7 +359,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                 style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: textColor(context)
+                    color: headingColor(context)
                 ),
               ),
             ),
@@ -371,7 +371,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                 color:backgroundColor(context),
                 borderRadius: BorderRadius.circular(12.sp),
                 border: Border.all(
-                  color: borderColor(context),
+                  color: paragraphColor(context),
                   width: 1.w,
                 ),
               ),
@@ -393,7 +393,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                         decoration: InputDecoration(
                           hintText: '0000000',
                           hintStyle: TextStyle(
-                            color: textColor(context),
+                            color: headingColor(context),
                             fontSize: 13.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
@@ -418,7 +418,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     locale.isDirectionRTL(context) ? 'كم' : 'KM',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color:textColor(context),
+                      color:headingColor(context),
                       fontSize: 15.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w500,
@@ -444,7 +444,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                           ? 'إستمارة السيارة '
                           : 'Car Registration ',
                       style: TextStyle(
-                        color: textColor(context),
+                        color: headingColor(context),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -455,7 +455,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                           ? '( اختياري )'
                           : '( Optional )',
                       style: TextStyle(
-                        color: borderColor(context),
+                        color: paragraphColor(context),
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -477,7 +477,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
               listener: (context, state) {
                 if (state is AddCarSuccess) {
                   ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text("✅ ${state.message}",style: TextStyle(color: textColor(context),),)));
+                      .showSnackBar(SnackBar(content: Text("✅ ${state.message}",style: TextStyle(color: headingColor(context),),)));
                   Navigator.pop(context, true);
 
                 } else if (state is AddCarError) {

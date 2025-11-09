@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import '../../Models/Settingmodel.dart';
+import '../../../../core/constant/api.dart';
+import '../../model/Settingmodel.dart';
 part 'settings_state.dart';
 
 
@@ -16,7 +17,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
 
     try {
       final response = await _dio.get(
-        "https://devapi.a-vsc.com/api/app/elwarsha/settings/get",
+        "$mainApi/app/elwarsha/settings/get",
         options: Options(
           headers: {
             "Accept": "application/json",

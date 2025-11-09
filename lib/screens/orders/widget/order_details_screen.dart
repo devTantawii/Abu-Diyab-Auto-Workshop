@@ -16,7 +16,40 @@ class OrderDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
-
+    String translateStatus(String status) {
+      switch (status.toLowerCase()) {
+        case 'pending':
+          return locale!.isDirectionRTL(context) ? 'قيد الانتظار' : 'Pending';
+        case 'admin_approved':
+          return locale!.isDirectionRTL(context)
+              ? 'تمت الموافقة من الإدارة'
+              : 'Admin Approved';
+        case 'car_delivered':
+          return locale!.isDirectionRTL(context)
+              ? 'تم استلام السيارة'
+              : 'Car Delivered';
+        case 'inspection_done':
+          return locale!.isDirectionRTL(context)
+              ? 'تم الفحص'
+              : 'Inspection Done';
+        case 'agree_inspection':
+          return locale!.isDirectionRTL(context)
+              ? 'تمت الموافقة على الفحص'
+              : 'Inspection Agreed';
+        case 'maintenance_done':
+          return locale!.isDirectionRTL(context)
+              ? 'تمت الصيانة'
+              : 'Maintenance Done';
+        case 'completed':
+          return locale!.isDirectionRTL(context) ? 'اكتمل' : 'Completed';
+        case 'rejected':
+          return locale!.isDirectionRTL(context) ? 'مرفوض' : 'Rejected';
+        case 'cancelled':
+          return locale!.isDirectionRTL(context) ? 'تم الإلغاء' : 'Cancelled';
+        default:
+          return status;
+      }
+    }
     return BlocProvider(
       create: (_) => OrderDetailsCubit()..getOrderDetails(orderId),
       child: BlocBuilder<OrderDetailsCubit, OrderDetailsState>(
@@ -60,7 +93,6 @@ class OrderDetailsScreen extends StatelessWidget {
                 onBack: () => Navigator.pop(context),
               ),
 
-              // ✅ إضافة السحب للتحديث
               body: RefreshIndicator(
                 onRefresh: () async {
                   context.read<OrderDetailsCubit>().getOrderDetails(orderId);
@@ -115,7 +147,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                                     Brightness.light
                                                     ? Colors.black
                                                     : Colors.white,
-                                                fontSize: 15.h,
+                                                fontSize: 15.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -124,7 +156,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                               text: order.items.first.item.name,
                                               style: TextStyle(
                                                 color: const Color(0xFFBA1B1B),
-                                                fontSize: 22.h,
+                                                fontSize: 22.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -152,16 +184,16 @@ class OrderDetailsScreen extends StatelessWidget {
                                                 Brightness.light
                                                 ? Colors.black
                                                 : Colors.white,
-                                            fontSize: 16.h,
+                                            fontSize: 16.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                         Text(
                                           order.code,
-                                          style: const TextStyle(
+                                          style:  TextStyle(
                                             color: Color(0xFFBA1B1B),
-                                            fontSize: 16,
+                                            fontSize: 16.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -192,7 +224,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         'assets/icons/car_logo.png',
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                     SizedBox(width: 10.w),
                                     Column(
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
@@ -224,7 +256,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                 ),
                                 const Divider(thickness: 0.7),
 
-                                /// ✅ الحالات كلها بالترتيب
+                                ///  الحالات كلها بالترتيب
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: allStatuses.map((status) {
@@ -247,9 +279,12 @@ class OrderDetailsScreen extends StatelessWidget {
                                             translateStatus(status),
                                             style: TextStyle(
                                               color: isDone
+                                                  ? Theme.of(context).brightness ==
+                                                  Brightness.light
                                                   ? Colors.black
+                                                  : Colors.white
                                                   : Colors.grey,
-                                              fontSize: 16.h,
+                                              fontSize: 16.sp,
                                               fontWeight: isDone
                                                   ? FontWeight.w700
                                                   : FontWeight.w500,
@@ -309,12 +344,12 @@ class OrderDetailsScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(width: 8),
+         SizedBox(width: 8.w),
         Text(
           value,
-          style: const TextStyle(
+          style:  TextStyle(
             color: Color(0xFFBA1B1B),
-            fontSize: 16,
+            fontSize: 16.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w600,
           ),
@@ -323,28 +358,4 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  String translateStatus(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'قيد الانتظار';
-      case 'admin_approved':
-        return 'تمت الموافقة من الإدارة';
-      case 'car_delivered':
-        return 'تم استلام السيارة';
-      case 'inspection_done':
-        return 'تم الفحص';
-      case 'agree_inspection':
-        return 'تمت الموافقة على الفحص';
-      case 'maintenance_done':
-        return 'تمت الصيانة';
-      case 'completed':
-        return 'اكتمل';
-      case 'rejected':
-        return 'مرفوض';
-      case 'cancelled':
-        return 'تم الإلغاء';
-      default:
-        return status;
-    }
-  }
 }

@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/app_setup.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
@@ -67,16 +68,14 @@ class _MoreScreenState extends State<MoreScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor:
-     //   Theme.of(context).brightness == Brightness.light
-          //  ?
-        Color(0xFFD27A7A)
-          //  :  Color(0xFF6F5252)
-        ,
-        appBar:  CustomGradientAppBar(
-          title_ar:  "المزيد",
+        //   Theme.of(context).brightness == Brightness.light
+        //  ?
+        Color(0xFFD27A7A),
+        //  :  Color(0xFF6F5252)
+        appBar: CustomGradientAppBar(
+          title_ar: "المزيد",
           title_en: " More",
           showBackIcon: false,
-
         ),
         body: Container(
           height: double.infinity,
@@ -86,8 +85,9 @@ class _MoreScreenState extends State<MoreScreen> {
               topRight: Radius.circular(15.sp),
             ),
             color:
-            Theme.of(context).brightness == Brightness.light
-                ? Colors.white: Colors.black,
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
           ),
           child: Padding(
             padding: EdgeInsets.all(20.sp),
@@ -96,16 +96,16 @@ class _MoreScreenState extends State<MoreScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    textDirection: locale!.isDirectionRTL(context)
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
+                    textDirection:
+                        locale!.isDirectionRTL(context)
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
                     children: [
                       Text(
                         locale.isDirectionRTL(context) ? 'عام' : 'General',
                         style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
+                          color:
+                          headingColor(context),
                           fontSize: 25.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
@@ -113,12 +113,11 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
                     ],
                   ),
-                  if (_isLoggedIn)
-                    SizedBox(height: 10.h),
+                  if (_isLoggedIn) SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
                       textAr: 'تعديل بيانات الحساب',
-                      textEn:"Edit account information",
+                      textEn: "Edit account information",
                       iconPath: 'assets/icons/edit.png',
                       onTap: () {
                         Navigator.push(
@@ -129,24 +128,22 @@ class _MoreScreenState extends State<MoreScreen> {
                         );
                       },
                     ),
-                  if (_isLoggedIn)
-                    SizedBox(height: 10.h),
+                  if (_isLoggedIn) SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
                       textAr: 'باقاتي',
                       textEn: "My Packages",
                       iconPath: 'assets/icons/gift_card1.png',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BakatScreen(),
-                          ),
-                        );
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => BakatScreen(),
+                        //       ),
+                        //     );
                       },
                     ),
-                  if (_isLoggedIn)
-                    SizedBox(height: 10.h),
+                  if (_isLoggedIn) SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
                       textAr: 'ادع أصدقائك',
@@ -162,20 +159,18 @@ class _MoreScreenState extends State<MoreScreen> {
                       },
                     ),
                   SizedBox(height: 10.h),
-                    widget_ITN(
-                      textAr: 'الخصوصيه',
-                      textEn: "Privacy",
-                      iconPath: 'assets/icons/user.png',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Privacy(),
-                          ),
-                        );
-                      },
-                    ),
-                 SizedBox(height: 10.h),
+                  widget_ITN(
+                    textAr: 'الخصوصيه',
+                    textEn: "Privacy",
+                    iconPath: 'assets/icons/user.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Privacy()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10.h),
 
                   widget_ITN(
                     textAr: 'تواصل معنا ',
@@ -193,28 +188,35 @@ class _MoreScreenState extends State<MoreScreen> {
                   SizedBox(height: 10.h),
                   Container(
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1.50.sp, color: Color(0xff9B9B9B)),
-                        borderRadius: BorderRadius.circular(12.sp),
-                      ),
+                    height: 50.h,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.sp),
+                      border: Border.all(width: 1.50.sp, color: strokeGrayColor(context)),
                     ),
                     child: Row(
-                      textDirection: locale!.isDirectionRTL(context)
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
+                      textDirection:
+                          locale!.isDirectionRTL(context)
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
                       children: [
-                        Icon(Icons.language, color: Color(0xFFBA1B1B), size: 18.sp),
+                        Icon(
+                          Icons.language,
+                          color: Color(0xFFBA1B1B),
+                          size: 18.sp,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Text(
-                            locale.isDirectionRTL(context) ? 'لغة التطبيق' : 'App Language',
+                            locale.isDirectionRTL(context)
+                                ? 'لغة التطبيق'
+                                : 'App Language',
                             style: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                               fontSize: 15.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
@@ -226,7 +228,9 @@ class _MoreScreenState extends State<MoreScreen> {
                           isArabic: isArabic,
                           onToggle: () {
                             myAppKey.currentState?.changeLanguage(
-                              isArabic ? const Locale('en') : const Locale('ar'),
+                              isArabic
+                                  ? const Locale('en')
+                                  : const Locale('ar'),
                             );
                           },
                         ),
@@ -243,24 +247,32 @@ class _MoreScreenState extends State<MoreScreen> {
                         width: 1.50.sp,
                         color: const Color(0xff9B9B9B),
                       ),
-
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: Row(
-                          textDirection: locale.isDirectionRTL(context)
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
+                          textDirection:
+                              locale.isDirectionRTL(context)
+                                  ? TextDirection.rtl
+                                  : TextDirection.ltr,
                           children: [
-                            Icon(Icons.color_lens, color: const Color(0xFFBA1B1B), size: 18.sp),
+                            Icon(
+                              Icons.color_lens,
+                              color: const Color(0xFFBA1B1B),
+                              size: 18.sp,
+                            ),
                             SizedBox(width: 5.w),
                             Text(
-                              locale.isDirectionRTL(context) ? "الوضع الليلي " : "Dark Theme",
+                              locale.isDirectionRTL(context)
+                                  ? "الوضع الليلي "
+                                  : "Dark Theme",
                               style: TextStyle(
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                 fontSize: 15.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,
@@ -354,7 +366,7 @@ class _MoreScreenState extends State<MoreScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child:  Center(
+                              child: Center(
                                 child: Text(
                                   locale!.isDirectionRTL(context)
                                       ? "تسجيل الدخول"

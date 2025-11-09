@@ -82,6 +82,7 @@ class RepairCardsCubit extends Cubit<RepairCardsState> {
 
       if (response.statusCode == 200) {
         print("✅ Updated successfully");
+
       } else {
         print("❌ Failed to update: ${response.data}");
       }

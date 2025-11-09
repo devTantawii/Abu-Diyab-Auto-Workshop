@@ -25,16 +25,16 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] ?? 0,
+      id: int.tryParse(json['id'].toString()) ?? 0,
       name: "${json['first_name'] ?? ''} ${json['last_name'] ?? ''}".trim(),
-      phone: json['phone'] ?? '',
+      phone: json['phone']?.toString() ?? '',
       image: json['image'],
-      lat: json['lat'] != null ? (json['lat'] as num).toDouble() : null,
-      long: json['long'] != null ? (json['long'] as num).toDouble() : null,
-      wallet: json['wallet'],
-      confirmedAt: json['confirmed_at'] ?? '',
-      fcm: json['fcm'],
-      referralCode: json['referral_code'],
+      lat: json['lat'] != null ? double.tryParse(json['lat'].toString()) : null,
+      long: json['long'] != null ? double.tryParse(json['long'].toString()) : null,
+      wallet: json['wallet'] != null ? num.tryParse(json['wallet'].toString()) : null,
+      confirmedAt: json['confirmed_at']?.toString() ?? '',
+      fcm: json['fcm']?.toString(),
+      referralCode: json['referral_code']?.toString(),
     );
   }
 

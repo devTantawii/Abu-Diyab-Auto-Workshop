@@ -2,8 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../core/constant/api.dart';
 import '../../../../core/langCode.dart';
-import '../../Models/faqmodel.dart';
+import '../../model/faqmodel.dart';
 
 part 'faq_state.dart';
 
@@ -12,7 +13,7 @@ class FaqCubit extends Cubit<FaqState> {
 
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://devapi.a-vsc.com/api/app/elwarsha/",
+      baseUrl: "$mainApi/app/elwarsha/",
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode

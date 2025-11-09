@@ -11,6 +11,7 @@ class BatteryCubit extends Cubit<BatteryState> {
     int page = 1,
     int perPage = 100,
     String? amper,
+    String? search,          // ← أضف الباراميتر
   }) async {
     try {
       emit(BatteryLoading());
@@ -19,9 +20,10 @@ class BatteryCubit extends Cubit<BatteryState> {
         page: page,
         perPage: perPage,
         amper: amper,
+        search: search,      // ← مرره هنا
       );
 
-      // ✅ طباعة الداتا
+      // طباعة النتائج (اختياري)
       print("===== Fetched Batteries =====");
       for (var battery in response.data) {
         print(

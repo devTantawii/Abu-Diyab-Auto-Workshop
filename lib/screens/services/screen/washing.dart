@@ -143,7 +143,7 @@ class _WashingState extends State<Washing> {
                       widget.description,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: borderColor(context),
+                        color: paragraphColor(context),
                         fontSize: 13.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -184,7 +184,7 @@ class _WashingState extends State<Washing> {
                         ? "الخدمات المتوفرة"
                         : 'Available Services',
                     style: TextStyle(
-                      color:textColor(context),
+                      color:headingColor(context),
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -456,11 +456,11 @@ class _WashingState extends State<Washing> {
           margin: EdgeInsets.symmetric(vertical: 10.h),
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color:boxcolor(context),
+            color:buttonBgWhiteColor(context),
             borderRadius: BorderRadius.circular(15.r),
             border: Border.all(
               width: 1.5.w,
-              color:borderColor(context),
+              color:buttonSecondaryBorderColor(context),
             ),
           ),
           child: Row(
@@ -483,7 +483,7 @@ class _WashingState extends State<Washing> {
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: textColor(context),
+                              color: headingColor(context),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),

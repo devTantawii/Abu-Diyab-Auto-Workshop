@@ -1,4 +1,3 @@
-// lib/models/login_response_model.dart
 class UserModel {
   final String name;
 

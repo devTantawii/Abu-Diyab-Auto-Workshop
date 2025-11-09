@@ -30,7 +30,7 @@ class _AddressSectionState extends State<AddressSection> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor(context),
+                color: headingColor(context),
               ),
             ),
             const Spacer(),
@@ -61,8 +61,8 @@ class _AddressSectionState extends State<AddressSection> {
       padding: EdgeInsets.all(8.sp),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.sp),
-        border: Border.all(color: borderColor(context), width: 1.5.w),
-        color: boxcolor(context),
+        border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
+        color: buttonBgWhiteColor(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class _AddressSectionState extends State<AddressSection> {
             alignment: Alignment.centerRight,
             child: Text(
               _address ?? "",
-              style: TextStyle(fontSize: 14.sp, color: textColor(context)),
+              style: TextStyle(fontSize: 14.sp, color: headingColor(context)),
             ),
           ),
           SizedBox(height: 6.h),

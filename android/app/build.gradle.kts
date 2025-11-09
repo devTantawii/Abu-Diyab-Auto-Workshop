@@ -3,16 +3,18 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.abu_diyab_workshop"
+    namespace = "com.abudiyab.workshop"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true // ✅ في Kotlin DSL لازم تبدأ بـ is
     }
 
     kotlinOptions {
@@ -20,16 +22,15 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.abu_diyab_workshop"
-        minSdk = 21 // أو flutter.minSdkVersion لو بتستخدمه من flutter.gradle
-        targetSdk = 34 // أو flutter.targetSdkVersion
+        applicationId = "com.abudiyab.workshop"
+        minSdk = flutter.minSdkVersion
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // لو عندك signingConfig جاهز ضيفه هنا، لو لأ خليها debug مؤقتًا
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -37,4 +38,16 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // ✅ في Kotlin DSL تكتب كده
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+
+    // Firebase services
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging")
 }

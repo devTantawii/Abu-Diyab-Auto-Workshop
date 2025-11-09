@@ -40,7 +40,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
   List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
-  bool? selected;
+  bool selected = false;
   int? _selectedUserCarId;
 
   @override
@@ -117,7 +117,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                       widget.description,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: borderColor(context),
+                        color: paragraphColor(context),
                         fontSize: 13.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -159,11 +159,17 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  'هل السيارة تعمل!',
+                  locale.isDirectionRTL(context)
+                      ? " هل السيارة تعمل!"
+                      : "Does the car work?",
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color:
+                    Theme.of(context).brightness ==
+                        Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
                     height: 1.57,
@@ -184,7 +190,10 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                           height: 55.h,
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:      Theme.of(context).brightness ==
+                                Brightness.light
+                                ? Colors.white
+                                : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -206,18 +215,33 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                                   width: 22.w,
                                   height: 22.h,
                                   decoration: BoxDecoration(
-                                    color: selected == true ? Color(0xFFBA1B1B) : Color(0xFFD9D9D9),
+                                    color:
+                                    selected == true
+                                        ? Color(0xFFBA1B1B)
+                                        : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(Icons.check, size: 16, color: Colors.white),
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 16.sp,
+                                    color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
                                 ),
                               ),
                               Text(
-                                "نعم",
+                                locale.isDirectionRTL(context) ? " نعم" : "Yes",
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                             ],
@@ -226,7 +250,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                       ),
                     ),
 
-// زر لا
+                    // زر لا
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -238,7 +262,11 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                           height: 55.h,
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:
+                            Theme.of(context).brightness ==
+                                Brightness.light
+                                ? Colors.white
+                                : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -260,18 +288,33 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                                   width: 22.w,
                                   height: 22.h,
                                   decoration: BoxDecoration(
-                                    color: selected == false ? Color(0xFFBA1B1B) : Color(0xFFD9D9D9),
+                                    color:
+                                    selected == false
+                                        ? Color(0xFFBA1B1B)
+                                        : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(Icons.check, size: 16, color: Colors.white),
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 16.sp,
+                                    color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
                                 ),
                               ),
                               Text(
-                                "لا",
+                                locale.isDirectionRTL(context) ? " لا" : "No",
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                             ],
@@ -279,7 +322,6 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
                 SizedBox(height: 15.h),

@@ -12,6 +12,7 @@ import '../../../../core/langCode.dart';
 import '../../../../core/language/locale.dart';
 import '../../../../widgets/app_bar_widget.dart';
 import '../../../main/screen/main_screen.dart';
+import '../../../services/widgets/custom_app_bar.dart';
 import '../../cubit/CarModelCubit.dart';
 import '../../cubit/CarModelState.dart';
 import '../../cubit/all_cars_state.dart';
@@ -62,7 +63,10 @@ class _EditCarState extends State<EditCar> {
       final response = await Dio().get(
         '$mainApi/app/elwarsha/user-cars/show/${widget.carId}',
         options: Options(
-          headers: {'Authorization': 'Bearer $token',   "Accept-Language": langCode == '' ? "en" : langCode},
+          headers: {
+            'Authorization': 'Bearer $token',
+            "Accept-Language": langCode == '' ? "en" : langCode,
+          },
         ),
       );
 
@@ -213,66 +217,18 @@ class _EditCarState extends State<EditCar> {
             Theme.of(context).brightness == Brightness.light
                 ? Color(0xFFEAEAEA)
                 : Colors.black87,
-        appBar: AppBar(
-          toolbarHeight: 100.h,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Directionality(
-            textDirection:
-                locale!.isDirectionRTL(context)
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
-            child: Container(
-              height: 130.h,
-              padding: EdgeInsets.only(top: 20.h, right: 16.w, left: 16.w),
-              decoration: buildAppBarDecoration(context),
-
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Text(
-                      locale.isDirectionRTL(context)
-                          ? 'عدل سيارتك'
-                          : 'Edit Your Car',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 36),
-                ],
-              ),
-            ),
-          ),
+        appBar: CustomGradientAppBar(
+          title_ar: "عدل سيارتك",
+          title_en: "Edit Your Car",
+          onBack: () {
+            Navigator.pop(context);
+          },
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             textDirection:
-                locale.isDirectionRTL(context)
+                locale!.isDirectionRTL(context)
                     ? TextDirection.rtl
                     : TextDirection.ltr,
             children: [
@@ -288,7 +244,7 @@ class _EditCarState extends State<EditCar> {
                       : 'Car plate number',
                   style: TextStyle(
                     color: textColor,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -349,9 +305,8 @@ class _EditCarState extends State<EditCar> {
                             },
                             child: Container(
                               width: 80.w,
-                              // عرض ريسبونسف
-                              height: 70,
-                              margin: const EdgeInsets.symmetric(horizontal: 6),
+                              height: 70.h,
+                              margin: EdgeInsets.symmetric(horizontal: 6.w),
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
@@ -374,8 +329,8 @@ class _EditCarState extends State<EditCar> {
                                 children: [
                                   Image.network(
                                     car.image,
-                                    width: 30,
-                                    height: 30,
+                                    width: 30.w,
+                                    height: 30.h,
                                     fit: BoxFit.contain,
                                     errorBuilder:
                                         (context, error, stackTrace) =>
@@ -393,7 +348,7 @@ class _EditCarState extends State<EditCar> {
                                               ? Colors.black
                                               : Colors.grey,
 
-                                      fontSize: 12.h,
+                                      fontSize: 12.sp,
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -440,7 +395,7 @@ class _EditCarState extends State<EditCar> {
                   }
                   if (state is CarModelLoaded) {
                     return SizedBox(
-                      height: 30, // لأن المربع أصغر (70x30)
+                      height: 30.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.models.length,
@@ -455,8 +410,8 @@ class _EditCarState extends State<EditCar> {
                               });
                             },
                             child: Container(
-                              width: 70,
-                              height: 30,
+                              width: 70.w,
+                              height: 30.h,
                               margin: const EdgeInsets.symmetric(horizontal: 4),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -473,7 +428,7 @@ class _EditCarState extends State<EditCar> {
                                       isSelected
                                           ? const Color(0xFFBA1B1B)
                                           : Colors.grey.shade300,
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               child: Text(
@@ -488,7 +443,7 @@ class _EditCarState extends State<EditCar> {
                                               Brightness.light
                                           ? Colors.black
                                           : Colors.white,
-                                  fontSize: 14.h,
+                                  fontSize: 14.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -561,9 +516,9 @@ class _EditCarState extends State<EditCar> {
                     hintStyle: TextStyle(color: hintColor),
 
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 12.w,
                     ),
                   ),
                 ),
@@ -742,14 +697,18 @@ class _EditCarState extends State<EditCar> {
 
                     if (_selectedCarBrandId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء اختيار ماركة السيارة")),
+                        const SnackBar(
+                          content: Text("الرجاء اختيار ماركة السيارة"),
+                        ),
                       );
                       return;
                     }
 
                     if (_selectedCarModelId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء اختيار موديل السيارة")),
+                        const SnackBar(
+                          content: Text("الرجاء اختيار موديل السيارة"),
+                        ),
                       );
                       return;
                     }
@@ -757,7 +716,9 @@ class _EditCarState extends State<EditCar> {
                     if (arabicLettersController.text.trim().isEmpty ||
                         arabicNumbersController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الرجاء إدخال رقم اللوحة")),
+                        const SnackBar(
+                          content: Text("الرجاء إدخال رقم اللوحة"),
+                        ),
                       );
                       return;
                     }
@@ -766,7 +727,9 @@ class _EditCarState extends State<EditCar> {
                     showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20.r),
+                        ),
                       ),
                       builder: (context) {
                         return Padding(
@@ -775,7 +738,9 @@ class _EditCarState extends State<EditCar> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'هل تريد حفظ التعديلات؟',
+                                locale.isDirectionRTL(context)
+                                    ? 'هل تريد حفظ التعديلات؟'
+                                    : 'Do you want to save the changes?',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: const Color(0xFFBA1B1B),
@@ -786,13 +751,27 @@ class _EditCarState extends State<EditCar> {
                               ),
                               SizedBox(height: 20.h),
 
-                              Image.asset('assets/images/save_changes.png',height: 130.h,width: 130.w,),
+                              Image.asset(
+                                'assets/images/save_changes.png',
+                                height: 130.h,
+                                width: 130.w,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
+                              ),
                               SizedBox(height: 15.h),
                               Text(
-                                'تم تغيير معلومات السيارة، تبينا نحفظها؟',
+                                locale.isDirectionRTL(context)
+                                    ? 'تم تغيير معلومات السيارة، تبينا نحفظها؟'
+                                    : 'The car information has changed, should we save it?',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color:   Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                   fontSize: 20.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w500,
@@ -800,85 +779,105 @@ class _EditCarState extends State<EditCar> {
                               ),
                               SizedBox(height: 20.h),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  SizedBox(
-                                    height: 50.h,
-                                    width: 150.w,
+                                  Expanded(
+                                    child: Container(
+                                      height: 50.h,
 
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFFBA1B1B),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.r),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFFBA1B1B,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10.r,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      onPressed: () async {
-                                        Navigator.pop(context); // إغلاق الشيت أولاً
+                                        onPressed: () async {
+                                          Navigator.pop(
+                                            context,
+                                          ); // إغلاق الشيت أولاً
 
-                                        final boardNoFinal = _buildBoardNo(
-                                          lettersRaw: arabicLettersController.text,
-                                          numbersRaw: arabicNumbersController.text,
-                                        );
+                                          final boardNoFinal = _buildBoardNo(
+                                            lettersRaw:
+                                                arabicLettersController.text,
+                                            numbersRaw:
+                                                arabicNumbersController.text,
+                                          );
 
-                                        final kiloRead = int.tryParse(
-                                          _digitsToEn(kiloReadController.text.trim()),
-                                        ) ??
-                                            0;
+                                          final kiloRead =
+                                              int.tryParse(
+                                                _digitsToEn(
+                                                  kiloReadController.text.trim(),
+                                                ),
+                                              ) ??
+                                              0;
 
-                                        await context.read<CarCubit>().updateCar(
-                                          carId: widget.carId,
-                                          token: token,
-                                          carBrandId: _selectedCarBrandId ?? 0,
-                                          carModelId: _selectedCarModelId ?? 0,
-                                          creationYear: years[selectedYearIndex],
-                                          boardNo: boardNoFinal,
-                                          translationName:
-                                          carNameController.text.trim(),
-                                          kiloRead: kiloRead,
-                                          carDocs: selectedCarDoc,
-                                        );
-                                      },
-                                      child: Text(
-                                        'أكيد',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.sp,
-                                          fontFamily: 'Graphik Arabic',
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                 // SizedBox(width: 20.w),
-                                  SizedBox(
-                                    height: 50.h,
-                                    width: 150.w,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.grey[400],
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.r),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context); // إغلاق الشيت
-                                      },
-                                      child: Text(
-                                        'تراجع',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20.sp,
-                                          fontFamily: 'Graphik Arabic',
-                                          fontWeight: FontWeight.w500,
+                                          await context
+                                              .read<CarCubit>()
+                                              .updateCar(
+                                                carId: widget.carId,
+                                                token: token,
+                                                carBrandId:
+                                                    _selectedCarBrandId ?? 0,
+                                                carModelId:
+                                                    _selectedCarModelId ?? 0,
+                                                creationYear:
+                                                    years[selectedYearIndex],
+                                                boardNo: boardNoFinal,
+                                                translationName:
+                                                    carNameController.text.trim(),
+                                                kiloRead: kiloRead,
+                                                carDocs: selectedCarDoc,
+                                              );
+                                        },
+                                        child: Text(
+                                          'أكيد',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.sp,
+                                            fontFamily: 'Graphik Arabic',
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
 
+                                   SizedBox(width: 18.w),
+                                  Expanded(
+                                    child: Container(
+                                      height: 50.h,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.grey[400],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10.r,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context); // إغلاق الشيت
+                                        },
+                                        child: Text(
+                                          'تراجع',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20.sp,
+                                            fontFamily: 'Graphik Arabic',
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -888,7 +887,9 @@ class _EditCarState extends State<EditCar> {
                     );
                   },
                   child: Text(
-                    locale.isDirectionRTL(context) ? 'حفظ التعديلات' : 'Save Changes',
+                    locale.isDirectionRTL(context)
+                        ? 'حفظ التعديلات'
+                        : 'Save Changes',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.sp,
@@ -929,7 +930,10 @@ class _EditCarState extends State<EditCar> {
                       final response = await Dio().delete(
                         '$mainApi/app/elwarsha/user-cars/delete/${widget.carId}',
                         options: Options(
-                          headers: {'Authorization': 'Bearer $token',  "Accept-Language": langCode == '' ? "en" : langCode},
+                          headers: {
+                            'Authorization': 'Bearer $token',
+                            "Accept-Language": langCode == '' ? "en" : langCode,
+                          },
                         ),
                       );
 

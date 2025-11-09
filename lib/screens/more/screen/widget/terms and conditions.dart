@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../services/widgets/custom_app_bar.dart';
 import '../../Cubit/static_pages_cubit.dart';
 
 class TermsAndConditions extends StatelessWidget {
@@ -12,6 +14,12 @@ class TermsAndConditions extends StatelessWidget {
     return BlocProvider(
       create: (_) => StaticPagesCubit()..fetchStaticPages(),
       child: Scaffold(
+        appBar: CustomGradientAppBar(
+          title_ar: "الشروط والأحكام",
+          title_en: "Terms and Conditions",
+          onBack: () => Navigator.pop(context),
+        ),
+
         backgroundColor: Theme.of(context).brightness == Brightness.light
             ? const Color(0xFFEAEAEA)
             : Colors.black,
@@ -22,17 +30,50 @@ class TermsAndConditions extends StatelessWidget {
             } else if (state is StaticPagesLoaded) {
               return SingleChildScrollView(
                 padding: EdgeInsets.all(20.w),
-                child: Text(
-                  state.pages.termsAndConditions ?? "",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    height: 1.6,
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                  textAlign: TextAlign.start,
-                ),
+                child:                   Html(
+                  data: state.pages.privacyPolicy ?? "",
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize.medium,
+                      lineHeight: LineHeight.number(1.6),
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
+                      textAlign: TextAlign.justify,
+                    ),
+                    "p": Style(
+                      textAlign: TextAlign.justify,
+                      margin: Margins.symmetric(vertical: 8),
+                    ),
+                    "h1": Style(
+                      fontSize: FontSize.xxLarge,
+                      fontWeight: FontWeight.bold,
+                      textAlign: TextAlign.center,
+                      margin: Margins.only(bottom: 12),
+                    ),
+                    "h2": Style(
+                      fontSize: FontSize.xLarge,
+                      fontWeight: FontWeight.w600,
+                      textAlign: TextAlign.center,
+                      margin: Margins.only(bottom: 10),
+                    ),
+                    "h3": Style(
+                      fontSize: FontSize.large,
+                      fontWeight: FontWeight.w500,
+                      textAlign: TextAlign.start,
+                      margin: Margins.only(bottom: 8),
+                    ),
+                    "li": Style(
+                      fontSize: FontSize.medium,
+                      margin: Margins.only(bottom: 6),
+                      textAlign: TextAlign.start,
+                    ),
+                    "ol": Style(margin: Margins.symmetric(vertical: 6)),
+                    "ul": Style(margin: Margins.symmetric(vertical: 6)),
+                    "span": Style(textAlign: TextAlign.justify),
+                  },
+                )
+
               );
             } else if (state is StaticPagesError) {
               return Center(
