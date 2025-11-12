@@ -32,15 +32,15 @@ class DeliveryMethodSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFFBA1B1B),
+                color: typographyMainColor(context),
               ),
             ),
             SizedBox(width: 7.w),
             Container(
               width: 20.w,
               height: 20.h,
-              decoration: const ShapeDecoration(
-                color: accentColor,
+              decoration:  ShapeDecoration(
+                color: typographyMainColor(context),
                 shape: OvalBorder(),
               ),
               child: Center(
@@ -138,7 +138,7 @@ class DeliveryMethodSection extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected
-                    ? const Color(0xFFBA1B1B)
+                    ? typographyMainColor(context)
                     : const Color(0xFF9B9B9B),
               ),
               child: isSelected

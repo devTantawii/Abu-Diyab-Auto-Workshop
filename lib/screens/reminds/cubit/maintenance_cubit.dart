@@ -64,7 +64,7 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
       Dio dio = Dio();
 
       final response = await dio.post(
-        "$mainApi/app/elwarsha/user-notes/create",
+        notesCreateApi,
         data: formData,
         options: Options(headers: {
           "Accept": "application/json",

@@ -121,9 +121,11 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                         horizontal: 12.w,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).brightness == Brightness.light
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.white
+                                                : Colors.black,
                                         borderRadius: BorderRadius.circular(15),
                                         border: Border.all(
                                           color: paragraphColor(context),
@@ -149,6 +151,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                             width: 42.w,
                                             height: 30.h,
                                             fit: BoxFit.contain,
+
                                           ),
                                           SizedBox(width: 12.w),
 
@@ -170,15 +173,16 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                             width: 26.w,
                                             height: 26.h,
                                             decoration: BoxDecoration(
-                                              color:
-                                                  isSelected
-                                                      ? Color(0xFFBA1B1B)
+                                              color://                          color: typographyMainColor(context),
+
+                                              isSelected
+                                                      ? typographyMainColor(context)
                                                       : Colors.transparent,
                                               shape: BoxShape.circle,
                                               border: Border.all(
                                                 color:
                                                     isSelected
-                                                        ? Color(0xFFBA1B1B)
+                                                        ? typographyMainColor(context)
                                                         : Colors.grey,
                                                 width: 2,
                                               ),
@@ -246,7 +250,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
           ElevatedButton(
             onPressed: widget.onConfirm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: accentColor,
+              backgroundColor: typographyMainColor(context),
               minimumSize: Size(double.infinity, 50.sp),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.sp),
@@ -278,7 +282,7 @@ class ProgressBarr extends StatelessWidget {
       width: 75.w,
       height: 6.h,
       decoration: ShapeDecoration(
-        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
+        color: active ? typographyMainColor(context) : const Color(0xFFAFAFAF),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../auth/cubit/login_cubit.dart';
@@ -66,7 +67,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
           },
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Padding(
+                padding: EdgeInsets.all(10.w),
+                child: Column(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.h),
+                        width: 100.w,
+                        height: 100.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(90.r),
+                        ),
+                      ),
+                    ),
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.h),
+                        width: double.infinity,
+                        height: 100.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                      ),
+                    ),
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.h),
+                        width: double.infinity,
+                        height: 100.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             } else if (state is ProfileLoaded || state is ProfileUpdating) {
               final user =
                   (state is ProfileLoaded)

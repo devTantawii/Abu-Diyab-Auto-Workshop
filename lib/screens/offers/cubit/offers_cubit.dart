@@ -15,7 +15,7 @@ class OffersCubit extends Cubit<OffersState> {
 
     try {
       final response = await dio.get(
-        "$mainApi/app/elwarsha/offers/get",
+        getOffersApi,
         options: Options(
           headers: {
             "Accept-Language": langCode == '' ? "en" : langCode

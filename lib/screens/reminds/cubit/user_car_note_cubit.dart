@@ -19,7 +19,7 @@ class UserNotesCubit extends Cubit<UserNotesState> {
       print(" 📢📢📢📢📢📢📢📢 $token");
 
       final response = await Dio().get(
-        "$mainApi/app/elwarsha/user-notes/get",
+        notesGetApi,
         options: Options(
           headers: {
             "Authorization": "Bearer $token",

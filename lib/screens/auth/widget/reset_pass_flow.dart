@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
 
@@ -230,17 +231,17 @@ class ResetPasswordFlow {
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Graphik Arabic',
-                            color: Color(0xFFBA1B1B),
+                            color: typographyMainColor(context),
                           ),
                           decoration: InputDecoration(
                             counterText: "",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: Color(0xFFBA1B1B)),
+                              borderSide: BorderSide(color:typographyMainColor(context)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: Color(0xFFBA1B1B), width: 2.w),
+                              borderSide: BorderSide(color:typographyMainColor(context), width: 2.w),
                             ),
                           ),
                           onChanged: (value) {
@@ -258,7 +259,7 @@ class ResetPasswordFlow {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 48.h),
-                      backgroundColor: Color(0xFFBA1B1B),
+                      backgroundColor: typographyMainColor(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -354,7 +355,7 @@ class ResetPasswordFlow {
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Graphik Arabic',
-                      color: Color(0xFFBA1B1B),
+                      color:typographyMainColor(context),
                     ),
                   ),
                   SizedBox(height: 20.h),
@@ -367,13 +368,13 @@ class ResetPasswordFlow {
                       hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B)),
+                        borderSide: BorderSide(color: typographyMainColor(context)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B), width: 2.w),
+                        borderSide: BorderSide(color: typographyMainColor(context), width: 2.w),
                       ),
-                      prefixIcon: Icon(Icons.lock, color: Color(0xFFBA1B1B), size: 20.sp),
+                      prefixIcon: Icon(Icons.lock, color: typographyMainColor(context), size: 20.sp),
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -387,20 +388,20 @@ class ResetPasswordFlow {
                       hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B)),
+                        borderSide: BorderSide(color: typographyMainColor(context)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B), width: 2.w),
+                        borderSide: BorderSide(color:typographyMainColor(context), width: 2.w),
                       ),
-                      prefixIcon: Icon(Icons.lock_outline, color: Color(0xFFBA1B1B), size: 20.sp),
+                      prefixIcon: Icon(Icons.lock_outline, color: typographyMainColor(context), size: 20.sp),
                     ),
                   ),
                   SizedBox(height: 15.h),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 48.h),
-                      backgroundColor: Color(0xFFBA1B1B),
+                      backgroundColor: typographyMainColor(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),

@@ -13,7 +13,8 @@
   import 'package:shared_preferences/shared_preferences.dart';
 
   import '../../../../core/constant/api.dart';
-  import '../../../../core/language/locale.dart';
+  import '../../../../core/constant/app_colors.dart';
+import '../../../../core/language/locale.dart';
 
   import '../../../../widgets/app_bar_widget.dart';
   import '../../../main/screen/main_screen.dart';
@@ -548,7 +549,7 @@ import '../../cubit/CarModelCubit.dart';
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 10.h),
-                    backgroundColor: const Color(0xFFBA1B1B),
+                    backgroundColor:buttonPrimaryBgColor(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),

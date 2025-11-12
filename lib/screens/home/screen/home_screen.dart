@@ -42,11 +42,27 @@ class _HomeScreenState extends State<HomeScreen> {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String currentVersion = packageInfo.version;
 
-      var response = await Dio().get(checkVersionUpdate);
-      var data = response.data;
+      // استدعاء API
+      var response = await Dio().get(checkVersionApi);
+      var settings = response.data['data']; // لأن البيانات داخل key اسمه "data"
 
-      String serverAndroidVersion = data['android'];
-      String serverIOSVersion = data['ios'];
+      // البحث عن القيم داخل اللستة
+      String? serverAndroidVersion;
+      String? serverIOSVersion;
+
+      for (var item in settings) {
+        if (item['key'] == 'android_version') {
+          serverAndroidVersion = item['value'];
+        } else if (item['key'] == 'iphone_version') {
+          serverIOSVersion = item['value'];
+        }
+      }
+
+      // التأكد أن القيم موجودة
+      if (serverAndroidVersion == null || serverIOSVersion == null) {
+        print("❌ Version info missing from server response");
+        return;
+      }
 
       Version current = Version.parse(currentVersion);
 
@@ -55,24 +71,25 @@ class _HomeScreenState extends State<HomeScreen> {
           Version serverHuawei = Version.parse(serverAndroidVersion);
           if (current < serverHuawei) {
             _showUpdateDialog('huawei');
-            print('huawei version Available');
+            print('🔔 Huawei version available');
           }
         } else {
           Version serverAndroid = Version.parse(serverAndroidVersion);
           if (current < serverAndroid) {
             _showUpdateDialog('android');
-            print('android version Available');
+            print('🔔 Android version available');
           }
         }
       } else if (Platform.isIOS) {
         Version serverIOS = Version.parse(serverIOSVersion);
         if (current < serverIOS) {
           _showUpdateDialog('ios');
-          print('ios version Available');
+          print('🔔 iOS version available');
         }
       }
-    } catch (e) {
-      print("Error fetching version: $e");
+    } catch (e, stack) {
+      print("⚠️ Error fetching version: $e");
+      print(stack);
     }
   }
 
@@ -302,21 +319,21 @@ class _HomeScreenState extends State<HomeScreen> {
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: true,
               currentIndex: _currentIndex,
-              selectedItemColor: buttonPrimaryBgColor(context),
+              selectedItemColor: typographyMainColor(context),
               unselectedItemColor: navbarTextColor(context),
               selectedLabelStyle: TextStyle(
                 fontSize: 16.sp,
                 height: 2,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFBA1B1B),
+                color: typographyMainColor(context),
               ),
               unselectedLabelStyle: TextStyle(
                 fontSize: 16.sp,
                 height: 2,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF474747),
+                color: navbarTextColor(context),
               ),
               onTap: (index) {
                 setState(() {

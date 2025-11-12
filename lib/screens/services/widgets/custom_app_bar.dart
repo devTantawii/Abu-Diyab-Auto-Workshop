@@ -35,8 +35,8 @@ class CustomGradientAppBar extends StatelessWidget
             colors: //Theme.of(context).brightness == Brightness.light
               //  ?
               [
-                const Color(0xFFBA1B1B),
-                const Color(0xFFD27A7A)]
+                const Color(0xFF006D92),
+                const Color(0xFF419BBA)]
             //    : [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
             ,
           ),

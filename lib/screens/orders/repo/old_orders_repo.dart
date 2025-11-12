@@ -13,7 +13,7 @@ class OldOrdersRepo {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    final url = Uri.parse('$mainApi/app/elwarsha/orders/reservations-orders');
+    final url = Uri.parse(reservationsOrdersApi);
 
     final response = await http.get(
       url,

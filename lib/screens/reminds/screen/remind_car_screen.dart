@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../main/cubit/services_cubit.dart';
@@ -222,13 +223,12 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                                       Expanded(
                                         child: Center(
                                           child: Text(
-
                                             locale!.isDirectionRTL(context)
                                                 ? '+ إضافة صيانة جديدة'
                                                 : '+ Add new maintenance',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Color(0xFFBA1B1B),
+                                              color: typographyMainColor(context),
                                               fontSize: 14.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -266,18 +266,9 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
       width: double.infinity,
       height: 180.h,
       decoration: BoxDecoration(
-        color:
-            Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+        color: buttonBgWhiteColor(context),
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 12,
-            offset: Offset(2, 2),
-          ),
-        ],
+        border: Border.all(color: iconGrayColor(context), width: 1.0),
       ),
       child: Stack(
         textDirection:
@@ -345,7 +336,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                 height: 40.h,
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFBA1B1B),
+                  color: buttonPrimaryBgColor(context),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(12.r),
                     bottomRight: Radius.circular(12.r),
@@ -354,7 +345,6 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
                 child: Row(
                   children: [
                     Text(
-
                       locale!.isDirectionRTL(context)
                           ? 'رقم اللوحة:'
                           : 'Plate Number',
@@ -388,7 +378,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
               height: 50.h,
               padding: EdgeInsets.all(10.w),
               decoration: ShapeDecoration(
-                color: const Color(0xFFBA1B1B),
+                color: typographyMainColor(context),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(12.r),

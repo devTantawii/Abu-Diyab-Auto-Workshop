@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
@@ -135,8 +136,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFFBA1B1B)),
+                                    borderSide:  BorderSide(
+                                        color: typographyMainColor(context)),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
@@ -224,7 +225,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFBA1B1B),
+                            backgroundColor: typographyMainColor(context),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),
                             ),
@@ -294,7 +295,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide:  BorderSide(color: typographyMainColor(context)),
         ),
       ),
     );

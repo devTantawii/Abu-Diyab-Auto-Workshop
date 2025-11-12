@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../auth/cubit/login_cubit.dart';
 import '../../auth/screen/login.dart';
@@ -51,12 +53,8 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     return BlocProvider(
       create: (_) => _cubit,
       child: Scaffold(
-        backgroundColor:
-        //   Theme.of(context).brightness == Brightness.light
-        //  ?
-        Color(0xFFD27A7A)
-        //  :  Color(0xFF6F5252)
-        ,
+        backgroundColor: scaffoldBackgroundColor(context),
+
         appBar:  CustomGradientAppBar(
           title_ar:  "سياراتي",
           title_en: "My Cars",
@@ -82,13 +80,28 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             BlocBuilder<CarCubit, CarState>(
               builder: (context, state) {
                 if (state is CarLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      color: Colors.red,
+                  return Padding(
+                    padding: EdgeInsets.all(20.w),
+                    child: Column(
+                      children: List.generate(2, (index) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 20.h),
+                            width: double.infinity,
+                            height: 180.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        );
+                      }),
                     ),
                   );
-                } else if (state is CarError) {
+                }
+                else if (state is CarError) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -252,18 +265,12 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         width: double.infinity,
         height: 180.h,
         decoration: BoxDecoration(
-          color:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+          color:buttonBgWhiteColor (context),
           borderRadius: BorderRadius.circular(12.r),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x3F000000),
-              blurRadius: 12,
-              offset: Offset(2, 2),
-            ),
-          ],
+          border: Border.all(
+            color:iconGrayColor(context),
+            width: 1.0,
+          ),
         ),
         child: Stack(
           textDirection:
@@ -334,6 +341,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 'assets/icons/edit.png',
                                 height: 35.h,
                                 width: 35.w,
+
                               ),
                             ),
                           ),
@@ -365,7 +373,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                   height: 40.h,
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFBA1B1B),
+                    color: buttonPrimaryBgColor(context),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(12.r),
                       bottomRight: Radius.circular(12.r),
@@ -407,7 +415,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 height: 50.h,
                 padding: EdgeInsets.all(10.w),
                 decoration: ShapeDecoration(
-                  color: const Color(0xFFBA1B1B),
+                  color: buttonPrimaryBgColor(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(12.r),
@@ -452,7 +460,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         height: 50.h,
         padding: EdgeInsets.all(10.w),
         decoration: ShapeDecoration(
-          color: const Color(0xFFBA1B1B),
+          color: buttonPrimaryBgColor(context),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r),
           ),

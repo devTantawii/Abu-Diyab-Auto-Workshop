@@ -109,7 +109,7 @@ class CarInfoSection extends StatelessWidget {
           child: Text(
             value,
             style: TextStyle(
-              color:accentColor,
+              color: typographyMainColor(context),
               fontSize: 13.sp,
               fontWeight: FontWeight.w600,
               height: 1.3.h,

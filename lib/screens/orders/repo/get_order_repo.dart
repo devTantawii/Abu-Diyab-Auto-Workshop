@@ -17,7 +17,7 @@ class OrdersRepo {
       final token = prefs.getString('token');
       print('🔑 [OrdersRepo] تم الحصول على التوكن: $token');
 
-      final url = '$mainApi/app/elwarsha/orders/current-orders';
+      final url = currentOrdersApi;
       print('🌐 [OrdersRepo] سيتم الاتصال بالرابط: $url');
 
       final headers = {

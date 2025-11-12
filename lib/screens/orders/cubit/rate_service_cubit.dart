@@ -42,7 +42,7 @@ class RateServiceCubit extends Cubit<RateServiceState> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await _dio.post(
-        '${mainApi}/app/elwarsha/reviews/create',
+        createReviewsApi,
         data: {
           'service_id': serviceId,
           'rating': state.rating,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../core/constant/app_colors.dart';
+
 class ProgressBar extends StatelessWidget {
   final bool active;
 
@@ -12,7 +14,7 @@ class ProgressBar extends StatelessWidget {
       width: 100.w,
       height: 6.h,
       decoration: ShapeDecoration(
-        color: active ? const Color(0xFFBA1B1B) : const Color(0xFFAFAFAF),
+        color: active ?typographyMainColor(context) : const Color(0xFFAFAFAF),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );

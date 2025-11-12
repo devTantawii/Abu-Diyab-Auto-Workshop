@@ -37,7 +37,7 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
     final locale = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor(context),
+      backgroundColor: backgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: widget.service.name,
         onBack: () => Navigator.pop(context),
@@ -250,7 +250,7 @@ class _AddRemindToCarState extends State<AddRemindToCar> {
                             Text(
                               '+ إضافة صيانه',
                               style: TextStyle(
-                                color: Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,

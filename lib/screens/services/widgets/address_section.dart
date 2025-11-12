@@ -43,7 +43,7 @@ class _AddressSectionState extends State<AddressSection> {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFFBA1B1B),
+                  color: typographyMainColor(context),
                 ),
               ),
             ),
@@ -79,11 +79,13 @@ class _AddressSectionState extends State<AddressSection> {
             child: GestureDetector(
               onTap: _getCurrentLocation,
               child: _loading
-                  ? const CircularProgressIndicator(color: Color(0xFFBA1B1B))
+                  ?  CircularProgressIndicator(                                    color: typographyMainColor(context),
+              )
                   : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   Icon(Icons.location_on, color: Color(0xFFBA1B1B),size: 16.sp,),
+                   Icon(Icons.location_on,                                     color: typographyMainColor(context),
+                     size: 16.sp,),
                   SizedBox(width: 6.w),
                   Text(
                     locale!.isDirectionRTL(context)
@@ -92,7 +94,7 @@ class _AddressSectionState extends State<AddressSection> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: accentColor,
+                      color: typographyMainColor(context),
                     ),
                   ),
                 ],

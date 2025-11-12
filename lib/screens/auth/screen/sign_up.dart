@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/constant/app_colors.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
@@ -298,7 +299,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                             }
                                           },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFBA1B1B),
+                                    backgroundColor: typographyMainColor(context),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
@@ -369,7 +370,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                     child: Text(
                                       isArabic ? 'سجّل دخولك' : 'Login',
                                       style: TextStyle(
-                                        color: const Color(0xFFBA1B1B),
+                                        color: typographyMainColor(context),
                                         fontSize: 16.h,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w600,
@@ -437,7 +438,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                           : 'Contact us for support',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: const Color(0xFFBA1B1B),
+                                        color: typographyMainColor(context),
                                         fontSize: 16.h,
                                         fontFamily: 'Graphik Arabic',
                                         fontWeight: FontWeight.w500,
@@ -495,7 +496,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.red),
+          borderSide: BorderSide(color: typographyMainColor(context)),
         ),
       ),
     );

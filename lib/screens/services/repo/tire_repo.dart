@@ -27,7 +27,7 @@ class TireRepository {
 
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/services/tires",
+        tiresApi,
         queryParameters: queryParameters.isEmpty ? null : queryParameters,
       );
 

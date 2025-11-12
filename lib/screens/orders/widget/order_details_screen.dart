@@ -2,6 +2,7 @@ import 'package:abu_diyab_workshop/screens/orders/widget/check_result_screen.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../services/widgets/Custom-Button.dart';
 import '../../services/widgets/custom_app_bar.dart';
@@ -155,7 +156,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             TextSpan(
                                               text: order.items.first.item.name,
                                               style: TextStyle(
-                                                color: const Color(0xFFBA1B1B),
+                                                color: typographyMainColor(context),
                                                 fontSize: 22.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w600,
@@ -192,7 +193,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         Text(
                                           order.code,
                                           style:  TextStyle(
-                                            color: Color(0xFFBA1B1B),
+                                            color: typographyMainColor(context),
                                             fontSize: 16.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
@@ -348,7 +349,7 @@ class OrderDetailsScreen extends StatelessWidget {
         Text(
           value,
           style:  TextStyle(
-            color: Color(0xFFBA1B1B),
+            color: typographyMainColor(context),
             fontSize: 16.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w600,

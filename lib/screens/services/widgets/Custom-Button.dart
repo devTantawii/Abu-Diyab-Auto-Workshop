@@ -23,25 +23,24 @@ class CustomBottomButton extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : Colors.black,
+        color:
+            Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
       ),
       child: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+          color:
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10.sp),
             topRight: Radius.circular(10.sp),
           ),
           border: Border(
-            top: BorderSide(
-              color: paragraphColor(context),
-              width: 1.5.w,
-            ),
+            top: BorderSide(color: paragraphColor(context), width: 1.5.w),
           ),
           boxShadow: const [
             BoxShadow(
@@ -58,9 +57,10 @@ class CustomBottomButton extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 10.h),
-              backgroundColor: isEnabled
-                  ? const Color(0xFFBA1B1B) // اللون الطبيعي لو الزر شغال
-                  : Colors.grey.shade400, // رمادي لو الزر مقفول
+              backgroundColor:
+                  isEnabled
+                      ? typographyMainColor(context)
+                      : Colors.grey.shade400, // رمادي لو الزر مقفول
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),

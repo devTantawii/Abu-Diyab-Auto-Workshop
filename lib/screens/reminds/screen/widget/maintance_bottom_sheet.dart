@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../my_car/model/all_cars_model.dart';
 import '../../../my_car/screen/widget/image_picker.dart';
 import '../../cubit/maintenance_cubit.dart';
@@ -49,7 +50,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
           height: 700.h,
           padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFEAEAEA),
+            color: backgroundColor(context),
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
           ),
           child: SingleChildScrollView(
@@ -61,7 +62,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                     'إضافة معلومات الصيانة',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.black,
+                      color:headingColor (context),
                       fontSize: 18.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w500,
@@ -77,7 +78,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                   width: 350.w,
                   height: 50.h,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: buttonBgWhiteColor(context),
                     border: Border.all(width: 1.5.w, color: const Color(0xFF9B9B9B)),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
@@ -87,7 +88,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                         child: Padding(
                           padding: EdgeInsets.all(8.w),
                           child: DottedBorder(
-                            color: const Color(0xFFBA1B1B),
+                            color:  strokeRedColor(context),
                             strokeWidth: 1,
                             borderType: BorderType.RRect,
                             radius: Radius.circular(8.r),
@@ -128,7 +129,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                         child: Text(
                           'KM',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: headingColor(context),
                             fontSize: 15.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
@@ -147,7 +148,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                   decoration: InputDecoration(
                     labelText: "تاريخ آخر صيانة",
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor:buttonBgWhiteColor(context),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
@@ -176,7 +177,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                   width: 350.w,
                   height: 50.h,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: buttonBgWhiteColor(context),
                     border: Border.all(width: 1.5.w, color: const Color(0xFF9B9B9B)),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
@@ -186,7 +187,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                         child: Padding(
                           padding: EdgeInsets.all(8.w),
                           child: DottedBorder(
-                            color: const Color(0xFFBA1B1B),
+                            color:  strokeRedColor(context),
                             strokeWidth: 1,
                             borderType: BorderType.RRect,
                             radius: Radius.circular(8.r),
@@ -227,7 +228,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                         child: Text(
                           'KM',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: headingColor(context),
                             fontSize: 15.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
@@ -255,9 +256,9 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                     padding: EdgeInsets.all(15.w),
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      color: buttonBgWhiteColor(context),
+                      border: Border.all(width: 1.5.w, color: const Color(0xFF9B9B9B)),
                       borderRadius: BorderRadius.circular(10.r),
-                      color: Colors.white,
                     ),
                     child: Text(
                       reminderDate == null
@@ -281,7 +282,7 @@ class _MaintenanceBottomSheetState extends State<MaintenanceBottomSheet> {
                     builder: (context, state) {
                       return ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFBA1B1B),
+                          backgroundColor: buttonPrimaryBgColor(context),
                           padding:
                           EdgeInsets.symmetric(horizontal: 80.w, vertical: 15.h),
                           shape: RoundedRectangleBorder(

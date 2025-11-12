@@ -58,7 +58,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         onBack: () {
@@ -217,7 +217,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                                   decoration: BoxDecoration(
                                     color:
                                     selected == true
-                                        ? Color(0xFFBA1B1B)
+                                        ? typographyMainColor(context)
                                         : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
@@ -290,7 +290,7 @@ class _MaintenanceBreakdownsState extends State<MaintenanceBreakdowns> {
                                   decoration: BoxDecoration(
                                     color:
                                     selected == false
-                                        ? Color(0xFFBA1B1B)
+                                        ? typographyMainColor(context)
                                         : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),

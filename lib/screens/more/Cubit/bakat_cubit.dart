@@ -24,7 +24,7 @@ class BakatCubit extends Cubit<BakatState> {
     emit(BakatLoading());
     try {
       final response = await _dio.get(
-        '$mainApi/app/elwarsha/packages/get',
+        packagesApi,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

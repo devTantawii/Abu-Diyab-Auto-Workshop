@@ -330,7 +330,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     return Container(
                       color:
                       isSelected
-                          ?paragraphColor(context)
+                          ?buttonSecondaryBorderLight
                           : Colors.transparent,
                       child: Center(
                         child: Text(
@@ -519,7 +519,9 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:accentColor,
+                      backgroundColor:typographyMainColor(
+                        context,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),

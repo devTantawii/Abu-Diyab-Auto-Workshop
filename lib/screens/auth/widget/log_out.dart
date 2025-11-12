@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/langCode.dart';
 import '../../../core/language/locale.dart';
 import '../../home/screen/home_screen.dart';
@@ -155,7 +156,7 @@ class LogoutBottomSheet extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => _logout(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFBA1B1B),
+                    backgroundColor:typographyMainColor(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.sp),
                     ),

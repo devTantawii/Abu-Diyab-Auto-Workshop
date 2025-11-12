@@ -17,7 +17,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
 
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/settings/get",
+        settingsApi,
         options: Options(
           headers: {
             "Accept": "application/json",

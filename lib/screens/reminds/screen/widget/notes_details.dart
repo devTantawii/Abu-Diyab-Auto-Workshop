@@ -72,7 +72,10 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
           return Container(
             height: MediaQuery.of(context).size.height * 0.92,
          //   width: double.infinity,
-            color: isDark ? Colors.black : Colors.white,
+            decoration: BoxDecoration(
+              color: backgroundColor(context),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
+            ),
             child: Column(
               children: [
                 Padding(
@@ -85,7 +88,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                         Text(
                           isArabic ? 'تعديل معلومات الصيانة' : 'Edit maintenance information',
                           style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black,
+                            color:headingColor (context),
                             fontSize: 18.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
@@ -103,11 +106,8 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                           width: double.infinity,
                           height: 50.h,
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.grey[900] : Colors.white,
-                            border: Border.all(
-                              width: 1.5.w,
-                              color: const Color(0xFF9B9B9B),
-                            ),
+                            color: buttonBgWhiteColor(context),
+                            border: Border.all(width: 1.5.w, color: const Color(0xFF9B9B9B)),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Row(
@@ -116,7 +116,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                                 child: Padding(
                                   padding: EdgeInsets.all(8.w),
                                   child: DottedBorder(
-                                    color: const Color(0xFFBA1B1B),
+                                    color:  strokeRedColor(context),
                                     strokeWidth: 1.w,
                                     borderType: BorderType.RRect,
                                     radius: Radius.circular(8.r),
@@ -159,7 +159,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                                 child: Text(
                                   'KM',
                                   style: TextStyle(
-                                    color: isDark ? Colors.white : Colors.black,
+                                    color: headingColor(context),
                                     fontSize: 15.sp,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w500,
@@ -181,7 +181,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                           decoration: InputDecoration(
                             labelText: isArabic ? "تاريخ آخر صيانة" : "Last maintenance date",
                             filled: true,
-                            fillColor: isDark ? Colors.grey[900] : Colors.white,
+                            fillColor:buttonBgWhiteColor(context),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                             ),
@@ -213,11 +213,8 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                           width: double.infinity,
                           height: 50.h,
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.grey[900] : Colors.white,
-                            border: Border.all(
-                              width: 1.5.w,
-                              color: const Color(0xFF9B9B9B),
-                            ),
+                            color: buttonBgWhiteColor(context),
+                            border: Border.all(width: 1.5.w, color: const Color(0xFF9B9B9B)),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Row(
@@ -226,7 +223,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                                 child: Padding(
                                   padding: EdgeInsets.all(8.w),
                                   child: DottedBorder(
-                                    color: const Color(0xFFBA1B1B),
+                                    color:  strokeRedColor(context),
                                     strokeWidth: 1.w,
                                     borderType: BorderType.RRect,
                                     radius: Radius.circular(8.r),
@@ -267,7 +264,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                                 child: Text(
                                   'KM',
                                   style: TextStyle(
-                                    color: isDark ? Colors.white : Colors.black,
+                                    color: headingColor(context),
                                     fontSize: 15.sp,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w500,
@@ -373,7 +370,7 @@ class _NoteDetailsBottomSheetState extends State<NoteDetailsBottomSheet> {
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFBA1B1B),
+                            backgroundColor: buttonPrimaryBgColor(context),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.r),
                             ),

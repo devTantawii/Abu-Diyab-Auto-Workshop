@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/language/locale.dart';
 
 class DetailItem extends StatelessWidget {
@@ -38,7 +39,7 @@ class DetailItem extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: const Color(0xFFBA1B1B),
+            color: typographyMainColor(context),
             fontSize: 14.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w600,

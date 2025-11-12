@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../core/constant/app_colors.dart';
 import '../core/langCode.dart';
 
 class BannerModel {
@@ -51,7 +52,7 @@ class _ImageSliderState extends State<ImageSlider> {
   Future<void> fetchBanners() async {
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/banners/get",
+        bannersApi,
         options: Options(headers: {"Accept": "application/json",  "Accept-Language": langCode == '' ? "en" : langCode}),
       );
 
@@ -186,7 +187,7 @@ class _ImageSliderState extends State<ImageSlider> {
                 decoration: BoxDecoration(
                   color:
                       isActive
-                          ? const Color(0xFFBA1B1B)
+                          ? typographyMainColor(context)
                           : const Color(0xFFAFAFAF),
                   borderRadius: BorderRadius.circular(4),
                 ),

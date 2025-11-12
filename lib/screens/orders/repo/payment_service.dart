@@ -12,7 +12,7 @@ class PaymentService {
     required String id,
     required int quantity,
   }) async {
-    final url = "$mainApi/app/elwarsha/payments/preview";
+    final url = paymentsPreviewApi;
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

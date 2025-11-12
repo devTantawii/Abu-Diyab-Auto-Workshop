@@ -6,6 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
@@ -112,7 +113,7 @@ class _ChangeOilState extends State<ChangeOil> {
             children: [
               Text(
                 AppLocalizations.of(context)!.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
-                style: TextStyle(fontSize: 25.sp, color: accentColor, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 25.sp, color: typographyMainColor(context), fontWeight: FontWeight.w600),
               ),
               Divider(color: buttonSecondaryBorderColor(context)),
               Text(
@@ -140,8 +141,8 @@ class _ChangeOilState extends State<ChangeOil> {
                           onTap: () => setModalState(() => temp = v),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: selected ? Color(0xFFBA1B1B).withOpacity(0.2) : null,
-                              border: Border.all(color: selected ? Color(0xFFBA1B1B) : Colors.grey, width: 2.w),
+                              color: selected ? typographyMainColor(context).withOpacity(0.2) : null,
+                              border: Border.all(color: selected ? typographyMainColor(context) : Colors.grey, width: 2.w),
                               borderRadius: BorderRadius.circular(5.sp),
                             ),
                             alignment: Alignment.center,
@@ -168,7 +169,7 @@ class _ChangeOilState extends State<ChangeOil> {
                   _onSearchChanged();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFBA1B1B),
+                  backgroundColor: typographyMainColor(context),
                   minimumSize: Size(240.w, 50.h),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.sp)),
                 ),
@@ -282,18 +283,21 @@ class _ChangeOilState extends State<ChangeOil> {
                           height: 50.h,
                           decoration: BoxDecoration(
                             color: selectedViscosity != null
-                                ? Color(0xFFBA1B1B).withOpacity(0.2)
+                                ? typographyMainColor(context).withOpacity(0.2)
                                 : buttonBgWhiteColor(context),
                             borderRadius: BorderRadius.circular(10.sp),
                             border: Border.all(
                               width: 1.5.w,
-                              color: selectedViscosity != null ? Color(0xFFBA1B1B) : buttonSecondaryBorderColor(context),
+                              color: selectedViscosity != null ? typographyMainColor(context) : buttonSecondaryBorderColor(context),
                             ),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(10),
                             child: selectedViscosity != null
-                                ? Icon(Icons.cancel_outlined, color: Colors.black)
+                                ? Image.asset(
+                              'assets/icons/cancel.png',
+                              scale: 1.3.sp,
+                            )
                                 : Image.asset('assets/icons/icon_filter.png', color: paragraphColor(context)),
                           ),
                         ),
@@ -386,7 +390,26 @@ class _ChangeOilState extends State<ChangeOil> {
                       BlocBuilder<OilCubit, OilState>(
                         builder: (context, state) {
                           if (state is OilLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return Padding(
+                              padding: EdgeInsets.all(10.w),
+                              child: Column(
+                                children: List.generate(2, (index) {
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 20.h),
+                                      width: double.infinity,
+                                      height: 100.h,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15.r),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            );
                           }
                           if (state is OilLoaded) {
                             final oils = state.oils;
@@ -435,7 +458,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                             borderRadius: BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1.5.w,
-                                              color: isSelected ? const Color(0xFFBA1B1B) : buttonSecondaryBorderColor(context)
+                                              color: isSelected ? typographyMainColor(context) : buttonSecondaryBorderColor(context)
                                             ),
                                             boxShadow: [
                                               BoxShadow(
@@ -459,11 +482,11 @@ class _ChangeOilState extends State<ChangeOil> {
                                                   },
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
                                                   side: BorderSide(
-                                                    color: isSelected ? const Color(0xFFBA1B1B) : const Color(0xFF474747),
+                                                    color: isSelected ? typographyMainColor(context) : const Color(0xFF474747),
                                                     width: 1.2,
                                                   ),
                                                   checkColor: Colors.white,
-                                                  activeColor: const Color(0xFFBA1B1B),
+                                                  activeColor: typographyMainColor(context),
                                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                 ),
                                               ),
@@ -493,7 +516,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                                             Text(
                                                               oil.price,
                                                               style: TextStyle(
-                                                                color: Color(0xFFBA1B1B),
+                                                                color: typographyMainColor(context),
                                                                 fontSize: 16.sp,
                                                                 fontFamily: 'Poppins',
                                                                 fontWeight: FontWeight.w600,
@@ -504,6 +527,8 @@ class _ChangeOilState extends State<ChangeOil> {
                                                               'assets/icons/ryal.png',
                                                               width: 20.w,
                                                               height: 20.h,
+                                                              color: typographyMainColor(context),
+
                                                             ),
                                                           ],
                                                         ),
@@ -571,7 +596,7 @@ class _ChangeOilState extends State<ChangeOil> {
                                         height: 50.h,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFBA1B1B),
+                                          color: typographyMainColor(context),
                                           borderRadius: BorderRadius.circular(8.r),
                                         ),
                                         child: Text(

@@ -56,6 +56,8 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor(context),
+
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         onBack: () {
@@ -210,7 +212,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                                   decoration: BoxDecoration(
                                     color:
                                         selected == true
-                                            ? Color(0xFFBA1B1B)
+                                            ? typographyMainColor(context)
                                             : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
@@ -283,7 +285,7 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
                                   decoration: BoxDecoration(
                                     color:
                                         selected == false
-                                            ? Color(0xFFBA1B1B)
+                                            ? typographyMainColor(context)
                                             : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),

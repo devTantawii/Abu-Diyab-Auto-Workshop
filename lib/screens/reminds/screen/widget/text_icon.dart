@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
+
 class TextIcon extends StatelessWidget {
   final String text;
   final String imagePath;
@@ -19,13 +21,14 @@ class TextIcon extends StatelessWidget {
             imagePath,
             width: 20.w, // ممكن تتحكم في الحجم
             height: 20.h,
+            color: typographyMainColor(context),
           ),
 
           const SizedBox(width: 8), // مسافة صغيرة بين النص والصورة
           Text(
             text,
             style: TextStyle(
-              color: isDark ? Colors.white : Colors.black,
+              color: headingColor(context),
               fontSize: 15.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,

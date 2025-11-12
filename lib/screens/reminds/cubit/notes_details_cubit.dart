@@ -87,7 +87,7 @@ class UserNoteDetailsCubit extends Cubit<UserNoteDetailsState> {
       String? token = prefs.getString('token');
 
       final response = await http.post(
-        Uri.parse("$mainApi/app/elwarsha/user-notes/update"),
+        Uri.parse(notesUpdateApi),
         headers: {
           "Authorization": "Bearer $token",
           "Accept": "application/json",  "Accept-Language": langCode == '' ? "en" : langCode

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../services/widgets/Custom-Button.dart';
 import '../../services/widgets/custom_app_bar.dart';
@@ -133,16 +134,17 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                   duration: const Duration(milliseconds: 250),
                                   margin: const EdgeInsets.symmetric(vertical: 8),
                                   padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
+                                  decoration: BoxDecoration(               //   color: typographyMainColor(context),
+
                                     color: isSelected
-                                        ? const Color(0xFFBA1B1B).withOpacity(0.08)
+                                        ?  typographyMainColor(context).withOpacity(0.08)
                                         : Theme.of(context).brightness == Brightness.light
                                         ? Colors.white
                                         : const Color(0xFF1A1A1A),
                                     borderRadius: BorderRadius.circular(14),
                                     border: Border.all(
                                       color: isSelected
-                                          ? const Color(0xFFBA1B1B)
+                                          ?  typographyMainColor(context)
                                           : Colors.grey.shade300,
                                       width: 1.3,
                                     ),
@@ -164,11 +166,11 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                         margin: EdgeInsets.only(top: 4.h),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? const Color(0xFFBA1B1B)
+                                              ? typographyMainColor(context)
                                               : Colors.transparent,
                                           border: Border.all(
                                             color: isSelected
-                                                ? const Color(0xFFBA1B1B)
+                                                ? typographyMainColor(context)
                                                 : Colors.grey.shade400,
                                             width: 2.w,
                                           ),
@@ -198,7 +200,7 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 15.sp,
-                                                      color: const Color(0xFFBA1B1B),
+                                                      color: typographyMainColor(context),
                                                     ),
                                                   ),
                                                   if (d.isUrgent) SizedBox(width: 4.w),
@@ -208,7 +210,7 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.w600,
                                                         fontSize: 11.sp,
-                                                        color: const Color(0xFFBA1B1B),
+                                                        color: typographyMainColor(context),
                                                       ),
                                                     ),
                                                 ],
@@ -220,7 +222,7 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                 Text(
                                                   " ${d.price}",
                                                   style: TextStyle(
-                                                    color: const Color(0xFFBA1B1B),
+                                                    color: typographyMainColor(context),
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: 'Graphik Arabic',
@@ -231,6 +233,8 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                   'assets/icons/ryal.png',
                                                   width: 17.w,
                                                   height: 17.h,
+                                                  color: typographyMainColor(context),
+
                                                 ),
                                               ],
                                             ),
@@ -271,9 +275,8 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
                                                           'assets/icons/ryal.png',
                                                           width: 16.w,
                                                           height: 16.h,
-                                                          color: Theme.of(context).brightness == Brightness.light
-                                                              ? null
-                                                              : Colors.white70,
+                                                          color: typographyMainColor(context),
+
                                                         ),
                                                       ],
                                                     ),
@@ -324,8 +327,9 @@ class _CheckResultScreenState extends State<CheckResultScreen> {
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFBA1B1B),
-                  foregroundColor: Colors.white,
+                  backgroundColor:                                                     typographyMainColor(context),
+
+        foregroundColor: Colors.white,
                   elevation: 0,
                   padding:  EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(

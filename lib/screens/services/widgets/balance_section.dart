@@ -104,7 +104,7 @@ class _BalanceSectionState extends State<BalanceSection> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFBA1B1B),
+                    color: typographyMainColor(context),
                     borderRadius: BorderRadius.circular(10.sp),
                   ),
                   alignment: Alignment.center,

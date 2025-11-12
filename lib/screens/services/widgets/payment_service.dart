@@ -43,7 +43,7 @@ class PaymentService {
     final dio = Dio(BaseOptions(headers: {"Authorization": "Bearer $token", "Accept": "application/json"}));
 
     try {
-      final response = await dio.post("$mainApi/app/elwarsha/payments/initiate", data: formData);
+      final response = await dio.post(paymentsInitiateApi, data: formData);
       debugPrint("Status: ${response.statusCode}");
       debugPrint("Response: ${response.data}");
 

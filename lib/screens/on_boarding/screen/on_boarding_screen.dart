@@ -2,6 +2,8 @@ import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/constant/app_colors.dart';
+
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -80,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 10,
                 decoration: BoxDecoration(
                   color:
-                  currentPage == index ? Color(0xFFBA1B1B) : Colors.grey,
+                  currentPage == index ? typographyMainColor(context) : Colors.grey,
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
@@ -113,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFBA1B1B),
+                  backgroundColor: typographyMainColor(context),
                   minimumSize: Size(270, 50),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -153,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
                 padding: EdgeInsets.all(20),
-                backgroundColor: Color(0xFFBA1B1B),
+                backgroundColor: typographyMainColor(context),
                 elevation: 0,
               ),
               child: Icon(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/rate_service_cubit.dart';
@@ -133,19 +134,18 @@ class _RateServiceViewState extends State<_RateServiceView> {
                           ? 'اكتب ملاحظاتك هنا (اختياري)'
                           : 'Write your notes here (optional)',
                   hintStyle: TextStyle(
-                    color:     Theme.of(context).brightness ==
-                        Brightness.light
-                        ? Colors.black
-                        : Colors.white,
+                    color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                     fontFamily: 'Graphik Arabic',
                     fontSize: 14.sp,
                   ),
                   filled: true,
                   fillColor:
-                  Theme.of(context).brightness ==
-                      Brightness.light
-                      ? Colors.white
-                      : Colors.black,
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.black,
 
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 16.w,
@@ -167,10 +167,11 @@ class _RateServiceViewState extends State<_RateServiceView> {
                 style: TextStyle(
                   fontFamily: 'Graphik Arabic',
                   fontSize: 14.sp,
-               color:    Theme.of(context).brightness ==
-                      Brightness.light
-                      ? Colors.black
-                      : Colors.white,                ),
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
+                ),
               ),
               SizedBox(height: 50.h),
 
@@ -208,7 +209,7 @@ class _RateServiceViewState extends State<_RateServiceView> {
                                   isRTL ? 'يعطيك العافية!' : 'Thank you!',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFFBA1B1B),
+                                    color: typographyMainColor(context),
                                     fontSize: 25.sp,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Graphik Arabic',
@@ -239,7 +240,10 @@ class _RateServiceViewState extends State<_RateServiceView> {
                                       ); // يرجع لصفحة سابقة
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFBA1B1B),
+                                      backgroundColor: typographyMainColor(
+                                        context,
+                                      ),
+
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
                                           12.r,
@@ -291,8 +295,9 @@ class _RateServiceViewState extends State<_RateServiceView> {
                         backgroundColor:
                             state.rating == 0
                                 ? Colors.grey
-                                : const Color(0xFFBA1B1B),
-                        foregroundColor: Colors.white,
+                                :                            typographyMainColor(context),
+
+                      foregroundColor: Colors.white,
                       ),
                       child:
                           state.status == RateServiceStatus.loading

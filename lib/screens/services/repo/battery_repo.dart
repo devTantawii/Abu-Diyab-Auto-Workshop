@@ -37,7 +37,7 @@ class BatteryRepository {
 
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/services/batteries",
+        batteriesApi,
         queryParameters: queryParams,
       );
 

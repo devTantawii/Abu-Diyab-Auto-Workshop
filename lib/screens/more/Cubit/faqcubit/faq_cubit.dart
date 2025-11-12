@@ -13,7 +13,7 @@ class FaqCubit extends Cubit<FaqState> {
 
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "$mainApi/app/elwarsha/",
+      baseUrl: "$elwarshaApi",
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode

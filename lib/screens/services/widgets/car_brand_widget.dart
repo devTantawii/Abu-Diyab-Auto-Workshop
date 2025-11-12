@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../my_car/cubit/CarModelCubit.dart';
 import '../../my_car/cubit/car_brand_cubit.dart';
@@ -72,7 +73,7 @@ class CarBrandWidget extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? const Color(0xFFE19A9A)
+                              ? buttonPrimaryBgColor(context).withOpacity(0.3) // شفافية 50%
                               : Theme.of(context).brightness ==
                               Brightness.light
                               ? Colors.white
@@ -80,7 +81,7 @@ class CarBrandWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isSelected
-                                ? const Color(0xFFBA1B1B)
+                                ? buttonPrimaryBgColor(context)
                                 : Colors.grey.shade300,
                             width: 2,
                           ),

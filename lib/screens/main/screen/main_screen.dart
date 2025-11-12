@@ -12,9 +12,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constant/Responsivemodel.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../../widgets/navigation.dart';
+import '../../notification/screen/notifications_screen.dart';
 import '../../profile/repositorie/profile_repository.dart';
 import '../../reminds/cubit/notes_details_cubit.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
@@ -74,10 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+      backgroundColor: backgroundColor(context),
       appBar: AppBar(
         toolbarHeight: Responsive.h(context, 150, 200),
         backgroundColor: Colors.transparent,
@@ -213,7 +212,14 @@ class _MainScreenState extends State<MainScreen> {
                           size: 28.sp,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NotificationsScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -322,7 +328,7 @@ class _MainScreenState extends State<MainScreen> {
                                   : "Share",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 10.sp, // responsive font size
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -362,10 +368,7 @@ class _MainScreenState extends State<MainScreen> {
                             : "Services",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                          color: headingColor(context),
                           fontSize: 20.sp,
                           fontFamily: 'GraphikArabic',
                           fontWeight: FontWeight.w600,
@@ -388,7 +391,7 @@ class _MainScreenState extends State<MainScreen> {
                                       ? "عرض الكل"
                                       : "Show All"),
                               style: TextStyle(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 16.h,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -399,7 +402,7 @@ class _MainScreenState extends State<MainScreen> {
                               showAllServices
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              color: Color(0xFFBA1B1B),
+                              color: typographyMainColor(context),
                             ),
                           ],
                         ),
@@ -553,9 +556,12 @@ class _MainScreenState extends State<MainScreen> {
                     width: double.infinity,
                     height: 60.h,
                     decoration: BoxDecoration(
-                      color: Color(0x1ABA1B1B),
+                      color: typographyMainColor(context).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12.sp),
-                      border: Border.all(width: 2, color: Color(0xFFBA1B1B)),
+                      border: Border.all(
+                        width: 2,
+                        color: typographyMainColor(context),
+                      ),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(10.w),
@@ -575,13 +581,13 @@ class _MainScreenState extends State<MainScreen> {
                             Icon(
                               Icons.add_circle_outline_rounded,
                               size: 20.sp,
-                              color: Color(0xFFBA1B1B),
+                              color: typographyMainColor(context),
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               "ذكرني بصيانه سيارتي",
                               style: TextStyle(
-                                color: Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 20.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,
@@ -631,19 +637,11 @@ class _MainScreenState extends State<MainScreen> {
                                 height: isTablet ? 120.h : 94.h,
                                 margin: EdgeInsets.only(bottom: 12.h),
                                 decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.white
-                                          : Colors.black,
+                                  color: buttonBgWhiteColor(context),
                                   borderRadius: BorderRadius.circular(12.r),
                                   border: Border.all(
-                                    color:
-                                        Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.transparent,
-                                    width: 1.0,
+                                    color: strokeGrayColor(context),
+                                    width: 1.50,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -772,7 +770,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   Icon(
                                                     Icons.notifications_none,
                                                     size: 18.sp,
-                                                    color: Colors.red,
+                                                    color: typographyMainColor(context),
                                                   ),
                                                   SizedBox(width: 6.w),
 
@@ -805,9 +803,8 @@ class _MainScreenState extends State<MainScreen> {
                                                         ? "صيانتك بعد ${note.daysAgo} أيام"
                                                         : "Your maintenance after ${note.daysAgo} days",
                                                     style: TextStyle(
-                                                      color: const Color(
-                                                        0xFFBA1B1B,
-                                                      ),
+                                                      color: typographyMainColor(context),
+
                                                       fontSize: 16.sp,
                                                       fontFamily:
                                                           'Graphik Arabic',
@@ -867,184 +864,7 @@ class _MainScreenState extends State<MainScreen> {
                     },
                   ),
 
-                  SizedBox(height: 10.h) /*
-                  Container(
-                    width: double.infinity,
-                    height: isTablet ? 120.h : 94.h,
-                    decoration: BoxDecoration(
-                      color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.white
-                              : Colors.black,
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : Colors.transparent,
-                        width: 1.0,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 12.r,
-                          offset: Offset(0, 0),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      textDirection:
-                          Localizations.localeOf(context).languageCode == 'ar'
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 10.h,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      locale.isDirectionRTL(context)
-                                          ? "تغيير إطارات "
-                                          : "Change tires",
-                                      style: TextStyle(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.black
-                                                : Colors.white,
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Graphik Arabic',
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w),
-                                    Image.asset(
-                                      "assets/icons/tire1.png",
-                                      width: 22.w,
-                                      height: 20.h,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ],
-                                ),
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      locale.isDirectionRTL(context)
-                                          ? 'جيلي , إمجراند'
-                                          : "Geely, Emgrand",
-                                      style: TextStyle(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.black.withValues(
-                                                  alpha: 0.70,
-                                                )
-                                                : Colors.white,
-
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Graphik Arabic',
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.60,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                    Text(
-                                      '2024',
-                                      style: TextStyle(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.black.withValues(
-                                                  alpha: 0.70,
-                                                )
-                                                : Colors.white,
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Graphik Arabic',
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.60,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.notifications_none,
-                                        size: 18.sp,
-                                        color: Colors.red,
-                                      ),
-                                      Text(
-                                        '17 / 9 / 2025',
-                                        style: TextStyle(
-                                          color:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.light
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                          fontSize: 14.21.sp,
-                                          fontFamily: 'Graphik Arabic',
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.60,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10.w),
-                                      Text(
-                                        locale.isDirectionRTL(context)
-                                            ? "صيانتك بعد 5 أيام"
-                                            : "Your maintenance after 5 days",
-                                        style: TextStyle(
-                                          color: const Color(0xFFBA1B1B),
-                                          fontSize: 16.sp,
-                                          fontFamily: 'Graphik Arabic',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.60,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        Container(
-                          width: 99.w,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.06),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12.r),
-                              bottomLeft: Radius.circular(12.r),
-                            ),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              "assets/icons/car_logo.png",
-                              // width: 40.w, // حجم مناسب - تقدر تعدّله حسب الحاجة
-                              // height: 40.h,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-               */,
+                  SizedBox(height: 10.h),
                 ],
               ),
             ],
@@ -1101,16 +921,10 @@ class _MainScreenState extends State<MainScreen> {
             width: 100.w,
             height: 100.h,
             decoration: BoxDecoration(
-              color:
-                  Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Colors.black,
+              color: buttonBgWhiteColor(context),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.grey
-                        : Colors.white,
+                color: buttonSecondaryBorderColor(context),
                 width: 1.5.sp,
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/language/locale.dart';
 import '../../my_car/cubit/all_cars_cubit.dart';
 import '../../my_car/cubit/all_cars_state.dart';
@@ -11,7 +12,6 @@ import '../../my_car/screen/widget/details_item.dart';
 import '../../my_car/widget/bottom_add_car.dart';
 
 class CarsSection extends StatefulWidget {
-
   final Function(int userCarId)? onCarSelected;
 
   const CarsSection({super.key, this.onCarSelected});
@@ -67,8 +67,25 @@ class _CarsSectionState extends State<CarsSection> {
               bloc: _cubit,
               builder: (context, state) {
                 if (state is CarLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Padding(
+                    padding: EdgeInsets.all(10.w),
+                    child: Column(
+                      children: List.generate(1, (index) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 20.h),
+                            width: double.infinity,
+                            height: 70.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
                   );
                 } else if (state is CarError) {
                   return Center(
@@ -110,7 +127,7 @@ class _CarsSectionState extends State<CarsSection> {
                             child: Text(
                               '+ إضافة سيارة',
                               style: TextStyle(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -125,7 +142,7 @@ class _CarsSectionState extends State<CarsSection> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       ...state.cars.map(
-                            (car) => Padding(
+                        (car) => Padding(
                           padding: EdgeInsets.only(right: 10.w),
                           child: _carCard(context, car, locale),
                         ),
@@ -160,7 +177,7 @@ class _CarsSectionState extends State<CarsSection> {
                             child: Text(
                               '+ إضافة سيارة',
                               style: TextStyle(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -190,7 +207,6 @@ class _CarsSectionState extends State<CarsSection> {
           _selectedUserCarId = isSelected ? null : car.id;
         });
 
-
         if (widget.onCarSelected != null && _selectedUserCarId != null) {
           widget.onCarSelected!(_selectedUserCarId!);
         }
@@ -198,13 +214,17 @@ class _CarsSectionState extends State<CarsSection> {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.87,
         decoration: ShapeDecoration(
-          color: isSelected
-              ? const Color(0xFFBA1B1B).withOpacity(0.2)
-              : buttonBgWhiteColor(context),
+          color:
+              isSelected
+                  ? typographyMainColor(context).withOpacity(0.2)
+                  : buttonBgWhiteColor(context),
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1.50.w,
-              color: isSelected ? accentColor : buttonSecondaryBorderColor(context),
+              color:
+                  isSelected
+                      ? typographyMainColor(context)
+                      : buttonSecondaryBorderColor(context),
             ),
             borderRadius: BorderRadius.circular(15.r),
           ),

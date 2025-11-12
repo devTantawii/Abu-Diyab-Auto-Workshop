@@ -1,5 +1,5 @@
-part of 'contact_us_cubit.dart';
 
+import 'package:flutter/material.dart';
 
 @immutable
 abstract class ContactUsState {}
@@ -9,9 +9,10 @@ class ContactUsInitial extends ContactUsState {}
 class ContactUsLoading extends ContactUsState {}
 
 class ContactUsSuccess extends ContactUsState {
-  final ContactUsResponse response;
-  ContactUsSuccess(this.response);
+  final String message;
+  ContactUsSuccess(this.message);
 }
+
 
 class ContactUsError extends ContactUsState {
   final String message;

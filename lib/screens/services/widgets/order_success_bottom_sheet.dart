@@ -38,7 +38,9 @@ class OrderSuccessBottomSheet extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: accentColor,
+                color: typographyMainColor(
+                  context,
+                ),
               ),
               textAlign: TextAlign.center,
             ),
@@ -72,7 +74,9 @@ class OrderSuccessBottomSheet extends StatelessWidget {
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentColor,
+                backgroundColor: typographyMainColor(
+                  context,
+                ),
                 minimumSize: Size(double.infinity, 50.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.sp),

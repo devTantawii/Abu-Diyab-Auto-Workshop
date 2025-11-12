@@ -28,7 +28,14 @@ class CarCheck extends StatefulWidget {
   final String description;
   final String icon;
   final String slug;
-  const CarCheck({super.key, required this.title, required this.description, required this.icon, required this.slug});
+
+  const CarCheck({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.slug,
+  });
 
   @override
   State<CarCheck> createState() => _CarCheckState();
@@ -58,7 +65,7 @@ class _CarCheckState extends State<CarCheck> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         onBack: () {
@@ -90,9 +97,9 @@ class _CarCheckState extends State<CarCheck> {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,
@@ -107,7 +114,6 @@ class _CarCheckState extends State<CarCheck> {
                         return Icon(Icons.image_not_supported, size: 20.h);
                       },
                     ),
-
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -129,6 +135,7 @@ class _CarCheckState extends State<CarCheck> {
                 ),
 
                 SizedBox(height: 6.h),
+
                 /// -------------------- خطوات التقدم --------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -161,10 +168,9 @@ class _CarCheckState extends State<CarCheck> {
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color:
-                    Theme.of(context).brightness ==
-                        Brightness.light
-                        ? Colors.black
-                        : Colors.white,
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                     fontSize: 14.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
@@ -186,10 +192,10 @@ class _CarCheckState extends State<CarCheck> {
                           height: 55.h,
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
-                            color:      Theme.of(context).brightness ==
-                                Brightness.light
-                                ? Colors.white
-                                : Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -212,19 +218,19 @@ class _CarCheckState extends State<CarCheck> {
                                   height: 22.h,
                                   decoration: BoxDecoration(
                                     color:
-                                    selected == true
-                                        ? Color(0xFFBA1B1B)
-                                        : Color(0xFFD9D9D9),
+                                        selected == true
+                                            ? typographyMainColor(context)
+                                            : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
                                     Icons.check,
                                     size: 16.sp,
                                     color:
-                                    Theme.of(context).brightness ==
-                                        Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ),
                               ),
@@ -234,10 +240,10 @@ class _CarCheckState extends State<CarCheck> {
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
                                 ),
                               ),
                             ],
@@ -259,10 +265,9 @@ class _CarCheckState extends State<CarCheck> {
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
                           decoration: BoxDecoration(
                             color:
-                            Theme.of(context).brightness ==
-                                Brightness.light
-                                ? Colors.white
-                                : Colors.black,
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xFF9B9B9B),
@@ -285,19 +290,19 @@ class _CarCheckState extends State<CarCheck> {
                                   height: 22.h,
                                   decoration: BoxDecoration(
                                     color:
-                                    selected == false
-                                        ? Color(0xFFBA1B1B)
-                                        : Color(0xFFD9D9D9),
+                                        selected == false
+                                            ? typographyMainColor(context)
+                                            : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
                                     Icons.check,
                                     size: 16.sp,
                                     color:
-                                    Theme.of(context).brightness ==
-                                        Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ),
                               ),
@@ -307,10 +312,10 @@ class _CarCheckState extends State<CarCheck> {
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
                                 ),
                               ),
                             ],
@@ -330,13 +335,11 @@ class _CarCheckState extends State<CarCheck> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text:
-                              locale.isDirectionRTL(context)
+                          text: locale.isDirectionRTL(context)
                                   ? 'المرفقات '
                                   : 'Attatchment',
                           style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
+                            color: Theme.of(context).brightness == Brightness.light
                                     ? Colors.black
                                     : Colors.white,
                             fontSize: 14.sp,
@@ -396,31 +399,28 @@ class _CarCheckState extends State<CarCheck> {
             return;
           }
 
-
-
-
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
                   (BuildContext context) => ReviewRequestPage(
-                title: widget.title,
-                icon: widget.icon,
-                slug: widget.slug,
-                selectedUserCarId: _selectedUserCarId,
-                selectedProduct: 0,
+                    title: widget.title,
+                    icon: widget.icon,
+                    slug: widget.slug,
+                    selectedUserCarId: _selectedUserCarId,
+                    selectedProduct: 0,
                     isCarWorking: selected.toString(),
 
                     notes:
-                notesController.text.isNotEmpty
-                    ? notesController.text
-                    : null,
-                kiloRead:
-                kiloReadController.text.isNotEmpty
-                    ? kiloReadController.text
-                    : null,
-                selectedCarDocs: selectedCarDocs,
-              ),
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : null,
+                    kiloRead:
+                        kiloReadController.text.isNotEmpty
+                            ? kiloReadController.text
+                            : null,
+                    selectedCarDocs: selectedCarDocs,
+                  ),
             ),
           );
         },

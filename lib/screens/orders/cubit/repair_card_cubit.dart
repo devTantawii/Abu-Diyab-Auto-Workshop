@@ -14,7 +14,7 @@ class RepairCardsCubit extends Cubit<RepairCardsState> {
     emit(RepairCardsLoading());
 
     try {
-      final url = '$mainApi/app/elwarsha/orders/get-repair-cards';
+      final url = getRepairCheckApi;
       print("🌐 Request URL: $url");
       print("📦 Query Params: {order_id: $orderId}");
       final prefs = await SharedPreferences.getInstance();
@@ -64,7 +64,7 @@ class RepairCardsCubit extends Cubit<RepairCardsState> {
 
   Future<void> updateRepairCheck(int orderId, Map<String, int> data) async {
     try {
-      final url = '$mainApi/app/elwarsha/orders/update-repair-check';
+      final url = updateRepairCheckApi;
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 

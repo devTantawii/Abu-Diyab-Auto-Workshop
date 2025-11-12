@@ -7,6 +7,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
@@ -246,7 +247,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                                   : "Filtering",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: accentColor,
+                                                color: typographyMainColor(context),
                                                 fontSize: 25.sp,
                                                 fontFamily: 'Graphik Arabic',
                                                 fontWeight: FontWeight.w600,
@@ -352,9 +353,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                                                 decoration: ShapeDecoration(
                                                                   color:
                                                                       isSelected
-                                                                          ? Color(
-                                                                            0xFFBA1B1B,
-                                                                          ).withOpacity(
+                                                                          ? typographyMainColor(context).withOpacity(
                                                                             0.2,
                                                                           )
                                                                           : null,
@@ -364,9 +363,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                                                           2.w,
                                                                       color:
                                                                           isSelected
-                                                                              ? Color(
-                                                                                0xFFBA1B1B,
-                                                                              )
+                                                                              ? typographyMainColor(context)
                                                                               : Colors.grey,
                                                                     ),
                                                                     borderRadius:
@@ -441,9 +438,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                                     10,
                                                   ),
                                                   decoration: ShapeDecoration(
-                                                    color: const Color(
-                                                      0xFFBA1B1B,
-                                                    ),
+                                                    color: typographyMainColor(context),
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -488,14 +483,14 @@ class _ChangeTireState extends State<ChangeTire> {
                               decoration: BoxDecoration(
                                 color:
                                     selectedTireSize != null
-                                        ? Color(0xFFBA1B1B).withOpacity(0.2)
+                                        ?typographyMainColor(context).withOpacity(0.2)
                                         : buttonBgWhiteColor(context),
                                 borderRadius: BorderRadius.circular(10.sp),
                                 border: Border.all(
                                   width: 1.5.w,
                                   color:
                                       selectedTireSize != null
-                                          ? Color(0xFFBA1B1B)
+                                          ? typographyMainColor(context)
                                           : buttonSecondaryBorderColor(context),
                                 ),
                               ),
@@ -503,7 +498,10 @@ class _ChangeTireState extends State<ChangeTire> {
                                 padding: const EdgeInsets.all(10.0),
                                 child:
                                     selectedTireSize != null
-                                        ? Icon(Icons.cancel_outlined)
+                                        ? Image.asset(
+                                      'assets/icons/cancel.png',
+                                      scale: 1.3.sp,
+                                    )
                                         : Image.asset(
                                           'assets/icons/icon_filter.png',
                                           color: iconGrayColor(context),
@@ -625,8 +623,25 @@ class _ChangeTireState extends State<ChangeTire> {
                       BlocBuilder<TireCubit, TireState>(
                         builder: (context, state) {
                           if (state is TireLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return Padding(
+                              padding: EdgeInsets.all(10.w),
+                              child: Column(
+                                children: List.generate(2, (index) {
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 20.h),
+                                      width: double.infinity,
+                                      height: 100.h,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15.r),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
                             );
                           } else if (state is TireLoaded) {
                             final tires = state.tires;
@@ -687,7 +702,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                             width: 1.5.w,
                                             color:
                                                 isSelected
-                                                    ? const Color(0xFFBA1B1B)
+                                                    ? typographyMainColor(context)
                                                     : const Color(0xFF9B9B9B),
                                           ),
                                           boxShadow: [
@@ -719,18 +734,14 @@ class _ChangeTireState extends State<ChangeTire> {
                                                 side: BorderSide(
                                                   color:
                                                       isSelected
-                                                          ? const Color(
-                                                            0xFFBA1B1B,
-                                                          )
+                                                          ?typographyMainColor(context)
                                                           : const Color(
                                                             0xFF474747,
                                                           ),
                                                   width: 1.2,
                                                 ),
                                                 checkColor: Colors.white,
-                                                activeColor: const Color(
-                                                  0xFFBA1B1B,
-                                                ),
+                                                activeColor: typographyMainColor(context),
                                                 materialTapTargetSize:
                                                     MaterialTapTargetSize
                                                         .shrinkWrap,
@@ -778,10 +789,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                                           Text(
                                                             "${tire.price}",
                                                             style: TextStyle(
-                                                              color:
-                                                                  const Color(
-                                                                    0xFFBA1B1B,
-                                                                  ),
+                                                              color: typographyMainColor(context),
+
                                                               fontSize: 16.sp,
                                                               fontFamily:
                                                                   'Poppins',
@@ -794,7 +803,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                                           Image.asset(
                                                             'assets/icons/ryal.png',
                                                             width: 20.w,
-                                                            height: 20.h,
+                                                            height: 20.h,                                                                color: typographyMainColor(context),
+
                                                           ),
                                                         ],
                                                       ),
@@ -884,7 +894,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                           height: 50.h,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                            color: accentColor,
+                                            color: typographyMainColor(context),
                                             borderRadius: BorderRadius.circular(
                                               8.r,
                                             ),
@@ -892,7 +902,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                           child: Text(
                                             '$currentPage',
                                             style: TextStyle(
-                                              color: headingColor(context),
+                                              color: textWhiteLight,
                                               fontSize: 22.sp,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -971,7 +981,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                           width: buttonSize,
                                           height: buttonSize,
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFFBA1B1B),
+                                            color: typographyMainColor(context),
                                             shape: BoxShape.rectangle,
                                             borderRadius:
                                                 Directionality.of(context) ==
@@ -1025,16 +1035,13 @@ class _ChangeTireState extends State<ChangeTire> {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap:
-                                            () =>
-                                                count > 0
-                                                    ? setState(() => count--)
-                                                    : null,
+                                        onTap: () => count > 1 ? setState(() => count--) : null,
+
                                         child: Container(
                                           width: buttonSize,
                                           height: buttonSize,
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFFBA1B1B),
+                                            color: typographyMainColor(context),
                                             shape: BoxShape.rectangle,
                                             borderRadius:
                                                 Directionality.of(context) ==

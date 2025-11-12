@@ -14,7 +14,7 @@ class StaticPagesCubit extends Cubit<StaticPagesState> {
 
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "$mainApi/app/elwarsha/",
+      baseUrl: "$elwarshaApi",
       headers: {
         "Accept": "application/json",
         "Accept-Language": langCode == '' ? "en" : langCode,

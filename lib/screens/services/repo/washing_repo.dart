@@ -67,7 +67,7 @@ class CarWashServiceRepo {
   }) async {
     try {
       final response = await dio.get(
-        '$mainApi/app/elwarsha/services/car-washs',
+          carWashsApi,
         queryParameters: {
           'per_page': perPage,
           'page': page,

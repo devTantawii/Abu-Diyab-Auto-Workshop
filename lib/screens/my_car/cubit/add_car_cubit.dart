@@ -44,7 +44,7 @@ class AddCarCubit extends Cubit<AddCarState> {
       debugPrint("📤 Sending files: ${formData.files}");
 
       final response = await dio.post(
-        "$mainApi/app/elwarsha/user-cars/create",
+        carCreateApi,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

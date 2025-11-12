@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../my_car/cubit/CarModelCubit.dart';
 import '../../my_car/cubit/CarModelState.dart';
@@ -92,14 +93,15 @@ class CarModelWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? const Color(0xFFE19A9A)
-                              : Theme.of(context).brightness == Brightness.light
+                              ? buttonPrimaryBgColor(context).withOpacity(0.3) // شفافية 50%
+                              : Theme.of(context).brightness ==
+                              Brightness.light
                               ? Colors.white
                               : Colors.black,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isSelected
-                                ? const Color(0xFFBA1B1B)
+                                ? buttonPrimaryBgColor(context)
                                 : Colors.grey.shade300,
                             width: 2,
                           ),
@@ -110,8 +112,7 @@ class CarModelWidget extends StatelessWidget {
                               offset: Offset(0, 2),
                             ),
                           ],
-                        ),
-                        alignment: Alignment.center,
+                        ),                        alignment: Alignment.center,
                         child: Text(
                           car.name,
                           maxLines: 1,

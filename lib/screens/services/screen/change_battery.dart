@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
@@ -133,7 +134,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       ),
                       child: Row(
                         children: [
-                         Icon(Icons.search_outlined,size: 20.sp,),
+                          Icon(Icons.search_outlined, size: 20.sp),
                           SizedBox(width: 8.w),
                           Expanded(
                             child: TextField(
@@ -250,7 +251,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                               : 'Filtering',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            color: accentColor,
+                                            color: typographyMainColor(context),
                                             fontSize: 25.sp,
                                             fontFamily: 'Graphik Arabic',
                                             fontWeight: FontWeight.w600,
@@ -348,9 +349,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                             decoration: ShapeDecoration(
                                                               color:
                                                                   isSelected
-                                                                      ? Color(
-                                                                        0xFFBA1B1B,
-                                                                      ).withOpacity(
+                                                                      ? typographyMainColor(context).withOpacity(
                                                                         0.2,
                                                                       )
                                                                       : null,
@@ -359,9 +358,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                                   width: 2.w,
                                                                   color:
                                                                       isSelected
-                                                                          ? Color(
-                                                                            0xFFBA1B1B,
-                                                                          )
+                                                                          ? typographyMainColor(context)
                                                                           : Colors
                                                                               .grey,
                                                                 ),
@@ -429,7 +426,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                               height: 50.h,
                                               padding: const EdgeInsets.all(10),
                                               decoration: ShapeDecoration(
-                                                color: const Color(0xFFBA1B1B),
+                                                color: typographyMainColor(context),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -469,14 +466,14 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       decoration: BoxDecoration(
                         color:
                             selectedAh != null
-                                ? Color(0xFFBA1B1B).withOpacity(0.2)
+                                ? typographyMainColor(context).withOpacity(0.2)
                                 : buttonBgWhiteColor(context),
                         borderRadius: BorderRadius.circular(10.sp),
                         border: Border.all(
                           width: 1.5.w, // responsive border
                           color:
                               selectedAh != null
-                                  ? Color(0xFFBA1B1B)
+                                  ? typographyMainColor(context)
                                   : buttonSecondaryBorderColor(context),
                         ),
                       ),
@@ -593,8 +590,27 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       BlocBuilder<BatteryCubit, BatteryState>(
                         builder: (context, state) {
                           if (state is BatteryLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return Padding(
+                              padding: EdgeInsets.all(10.w),
+                              child: Column(
+                                children: List.generate(2, (index) {
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 20.h),
+                                      width: double.infinity,
+                                      height: 100.h,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          15.r,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
                             );
                           } else if (state is BatteryLoaded) {
                             final batteries = state.response.data;
@@ -672,7 +688,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                               width: 1.5.w,
                                               color:
                                                   isSelected
-                                                      ? const Color(0xFFBA1B1B)
+                                                      ? typographyMainColor(
+                                                        context,
+                                                      )
                                                       : const Color(0xFF9B9B9B),
                                             ),
                                             boxShadow: [
@@ -710,8 +728,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                   side: BorderSide(
                                                     color:
                                                         isSelected
-                                                            ? const Color(
-                                                              0xFFBA1B1B,
+                                                            ? typographyMainColor(
+                                                              context,
                                                             )
                                                             : const Color(
                                                               0xFF474747,
@@ -719,9 +737,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                     width: 1.2,
                                                   ),
                                                   checkColor: Colors.white,
-                                                  activeColor: const Color(
-                                                    0xFFBA1B1B,
-                                                  ),
+                                                  activeColor:
+                                                      typographyMainColor(
+                                                        context,
+                                                      ),
                                                   materialTapTargetSize:
                                                       MaterialTapTargetSize
                                                           .shrinkWrap,
@@ -740,9 +759,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                             battery.name,
                                                             maxLines: 1,
                                                             style: TextStyle(
-                                                              color: headingColor(
-                                                                context,
-                                                              ),
+                                                              color:
+                                                                  headingColor(
+                                                                    context,
+                                                                  ),
                                                               fontSize: 16.sp,
                                                               fontFamily:
                                                                   'Graphik Arabic',
@@ -758,9 +778,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                               "${battery.price} SAR",
                                                               style: TextStyle(
                                                                 color:
-                                                                    const Color(
-                                                                      0xFFBA1B1B,
+                                                                    typographyMainColor(
+                                                                      context,
                                                                     ),
+
                                                                 fontSize: 16.sp,
                                                                 fontFamily:
                                                                     'Poppins',
@@ -776,6 +797,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                               'assets/icons/ryal.png',
                                                               width: 20.w,
                                                               height: 20.h,
+                                                              color:
+                                                                  typographyMainColor(
+                                                                    context,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -900,7 +925,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                         height: 50.h,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFBA1B1B),
+                                          color: typographyMainColor(context),
                                           borderRadius: BorderRadius.circular(
                                             8.r,
                                           ),

@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:abu_diyab_workshop/screens/auth/screen/sign_up.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/support_bottom_sheet.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
@@ -199,7 +200,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                       }
                                     },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFBA1B1B),
+                              backgroundColor:typographyMainColor(context),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -234,7 +235,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                             ? 'نسيت كلمة المرور؟'
                             : 'Forgot your password?',
                         style: TextStyle(
-                          color: Color(0xFFBA1B1B),
+                          color: typographyMainColor(context),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -279,7 +280,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                   ? "سوّيه الحين"
                                   : "Do it now",
                               style: TextStyle(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 fontSize: 16.17.h,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -396,7 +397,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                 ? "تواصل معنا لو تبي مساعدة"
                                 : "Contact us if you need help",
                             style: TextStyle(
-                              color: const Color(0xFFBA1B1B),
+                              color: typographyMainColor(context),
                               fontSize: 16.h,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
@@ -443,7 +444,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide:  BorderSide(color: typographyMainColor(context)),
         ),
       ),
     );

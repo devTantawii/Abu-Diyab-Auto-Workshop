@@ -15,7 +15,7 @@ class ProfileRepository {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await _dio.get(
-        '$mainApi/app/elwarsha/profile/get-logs-points',
+        getLogsApi,
         options: Options(headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
@@ -82,7 +82,7 @@ class ProfileRepository {
     final token = prefs.getString('token');
     if (token == null) return null;
 
-    final url = "$mainApi/app/elwarsha/profile/update";
+    final url = updateProfileApi;
 
     try {
       final formData = FormData.fromMap({

@@ -19,7 +19,7 @@ class CarModelCubit extends Cubit<CarModelState> {
 
     try {
       print('🚀 Fetching car models for brandId: $brandId');
-      final url = '$mainApi/app/elwarsha/car-model/get/$brandId';
+      final url = '$getModelApi$brandId';
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token'); // 👈 جبنا التوكن
       print("🔑 Token: $token");

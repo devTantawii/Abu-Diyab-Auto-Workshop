@@ -99,7 +99,7 @@ class CarDetailsSection extends StatelessWidget {
                       child: Text(
                         " ${car.carBrand.name} ${car.carModel.name} ${car.year ?? ''}",
                         style: TextStyle(
-                          color: accentColor,
+                          color: typographyMainColor(context),
                           fontSize: 13.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -126,7 +126,7 @@ class CarDetailsSection extends StatelessWidget {
                       child: Text(
                         " ${car.licencePlate}",
                         style: TextStyle(
-                          color: Color(0xFFBA1B1B),
+                          color: typographyMainColor(context),
                           fontSize: 13.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -153,7 +153,7 @@ class CarDetailsSection extends StatelessWidget {
                       child: Text(
                         " ${car.kilometer ?? '--'} كم",
                         style: TextStyle(
-                          color: Color(0xFFBA1B1B),
+                          color: typographyMainColor(context),
                           fontSize: 13.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,

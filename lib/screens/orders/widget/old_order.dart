@@ -1,6 +1,7 @@
 import 'package:abu_diyab_workshop/screens/orders/widget/rate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../model/old_order_model.dart';
 import 'order_details_screen.dart';
@@ -66,7 +67,7 @@ class OldOrder extends StatelessWidget {
                       TextSpan(
                         text: serviceName,
                         style: TextStyle(
-                          color: const Color(0xFFBA1B1B),
+                          color: typographyMainColor(context),
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -108,7 +109,7 @@ class OldOrder extends StatelessWidget {
                   Text(
                     order.code,
                     style:  TextStyle(
-                      color: Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -236,7 +237,7 @@ class OldOrder extends StatelessWidget {
               Text(
                 order.date,
                 style:  TextStyle(
-                  color: Color(0xFFBA1B1B),
+                  color: typographyMainColor(context),
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -264,7 +265,7 @@ class OldOrder extends StatelessWidget {
                   child: Container(
                     height: 50.h,
                     decoration: ShapeDecoration(
-                      color: const Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -356,7 +357,7 @@ class OldOrder extends StatelessWidget {
          SizedBox(width: 8.w),
         Text(value,
             style: TextStyle(
-              color: Color(0xFFBA1B1B),
+              color: typographyMainColor(context),
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             )),

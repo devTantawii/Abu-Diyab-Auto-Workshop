@@ -50,7 +50,7 @@ class AppointmentDetails extends StatelessWidget {
                   Icon(
                     Icons.local_shipping,
                     size: 25.sp,
-                    color: accentColor,
+                    color: typographyMainColor(context),
                   ),
                   SizedBox(width: 8.w),
                   Column(
@@ -82,7 +82,7 @@ class AppointmentDetails extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.location_on_outlined,
-                    color: accentColor,
+                    color: typographyMainColor(context),
                     size: 25.sp,
                   ),
                   SizedBox(width: 8.w),
@@ -121,7 +121,7 @@ class AppointmentDetails extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.access_time,
-                    color: Color(0xFFBA1B1B),
+                    color: typographyMainColor(context),
                     size: 25.sp,
                   ),
                   SizedBox(width: 8.w),

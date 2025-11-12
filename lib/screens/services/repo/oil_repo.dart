@@ -31,7 +31,7 @@ class OilRepository {
 
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/services/oils",
+        oilsApi,
         queryParameters: queryParams,
       );
 

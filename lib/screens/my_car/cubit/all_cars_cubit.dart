@@ -23,7 +23,7 @@ class CarCubit extends Cubit<CarState> {
 
     try {
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/user-cars/get",
+        carGetApi,
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -77,7 +77,7 @@ class CarCubit extends Cubit<CarState> {
       }
 
       final response = await _dio.get(
-        "$mainApi/app/elwarsha/user-cars/show/$id",
+        "$carShowApi$id",
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -133,7 +133,7 @@ class CarCubit extends Cubit<CarState> {
       });
 
       final response = await _dio.post(
-        "$mainApi/app/elwarsha/user-cars/update/$carId",
+        "$carUpdateApi$carId",
         data: formData,
         options: Options(
           headers: {

@@ -134,7 +134,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                     ),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFBA1B1B),
+                        backgroundColor: typographyMainColor(context),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
@@ -188,7 +188,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                           };
 
                           final response = await dio.post(
-                            "/app/elwarsha/profile/update-password",
+                            updatePasswordApi,
                             data: body,
                           );
 

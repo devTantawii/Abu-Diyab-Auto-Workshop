@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_cubit.dart';
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../cubit/reward_logs_cubit.dart';
 import '../cubit/reward_logs_state.dart';
@@ -24,7 +30,6 @@ class _InviteFriendsState extends State<InviteFriends> {
 
     context.read<ProfileCubit>().fetchProfile();
     context.read<RewardLogsCubit>().fetchRewardLogs();
-
   }
 
   @override
@@ -36,7 +41,26 @@ class _InviteFriendsState extends State<InviteFriends> {
         builder: (context, state) {
           // حالة التحميل
           if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Column(
+                children: List.generate(2, (index) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      width: double.infinity,
+                      height: 200.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.r),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            );
           }
 
           // حالة البيانات (مسجل دخول)
@@ -46,21 +70,21 @@ class _InviteFriendsState extends State<InviteFriends> {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFFBFFD0), Color(0xFFBA1B1B)],
+                    begin: Alignment(0.00, -0.00),
+                    end: Alignment(0.50, 1.00),
+                    colors: [Color(0xFFEDFFEB), Color(0xFF006D92)],
                   ),
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(20.w),
                   child: Column(
-
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Row(
-                        textDirection: locale!.isDirectionRTL(context)
-                            ? TextDirection.ltr
-                            : TextDirection.rtl,
+                        textDirection:
+                            locale!.isDirectionRTL(context)
+                                ? TextDirection.ltr
+                                : TextDirection.rtl,
                         children: [
                           Expanded(
                             child: Text(
@@ -222,7 +246,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     child: Container(
                                       height: 40.h,
                                       decoration: ShapeDecoration(
-                                        color: const Color(0xFFBA1B1B),
+                                        color: typographyMainColor(context),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             10.r,
@@ -254,7 +278,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                       shape: RoundedRectangleBorder(
                                         side: BorderSide(
                                           width: 1.w,
-                                          color: Color(0xFFBA1B1B),
+                                          color: typographyMainColor(context),
                                         ),
                                         borderRadius: BorderRadius.circular(
                                           10.r,
@@ -288,36 +312,99 @@ class _InviteFriendsState extends State<InviteFriends> {
                       SizedBox(height: 20.h),
 
                       // زر المشاركة
-                      Container(
-                        width: double.infinity,
-                        height: 50.h,
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFFBA1B1B),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.r),
+                      GestureDetector(
+                        onTap: () async {
+                          final code =
+                              state.user.referralCode?.toString() ?? '';
+                          if (code.isNotEmpty) {
+                            final message =
+                                locale.isDirectionRTL(context)
+                                    ? """
+جرب تطبيق أبو ذياب 🚗
+
+كود الإحالة الخاص بي:
+$code
+
+📱 حمل التطبيق من هنا:
+Android:  https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab
+
+iOS:  https://apps.apple.com/us/app/أبوذياب-لتأجير-السيارات/id1570665182
+"""
+                                    : """
+Try the Abudiyab app 🚗
+
+My referral code:
+$code
+
+📱 Download the app here:
+Android:  https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab
+
+iOS:  https://apps.apple.com/us/app/abudiyab-car-rental/id1570665182
+""";
+
+                            try {
+                              final byteData = await rootBundle.load(
+                                'assets/icons/app_icon.png',
+                              );
+                              final tempDir =
+                                  await Directory.systemTemp.createTemp();
+                              final file = File('${tempDir.path}/app_icon.png');
+                              await file.writeAsBytes(
+                                byteData.buffer.asUint8List(),
+                              );
+
+                              await Share.shareXFiles([
+                                XFile(file.path),
+                              ], text: message);
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                msg:
+                                    locale.isDirectionRTL(context)
+                                        ? "حدث خطأ أثناء مشاركة الصورة"
+                                        : "An error occurred while sharing the image",
+                              );
+                            }
+                          } else {
+                            Fluttertoast.showToast(
+                              msg:
+                                  locale.isDirectionRTL(context)
+                                      ? "لا يوجد كود للمشاركة ❌"
+                                      : "No token to share ❌",
+                            );
+                          }
+                        },
+
+                        child: Container(
+                          width: double.infinity,
+                          height: 50.h,
+                          decoration: ShapeDecoration(
+                            color: typographyMainColor(context),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              locale!.isDirectionRTL(context)
-                                  ? "   مشاركة الآن"
-                                  : "  Share now",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.sp,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                locale!.isDirectionRTL(context)
+                                    ? "   مشاركة الآن"
+                                    : "  Share now",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5.w),
-                            Image.asset(
-                              "assets/icons/telegram.png",
-                              width: 18.w,
-                              height: 18.h,
-                            ),
-                          ],
+                              SizedBox(width: 5.w),
+                              Image.asset(
+                                "assets/icons/telegram.png",
+                                width: 18.w,
+                                height: 18.h,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: 20.h),
@@ -334,7 +421,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
                               width: 1.5.w,
-                              color: Color(0xFFBA1B1B),
+                              color: typographyMainColor(context),
                             ),
                             borderRadius: BorderRadius.circular(15.r),
                           ),
@@ -375,7 +462,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                   Text(
                                     state.user.wallet?.toString() ?? '0',
                                     style: TextStyle(
-                                      color: const Color(0xFFBA1B1B),
+                                      color: typographyMainColor(context),
                                       fontSize: 25.sp,
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w600,
@@ -385,6 +472,8 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     "assets/icons/ryal.png",
                                     width: 20.w,
                                     height: 22.h,
+                                    color: typographyMainColor(context),
+
                                   ),
                                 ],
                               ),
@@ -396,7 +485,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     child: Container(
                                       height: 50.h,
                                       decoration: ShapeDecoration(
-                                        color: const Color(0xFFBA1B1B),
+                                        color: typographyMainColor(context),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             15.r,
@@ -425,31 +514,48 @@ class _InviteFriendsState extends State<InviteFriends> {
                                     child: Container(
                                       height: 50.h,
                                       decoration: ShapeDecoration(
-                                        color: Theme.of(context).brightness == Brightness.light
-                                            ? Colors.white70
-                                            : Colors.black54,
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.white70
+                                                : Colors.black54,
                                         shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                             width: 1.5.w,
                                             color: const Color(0xFF9B9B9B),
                                           ),
-                                          borderRadius: BorderRadius.circular(15.r),
+                                          borderRadius: BorderRadius.circular(
+                                            15.r,
+                                          ),
                                         ),
                                       ),
-                                      child: BlocBuilder<RewardLogsCubit, RewardLogsState>(
+                                      child: BlocBuilder<
+                                        RewardLogsCubit,
+                                        RewardLogsState
+                                      >(
                                         builder: (context, rewardState) {
-                                          if (rewardState is RewardLogsLoading) {
-                                            return const Center(child: CircularProgressIndicator());
-                                          } else if (rewardState is RewardLogsLoaded) {
+                                          if (rewardState
+                                              is RewardLogsLoading) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          } else if (rewardState
+                                              is RewardLogsLoaded) {
                                             final logs = rewardState.data.logs;
-                                            final referralsCount = logs.length; // ← احسب العدد اللي يناسبك هنا
+                                            final referralsCount =
+                                                logs.length; // ← احسب العدد اللي يناسبك هنا
                                             return Center(
                                               child: Text(
                                                 '$referralsCount',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).brightness == Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white70,
+                                                  color:
+                                                      Theme.of(
+                                                                context,
+                                                              ).brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          : Colors.white70,
                                                   fontSize: 18.sp,
                                                   fontFamily: 'Graphik Arabic',
                                                   fontWeight: FontWeight.w500,
@@ -461,9 +567,13 @@ class _InviteFriendsState extends State<InviteFriends> {
                                               child: Text(
                                                 '-',
                                                 style: TextStyle(
-                                                  color: Theme.of(context).brightness == Brightness.light
-                                                      ? Colors.black
-                                                      : Colors.white70,
+                                                  color:
+                                                      Theme.of(
+                                                                context,
+                                                              ).brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          : Colors.white70,
                                                   fontSize: 18.sp,
                                                   fontFamily: 'Graphik Arabic',
                                                   fontWeight: FontWeight.w500,
@@ -685,7 +795,6 @@ class _InviteFriendsState extends State<InviteFriends> {
                 ),
               ),
 
-
               Image.asset(
                 'assets/icons/ryal.png',
                 width: 15.w,
@@ -702,6 +811,7 @@ class _InviteFriendsState extends State<InviteFriends> {
       ),
     );
   }
+
   String _getTypeText(String type, AppLocalizations locale) {
     final isRTL = locale.isDirectionRTL(context);
 
@@ -716,7 +826,6 @@ class _InviteFriendsState extends State<InviteFriends> {
         return type;
     }
   }
-
 }
 
 class _StepIcon extends StatelessWidget {
@@ -740,11 +849,20 @@ class _StepIcon extends StatelessWidget {
                   Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Colors.black87,
-              child: Icon(icon, size: 28.sp, color: Color(0xFFBA1B1B)),
+              child: Icon(
+                icon,
+                size: 28.sp,
+                color: typographyMainColor(context),
+              ),
             ),
             if (imagePath != null) ...[
               SizedBox(width: 6.w),
-              Image.asset(imagePath!, width: 60.w, fit: BoxFit.fill),
+              Image.asset(
+                imagePath!,
+                width: 60.w,
+                fit: BoxFit.fill,
+                color: typographyMainColor(context),
+              ),
             ],
           ],
         ),

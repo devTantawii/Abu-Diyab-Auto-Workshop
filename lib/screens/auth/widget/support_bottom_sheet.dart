@@ -4,6 +4,7 @@ import 'package:abu_diyab_workshop/screens/complaint/screens/complaint_screen.da
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import 'common_question.dart';
 
@@ -16,7 +17,7 @@ class SupportBottomSheet extends StatefulWidget {
 
 class _SupportBottomSheetState extends State<SupportBottomSheet> {
   whatsapp() async {
-    var contact = "+201222738657";
+    var contact = "+966559578781";
     var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
     var iosUrl =
         "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
@@ -222,7 +223,7 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                     onTap: () async {
                       final Uri telUri = Uri(
                         scheme: 'tel',
-                        path: '01222738657',
+                        path: '+966559578781',
                       );
                       if (await canLaunchUrl(telUri)) {
                         await launchUrl(telUri);
@@ -301,7 +302,7 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
                       decoration: BoxDecoration(),
                       child: Image.asset(
                         'assets/icons/complaint.png',
-                        fit: BoxFit.contain,
+                        fit: BoxFit.contain,color:  typographyMainColor(context)
                       ),
                     ),
                   ],

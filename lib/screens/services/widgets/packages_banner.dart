@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/language/locale.dart';
+import '../../../core/constant/app_colors.dart';
 
 class PackagesBanner extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class PackagesBanner extends StatelessWidget {
         height: 50.h,
         padding: EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: Color(0xFFBA1B1B),
+          color: typographyMainColor(context),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

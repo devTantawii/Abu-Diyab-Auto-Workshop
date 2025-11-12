@@ -68,10 +68,7 @@ class _MoreScreenState extends State<MoreScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor:
-        //   Theme.of(context).brightness == Brightness.light
-        //  ?
-        Color(0xFFD27A7A),
-        //  :  Color(0xFF6F5252)
+        Color(0xFF009ED1),
         appBar: CustomGradientAppBar(
           title_ar: "المزيد",
           title_en: " More",
@@ -148,7 +145,7 @@ class _MoreScreenState extends State<MoreScreen> {
                     widget_ITN(
                       textAr: 'ادع أصدقائك',
                       textEn: "Invite your friends",
-                      iconPath: 'assets/icons/gift_card1.png',
+                      iconPath: 'assets/icons/invite.png',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -202,7 +199,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       children: [
                         Icon(
                           Icons.language,
-                          color: Color(0xFFBA1B1B),
+                          color:typographyMainColor(context),
                           size: 18.sp,
                         ),
                         Padding(
@@ -259,7 +256,7 @@ class _MoreScreenState extends State<MoreScreen> {
                           children: [
                             Icon(
                               Icons.color_lens,
-                              color: const Color(0xFFBA1B1B),
+                              color: typographyMainColor(context),
                               size: 18.sp,
                             ),
                             SizedBox(width: 5.w),

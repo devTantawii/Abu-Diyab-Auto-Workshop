@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constant/api.dart';
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/langCode.dart';
 import '../../../../core/language/locale.dart';
 import '../../../../widgets/app_bar_widget.dart';
@@ -61,7 +62,7 @@ class _EditCarState extends State<EditCar> {
       final token = prefs.getString('token') ?? '';
 
       final response = await Dio().get(
-        '$mainApi/app/elwarsha/user-cars/show/${widget.carId}',
+        '$carShowApi${widget.carId}',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -310,7 +311,9 @@ class _EditCarState extends State<EditCar> {
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? const Color(0xFFE19A9A)
+                                        ? buttonPrimaryBgColor(
+                                          context,
+                                        ).withOpacity(0.3) // شفافية 50%
                                         : Theme.of(context).brightness ==
                                             Brightness.light
                                         ? Colors.white
@@ -319,10 +322,17 @@ class _EditCarState extends State<EditCar> {
                                 border: Border.all(
                                   color:
                                       isSelected
-                                          ? const Color(0xFFBA1B1B)
+                                          ? buttonPrimaryBgColor(context)
                                           : Colors.grey.shade300,
                                   width: 2,
                                 ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -417,7 +427,9 @@ class _EditCarState extends State<EditCar> {
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? const Color(0xFFE19A9A)
+                                        ? buttonPrimaryBgColor(
+                                          context,
+                                        ).withOpacity(0.3) // شفافية 50%
                                         : Theme.of(context).brightness ==
                                             Brightness.light
                                         ? Colors.white
@@ -426,10 +438,17 @@ class _EditCarState extends State<EditCar> {
                                 border: Border.all(
                                   color:
                                       isSelected
-                                          ? const Color(0xFFBA1B1B)
+                                          ? buttonPrimaryBgColor(context)
                                           : Colors.grey.shade300,
-                                  width: 2.w,
+                                  width: 2,
                                 ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Text(
                                 car.name,
@@ -686,7 +705,7 @@ class _EditCarState extends State<EditCar> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14.h),
-                    backgroundColor: const Color(0xFFBA1B1B),
+                    backgroundColor: buttonPrimaryBgColor(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -743,7 +762,7 @@ class _EditCarState extends State<EditCar> {
                                     : 'Do you want to save the changes?',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: const Color(0xFFBA1B1B),
+                                  color: buttonPrimaryBgColor(context),
                                   fontSize: 22.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w500,
@@ -768,10 +787,11 @@ class _EditCarState extends State<EditCar> {
                                     : 'The car information has changed, should we save it?',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color:   Theme.of(context).brightness ==
-                                      Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white,
                                   fontSize: 20.sp,
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w500,
@@ -788,9 +808,10 @@ class _EditCarState extends State<EditCar> {
 
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(
-                                            0xFFBA1B1B,
+                                          backgroundColor: buttonPrimaryBgColor(
+                                            context,
                                           ),
+
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
                                               10.r,
@@ -812,7 +833,8 @@ class _EditCarState extends State<EditCar> {
                                           final kiloRead =
                                               int.tryParse(
                                                 _digitsToEn(
-                                                  kiloReadController.text.trim(),
+                                                  kiloReadController.text
+                                                      .trim(),
                                                 ),
                                               ) ??
                                               0;
@@ -830,7 +852,8 @@ class _EditCarState extends State<EditCar> {
                                                     years[selectedYearIndex],
                                                 boardNo: boardNoFinal,
                                                 translationName:
-                                                    carNameController.text.trim(),
+                                                    carNameController.text
+                                                        .trim(),
                                                 kiloRead: kiloRead,
                                                 carDocs: selectedCarDoc,
                                               );
@@ -849,7 +872,7 @@ class _EditCarState extends State<EditCar> {
                                     ),
                                   ),
 
-                                   SizedBox(width: 18.w),
+                                  SizedBox(width: 18.w),
                                   Expanded(
                                     child: Container(
                                       height: 50.h,
@@ -928,7 +951,7 @@ class _EditCarState extends State<EditCar> {
 
                     try {
                       final response = await Dio().delete(
-                        '$mainApi/app/elwarsha/user-cars/delete/${widget.carId}',
+                        '$carDeleteApi${widget.carId}',
                         options: Options(
                           headers: {
                             'Authorization': 'Bearer $token',
@@ -1029,7 +1052,8 @@ class _EditCarState extends State<EditCar> {
                 'هل تريد حذف السيارة؟',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: const Color(0xFFBA1B1B),
+                  color: buttonPrimaryBgColor(context),
+
                   fontSize: 22.sp,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w600,
@@ -1081,7 +1105,7 @@ class _EditCarState extends State<EditCar> {
                         height: 50.h,
                         margin: EdgeInsets.only(right: 8.w),
                         decoration: ShapeDecoration(
-                          color: const Color(0xFFBA1B1B),
+                          color: buttonPrimaryBgColor(context),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),

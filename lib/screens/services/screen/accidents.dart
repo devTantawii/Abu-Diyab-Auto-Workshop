@@ -59,7 +59,7 @@ class _AccidentsState extends State<Accidents> {
     final locale = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "إنشاء طلب",
         onBack: () {
@@ -213,7 +213,7 @@ class _AccidentsState extends State<Accidents> {
                                   decoration: BoxDecoration(
                                     color:
                                         selected == true
-                                            ? Color(0xFFBA1B1B)
+                                            ? typographyMainColor(context)
                                             : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),
@@ -285,7 +285,7 @@ class _AccidentsState extends State<Accidents> {
                                   decoration: BoxDecoration(
                                     color:
                                         selected == false
-                                            ? Color(0xFFBA1B1B)
+                                            ? typographyMainColor(context)
                                             : Color(0xFFD9D9D9),
                                     shape: BoxShape.circle,
                                   ),

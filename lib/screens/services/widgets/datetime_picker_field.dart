@@ -40,17 +40,17 @@ class DateTimeSection extends StatelessWidget {
               initialDate: selectedDateTime ?? DateTime.now(),
               firstDate: DateTime.now(),
               lastDate: DateTime(
-                DateTime.now().year + 5,
+                DateTime.now().year + 3,
                 DateTime.now().month,
                 DateTime.now().day,
               ),
               is24HourMode: true,
               theme: ThemeData(
                 brightness: isDark ? Brightness.dark : Brightness.light,
-                colorScheme:
-                    isDark
-                        ? const ColorScheme.dark(primary: Color(0xFFBA1B1B))
-                        : const ColorScheme.light(primary: Color(0xFFBA1B1B)),
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: typographyMainColor(context),
+                  brightness: isDark ? Brightness.dark : Brightness.light,
+                ),
 
                 timePickerTheme: TimePickerThemeData(
                   hourMinuteTextStyle: TextStyle(
@@ -95,7 +95,7 @@ class DateTimeSection extends StatelessWidget {
                 Icon(
                   Icons.calendar_today_outlined,
                   size: 20.sp,
-                  color: accentColor,
+                  color: typographyMainColor(context),
                 ),
               ],
             ),

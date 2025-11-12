@@ -79,7 +79,7 @@ class _FinalReviewState extends State<FinalReview> {
       final token = prefs.getString('token');
       final dio = Dio();
 
-      final url = "$mainApi/app/elwarsha/payments/preview";
+      final url = paymentsPreviewApi;
       final deliveryMethod =
       widget.deliveryMethod == "outsite" ? "towTruck" : "inWorkshop";
 
@@ -229,7 +229,9 @@ class _FinalReviewState extends State<FinalReview> {
             locale!.isDirectionRTL(context)
                 ? 'لا توجد طرق دفع متاحة حالياً'
                 : "No payment methods are currently available.",
-            style: TextStyle(fontSize: 18.sp, color: accentColor),
+            style: TextStyle(fontSize: 18.sp, color: typographyMainColor(
+              context,
+            ),),
           ),
         ),
       );
@@ -273,7 +275,7 @@ class _FinalReviewState extends State<FinalReview> {
       return;
     }
 
-    final url = "$mainApi/app/elwarsha/payments/initiate";
+    final url = paymentsInitiateApi;
     final formData = FormData();
 
     final fields = _buildPayload();

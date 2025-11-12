@@ -14,6 +14,33 @@ class LoginCubit extends Cubit<LoginState> {
   final Dio dio;
 
   LoginCubit({required this.dio}) : super(LoginInitial());
+  Future<void> _updateFcmToken(String fcmToken, String userToken) async {
+    print('🔁 تحديث FCM Token...');
+
+    try {
+      final response = await dio.post(
+        updateFcmApi,
+        data: {"fcm": fcmToken},
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $userToken",
+            "Accept": "application/json",
+          },
+        ),
+      );
+
+      print('📩 [updateFCM] Status: ${response.statusCode}');
+      print('📩 [updateFCM] Response: ${response.data}');
+
+      if (response.statusCode == 200 && response.data['status'] == 200) {
+        print('✅ تم تحديث FCM Token بنجاح');
+      } else {
+        print('⚠️ فشل تحديث FCM Token: ${response.data['msg']}');
+      }
+    } catch (e) {
+      print('❌ خطأ أثناء تحديث FCM Token: $e');
+    }
+  }
 
   Future<void> login({required String phone, required String password}) async {
     emit(LoginLoading());
@@ -30,7 +57,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       final response = await dio.post(
         mainApi + loginApi,
-        data: {'phone': phone, 'password': password,'fcm':fcmToken},
+        data: {'phone': phone, 'password': password,},
         options: Options(
           validateStatus: (status) {
             // يخلي Dio ما يرمش Error لو رجع 403
@@ -57,9 +84,6 @@ class LoginCubit extends Cubit<LoginState> {
 
         final prefs = await SharedPreferences.getInstance();
 
-        // مسح أي توكين قديم قبل حفظ الجديد
-        await prefs.remove('token');
-
         // حفظ بيانات المستخدم
         await prefs.setString('username', '$firstName $lastName');
         await prefs.setString('phone', phoneNumber.toString());
@@ -70,8 +94,12 @@ class LoginCubit extends Cubit<LoginState> {
 
         initialToken = token;
 
+        // 🔹 بعد تسجيل الدخول، نحدث الـ FCM Token
+        await _updateFcmToken(fcmToken!, token);
+
         emit(LoginSuccess());
-      } else if (response.statusCode == 403 &&
+      }
+      else if (response.statusCode == 403 &&
           response.data["data"]?["needs_verification"] == true) {
         final phone = response.data["data"]["phone"];
         print("⚠️ الحساب محتاج تحقق OTP لرقم $phone");

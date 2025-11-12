@@ -63,8 +63,9 @@ class PaymentSummary extends StatelessWidget {
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: accentColor,
-              minimumSize: Size(double.infinity, 35.sp),
+              backgroundColor:                        typographyMainColor(context),
+
+    minimumSize: Size(double.infinity, 35.sp),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.sp),
               ),

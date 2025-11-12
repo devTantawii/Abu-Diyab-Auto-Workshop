@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart'; // تأكد إن المسار صحيح
 import '../../auth/widget/support_bottom_sheet.dart';
 import '../model/get_order_model.dart';
@@ -74,7 +75,7 @@ class ActiveOrder extends StatelessWidget {
                       TextSpan(
                         text: serviceName,
                         style: TextStyle(
-                          color: const Color(0xFFBA1B1B),
+                          color: typographyMainColor(context),
                           fontSize: 22.h,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -120,7 +121,7 @@ class ActiveOrder extends StatelessWidget {
                   Text(
                     order.code,
                     style: TextStyle(
-                      color: Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                       fontSize: 16.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -238,7 +239,7 @@ class ActiveOrder extends StatelessWidget {
                   child: Container(
                     height: 45.h,
                     decoration: ShapeDecoration(
-                      color: const Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -325,7 +326,7 @@ class ActiveOrder extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: Color(0xFFBA1B1B),
+            color: typographyMainColor(context),
             fontSize: 18.sp,
             fontFamily: 'Graphik Arabic',
             fontWeight: FontWeight.w600,

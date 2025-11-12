@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../services/widgets/custom_app_bar.dart';
@@ -42,12 +44,8 @@ class _OrderScreenState extends State<OrderScreen> {
     final locale = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor:
-      //   Theme.of(context).brightness == Brightness.light
-      //  ?
-      Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
 
-      //  :  Color(0xFF6F5252)
       appBar: CustomGradientAppBar(
         title_ar: "طلباتي",
         title_en: " My Orders",
@@ -60,11 +58,9 @@ class _OrderScreenState extends State<OrderScreen> {
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
           ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
-        ),
+          color:backgroundColor(context),
+
+      ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -83,7 +79,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           decoration: ShapeDecoration(
                             color:
                                 _showActiveOrders
-                                    ? const Color(0xFFBA1B1B)
+                                    ? buttonPrimaryBgColor(context)
                                     : const Color(0xFFE0E0E0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.r),
@@ -119,7 +115,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           decoration: ShapeDecoration(
                             color:
                                 !_showActiveOrders
-                                    ? const Color(0xFFBA1B1B)
+                                    ?  buttonPrimaryBgColor(context)
                                     : const Color(0xFFE0E0E0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -159,12 +155,28 @@ class _OrderScreenState extends State<OrderScreen> {
                           ? BlocBuilder<OrdersCubit, OrdersState>(
                             builder: (context, state) {
                               if (state is OrdersLoading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.red,
+                                return Padding(
+                                  padding: EdgeInsets.all(10.w),
+                                  child: Column(
+                                    children: List.generate(2, (index) {
+                                      return Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        child: Container(
+                                          margin: EdgeInsets.only(bottom: 20.h),
+                                          width: double.infinity,
+                                          height: 200.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(15.r),
+                                          ),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 );
-                              } else if (state is OrdersSuccess) {
+                              }
+                              else if (state is OrdersSuccess) {
                                 final allowedStatuses = [
                                   'pending',
                                   'admin_approved',
@@ -235,11 +247,27 @@ class _OrderScreenState extends State<OrderScreen> {
                           : BlocBuilder<OldOrdersCubit, OldOrdersState>(
                             builder: (context, state) {
                               if (state is OldOrdersLoading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.red,
+                                return Padding(
+                                  padding: EdgeInsets.all(10.w),
+                                  child: Column(
+                                    children: List.generate(2, (index) {
+                                      return Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        child: Container(
+                                          margin: EdgeInsets.only(bottom: 20.h),
+                                          width: double.infinity,
+                                          height: 200.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(15.r),
+                                          ),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 );
+
                               } else if (state is OldOrdersSuccess) {
                                 if (state.orders.isEmpty) {
                                   return const Center(

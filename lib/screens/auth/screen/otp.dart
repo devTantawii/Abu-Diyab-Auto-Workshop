@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constant/app_colors.dart';
 import '../../../core/langCode.dart';
 import '../../home/screen/home_screen.dart';
 import '../cubit/login_cubit.dart';
@@ -169,7 +170,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                     width: 26,
                     height: 26,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: const Icon(
@@ -209,8 +210,8 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                     ),
                     TextSpan(
                       text: widget.phone,
-                      style: const TextStyle(
-                        color: Color(0xFFBA1B1B),
+                      style:  TextStyle(
+                        color: typographyMainColor(context),
                         fontSize: 12,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -247,7 +248,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide:
-                            const BorderSide(color: Color(0xFFBA1B1B)),
+                             BorderSide(color: typographyMainColor(context)),
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
@@ -275,7 +276,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                   onPressed:
                   _otpCode.length == 4 && !_loading ? _verifyCode : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFBA1B1B),
+                    backgroundColor:typographyMainColor(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
