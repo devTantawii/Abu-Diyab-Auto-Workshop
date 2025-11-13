@@ -12,6 +12,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../widgets/app_bar_widget.dart';
+import '../../../widgets/error_widget_retry.dart';
 import '../../auth/cubit/login_cubit.dart';
 import '../../auth/screen/login.dart';
 import '../../main/screen/main_screen.dart';
@@ -22,7 +23,7 @@ import '../model/all_cars_model.dart';
 import 'widget/add_car.dart';
 
 class MyCarsScreen extends StatefulWidget {
-  final bool showBack ;
+  final bool showBack;
 
   const MyCarsScreen({super.key, this.showBack = false});
 
@@ -55,29 +56,29 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       child: Scaffold(
         backgroundColor: scaffoldBackgroundColor(context),
 
-        appBar:  CustomGradientAppBar(
-          title_ar:  "سياراتي",
+        appBar: CustomGradientAppBar(
+          title_ar: "سياراتي",
           title_en: "My Cars",
           showBackIcon: widget.showBack,
           onBack: () {
             Navigator.pop(context);
           },
-
         ),
-        body: Container(height: double.infinity,
+        body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15.sp),
               topRight: Radius.circular(15.sp),
             ),
             color:
-            Theme.of(context).brightness == Brightness.light
-                ? Colors.white: Colors.black,
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
           ),
           child: Padding(
             padding: EdgeInsets.all(20.w),
-            child:
-            BlocBuilder<CarCubit, CarState>(
+            child: BlocBuilder<CarCubit, CarState>(
               builder: (context, state) {
                 if (state is CarLoading) {
                   return Padding(
@@ -100,40 +101,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       }),
                     ),
                   );
-                }
-                else if (state is CarError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                        SizedBox(height: 15.h),
-                        //    Text(state.message),
-                        ElevatedButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder:
-                                  (context) => BlocProvider(
-                                create: (_) => LoginCubit(dio: Dio()),
-                                child: const LoginBottomSheet(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? "سجل الدخول من فضلك"
-                                : "Log in please",
-                          ),
-                        ),
-                      ],
-                    ),
+                } else if (state is CarError) {
+                  return ErrorWidgetWithRetry(
+                    onRetry: _loadCars, // لأن _loadCars جوهها التوكين
                   );
                 } else if (state is CarLoaded) {
                   if (state.cars.isEmpty) {
@@ -154,9 +124,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white70,
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white70,
                             fontSize: 18.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -170,9 +140,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Color(0xFF474747)
-                                : Colors.white54,
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Color(0xFF474747)
+                                    : Colors.white54,
 
                             fontSize: 16.sp,
                             fontFamily: 'Graphik Arabic',
@@ -189,7 +159,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     child: Column(
                       children: [
                         ...state.cars.map(
-                              (car) => Padding(
+                          (car) => Padding(
                             padding: EdgeInsets.only(bottom: 20.h),
                             child: _carCard(context, car, true, locale!),
                           ),
@@ -209,9 +179,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 
   PreferredSizeWidget _buildAppBar(
-      BuildContext context,
-      AppLocalizations? locale,
-      ) {
+    BuildContext context,
+    AppLocalizations? locale,
+  ) {
     return AppBar(
       toolbarHeight: 130.h,
       backgroundColor: Colors.transparent,
@@ -219,9 +189,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       automaticallyImplyLeading: false,
       flexibleSpace: Directionality(
         textDirection:
-        Localizations.localeOf(context).languageCode == 'ar'
-            ? TextDirection.rtl
-            : TextDirection.ltr,
+            Localizations.localeOf(context).languageCode == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr,
         child: Container(
           padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
           decoration: buildAppBarDecoration(context),
@@ -249,11 +219,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 
   Widget _carCard(
-      BuildContext context,
-      Car car,
-      bool withEditNav,
-      AppLocalizations locale,
-      ) {
+    BuildContext context,
+    Car car,
+    bool withEditNav,
+    AppLocalizations locale,
+  ) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -265,18 +235,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         width: double.infinity,
         height: 180.h,
         decoration: BoxDecoration(
-          color:buttonBgWhiteColor (context),
+          color: buttonBgWhiteColor(context),
           borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color:iconGrayColor(context),
-            width: 1.0,
-          ),
+          border: Border.all(color: iconGrayColor(context), width: 1.0),
         ),
         child: Stack(
           textDirection:
-          locale.isDirectionRTL(context)
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+              locale.isDirectionRTL(context)
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
           children: [
             Column(
               children: [
@@ -341,7 +308,6 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 'assets/icons/edit.png',
                                 height: 35.h,
                                 width: 35.w,
-
                               ),
                             ),
                           ),
@@ -383,13 +349,14 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     children: [
                       Text(
                         locale!.isDirectionRTL(context)
-                            ?'رقم اللوحة :'
-                            : "Plate number :",                        style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
-                      ),
+                            ? 'رقم اللوحة :'
+                            : "Plate number :",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       SizedBox(width: 70.w),
                       Text(
@@ -401,7 +368,6 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                     ],
                   ),
                 ),

@@ -314,7 +314,7 @@ class _MoreScreenState extends State<MoreScreen> {
                               width: double.infinity,
                               height: 50,
                               decoration: ShapeDecoration(
-                                color: const Color(0xFFBA1B1B),
+                                color: typographyMainColor(context),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),

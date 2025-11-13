@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
+import '../../../widgets/error_widget_retry.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/get_order_cubit.dart';
 import '../cubit/get_order_state.dart';
@@ -236,8 +237,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                   },
                                 );
                               } else if (state is OrdersError) {
-                                return Center(
-                                  child: Text('حدث خطأ: ${state.message}'),
+                                return ErrorWidgetWithRetry(
+                                  message: locale.isDirectionRTL(context)
+                                      ? 'حدث خطأ'
+                                      : 'Error',
+                                  onRetry: _refresh,
                                 );
                               } else {
                                 return const SizedBox();
@@ -286,8 +290,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                   },
                                 );
                               } else if (state is OldOrdersError) {
-                                return Center(
-                                  child: Text('حدث خطأ: ${state.message}'),
+                                return ErrorWidgetWithRetry(
+                                  onRetry: _refresh,
                                 );
                               } else {
                                 return const SizedBox();

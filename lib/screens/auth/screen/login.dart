@@ -225,7 +225,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         );
                       },
                     ),
-                    SizedBox(height: 6.h),
+                    SizedBox(height: 7.h),
                     GestureDetector(
                       onTap: () {
                         ResetPasswordFlow().showPhoneBottomSheet(context);
@@ -249,7 +249,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         children: [
                           Text(
                             locale!.isDirectionRTL(context)
-                                ? "ماعندك حساب ؟"
+                                ? "ماعندك حساب؟"
                                 : "You don't have an account?",
 
                             style: TextStyle(
@@ -262,6 +262,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w500,
                             ),
+                          ),
+                          SizedBox(
+                            width: 5.w,
                           ),
                           GestureDetector(
                             onTap: () {

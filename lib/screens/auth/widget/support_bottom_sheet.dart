@@ -35,9 +35,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
 
   insta() async {
     var androidUrl =
-        'https://www.instagram.com/p/DLSfAqFN9zw/?igsh=MWFvdjFnanRrZnh5NA==';
+        'https://www.instagram.com/abudiyabauto/';
     var iosUrl =
-        "https://www.instagram.com/p/DLSfAqFN9zw/?igsh=MWFvdjFnanRrZnh5NA==";
+        'https://www.instagram.com/abudiyabauto/';
 
     try {
       if (Platform.isIOS) {
@@ -52,8 +52,8 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
 
   facebook() async {
     var androidUrl =
-        'https://www.facebook.com/share/p/1DqaPw73tR/?mibextid=wwXIfr';
-    var iosUrl = "https://www.facebook.com/share/p/1DqaPw73tR/?mibextid=wwXIfr";
+        'https://www.facebook.com/avscsa/';
+    var iosUrl = "https://www.facebook.com/avscsa/";
 
     try {
       if (Platform.isIOS) {
@@ -82,8 +82,8 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
   }
 
   xtwitter() async {
-    var androidUrl = 'https://x.com/avsc_sa/status/1937576035014365255?s=46';
-    var iosUrl = "https://x.com/avsc_sa/status/1937576035014365255?s=46";
+    var androidUrl = 'https://x.com/AVSC_SA';
+    var iosUrl = "https://x.com/AVSC_SA";
 
     try {
       if (Platform.isIOS) {
@@ -97,8 +97,8 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
   }
 
   tiktok() async {
-    var androidUrl = 'https://vt.tiktok.com/ZSkKDVet7/';
-    var iosUrl = "https://vt.tiktok.com/ZSkKDVet7/";
+    var androidUrl = "https://www.tiktok.com/@avscsa";
+    var iosUrl = "https://www.tiktok.com/@avscsa";
 
     try {
       if (Platform.isIOS) {
@@ -113,9 +113,9 @@ class _SupportBottomSheetState extends State<SupportBottomSheet> {
 
   linkedin() async {
     var androidUrl =
-        'https://www.linkedin.com/posts/%D9%85%D8%B1%D9%83%D8%B2-%D8%A3%D8%A8%D9%88%D8%B0%D9%8A%D8%A7%D8%A8-%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-231b79354_aedaeyaepaeuaerabraepaevaesaezaepaepaeyaer-activity-7343302136715259904-2FQV?utm_medium=ios_app&rcm=ACoAAFhzOQUBAzEXxAFZkoFimXYWHcggqda3G6Q&utm_source=social_share_send&utm_campaign=copy_link';
+        "https://www.linkedin.com/in/%D9%85%D8%B1%D9%83%D8%B2-%D8%A3%D8%A8%D9%88%D8%B0%D9%8A%D8%A7%D8%A8-%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-231b79354/";
     var iosUrl =
-        "https://www.linkedin.com/posts/%D9%85%D8%B1%D9%83%D8%B2-%D8%A3%D8%A8%D9%88%D8%B0%D9%8A%D8%A7%D8%A8-%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-231b79354_aedaeyaepaeuaerabraepaevaesaezaepaepaeyaer-activity-7343302136715259904-2FQV?utm_medium=ios_app&rcm=ACoAAFhzOQUBAzEXxAFZkoFimXYWHcggqda3G6Q&utm_source=social_share_send&utm_campaign=copy_link";
+        "https://www.linkedin.com/in/%D9%85%D8%B1%D9%83%D8%B2-%D8%A3%D8%A8%D9%88%D8%B0%D9%8A%D8%A7%D8%A8-%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-231b79354/";
 
     try {
       if (Platform.isIOS) {

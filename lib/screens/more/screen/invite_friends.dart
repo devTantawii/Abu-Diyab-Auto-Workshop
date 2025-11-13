@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_cubit.dart';
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
+import '../../auth/cubit/login_cubit.dart';
+import '../../auth/screen/login.dart';
 import '../cubit/reward_logs_cubit.dart';
 import '../cubit/reward_logs_state.dart';
 import '../model/reward_log_model.dart';
@@ -702,14 +705,144 @@ iOS:  https://apps.apple.com/us/app/abudiyab-car-rental/id1570665182
           }
 
           // حالة افتراضية (غير مسجل أو خطأ)
-          return Center(
-            child: Text(
-              locale!.isDirectionRTL(context)
-                  ? "سجل الدخول لرؤية المحتوى"
-                  : "Login to view content",
-              style: TextStyle(fontSize: 18.sp),
+          // 🧱 حالة المستخدم غير مسجل دخول
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 🔒 أيقونة داخل دائرة متدرجة
+                    Container(
+                      width: 110.w,
+                      height: 110.w,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF419BBA),
+                            Color(0xFF006D92),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x33419BBA),
+                            blurRadius: 12,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.lock_outline_rounded,
+                        size: 55,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    SizedBox(height: 30.h),
+
+                    // 📝 النص الرئيسي
+                    Text(
+                      locale!.isDirectionRTL(context)
+                          ? "سجل الدخول لرؤية المحتوى"
+                          : "Login to view content",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF006D92),
+                        height: 1.4,
+                      ),
+                    ),
+
+                    SizedBox(height: 12.h),
+
+                    // 🧾 النص الثانوي
+                    Text(
+                      locale.isDirectionRTL(context)
+                          ? "قم بتسجيل الدخول للوصول إلى ميزات إضافية"
+                          : "Sign in to access more features and rewards",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+
+                    SizedBox(height: 40.h),
+
+                    // 🔘 زر تسجيل الدخول
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Future.delayed(
+                          Duration(milliseconds: 100),
+                              () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder:
+                                  (context) => FractionallySizedBox(
+                                widthFactor: 1,
+                                child: BlocProvider(
+                                  create:
+                                      (_) => LoginCubit(
+                                    dio: Dio(),
+                                  ),
+                                  child:
+                                  const LoginBottomSheet(),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+
+                      },
+                      icon: const Icon(Icons.login, color: Colors.white),
+                      label: Text(
+                        locale.isDirectionRTL(context) ? "تسجيل الدخول" : "Login",
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF006D92),
+                        minimumSize: Size(double.infinity, 50.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        elevation: 3,
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    TextButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 16.sp,
+                        color: const Color(0xFF419BBA),
+                      ),
+                      label: Text(
+                        locale.isDirectionRTL(context) ? "رجوع" : "Back",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: const Color(0xFF419BBA),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
+
         },
       ),
     );
