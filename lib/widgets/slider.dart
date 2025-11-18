@@ -53,7 +53,12 @@ class _ImageSliderState extends State<ImageSlider> {
     try {
       final response = await _dio.get(
         bannersApi,
-        options: Options(headers: {"Accept": "application/json",  "Accept-Language": langCode == '' ? "en" : langCode}),
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode,
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -97,33 +102,35 @@ class _ImageSliderState extends State<ImageSlider> {
     if (isLoading) {
       return SizedBox(
         height: 140.h,
-        child: Center(child:       Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 6, // عدد العناصر المؤقتة اللي هتظهر كـ placeholder
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 1,
-          ),
-          itemBuilder: (context, index) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 6,
+              // عدد العناصر المؤقتة اللي هتظهر كـ placeholder
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1,
               ),
-            );
-          },
+              itemBuilder: (context, index) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
-      )
-    ),
       );
     }
 

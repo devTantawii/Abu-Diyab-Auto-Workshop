@@ -8,6 +8,7 @@ import '../../../core/language/locale.dart';
 
 class AddressSection extends StatefulWidget {
   final Function(String, double, double) onAddressSelected;
+
   const AddressSection({super.key, required this.onAddressSelected});
 
   @override
@@ -26,7 +27,7 @@ class _AddressSectionState extends State<AddressSection> {
         Row(
           children: [
             Text(
-              locale!.isDirectionRTL(context) ? " العنوان " : "Address ",
+              locale!.isDirectionRTL(context) ? "العنوان" : "Address",
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -38,8 +39,8 @@ class _AddressSectionState extends State<AddressSection> {
               onTap: _selectNewAddress,
               child: Text(
                 locale!.isDirectionRTL(context)
-                    ? " + إضافة عنوان جديد "
-                    : "+ Add new address  ",
+                    ? "+ إضافة عنوان جديد"
+                    : "+ Add new address",
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -61,7 +62,10 @@ class _AddressSectionState extends State<AddressSection> {
       padding: EdgeInsets.all(8.sp),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.sp),
-        border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
+        border: Border.all(
+          color: buttonSecondaryBorderColor(context),
+          width: 1.5.w,
+        ),
         color: buttonBgWhiteColor(context),
       ),
       child: Column(
@@ -78,27 +82,32 @@ class _AddressSectionState extends State<AddressSection> {
           Center(
             child: GestureDetector(
               onTap: _getCurrentLocation,
-              child: _loading
-                  ?  CircularProgressIndicator(                                    color: typographyMainColor(context),
-              )
-                  : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                   Icon(Icons.location_on,                                     color: typographyMainColor(context),
-                     size: 16.sp,),
-                  SizedBox(width: 6.w),
-                  Text(
-                    locale!.isDirectionRTL(context)
-                        ? "العنوان الحالي  "
-                        : "Current address",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: typographyMainColor(context),
-                    ),
-                  ),
-                ],
-              ),
+              child:
+                  _loading
+                      ? CircularProgressIndicator(
+                        color: typographyMainColor(context),
+                      )
+                      : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: typographyMainColor(context),
+                            size: 16.sp,
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            locale!.isDirectionRTL(context)
+                                ? "العنوان الحالي"
+                                : "Current address",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: typographyMainColor(context),
+                            ),
+                          ),
+                        ],
+                      ),
             ),
           ),
         ],
@@ -114,88 +123,148 @@ class _AddressSectionState extends State<AddressSection> {
 
     if (result != null && result is Map<String, dynamic>) {
       String rawAddress = result['address'] ?? '';
-      print('📍 Raw address from map: $rawAddress');
-
+      print('Raw address from map: $rawAddress');
 
       setState(() => _address = rawAddress);
       widget.onAddressSelected(rawAddress, result['lat'], result['lng']);
-
     }
   }
 
   Future<void> _getCurrentLocation() async {
     setState(() => _loading = true);
+
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
+      if (!serviceEnabled) {
+        await _showEnableLocationDialog();
+        setState(() => _loading = false);
+        return;
+      }
 
       LocationPermission permission = await Geolocator.checkPermission();
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return;
+        if (permission == LocationPermission.denied) {
+          _showError(
+            locale!.isDirectionRTL(context)
+                ? "يجب منح صلاحية الوصول للموقع."
+                : "Location permission is required.",
+          );
+          setState(() => _loading = false);
+          return;
+        }
       }
-      if (permission == LocationPermission.deniedForever) return;
+
+      if (permission == LocationPermission.deniedForever) {
+        _showGoToSettingsDialog();
+        setState(() => _loading = false);
+        return;
+      }
 
       Position pos = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      List<Placemark> places =
-      await placemarkFromCoordinates(pos.latitude, pos.longitude);
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
-      final place = places.last;
+      List<Placemark> places = await placemarkFromCoordinates(
+        pos.latitude,
+        pos.longitude,
+      );
 
-      // print('==================== 🧭 Placemark Data ====================');
-      // print('name: ${place.name}');
-      // print('street: ${place.street}');
-      // print('subThoroughfare: ${place.subThoroughfare}');
-      // print('thoroughfare: ${place.thoroughfare}');
-      // print('subLocality: ${place.subLocality}');
-      // print('locality: ${place.locality}');
-      // print('subAdministrativeArea: ${place.subAdministrativeArea}');
-      // print('administrativeArea: ${place.administrativeArea}');
-      // print('postalCode: ${place.postalCode}');
-      // print('country: ${place.country}');
-      // print('isoCountryCode: ${place.isoCountryCode}');
-      // print('===========================================================');
-
-      bool isArabic = locale!.isDirectionRTL(context);
-
-      String cleanText(String? text) {
-        if (text == null || text.isEmpty) return '';
-
-        text = text.replaceAll(RegExp(r'\d{3,}'), '');
-        text = text.replaceAll(RegExp(r'[+]+'), '').trim();
-        if (isArabic) {
-          text = text.replaceAll(RegExp(r'[A-Za-z]'), '');
-        } else {
-          text = text.replaceAll(RegExp(r'[\u0600-\u06FF]'), '');
-        }
-        text = text.replaceAll(RegExp(r'\s{2,}'), ' ').trim();
-        return text;
-      }
-
-      List<String> parts = [
-        cleanText(places.last.name),
-        cleanText(place.subLocality),
-        cleanText(place.subAdministrativeArea),
-        cleanText(place.administrativeArea),
-        cleanText(place.country),
-      ];
-
-      List<String> uniqueParts = [];
-      for (var part in parts) {
-        if (part.isNotEmpty && !uniqueParts.contains(part)) {
-          uniqueParts.add(part);
-        }
-      }
-
-      String fullAddress = '${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
-      print('📍 Full address: $fullAddress');
+      final place = places.first;
+      String fullAddress =
+          "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
 
       setState(() => _address = fullAddress);
       widget.onAddressSelected(fullAddress, pos.latitude, pos.longitude);
-
+    } catch (e) {
+      _showError(
+        locale!.isDirectionRTL(context)
+            ? "تعذر الحصول على الموقع. حاول مرة أخرى."
+            : "Unable to get your location. Please try again.",
+      );
     } finally {
       setState(() => _loading = false);
     }
+  }
+
+  Future<void> _showEnableLocationDialog() async {
+    await showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text(
+              locale!.isDirectionRTL(context)
+                  ? "تشغيل الموقع"
+                  : "Location Disabled",
+            ),
+            content: Text(
+              locale!.isDirectionRTL(context)
+                  ? "الرجاء تفعيل خدمة تحديد الموقع (GPS) للاستمرار."
+                  : "Please enable location services (GPS) to continue.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  locale!.isDirectionRTL(context) ? "إلغاء" : "Cancel",
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await Geolocator.openLocationSettings();
+                },
+                child: Text(
+                  locale!.isDirectionRTL(context)
+                      ? "فتح الإعدادات"
+                      : "Open Settings",
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showGoToSettingsDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text(
+              locale!.isDirectionRTL(context)
+                  ? "صلاحية الموقع مطلوبة"
+                  : "Location Permission Required",
+            ),
+            content: Text(
+              locale!.isDirectionRTL(context)
+                  ? "لقد قمت برفض صلاحية الوصول للموقع بشكل دائم. للمتابعة، يرجى تمكين الصلاحية من إعدادات التطبيق."
+                  : "You have permanently denied location permission. Please enable it from app settings to continue.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  locale!.isDirectionRTL(context) ? "إلغاء" : "Cancel",
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Geolocator.openAppSettings();
+                },
+                child: Text(
+                  locale!.isDirectionRTL(context)
+                      ? "فتح الإعدادات"
+                      : "Open Settings",
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }

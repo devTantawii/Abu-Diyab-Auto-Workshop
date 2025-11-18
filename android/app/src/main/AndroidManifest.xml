@@ -10,10 +10,9 @@
 
     <application
         android:name="${applicationName}"
-        android:label="abu_diyab_workshop"
+        android:label="AVSC"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- ✅ ضع API Key هنا داخل <application> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA1rfRh5d0HM8hZ34eL8vjgaT2zC4Vtr7o"/>

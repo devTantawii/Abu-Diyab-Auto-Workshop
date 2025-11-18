@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final Dio dio = Dio();
   List<Map<String, String>> services = [];
-  bool showAllServices = false;
+  bool showAllServices = true;
 
   @override
   void initState() {
@@ -181,7 +181,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
 
                           SizedBox(height: 4.h),
-                          SizedBox(height: 25.h, child: const LocationWidget()),
+                          //       SizedBox(height: 25.h, child: const LocationWidget()),
                         ],
                       ),
                     ),
@@ -205,10 +205,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         child: Icon(
                           Icons.notifications_active,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                          color: Colors.grey,
                           size: 28.sp,
                         ),
                       ),
@@ -314,11 +311,7 @@ class _MainScreenState extends State<MainScreen> {
                               child: Icon(
                                 Icons.ios_share_outlined,
                                 size: 20.sp, // responsive icon size
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? const Color(0xFF474747)
-                                        : Colors.white,
+                                color: Colors.grey,
                               ),
                             ),
                             SizedBox(height: 8.h), // responsive spacing
@@ -770,7 +763,9 @@ class _MainScreenState extends State<MainScreen> {
                                                   Icon(
                                                     Icons.notifications_none,
                                                     size: 18.sp,
-                                                    color: typographyMainColor(context),
+                                                    color: typographyMainColor(
+                                                      context,
+                                                    ),
                                                   ),
                                                   SizedBox(width: 6.w),
 
@@ -803,7 +798,10 @@ class _MainScreenState extends State<MainScreen> {
                                                         ? "صيانتك بعد ${note.daysAgo} أيام"
                                                         : "Your maintenance after ${note.daysAgo} days",
                                                     style: TextStyle(
-                                                      color: typographyMainColor(context),
+                                                      color:
+                                                          typographyMainColor(
+                                                            context,
+                                                          ),
 
                                                       fontSize: 16.sp,
                                                       fontFamily:

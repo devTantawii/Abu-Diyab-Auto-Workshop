@@ -202,23 +202,33 @@ class _FinalReviewState extends State<FinalReview> {
 
                   SizedBox(height: 12.h),
                   PackagesBanner(),
-                  SizedBox(height: 16.h),
-
-                  // ✅ PaymentSummary جزء طبيعي من الصفحة
-                  PaymentSummary(
-                    model: previewModel!,
-                    isLoading: isSummaryLoading,
-                    onConfirm: () => _showPaymentMethods(context),
-                  ),
-
-                  SizedBox(height: 24.h), // padding إضافي في آخر الصفحة
+                  SizedBox(height: 10.h),
                 ],
               ),
             ),
           ),
         ),
       ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor(context),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: PaymentSummary(
+          model: previewModel!,
+          isLoading: isSummaryLoading,
+          onConfirm: () => _showPaymentMethods(context),
+        ),
+      ),
+
     );
+
   }
 
   void _showPaymentMethods(BuildContext context) {
