@@ -31,7 +31,7 @@ class _RemindCarScreenState extends State<RemindCarScreen> {
     final locale = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFFD27A7A),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: CustomGradientAppBar(
         title_ar: "ملف السياره",
         title_en: " Car Profile",

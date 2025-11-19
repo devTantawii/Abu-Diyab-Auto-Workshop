@@ -1,4 +1,3 @@
-// login_cubit.dart
 import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +13,7 @@ class LoginCubit extends Cubit<LoginState> {
   final Dio dio;
 
   LoginCubit({required this.dio}) : super(LoginInitial());
+
   Future<void> _updateFcmToken(String fcmToken, String userToken) async {
     print('🔁 تحديث FCM Token...');
 
@@ -42,13 +42,26 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<void> login({required String phone, required String password}) async {
+  Future<void> login({
+    required String phone,
+    required String password,
+  }) async {
     emit(LoginLoading());
     final firebaseMessaging = FirebaseMessaging.instance;
 
     await firebaseMessaging.requestPermission();
 
-    final fcmToken = await firebaseMessaging.getToken();
+    String? fcmToken;
+    try {
+      fcmToken = await firebaseMessaging.getToken();
+      if (fcmToken != null) {
+        print("🔑 FCM Token: $fcmToken");
+      } else {
+        print("⚠️ APNS token not available (running on simulator or not ready yet)");
+      }
+    } catch (e) {
+      print("⚠️ Error getting FCM token: $e");
+    }
 
     print('📡 جاري محاولة تسجيل الدخول...');
     print('➡️ البيانات المرسلة: phone $phone, password $password');
@@ -57,34 +70,26 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       final response = await dio.post(
         mainApi + loginApi,
-        data: {'phone': phone, 'password': password,},
+        data: {'phone': phone, 'password': password},
         options: Options(
           validateStatus: (status) {
-            // يخلي Dio ما يرمش Error لو رجع 403
             return status != null && status < 500;
           },
         ),
       );
 
-
       print('📩 Status Code: ${response.statusCode}');
       print('📩 Response Data: ${response.data}');
 
-      // تحقق من أن الرد ناجح
       final status = response.data['status'];
       if (response.statusCode == 200 && status == 200) {
         final data = response.data['data'];
-        print('✅ الرد يحتوي على بيانات المستخدم: $data');
-
-        // استخراج البيانات مباشرة من response
         final token = data['token'];
         final firstName = data['first_name'] ?? '';
         final lastName = data['last_name'] ?? '';
         final phoneNumber = data['phone'] ?? '';
 
         final prefs = await SharedPreferences.getInstance();
-
-        // حفظ بيانات المستخدم
         await prefs.setString('username', '$firstName $lastName');
         await prefs.setString('phone', phoneNumber.toString());
         await prefs.setString('token', token);
@@ -94,51 +99,30 @@ class LoginCubit extends Cubit<LoginState> {
 
         initialToken = token;
 
-        // 🔹 بعد تسجيل الدخول، نحدث الـ FCM Token
-        await _updateFcmToken(fcmToken!, token);
-
-        emit(LoginSuccess());
-      }
-      else if (response.statusCode == 403 &&
-          response.data["data"]?["needs_verification"] == true) {
-        final phone = response.data["data"]["phone"];
-        print("⚠️ الحساب محتاج تحقق OTP لرقم $phone");
-
-        // استدعاء resend otp
-        try {
-          final resend = await dio.post(
-            mainApi + resendOtpApi, // ضيف resendOtpApi في api.dart
-            data: {"phone": phone},
-          );
-          print("📩 resendOtp response: ${resend.data}");
-        } catch (e) {
-          print("❌ resendOtp failed: $e");
+        if (fcmToken != null) {
+          await _updateFcmToken(fcmToken, token);
         }
 
+        emit(LoginSuccess());
+      } else if (response.statusCode == 403 &&
+          response.data["data"]?["needs_verification"] == true) {
+        final phone = response.data["data"]["phone"];
         emit(LoginNeedsVerification(phone: phone));
       } else {
         final errorMessage = response.data['msg'] ?? 'فشل تسجيل الدخول';
         emit(LoginFailure(message: errorMessage));
       }
     } on DioError catch (dioError) {
-      // هندلة أخطاء Dio (زي Timeout أو Bad Response)
       print('❌ DioError: ${dioError.message}');
-      if (dioError.response != null) {
-        print('📩 DioError Response: ${dioError.response?.data}');
-        emit(LoginFailure(message: dioError.response?.data['msg'] ?? 'خطأ من السيرفر'));
-      } else {
-        emit(LoginFailure(message: 'مشكلة في الاتصال بالسيرفر'));
-      }
+      emit(LoginFailure(
+          message:
+          dioError.response?.data['msg'] ?? 'خطأ في الاتصال بالسيرفر'));
     } catch (e, stack) {
-      // أي خطأ غير متوقع
       print('❌ استثناء غير متوقع: $e');
       print('📝 Stacktrace: $stack');
       emit(LoginFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
-
-
-
 
   Future<void> resetPassword({
     required String phone,
@@ -175,13 +159,8 @@ class LoginCubit extends Cubit<LoginState> {
           emit(ResetPasswordFailure(message: message));
         }
       } else {
-        print("❌ Reset exception: ");
-
-        emit(
-          ResetPasswordFailure(
-            message: res.data['message'] ?? 'تعذر إعادة تعيين كلمة المرور',
-          ),
-        );
+        emit(ResetPasswordFailure(
+            message: res.data['message'] ?? 'تعذر إعادة تعيين كلمة المرور'));
       }
     } catch (e) {
       emit(ResetPasswordFailure(message: "خطأ في الاتصال بالسيرفر"));
@@ -189,7 +168,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> forgotPassword({required String phone}) async {
-    emit(ForgotPasswordLoading()); // ✅ صحح هنا
+    emit(ForgotPasswordLoading());
     print("📞 Sending forgot-password request for $phone");
 
     try {
@@ -203,29 +182,19 @@ class LoginCubit extends Cubit<LoginState> {
       if (res.statusCode == 200 && res.data["otp"] != null) {
         final otp = res.data["otp"];
         final phoneFromApi = res.data["phone"] ?? phone;
-        print("✅ OTP from server: $otp");
 
-        emit(ForgotPasswordSuccess(phone: phoneFromApi, otp: otp.toString()));
-      } else {
-        print("❌ Failure: ${res.data["message"]}");
         emit(
-          ResetPasswordFailure(
-            // ✅ صحح هنا
-            message: res.data["message"] ?? "فشل إرسال الكود",
-          ),
-        );
+            ForgotPasswordSuccess(phone: phoneFromApi, otp: otp.toString()));
+      } else {
+        emit(ResetPasswordFailure(
+            message: res.data["message"] ?? "فشل إرسال الكود"));
       }
     } catch (e) {
-      print("❌ Exception: $e");
       emit(
-        ResetPasswordFailure(
-          // ✅ صحح هنا
-          message: "خطأ في الاتصال بالسيرفر",
-        ),
+        ResetPasswordFailure(message: "خطأ في الاتصال بالسيرفر"),
       );
     }
   }
-
 
   Future<void> requestResetPassword(String phone) async {
     emit(RequestResetLoading());
@@ -234,7 +203,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     try {
       final response = await dio.post(
-        mainApi+request_resetApi,
+        mainApi + request_resetApi,
         data: {"phone": phone},
       );
 
@@ -245,15 +214,14 @@ class LoginCubit extends Cubit<LoginState> {
       final serverMsg = response.data['msg'];
 
       if (response.statusCode == 200 && serverStatus == 200) {
-        print("✅ [requestResetPassword] OTP تم إرساله بنجاح");
         emit(RequestResetSuccess());
       } else {
-        print("⚠️ [requestResetPassword] فشل: $serverMsg");
-        emit(RequestResetFailure(message: serverMsg ?? 'فشل إرسال الكود'));
+        emit(RequestResetFailure(
+            message: serverMsg ?? 'فشل إرسال الكود'));
       }
     } catch (e) {
-      print("❌ [requestResetPassword] Exception: $e");
-      emit(RequestResetFailure(message: "خطأ في الاتصال بالسيرفر"));
+      emit(
+          RequestResetFailure(message: "خطأ في الاتصال بالسيرفر"));
     }
   }
 
@@ -264,25 +232,20 @@ class LoginCubit extends Cubit<LoginState> {
 
     try {
       final response = await dio.post(
-        mainApi+ verify_resetApi,
+        mainApi + verify_resetApi,
         data: {"phone": phone, "otp": otp},
       );
-
-      print("📩 Response StatusCode: ${response.statusCode}");
-      print("📩 Response Body: ${response.data}");
 
       final serverStatus = response.data['status'];
       final serverMsg = response.data['msg'];
 
       if (response.statusCode == 200 && serverStatus == 200) {
-        print("✅ [verifyResetPassword] الكود صحيح ✔️");
         emit(VerifyResetSuccess());
       } else {
-        print("⚠️ [verifyResetPassword] الكود غير صحيح: $serverMsg");
-        emit(VerifyResetFailure(message: serverMsg ?? 'فشل التحقق من الكود'));
+        emit(VerifyResetFailure(
+            message: serverMsg ?? 'فشل التحقق من الكود'));
       }
     } catch (e) {
-      print("❌ [verifyResetPassword] Exception: $e");
       emit(VerifyResetFailure(message: "خطأ في الاتصال بالسيرفر"));
     }
   }
@@ -292,11 +255,11 @@ class LoginCubit extends Cubit<LoginState> {
     emit(SubmitNewPasswordLoading());
     print("📡 [submitNewPassword] تغيير كلمة المرور...");
     print(
-        "➡️ البيانات المرسلة: phone=$phone, password=$password, confirm=$confirmPassword");
+        "➡️ البيانات: phone=$phone, password=$password, confirm=$confirmPassword");
 
     try {
       final response = await dio.post(
-        mainApi+submit_newApi,
+        mainApi + submit_newApi,
         data: {
           "phone": phone,
           "password": password,
@@ -304,42 +267,18 @@ class LoginCubit extends Cubit<LoginState> {
         },
       );
 
-      print("📩 Response StatusCode: ${response.statusCode}");
-      print("📩 Response Body: ${response.data}");
-
       final serverStatus = response.data['status'];
       final serverMsg = response.data['msg'];
 
       if (response.statusCode == 200 && serverStatus == 200) {
-        print("✅ [submitNewPassword] كلمة المرور اتغيرت بنجاح 🎉");
         emit(SubmitNewPasswordSuccess());
       } else {
-        print("⚠️ [submitNewPassword] فشل تغيير الباسورد: $serverMsg");
         emit(SubmitNewPasswordFailure(
             message: serverMsg ?? 'فشل تغيير كلمة المرور'));
       }
     } catch (e) {
-      print("❌ [submitNewPassword] Exception: $e");
-      emit(SubmitNewPasswordFailure(message: "خطأ في الاتصال بالسيرفر"));
+      emit(
+          SubmitNewPasswordFailure(message: "خطأ في الاتصال بالسيرفر"));
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

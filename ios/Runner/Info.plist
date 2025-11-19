@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Abu Diyab Workshop</string>
+	<string>AVSC</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>abu_diyab_workshop</string>
+	<string>AVSC</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -22,24 +24,39 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>NSCameraUsageDescription</key>
-    <string>نحتاج لاستخدام الكاميرا لالتقاط صور.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>نحتاج للوصول إلى الصور لاختيار صورة من المعرض.</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>نحتاج لإضافة الصور للمكتبة بعد التقاطها.</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>نحتاج للوصول إلى موقعك لعرض عنوانك</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>نحتاج للوصول إلى موقعك أثناء استخدام التطبيق</string>
-
-
+	<key>GOOGLE_MAPS_API_KEY</key>
+	<string>AIzaSyA1rfRh5d0HM8hZ34eL8vjgaT2zC4Vtr7o</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج لاستخدام الكاميرا لالتقاط صور.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>نحتاج للوصول إلى موقعك أثناء استخدام التطبيق.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>نحتاج للوصول إلى موقعك لعرض عنوانك.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>نحتاج لإضافة الصور إلى المكتبة بعد التقاطها.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج للوصول إلى الصور لاختيار صورة من المعرض.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>نستخدم هذا المعرف لتحسين التجربة وعرض الإشعارات المناسبة لك.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSuserTrackingUsageDescription</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -53,14 +70,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>LSApplicationQueriesSchemes</key>
-    <array>
-    	<string>tel</string>
-    </array>
-
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

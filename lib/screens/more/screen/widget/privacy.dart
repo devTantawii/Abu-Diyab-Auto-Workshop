@@ -4,6 +4,7 @@ import 'package:abu_diyab_workshop/screens/more/screen/widget/terms%20and%20cond
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/language/locale.dart';
 import '../../../profile/widget/ITN.dart';
 import '../../../services/widgets/custom_app_bar.dart';
@@ -15,17 +16,16 @@ class Privacy extends StatefulWidget {
   @override
   State<Privacy> createState() => _PrivacyState();
 }
+
 class _PrivacyState extends State<Privacy> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor:
-      Theme.of(context).brightness == Brightness.light
-          ? Color(0xFFD27A7A)
-          : const Color(0xFF6F5252),
-      appBar:  CustomGradientAppBar(
-        title_ar:  "الخصوصية",
+      backgroundColor: scaffoldBackgroundColor(context),
+
+      appBar: CustomGradientAppBar(
+        title_ar: "الخصوصية",
         title_en: "Privacy",
         onBack: () => Navigator.pop(context),
       ),
@@ -37,8 +37,9 @@ class _PrivacyState extends State<Privacy> {
             topRight: Radius.circular(15.sp),
           ),
           color:
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white: Colors.black,
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -65,7 +66,9 @@ class _PrivacyState extends State<Privacy> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FrequentlyAskedQuestions()),
+                    MaterialPageRoute(
+                      builder: (context) => FrequentlyAskedQuestions(),
+                    ),
                   );
                 },
               ),
@@ -78,7 +81,9 @@ class _PrivacyState extends State<Privacy> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TermsAndConditions()),
+                    MaterialPageRoute(
+                      builder: (context) => TermsAndConditions(),
+                    ),
                   );
                 },
               ),
@@ -92,7 +97,6 @@ class _PrivacyState extends State<Privacy> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Tax_Certificate()),
-
                   );
                 },
               ),

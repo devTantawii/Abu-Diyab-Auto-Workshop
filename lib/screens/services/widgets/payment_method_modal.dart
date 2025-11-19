@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/language/locale.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../widgets/progress_bar.dart';
+import '../../more/screen/widget/terms and conditions.dart';
 import '../../orders/model/payment_preview_model.dart';
 
 class PaymentMethodModal extends StatefulWidget {
@@ -26,6 +27,7 @@ class PaymentMethodModal extends StatefulWidget {
 
 class _PaymentMethodModalState extends State<PaymentMethodModal> {
   late String? selected = widget.selectedMethod;
+  bool agreeTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +153,6 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                             width: 42.w,
                                             height: 30.h,
                                             fit: BoxFit.contain,
-
                                           ),
                                           SizedBox(width: 12.w),
 
@@ -173,16 +174,19 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                             width: 26.w,
                                             height: 26.h,
                                             decoration: BoxDecoration(
-                                              color://                          color: typographyMainColor(context),
-
-                                              isSelected
-                                                      ? typographyMainColor(context)
+                                              color: //                          color: typographyMainColor(context),
+                                                  isSelected
+                                                      ? typographyMainColor(
+                                                        context,
+                                                      )
                                                       : Colors.transparent,
                                               shape: BoxShape.circle,
                                               border: Border.all(
                                                 color:
                                                     isSelected
-                                                        ? typographyMainColor(context)
+                                                        ? typographyMainColor(
+                                                          context,
+                                                        )
                                                         : Colors.grey,
                                                 width: 2,
                                               ),
@@ -232,12 +236,51 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
                                           color: paragraphColor(context),
                                         ),
                                       ),
+
+                                    SizedBox(height: 10.h),
                                   ],
                                 ),
                               );
                             }).toList(),
                       ),
                     ),
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: agreeTerms,
+                        activeColor: typographyMainColor(context),
+                        onChanged: (value) {
+                          setState(() => agreeTerms = value!);
+                        },
+                      ),
+
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsAndConditions(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            locale.isDirectionRTL(context)
+                                ? "أوافق على الشروط والأحكام"
+                                : "I agree to the Terms and Conditions",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: typographyMainColor(context),
+                              // نفس اللون كله
+                              decoration:
+                                  TextDecoration.underline, // لو عايزها خط تحت
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -248,7 +291,7 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
 
           // === زرار تأكيد الطلب (خارج الكونتينر الأبيض) ===
           ElevatedButton(
-            onPressed: widget.onConfirm,
+            onPressed: agreeTerms ? widget.onConfirm : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: typographyMainColor(context),
               minimumSize: Size(double.infinity, 50.sp),

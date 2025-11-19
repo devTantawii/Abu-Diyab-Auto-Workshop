@@ -125,21 +125,22 @@ class _MoreScreenState extends State<MoreScreen> {
                         );
                       },
                     ),
-                  if (_isLoggedIn) SizedBox(height: 10.h),
-                  if (_isLoggedIn)
-                    widget_ITN(
-                      textAr: 'باقاتي',
-                      textEn: "My Packages",
-                      iconPath: 'assets/icons/gift_card1.png',
-                      onTap: () {
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => BakatScreen(),
-                        //       ),
-                        //     );
-                      },
-                    ),
+             //   if (_isLoggedIn) SizedBox(height: 10.h),
+
+             //    if (_isLoggedIn)
+             //      widget_ITN(
+             //        textAr: 'باقاتي',
+             //        textEn: "My Packages",
+             //        iconPath: 'assets/icons/gift_card1.png',
+             //        onTap: () {
+             //          //     Navigator.push(
+             //          //       context,
+             //          //       MaterialPageRoute(
+             //          //         builder: (context) => BakatScreen(),
+             //          //       ),
+             //          //     );
+             //        },
+             //      ),
                   if (_isLoggedIn) SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(

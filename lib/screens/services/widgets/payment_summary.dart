@@ -33,57 +33,86 @@ class PaymentSummary extends StatelessWidget {
           ),
         ),
       ),
-      child: isLoading
-          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-          : Column(
-        children: [
-          Directionality(
-            textDirection: locale!.isDirectionRTL(context)
-                ? TextDirection.rtl
-                : TextDirection.ltr,
-            child: Column(
-              children: [
-                _buildRow(context, "Subtotal",
-                    model.breakdown.itemsSubtotal.toString()),
-                _buildRow(context, "Package Discount",
-                    model.breakdown.packageDiscount.toString()),
-                _buildRow(context, "Offer Discount",
-                    model.breakdown.offerDiscount.toString()),
-                _buildRow(context, "Points Used",
-                    model.breakdown.pointsRequested.toString()),
-                _buildRow(context, "Points Discount",
-                    model.breakdown.pointsDiscount.toString()),
-                _buildRow(context, "Total",
-                    model.breakdown.total.toString(),
-                    isTotal: true),
-              ],
-            ),
-          ),
-          const Spacer(),
-          ElevatedButton(
-            onPressed: onConfirm,
-            style: ElevatedButton.styleFrom(
-              backgroundColor:                        typographyMainColor(context),
-
-    minimumSize: Size(double.infinity, 35.sp),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.sp),
+      child:
+          isLoading
+              ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+              : Column(
+                children: [
+                  Directionality(
+                    textDirection:
+                        locale!.isDirectionRTL(context)
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                    child: Column(
+                      children: [
+                        _buildRow(
+                          context,
+                          "Subtotal",
+                          model.breakdown.itemsSubtotal.toString(),
+                        ),
+                        _buildRow(
+                          context,
+                          "Package Discount",
+                          model.breakdown.packageDiscount.toString(),
+                        ),
+                        _buildRow(
+                          context,
+                          "Offer Discount",
+                          model.breakdown.offerDiscount.toString(),
+                        ),
+                        _buildRow(
+                          context,
+                          "Points Used",
+                          model.breakdown.pointsRequested.toString(),
+                        ),
+                        _buildRow(
+                          context,
+                          "Points Discount",
+                          model.breakdown.pointsDiscount.toString(),
+                        ),
+                        _buildRow(
+                          context,
+                          "Total",
+                          model.breakdown.total.toString(),
+                          isTotal: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: onConfirm,
+                    child: Container(
+                      width: double.infinity,
+                      height: 55.sp,
+                      decoration: BoxDecoration(
+                        color: typographyMainColor(context),
+                        borderRadius: BorderRadius.circular(10.sp),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        locale.isDirectionRTL(context)
+                            ? "تأكيد الطلب"
+                            : "Confirm Order",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-            child: Text(
-              locale.isDirectionRTL(context)
-                  ? "تأكيد الطلب"
-                  : "Confirm Order",
-              style: TextStyle(color: Colors.white, fontSize: 16.sp),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value,
-      {bool isTotal = false}) {
+  Widget _buildRow(
+    BuildContext context,
+    String label,
+    String value, {
+    bool isTotal = false,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(

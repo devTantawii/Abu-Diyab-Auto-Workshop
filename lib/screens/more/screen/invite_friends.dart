@@ -83,6 +83,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 50.h,),
                       Row(
                         textDirection:
                             locale!.isDirectionRTL(context)
