@@ -2,8 +2,7 @@
 
 A Flutter project by **Hady Elsawah** 💻  
 Built with passion and precision.
-config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
-config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'DEVICE_INFO_PLUS_NO_TRACKING=1'
+
        
 ---
 
