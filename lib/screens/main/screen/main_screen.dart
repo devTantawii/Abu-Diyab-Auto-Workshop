@@ -936,7 +936,7 @@ class _MainScreenState extends State<MainScreen> {
                       isNetworkImage
                           ? Image.network(
                             imagePath,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                             errorBuilder:
                                 (context, error, stackTrace) => Image.asset(
                                   'assets/images/water_rinse.png',

@@ -266,27 +266,32 @@ class _HomeScreenState extends State<HomeScreen> {
     final locale = AppLocalizations.of(context);
     final isRTL = locale?.isDirectionRTL(context) ?? true;
 
-    return SafeArea(
-      child: Scaffold(
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 300),
-          transitionBuilder: (child, animation, secondaryAnimation) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            final tween = Tween(
-              begin: begin,
-              end: end,
-            ).chain(CurveTween(curve: Curves.easeInOut));
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-          child: _screens[_currentIndex],
-        ),
-        bottomNavigationBar: SizedBox(
-          // height: 75.h, // responsive height
-          child: _buildBottomNavigationBar(isRTL),
+    return Container(
+      color: Color(0xFF006D92),
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Scaffold(
+          body: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation, secondaryAnimation) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              final tween = Tween(
+                begin: begin,
+                end: end,
+              ).chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+            child: _screens[_currentIndex],
+          ),
+          bottomNavigationBar: SizedBox(
+            // height: 75.h, // responsive height
+            child: _buildBottomNavigationBar(isRTL),
+          ),
         ),
       ),
     );
