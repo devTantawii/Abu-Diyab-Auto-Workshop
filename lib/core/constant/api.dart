@@ -1,5 +1,6 @@
-const String mainApi = testApi;
-const String productionApi = "https://devworkshop.abudiyabksa.com/api";
+       // const String mainApi = productionApi;
+        const String mainApi = testApi;
+const String productionApi = "https://api.a-vsc.com/api";
 const String testApi = "https://devapi.a-vsc.com/api";
 const String imageApi = "https://devworkshop.abudiyabksa.com/storage";
 //const String loginApi = "/login";
@@ -49,6 +50,7 @@ const String updateRepairCheckApi ='$mainApi/app/elwarsha/orders/update-repair-c
 const String getRepairCheckApi ='$mainApi/app/elwarsha/orders/get-repair-cards';
 const String getOffersApi ="$mainApi/app/elwarsha/offers/get";
 const String createReviewsApi ='${mainApi}/app/elwarsha/reviews/create';
+const String deleteAccApi ='${mainApi}/app/elwarsha/profile/delete-account';
 
 
 

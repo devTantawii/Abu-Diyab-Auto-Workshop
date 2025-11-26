@@ -32,6 +32,22 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileError(e.toString()));
     }
   }
+  Future<void> deleteAccount() async {
+    print("🔥 deleteAccount() in cubit CALLED");
+
+    emit(ProfileLoading());
+
+    try {
+      final success = await repository.deleteAccount();
+      if (success) {
+        emit(ProfileDeleted());
+      } else {
+        emit(ProfileError("Failed to delete account"));
+      }
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+    }
+  }
 
   Future<void> updateProfile({
     required int id,

@@ -29,6 +29,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     checkVersion();
   }
+
   Future<void> checkVersion() async {
     try {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -109,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String url = '';
     if (platform == 'android') {
       url =
-          'https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab';
+          'https://play.google.com/store/apps/details?id=com.abudiyab.workshop';
       print("android version Available");
     } else if (platform == 'ios') {
       print("IOS version Available");
@@ -131,24 +133,27 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 16.0,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                 decoration: BoxDecoration(
-                   shape: BoxShape.circle,
-                   gradient: LinearGradient(
-                     colors: [Color(0xFFBA1B1B), Color(0xFF5C0000)],
-                     begin: Alignment.topLeft,
-                     end: Alignment.bottomRight,
-                   ),
-                 ),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [const Color(0xFF006D92), const Color(0xFF419BBA)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
                 padding: EdgeInsets.all(16.0),
                 child: Image.asset(
                   'assets/icons/update_icon.png',
                   height: 70.h,
-                //  color: Colors.white,
+                  //  color: Colors.white,
                 ),
               ),
               SizedBox(height: 16.0),
@@ -159,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFBA1B1B),
+                  color: Color(0xFF419BBA),
                   fontFamily: "Cairo",
                 ),
               ),
@@ -187,7 +192,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: EdgeInsets.symmetric(vertical: 12.0),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFFBA1B1B), Color(0xFF5C0000)],
+                      colors: [
+                        const Color(0xFF006D92),
+                        const Color(0xFF419BBA),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -237,8 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
     OrderScreen(),
     MoreScreen(),
   ];
-
-
 
   Future<void> _checkAuthStatus() async {
     final prefs = await SharedPreferences.getInstance();

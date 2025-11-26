@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../auth/cubit/login_cubit.dart';
 import '../../auth/screen/login.dart';
+import '../../home/screen/home_screen.dart';
+import '../../main/screen/main_screen.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -42,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onBack: () => Navigator.pop(context),
         ),
         body: BlocConsumer<ProfileCubit, ProfileState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ProfileLoaded) {
               final user = state.user;
               _firstNameController.text = user.name.split(" ").first;
@@ -63,6 +66,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
+            if (state is ProfileDeleted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("تم حذف الحساب بنجاح")));
+
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => MainScreen()),
+                (route) => false,
+              );
             }
           },
           builder: (context, state) {
@@ -562,8 +578,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {
-                          // هنا كود تسجيل الخروج
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? "هل أنت متأكد؟"
+                                      : "Are you sure?",
+                                ),
+                                content: Text(
+                                  locale.isDirectionRTL(context)
+                                      ? "سيتم حذف حسابك بشكل نهائي ولا يمكن التراجع."
+                                      : "Your account will be deleted permanently.",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      locale.isDirectionRTL(context)
+                                          ? "إلغاء"
+                                          : "Cancel",
+                                    ),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                  TextButton(
+                                    child: Text(
+                                      locale.isDirectionRTL(context)
+                                          ? "حذف"
+                                          : "Delete",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      context
+                                          .read<ProfileCubit>()
+                                          .deleteAccount();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
+
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                             color: buttonPrimaryBgColor(context),

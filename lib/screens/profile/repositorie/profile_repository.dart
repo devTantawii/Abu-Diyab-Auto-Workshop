@@ -71,6 +71,59 @@ class ProfileRepository {
     return null;
   }
 
+  Future<bool> deleteAccount() async {
+    print("🔥🔥 deleteAccount() reached Repository");
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception("No token found");
+    }
+
+    final url = deleteAccApi;
+
+    try {
+      print("🌍 Sending DELETE request to: $url");
+      print("🔑 Token: $token");
+
+      final response = await _dio.delete(
+        url,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+            "Accept-Language": langCode == '' ? "en" : langCode,
+          },
+        ),
+      );
+
+      print("🔥 Response Status Code: ${response.statusCode}");
+      print("🔥 Response Body: ${response.data}");
+
+      if (response.statusCode == 200 && response.data["status"] == true) {
+        await prefs.clear();
+        print("Account deleted successfully");
+        return true;
+      } else {
+        print("Delete failed: ${response.data}");
+        throw Exception(response.data["message"] ?? "Failed to delete account");
+      }
+    } on DioException catch (e) {
+      print("❌ Dio ERROR OCCURRED");
+
+      print("❗ Dio error message: ${e.message}");
+      print("❗ Dio error type: ${e.type}");
+      print("❗ Dio response: ${e.response?.data}");
+      print("❗ Dio status code: ${e.response?.statusCode}");
+
+      throw Exception("Dio error: ${e.message}");
+    } catch (e) {
+      print("❌ GENERAL ERROR: $e");
+      rethrow;
+    }
+  }
+
   Future<UserModel?> updateUserProfile({
     required int id,
     required String firstName,

@@ -55,7 +55,7 @@ await FcmApi().initNotifications();
     ),
   );
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final prefs = await SharedPreferences.getInstance();
   initialToken = prefs.getString('token');

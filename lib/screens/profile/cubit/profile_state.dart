@@ -20,6 +20,7 @@ class ProfileUpdated extends ProfileState {
   final UserModel user;
   ProfileUpdated(this.user);
 }
+class ProfileDeleted extends ProfileState {}
 
 class ProfileError extends ProfileState {
   final String message;

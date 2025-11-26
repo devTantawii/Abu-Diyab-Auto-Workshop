@@ -33,7 +33,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>نحتاج لاستخدام الكاميرا لالتقاط صور.</string>
+	<string>نستخدم الكاميرا لالتقاط صور يمكنك رفعها داخل التطبيق لملفك الشخصي أو كجزء من المحتوى.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>نحتاج للوصول إلى موقعك أثناء استخدام التطبيق.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

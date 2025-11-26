@@ -480,25 +480,18 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
               ? [LengthLimitingTextInputFormatter(maxLength)]
               : null,
       decoration: InputDecoration(
-        hintText: hint,
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
-        hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color:  Theme.of(context).brightness == Brightness.light
-            ? Colors.black
-            : Colors.white,
-        ),
+        hintText: hint,
+        hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color: Colors.grey),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Theme.of(context).brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
-          ),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: typographyMainColor(context)),
+          borderSide:  BorderSide(color: typographyMainColor(context)),
         ),
-      ),
-    );
+      ),    );
   }
 }
