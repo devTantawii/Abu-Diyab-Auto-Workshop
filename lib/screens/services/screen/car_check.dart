@@ -64,366 +64,378 @@ class _CarCheckState extends State<CarCheck> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor(context),
-      appBar: CustomGradientAppBar(
-        title_ar: "إنشاء طلب",
-        onBack: () {
-          context.read<CarCheckCubit>().resetCarChecks();
-          Navigator.pop(context);
-        },
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: scaffoldBackgroundColor(context),
+        appBar: CustomGradientAppBar(
+          title_ar: "إنشاء طلب",
+          onBack: () {
+            context.read<CarCheckCubit>().resetCarChecks();
+            Navigator.pop(context);
+          },
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      widget.title,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
+        body: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+            ),
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        widget.title,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          fontSize: 18.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 5),
-                    Image.network(
-                      widget.icon,
-                      height: 20.h,
-                      width: 20.w,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.image_not_supported, size: 20.h);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 6.h),
-
-                Row(
-                  children: [
-                    Text(
-                      widget.description,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: paragraphColor(context),
-                        fontSize: 13.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
+                      SizedBox(width: 5),
+                      Image.network(
+                        widget.icon,
+                        height: 20.h,
+                        width: 20.w,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.image_not_supported, size: 20.h);
+                        },
                       ),
-                    ),
-                    SizedBox(width: 5),
-                  ],
-                ),
-
-                SizedBox(height: 6.h),
-
-                /// -------------------- خطوات التقدم --------------------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ProgressBar(active: true),
-                    ProgressBar(),
-                    ProgressBar(),
-                  ],
-                ),
-                SizedBox(height: 6.h),
-
-                /// -------------------- قسم السيارات --------------------
-                CarsSection(
-                  onCarSelected: (userCarId) {
-                    setState(() {
-                      _selectedUserCarId = userCarId;
-                    });
-                  },
-                ),
-
-                NotesAndCarCounterSection(
-                  notesController: notesController,
-                  kiloReadController: kiloReadController,
-                ),
-                SizedBox(height: 10.h),
-                Text(
-                  locale.isDirectionRTL(context)
-                      ? " هل السيارة تعمل!"
-                      : "Does the car work?",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
-                    fontSize: 14.sp,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w600,
-                    height: 1.57,
+                    ],
                   ),
-                ),
-                SizedBox(height: 15.h),
-                Row(
-                  children: [
-                    // زر نعم
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selected = true;
-                          });
-                        },
-                        child: Container(
-                          height: 55.h,
-                          margin: EdgeInsets.symmetric(horizontal: 5.w),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Color(0xFF9B9B9B),
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 22.w,
-                                  height: 22.h,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        selected == true
-                                            ? typographyMainColor(context)
-                                            : Color(0xFFD9D9D9),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.check,
-                                    size: 16.sp,
-                                    color:
-                                        Theme.of(context).brightness ==
-                                                Brightness.light
-                                            ? Colors.white
-                                            : Colors.black,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                locale.isDirectionRTL(context) ? " نعم" : "Yes",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  SizedBox(height: 6.h),
 
-                    // زر لا
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selected = false;
-                          });
-                        },
-                        child: Container(
-                          height: 55.h,
-                          margin: EdgeInsets.symmetric(horizontal: 5.w),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Color(0xFF9B9B9B),
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
+                  Row(
+                    children: [
+                      Text(
+                        widget.description,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: paragraphColor(context),
+                          fontSize: 13.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                    ],
+                  ),
+
+                  SizedBox(height: 6.h),
+
+                  /// -------------------- خطوات التقدم --------------------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ProgressBar(active: true),
+                      ProgressBar(),
+                      ProgressBar(),
+                    ],
+                  ),
+                  SizedBox(height: 6.h),
+
+                  /// -------------------- قسم السيارات --------------------
+                  CarsSection(
+                    onCarSelected: (userCarId) {
+                      setState(() {
+                        _selectedUserCarId = userCarId;
+                      });
+                    },
+                  ),
+
+                  NotesAndCarCounterSection(
+                    notesController: notesController,
+                    kiloReadController: kiloReadController,
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    locale.isDirectionRTL(context)
+                        ? " هل السيارة تعمل!"
+                        : "Does the car work?",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                      fontSize: 14.sp,
+                      fontFamily: 'Graphik Arabic',
+                      fontWeight: FontWeight.w600,
+                      height: 1.57,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Row(
+                    children: [
+                      // زر نعم
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selected = true;
+                            });
+                          },
+                          child: Container(
+                            height: 55.h,
+                            margin: EdgeInsets.symmetric(horizontal: 5.w),
+                            decoration: BoxDecoration(
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.white
+                                      : Colors.black,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Color(0xFF9B9B9B),
+                                width: 1.5,
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 22.w,
-                                  height: 22.h,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        selected == false
-                                            ? typographyMainColor(context)
-                                            : Color(0xFFD9D9D9),
-                                    shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: 22.w,
+                                    height: 22.h,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          selected == true
+                                              ? typographyMainColor(context)
+                                              : Color(0xFFD9D9D9),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 16.sp,
+                                      color:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.white
+                                              : Colors.black,
+                                    ),
                                   ),
-                                  child: Icon(
-                                    Icons.check,
-                                    size: 16.sp,
+                                ),
+                                Text(
+                                  locale.isDirectionRTL(context)
+                                      ? " نعم"
+                                      : "Yes",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
                                     color:
                                         Theme.of(context).brightness ==
                                                 Brightness.light
-                                            ? Colors.white
-                                            : Colors.black,
+                                            ? Colors.black
+                                            : Colors.white,
                                   ),
                                 ),
-                              ),
-                              Text(
-                                locale.isDirectionRTL(context) ? " لا" : "No",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                Align(
-                  alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: locale.isDirectionRTL(context)
-                                  ? 'المرفقات '
-                                  : 'Attatchment',
-                          style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white,
-                            fontSize: 14.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
+
+                      // زر لا
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selected = false;
+                            });
+                          },
+                          child: Container(
+                            height: 55.h,
+                            margin: EdgeInsets.symmetric(horizontal: 5.w),
+                            decoration: BoxDecoration(
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.white
+                                      : Colors.black,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Color(0xFF9B9B9B),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: 22.w,
+                                    height: 22.h,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          selected == false
+                                              ? typographyMainColor(context)
+                                              : Color(0xFFD9D9D9),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 16.sp,
+                                      color:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.white
+                                              : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  locale.isDirectionRTL(context) ? " لا" : "No",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        TextSpan(
-                          text:
-                              locale.isDirectionRTL(context)
-                                  ? '( أختياري )'
-                                  : '( Optional )',
-                          style: TextStyle(
-                            color: const Color(0xFF4D4D4D),
-                            fontSize: 12.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    textAlign:
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Align(
+                    alignment:
                         locale.isDirectionRTL(context)
-                            ? TextAlign.right
-                            : TextAlign.left,
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                locale.isDirectionRTL(context)
+                                    ? 'المرفقات '
+                                    : 'Attatchment',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                              fontSize: 14.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                locale.isDirectionRTL(context)
+                                    ? '( أختياري )'
+                                    : '( Optional )',
+                            style: TextStyle(
+                              color: const Color(0xFF4D4D4D),
+                              fontSize: 12.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign:
+                          locale.isDirectionRTL(context)
+                              ? TextAlign.right
+                              : TextAlign.left,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10.h),
-                MultiImagePickerWidget(
-                  onImagesSelected: (files) {
-                    selectedCarDocs = files;
-                    print('عدد الصور المختارة: ${selectedCarDocs.length}');
-                  },
-                ),
-                SizedBox(height: 15.h),
-              ],
+                  SizedBox(height: 10.h),
+                  MultiImagePickerWidget(
+                    onImagesSelected: (files) {
+                      selectedCarDocs = files;
+                      print('عدد الصور المختارة: ${selectedCarDocs.length}');
+                    },
+                  ),
+                  SizedBox(height: 15.h),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      //هنا زرار التالي في اخر الصفحه
-      bottomNavigationBar: CustomBottomButton(
-        textAr: "التالي",
-        textEn: "Next",
-        onPressed: () {
-          // تحقق من البيانات المطلوبة
-          if (_selectedUserCarId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار السيارة")),
-            );
-            return;
-          }
-          if (kiloReadController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
-            );
-            return;
-          }
+        //هنا زرار التالي في اخر الصفحه
+        bottomNavigationBar: CustomBottomButton(
+          textAr: "التالي",
+          textEn: "Next",
+          onPressed: () {
+            // تحقق من البيانات المطلوبة
+            if (_selectedUserCarId == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى اختيار السيارة")),
+              );
+              return;
+            }
+            if (kiloReadController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
+              );
+              return;
+            }
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (BuildContext context) => ReviewRequestPage(
-                    title: widget.title,
-                    icon: widget.icon,
-                    slug: widget.slug,
-                    selectedUserCarId: _selectedUserCarId,
-                    selectedProduct: 0,
-                    isCarWorking: selected.toString(),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (BuildContext context) => ReviewRequestPage(
+                      title: widget.title,
+                      icon: widget.icon,
+                      slug: widget.slug,
+                      selectedUserCarId: _selectedUserCarId,
+                      selectedProduct: 0,
+                      isCarWorking: selected.toString(),
 
-                    notes:
-                        notesController.text.isNotEmpty
-                            ? notesController.text
-                            : null,
-                    kiloRead:
-                        kiloReadController.text.isNotEmpty
-                            ? kiloReadController.text
-                            : null,
-                    selectedCarDocs: selectedCarDocs,
-                  ),
-            ),
-          );
-        },
+                      notes:
+                          notesController.text.isNotEmpty
+                              ? notesController.text
+                              : null,
+                      kiloRead:
+                          kiloReadController.text.isNotEmpty
+                              ? kiloReadController.text
+                              : null,
+                      selectedCarDocs: selectedCarDocs,
+                    ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -27,9 +27,9 @@ class ResetPasswordFlow {
               Navigator.pop(context);
               showOtpBottomSheet(context, phoneController.text.trim());
             } else if (state is RequestResetFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -49,14 +49,17 @@ class ResetPasswordFlow {
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Graphik Arabic',
-                      color: Color(0xFFBA1B1B),
+                      color: typographyMainColor(context),
                     ),
                   ),
                   SizedBox(height: 20.h),
                   TextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
-                    style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 16.sp),
+                    style: TextStyle(
+                      fontFamily: 'Graphik Arabic',
+                      fontSize: 16.sp,
+                    ),
                     decoration: InputDecoration(
                       hintText: rtl ? "رقم الهاتف" : "Phone number",
                       hintStyle: TextStyle(
@@ -66,64 +69,87 @@ class ResetPasswordFlow {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B)),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFFBA1B1B), width: 2.w),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                          width: 2.w,
+                        ),
                       ),
-                      prefixIcon: Icon(Icons.phone, color: Color(0xFFBA1B1B), size: 20.sp),
+                      prefixIcon: Icon(
+                        Icons.phone,
+                        color: typographyMainColor(context),
+                        size: 20.sp,
+                      ),
                     ),
                   ),
                   SizedBox(height: 15.h),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 48.h),
-                      backgroundColor: Color(0xFFBA1B1B),
-                      shape: RoundedRectangleBorder(
+                      backgroundColor:                                    typographyMainColor(context),
+
+                    shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
-                    onPressed: state is RequestResetLoading
-                        ? null
-                        : () async {
-                      try {
-                        if (phoneController.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                rtl
-                                    ? "يرجى إدخال رقم الهاتف"
-                                    : "Please enter your phone number",
-                                style: TextStyle(fontFamily: 'Graphik Arabic'),
+                    onPressed:
+                        state is RequestResetLoading
+                            ? null
+                            : () async {
+                              try {
+                                if (phoneController.text.trim().isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        rtl
+                                            ? "يرجى إدخال رقم الهاتف"
+                                            : "Please enter your phone number",
+                                        style: TextStyle(
+                                          fontFamily: 'Graphik Arabic',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                await context
+                                    .read<LoginCubit>()
+                                    .requestResetPassword(
+                                      phoneController.text.trim(),
+                                    );
+                              } catch (e) {
+                                String errorMessage = "حدث خطأ غير متوقع";
+                                if (e is DioError) errorMessage = e.message!;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      errorMessage,
+                                      style: TextStyle(
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                    child:
+                        state is RequestResetLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                              rtl ? "إرسال الكود" : "Send Code",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Graphik Arabic',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          );
-                          return;
-                        }
-
-                        await context.read<LoginCubit>().requestResetPassword(
-                          phoneController.text.trim(),
-                        );
-                      } catch (e) {
-                        String errorMessage = "حدث خطأ غير متوقع";
-                        if (e is DioError) errorMessage = e.message!;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(errorMessage, style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                        );
-                      }
-                    },
-                    child: state is RequestResetLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                      rtl ? "إرسال الكود" : "Send Code",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Graphik Arabic',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                   ),
                   SizedBox(height: 20.h),
                 ],
@@ -154,9 +180,9 @@ class ResetPasswordFlow {
               Navigator.pop(context);
               showNewPasswordBottomSheet(context, phone);
             } else if (state is VerifyResetFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -177,10 +203,10 @@ class ResetPasswordFlow {
                         : 'We’ve verified you, one last step',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      color:Theme.of(context).brightness ==
-                          Brightness.light
-                          ? Colors.black
-                          : Colors.white,
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                       fontSize: 15.sp,
                       fontFamily: 'Graphik Arabic',
                       fontWeight: FontWeight.w600,
@@ -190,9 +216,10 @@ class ResetPasswordFlow {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text:  rtl
-                              ? 'ادخل الكود الذي أرسلناه إلى رقمك $phone'
-                              : 'Enter the code sent to your number $phone',
+                          text:
+                              rtl
+                                  ? 'ادخل الكود الذي أرسلناه إلى رقمك '
+                                  : 'Enter the code sent to your number ',
                           style: TextStyle(
                             color: const Color(0xFF474747),
                             fontSize: 12.sp,
@@ -203,7 +230,7 @@ class ResetPasswordFlow {
                         TextSpan(
                           text: phone,
                           style: TextStyle(
-                            color: const Color(0xFFBA1B1B),
+                            color: typographyMainColor(context),
                             fontSize: 12.sp,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
@@ -237,18 +264,27 @@ class ResetPasswordFlow {
                             counterText: "",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color:typographyMainColor(context)),
+                              borderSide: BorderSide(
+                                color: typographyMainColor(context),
+                              ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color:typographyMainColor(context), width: 2.w),
+                              borderSide: BorderSide(
+                                color: typographyMainColor(context),
+                                width: 2.w,
+                              ),
                             ),
                           ),
                           onChanged: (value) {
                             if (value.isNotEmpty && index < 5) {
-                              FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+                              FocusScope.of(
+                                context,
+                              ).requestFocus(focusNodes[index + 1]);
                             } else if (value.isEmpty && index > 0) {
-                              FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+                              FocusScope.of(
+                                context,
+                              ).requestFocus(focusNodes[index - 1]);
                             }
                           },
                         ),
@@ -264,40 +300,59 @@ class ResetPasswordFlow {
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
-                    onPressed: state is VerifyResetLoading
-                        ? null
-                        : () async {
-                      try {
-                        String otp = otpControllers.map((c) => c.text).join();
-                        if (otp.length < 4) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text( rtl
-                                ? "أدخل الكود كاملاً"
-                                : "Please enter full code", style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                          );
-                          return;
-                        }
+                    onPressed:
+                        state is VerifyResetLoading
+                            ? null
+                            : () async {
+                              try {
+                                String otp =
+                                    otpControllers.map((c) => c.text).join();
+                                if (otp.length < 4) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        rtl
+                                            ? "أدخل الكود كاملاً"
+                                            : "Please enter full code",
+                                        style: TextStyle(
+                                          fontFamily: 'Graphik Arabic',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
 
-                        await context.read<LoginCubit>().verifyResetPassword(phone, otp);
-                      } catch (e) {
-                        String errorMessage = "حدث خطأ غير متوقع";
-                        if (e is DioError) errorMessage = e.message!;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(errorMessage, style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                        );
-                      }
-                    },
-                    child: state is VerifyResetLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                      rtl ? "تأكيد" : "Confirm",
-                      style: TextStyle(
-                        fontFamily: 'Graphik Arabic',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                                await context
+                                    .read<LoginCubit>()
+                                    .verifyResetPassword(phone, otp);
+                              } catch (e) {
+                                String errorMessage = "حدث خطأ غير متوقع";
+                                if (e is DioError) errorMessage = e.message!;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      errorMessage,
+                                      style: TextStyle(
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                    child:
+                        state is VerifyResetLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                              rtl ? "تأكيد" : "Confirm",
+                              style: TextStyle(
+                                fontFamily: 'Graphik Arabic',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                   ),
                   SizedBox(height: 20.h),
                 ],
@@ -327,13 +382,23 @@ class ResetPasswordFlow {
             if (state is SubmitNewPasswordSuccess) {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(  rtl
-                    ? "تم تغيير كلمة المرور بنجاح"
-                    : "Password changed successfully", style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                SnackBar(
+                  content: Text(
+                    rtl
+                        ? "تم تغيير كلمة المرور بنجاح"
+                        : "Password changed successfully",
+                    style: TextStyle(fontFamily: 'Graphik Arabic'),
+                  ),
+                ),
               );
             } else if (state is SubmitNewPasswordFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message, style: TextStyle(fontFamily: 'Graphik Arabic'))),
+                SnackBar(
+                  content: Text(
+                    state.message,
+                    style: TextStyle(fontFamily: 'Graphik Arabic'),
+                  ),
+                ),
               );
             }
           },
@@ -349,52 +414,81 @@ class ResetPasswordFlow {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    rtl
-                        ? "أدخل كلمة المرور الجديدة"
-                        : "Enter new password",                    style: TextStyle(
+                    rtl ? "أدخل كلمة المرور الجديدة" : "Enter new password",
+                    style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Graphik Arabic',
-                      color:typographyMainColor(context),
+                      color: typographyMainColor(context),
                     ),
                   ),
                   SizedBox(height: 20.h),
                   TextField(
                     controller: passwordController,
                     obscureText: true,
-                    style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
+                    style: TextStyle(
+                      fontFamily: 'Graphik Arabic',
+                      fontSize: 14.sp,
+                    ),
                     decoration: InputDecoration(
                       hintText: rtl ? "كلمة المرور" : "Password",
-                      hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
+                      hintStyle: TextStyle(
+                        fontFamily: 'Graphik Arabic',
+                        fontSize: 14.sp,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: typographyMainColor(context)),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: typographyMainColor(context), width: 2.w),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                          width: 2.w,
+                        ),
                       ),
-                      prefixIcon: Icon(Icons.lock, color: typographyMainColor(context), size: 20.sp),
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: typographyMainColor(context),
+                        size: 20.sp,
+                      ),
                     ),
                   ),
                   SizedBox(height: 10.h),
                   TextField(
                     controller: confirmPasswordController,
                     obscureText: true,
-                    style: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
+                    style: TextStyle(
+                      fontFamily: 'Graphik Arabic',
+                      fontSize: 14.sp,
+                    ),
                     decoration: InputDecoration(
-                      hintText:                               rtl ? "تأكيد كلمة المرور" : "Confirm Password",
+                      hintText: rtl ? "تأكيد كلمة المرور" : "Confirm Password",
 
-                      hintStyle: TextStyle(fontFamily: 'Graphik Arabic', fontSize: 14.sp),
+                      hintStyle: TextStyle(
+                        fontFamily: 'Graphik Arabic',
+                        fontSize: 14.sp,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: typographyMainColor(context)),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color:typographyMainColor(context), width: 2.w),
+                        borderSide: BorderSide(
+                          color: typographyMainColor(context),
+                          width: 2.w,
+                        ),
                       ),
-                      prefixIcon: Icon(Icons.lock_outline, color: typographyMainColor(context), size: 20.sp),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: typographyMainColor(context),
+                        size: 20.sp,
+                      ),
                     ),
                   ),
                   SizedBox(height: 15.h),
@@ -406,51 +500,79 @@ class ResetPasswordFlow {
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
-                    onPressed: state is SubmitNewPasswordLoading
-                        ? null
-                        : () async {
-                      try {
-                        if (passwordController.text.trim().isEmpty ||
-                            confirmPasswordController.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text( rtl
-                                ? "املأ كل الحقول"
-                                : "Please fill all fields", style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                          );
-                          return;
-                        }
-                        if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(      rtl
-                                ? "كلمتا المرور غير متطابقتين"
-                                : "Passwords do not match", style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                          );
-                          return;
-                        }
-                        await context.read<LoginCubit>().submitNewPassword(
-                          phone,
-                          passwordController.text.trim(),
-                          confirmPasswordController.text.trim(),
-                        );
-                      } catch (e) {
-                        String errorMessage = "حدث خطأ غير متوقع";
-                        if (e is DioError) errorMessage = e.message!;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(errorMessage, style: TextStyle(fontFamily: 'Graphik Arabic'))),
-                        );
-                      }
-                    },
-                    child: state is SubmitNewPasswordLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                      rtl ? "حفظ" : "Save",
-                      style: TextStyle(
-                        fontFamily: 'Graphik Arabic',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                    onPressed:
+                        state is SubmitNewPasswordLoading
+                            ? null
+                            : () async {
+                              try {
+                                if (passwordController.text.trim().isEmpty ||
+                                    confirmPasswordController.text
+                                        .trim()
+                                        .isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        rtl
+                                            ? "املأ كل الحقول"
+                                            : "Please fill all fields",
+                                        style: TextStyle(
+                                          fontFamily: 'Graphik Arabic',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                if (passwordController.text.trim() !=
+                                    confirmPasswordController.text.trim()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        rtl
+                                            ? "كلمتا المرور غير متطابقتين"
+                                            : "Passwords do not match",
+                                        style: TextStyle(
+                                          fontFamily: 'Graphik Arabic',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                await context
+                                    .read<LoginCubit>()
+                                    .submitNewPassword(
+                                      phone,
+                                      passwordController.text.trim(),
+                                      confirmPasswordController.text.trim(),
+                                    );
+                              } catch (e) {
+                                String errorMessage = "حدث خطأ غير متوقع";
+                                if (e is DioError) errorMessage = e.message!;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      errorMessage,
+                                      style: TextStyle(
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                    child:
+                        state is SubmitNewPasswordLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                              rtl ? "حفظ" : "Save",
+                              style: TextStyle(
+                                fontFamily: 'Graphik Arabic',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                   ),
                   SizedBox(height: 20.h),
                 ],

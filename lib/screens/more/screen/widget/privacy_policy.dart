@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/language/locale.dart';
 import '../../../services/widgets/custom_app_bar.dart';
 import '../../cubit/static_pages_cubit.dart';
@@ -15,12 +16,12 @@ class PrivacyPolicy extends StatelessWidget {
     final locale = AppLocalizations.of(context);
 
     return BlocProvider(
-      create: (_) => StaticPagesCubit()..fetchStaticPages(),
+      create: (_) =>
+      StaticPagesCubit()
+        ..fetchStaticPages(),
       child: Scaffold(
-        backgroundColor:
-        Theme.of(context).brightness == Brightness.light
-            ? const Color(0xFFD27A7A)
-            : const Color(0xFF6F5252),
+        backgroundColor: scaffoldBackgroundColor(context),
+
 
         appBar: CustomGradientAppBar(
           title_ar: "سياسة الخصوصية",
@@ -35,7 +36,9 @@ class PrivacyPolicy extends StatelessWidget {
               topLeft: Radius.circular(15.sp),
               topRight: Radius.circular(15.sp),
             ),
-            color: Theme.of(context).brightness == Brightness.light
+            color: Theme
+                .of(context)
+                .brightness == Brightness.light
                 ? Colors.white
                 : Colors.black,
           ),
@@ -45,54 +48,56 @@ class PrivacyPolicy extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is StaticPagesLoaded) {
                 return SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 20.h,
-                  ),
-                  child:
-                  Html(
-                    data: state.pages.privacyPolicy ?? "",
-                    style: {
-                      "body": Style(
-                        fontSize: FontSize.medium,
-                        lineHeight: LineHeight.number(1.6),
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
-                        textAlign: TextAlign.justify,
-                      ),
-                      "p": Style(
-                        textAlign: TextAlign.justify,
-                        margin: Margins.symmetric(vertical: 8),
-                      ),
-                      "h1": Style(
-                        fontSize: FontSize.xxLarge,
-                        fontWeight: FontWeight.bold,
-                        textAlign: TextAlign.center,
-                        margin: Margins.only(bottom: 12),
-                      ),
-                      "h2": Style(
-                        fontSize: FontSize.xLarge,
-                        fontWeight: FontWeight.w600,
-                        textAlign: TextAlign.center,
-                        margin: Margins.only(bottom: 10),
-                      ),
-                      "h3": Style(
-                        fontSize: FontSize.large,
-                        fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.start,
-                        margin: Margins.only(bottom: 8),
-                      ),
-                      "li": Style(
-                        fontSize: FontSize.medium,
-                        margin: Margins.only(bottom: 6),
-                        textAlign: TextAlign.start,
-                      ),
-                      "ol": Style(margin: Margins.symmetric(vertical: 6)),
-                      "ul": Style(margin: Margins.symmetric(vertical: 6)),
-                      "span": Style(textAlign: TextAlign.justify),
-                    },
-                  )
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 20.h,
+                    ),
+                    child:
+                    Html(
+                      data: state.pages.privacyPolicy ?? "",
+                      style: {
+                        "body": Style(
+                          fontSize: FontSize.medium,
+                          lineHeight: LineHeight.number(1.6),
+                          color: Theme
+                              .of(context)
+                              .brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                          textAlign: TextAlign.justify,
+                        ),
+                        "p": Style(
+                          textAlign: TextAlign.justify,
+                          margin: Margins.symmetric(vertical: 8),
+                        ),
+                        "h1": Style(
+                          fontSize: FontSize.xxLarge,
+                          fontWeight: FontWeight.bold,
+                          textAlign: TextAlign.center,
+                          margin: Margins.only(bottom: 12),
+                        ),
+                        "h2": Style(
+                          fontSize: FontSize.xLarge,
+                          fontWeight: FontWeight.w600,
+                          textAlign: TextAlign.center,
+                          margin: Margins.only(bottom: 10),
+                        ),
+                        "h3": Style(
+                          fontSize: FontSize.large,
+                          fontWeight: FontWeight.w500,
+                          textAlign: TextAlign.start,
+                          margin: Margins.only(bottom: 8),
+                        ),
+                        "li": Style(
+                          fontSize: FontSize.medium,
+                          margin: Margins.only(bottom: 6),
+                          textAlign: TextAlign.start,
+                        ),
+                        "ol": Style(margin: Margins.symmetric(vertical: 6)),
+                        "ul": Style(margin: Margins.symmetric(vertical: 6)),
+                        "span": Style(textAlign: TextAlign.justify),
+                      },
+                    )
 
                 );
               } else if (state is StaticPagesError) {

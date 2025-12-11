@@ -615,89 +615,74 @@ iOS:  https://apps.apple.com/us/app/abudiyab-car-rental/id1570665182
                       ),
                       SizedBox(height: 10.h),
 
-                      // ← هنا الجزء الجديد
-                      BlocBuilder<RewardLogsCubit, RewardLogsState>(
-                        builder: (context, state) {
-                          if (state is RewardLogsLoading) {
-                            return _buildLogsContainer(
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
+                  BlocBuilder<RewardLogsCubit, RewardLogsState>(
+                    builder: (context, state) {
 
-                          if (state is RewardLogsLoaded) {
-                            final logs = state.data.logs;
-                            if (logs.isEmpty) {
-                              return _buildLogsContainer(
-                                child: Center(
-                                  child: Text(
-                                    locale!.isDirectionRTL(context)
-                                        ? "لا توجد مكافآت بعد"
-                                        : "No rewards yet",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
+                      if (state is RewardLogsLoading) {
+                        return _buildLogsContainer(
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
 
-                            return _buildLogsContainer(
-                              child: ListView.builder(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
-                                itemCount: logs.length,
-                                itemBuilder: (context, index) {
-                                  final log = logs[index];
-                                  return _buildLogItem(log, locale, context);
-                                },
-                              ),
-                            );
-                          }
+                      if (state is RewardLogsLoaded) {
+                        final logs = state.data.logs;
 
-                          if (state is RewardLogsError) {
-                            return _buildLogsContainer(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      locale!.isDirectionRTL(context)
-                                          ? "فشل تحميل السجل"
-                                          : "Failed to load",
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    ElevatedButton(
-                                      onPressed:
-                                          () =>
-                                              context
-                                                  .read<RewardLogsCubit>()
-                                                  .fetchRewardLogs(),
-                                      child: Text(
-                                        locale!.isDirectionRTL(context)
-                                            ? "إعادة"
-                                            : "Retry",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-
+                        if (logs.isEmpty) {
                           return _buildLogsContainer(
                             child: Center(
                               child: Text(
-                                "سجل المكافآت هنا...",
-                                style: TextStyle(color: Colors.grey),
+                                locale!.isDirectionRTL(context)
+                                    ? "لا توجد مكافآت بعد"
+                                    : "No rewards yet",
+                                style: TextStyle(color: Colors.grey, fontSize: 14.sp),
                               ),
                             ),
                           );
-                        },
-                      ),
+                        }
+
+                        return _buildLogsContainer(
+                          child: ListView.builder(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            itemCount: logs.length,
+                            itemBuilder: (context, index) =>
+                                _buildLogItem(logs[index], locale, context),
+                          ),
+                        );
+                      }
+
+                      if (state is RewardLogsError) {
+                        return _buildLogsContainer(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () =>
+                                      context.read<RewardLogsCubit>().fetchRewardLogs(),
+                                  icon: Icon(Icons.refresh),
+                                  label: Text(
+                                    locale!.isDirectionRTL(context) ? "تحديث القائمه" : "Refresh",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      // Default (initial) state
+                      return _buildLogsContainer(
+                        child: Center(
+                          child: Text(
+                            locale!.isDirectionRTL(context)
+                                ? "جاري تهيئة السجل..."
+                                : "Initializing...",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      );
+                    },
+                  )
                     ],
                   ),
                 ),

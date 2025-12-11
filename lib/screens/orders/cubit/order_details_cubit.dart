@@ -1,3 +1,4 @@
+import 'package:abu_diyab_workshop/core/constant/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +9,7 @@ import 'order_details_state.dart';
 class OrderDetailsCubit extends Cubit<OrderDetailsState> {
   OrderDetailsCubit() : super(OrderDetailsInitial());
 
-  final Dio _dio = Dio(BaseOptions(baseUrl: "https://devapi.a-vsc.com/api/app/elwarsha"));
+  final Dio _dio = Dio(BaseOptions(baseUrl: "$mainApi/app/elwarsha"));
 
   Future<void> getOrderDetails(int orderId) async {
     emit(OrderDetailsLoading());
@@ -24,7 +25,7 @@ class OrderDetailsCubit extends Cubit<OrderDetailsState> {
         options: Options(
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer $token', // ✅ إضافة التوكن هنا
+          'Authorization': 'Bearer $token',
         },
       ),
       );

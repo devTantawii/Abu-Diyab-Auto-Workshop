@@ -14,7 +14,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true // ✅ في Kotlin DSL لازم تبدأ بـ is
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -24,15 +24,25 @@ android {
     defaultConfig {
         applicationId = "com.abudiyab.workshop"
         minSdk = flutter.minSdkVersion
-        targetSdk = 34
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 35
+        versionCode = 6
+        versionName = "1.0.3"
     }
-
+    signingConfigs {
+        create("release") {
+            storeFile = file("F:/Abu-Diyab-Auto-Workshop/my-release-key.jks")
+            storePassword = "workavsc"
+            keyAlias = "my-key"
+            keyPassword = "workavsc"
+        }
+    }
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
         }
+
     }
 }
 

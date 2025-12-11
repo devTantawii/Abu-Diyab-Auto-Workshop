@@ -515,13 +515,17 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                 }
               },
               builder: (context, state) {
+                if (state is AddCarLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
                 return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:typographyMainColor(
-                        context,
-                      ),
+                      backgroundColor: typographyMainColor(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),

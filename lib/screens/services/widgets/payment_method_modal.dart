@@ -1,4 +1,5 @@
-// lib/screens/final_review/widgets/payment_method_modal.dart
+import 'package:abu_diyab_workshop/screens/services/widgets/payment_method_tile.dart';
+import 'package:abu_diyab_workshop/screens/services/widgets/payment_terms_checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/language/locale.dart';
@@ -6,6 +7,7 @@ import '../../../core/constant/app_colors.dart';
 import '../../../widgets/progress_bar.dart';
 import '../../more/screen/widget/terms and conditions.dart';
 import '../../orders/model/payment_preview_model.dart';
+
 
 class PaymentMethodModal extends StatefulWidget {
   final List<PaymentMethod> paymentMethods;
@@ -32,301 +34,124 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+
     return Container(
       padding: EdgeInsets.all(16.sp),
       height: MediaQuery.of(context).size.height * 0.8,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: backgroundColor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.sp)),
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ProgressBarr(),
-              ProgressBarr(),
-              ProgressBarr(active: true),
-            ],
-          ),
+          _buildHeader(),
           SizedBox(height: 15.h),
-
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8.w),
-              padding: EdgeInsets.all(16.sp),
-              decoration: BoxDecoration(
-                color: backgroundColor(context), // خلفية بيضاء
-                borderRadius: BorderRadius.circular(16.sp),
-                border: Border.all(
-                  color: Colors.grey, // بوردر رمادي فاتح
-                  width: 1.2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Progress Bar
-                  SizedBox(height: 12.h),
-
-                  // العنوان
-                  Text(
-                    locale!.isDirectionRTL(context)
-                        ? 'طريقة الدفع'
-                        : "Payment Options",
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w700,
-                      color: headingColor(context),
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-
-                  // الوصف
-                  Text(
-                    locale.isDirectionRTL(context)
-                        ? 'برجاء إختيار طريقة الدفع المناسبة لك.'
-                        : "Choose your preferred payment method.",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: paragraphColor(context),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children:
-                            widget.paymentMethods.map((method) {
-                              final isSelected = selected == method.key;
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() => selected = method.key);
-                                  widget.onSelect(method.key);
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 60.h,
-                                      margin: EdgeInsets.symmetric(vertical: 6),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.white
-                                                : Colors.black,
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                          color: paragraphColor(context),
-                                          width: 1.5.w,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: paragraphColor(context),
-                                            blurRadius: 4,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        textDirection:
-                                            locale.isDirectionRTL(context)
-                                                ? TextDirection.rtl
-                                                : TextDirection.ltr,
-                                        children: [
-                                          //    Text(method.key),
-                                          Image.asset(
-                                            'assets/icons/${method.key}.png',
-                                            width: 42.w,
-                                            height: 30.h,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          SizedBox(width: 12.w),
-
-                                          // اسم الطريقة
-                                          Expanded(
-                                            child: Text(
-                                              method.name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-
-                                          // دائرة الاختيار
-                                          Container(
-                                            width: 26.w,
-                                            height: 26.h,
-                                            decoration: BoxDecoration(
-                                              color: //                          color: typographyMainColor(context),
-                                                  isSelected
-                                                      ? typographyMainColor(
-                                                        context,
-                                                      )
-                                                      : Colors.transparent,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color:
-                                                    isSelected
-                                                        ? typographyMainColor(
-                                                          context,
-                                                        )
-                                                        : Colors.grey,
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child:
-                                                isSelected
-                                                    ? Icon(
-                                                      Icons.check,
-                                                      size: 14.sp,
-                                                      color: Colors.white,
-                                                    )
-                                                    : SizedBox(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (method.key == "tamara")
-                                      Text(
-                                        locale.isDirectionRTL(context)
-                                            ? 'ادفع جزء من المبلغ الحين والباقي علي دفعات حسب خطة الدفع.'
-                                            : "Pay part of the amount now and the rest in installments according to the payment plan.",
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: paragraphColor(context),
-                                        ),
-                                      )
-                                    else if (method.key == "madfu")
-                                      Text(
-                                        locale.isDirectionRTL(context)
-                                            ? 'قسم فاتورتك حتي 4 أقسام بسهولة وأمان مع مدفوع.'
-                                            : "Easily and securely divide your bill into up to 4 sections with Madfou.",
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: paragraphColor(context),
-                                        ),
-                                      )
-                                    else if (method.key == "cash")
-                                      Text(
-                                        locale.isDirectionRTL(context)
-                                            ? 'سدد المبلغ نقدًا مباشرة في المركز .'
-                                            : "Pay the amount in cash directly at the center.",
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: paragraphColor(context),
-                                        ),
-                                      ),
-
-                                    SizedBox(height: 10.h),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: agreeTerms,
-                        activeColor: typographyMainColor(context),
-                        onChanged: (value) {
-                          setState(() => agreeTerms = value!);
-                        },
-                      ),
-
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TermsAndConditions(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            locale.isDirectionRTL(context)
-                                ? "أوافق على الشروط والأحكام"
-                                : "I agree to the Terms and Conditions",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: typographyMainColor(context),
-                              // نفس اللون كله
-                              decoration:
-                                  TextDecoration.underline, // لو عايزها خط تحت
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-
+          _buildCard(context, locale),
           SizedBox(height: 16.h),
-
-          // === زرار تأكيد الطلب (خارج الكونتينر الأبيض) ===
-          ElevatedButton(
-            onPressed: agreeTerms ? widget.onConfirm : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: typographyMainColor(context),
-              minimumSize: Size(double.infinity, 50.sp),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.sp),
-              ),
-            ),
-            child: Text(
-              locale.isDirectionRTL(context) ? "تأكيد الطلب" : "Confirm Order",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          _buildConfirmButton(locale!, context),
         ],
       ),
     );
   }
-}
 
-class ProgressBarr extends StatelessWidget {
-  final bool active;
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children:  [
+        ProgressBar(),
+        ProgressBar(),
+        ProgressBar(active: true),
+      ],
+    );
+  }
 
-  const ProgressBarr({super.key, this.active = false});
+  Widget _buildCard(BuildContext context, AppLocalizations? locale) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8.w),
+        padding: EdgeInsets.all(16.sp),
+        decoration: BoxDecoration(
+          color: backgroundColor(context),
+          borderRadius: BorderRadius.circular(16.sp),
+          border: Border.all(color: Colors.grey, width: 1.2),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTitle(locale!, context),
+            SizedBox(height: 16.h),
+            _buildPaymentList(context, locale),
+            PaymentTermsCheckbox(
+              value: agreeTerms,
+              onChanged: (v) => setState(() => agreeTerms = v),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 75.w,
-      height: 6.h,
-      decoration: ShapeDecoration(
-        color: active ? typographyMainColor(context) : const Color(0xFFAFAFAF),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+  Widget _buildTitle(AppLocalizations locale, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          locale.isDirectionRTL(context) ? "طريقة الدفع" : "Payment Options",
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+            color: headingColor(context),
+          ),
+        ),
+        SizedBox(height: 6.h),
+        Text(
+          locale.isDirectionRTL(context)
+              ? "برجاء إختيار طريقة الدفع المناسبة لك."
+              : "Choose your preferred payment method.",
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: paragraphColor(context),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentList(BuildContext context, AppLocalizations locale) {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: widget.paymentMethods.map((method) {
+            return PaymentMethodTile(
+              method: method,
+              selected: selected,
+              locale: locale,
+              onSelect: (key) {
+                setState(() => selected = key);
+                widget.onSelect(key);
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton(AppLocalizations locale, BuildContext context) {
+    return ElevatedButton(
+      onPressed: agreeTerms ? widget.onConfirm : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: typographyMainColor(context),
+        minimumSize: Size(double.infinity, 50.sp),
+      ),
+      child: Text(
+        locale.isDirectionRTL(context) ? "تأكيد الطلب" : "Confirm Order",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

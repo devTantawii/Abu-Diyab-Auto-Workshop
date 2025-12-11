@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/language/locale.dart';
  import '../../../services/widgets/custom_app_bar.dart';
 import '../../Cubit/faqcubit/faq_cubit.dart';
@@ -25,9 +26,8 @@ class _FrequentlyAskedQuestionsState extends State<FrequentlyAskedQuestions> {
     return BlocProvider(
       create: (_) => FaqCubit()..fetchFaqs(),
       child: Scaffold(
-        backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? const Color(0xFFD27A7A)
-            : const Color(0xFF6F5252),
+        backgroundColor: scaffoldBackgroundColor(context),
+
         appBar: CustomGradientAppBar(
           title_ar: "الأسئلة الشائعة",
           title_en: "Frequently Asked Questions",

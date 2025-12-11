@@ -89,384 +89,388 @@ class _WashingState extends State<Washing> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor(context),
-      appBar: CustomGradientAppBar(
-        title_ar: "إنشاء طلب",
-        title_en: "Create Request",
-        onBack: () {
-          context.read<CarCheckCubit>().resetCarChecks();
-          Navigator.pop(context);
-        },
-      ),
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.sp),
-            topRight: Radius.circular(15.sp),
-          ),
-          color: backgroundColor(context),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },      child: Scaffold(
+        backgroundColor: scaffoldBackgroundColor(context),
+        appBar: CustomGradientAppBar(
+          title_ar: "إنشاء طلب",
+          title_en: "Create Request",
+          onBack: () {
+            context.read<CarCheckCubit>().resetCarChecks();
+            Navigator.pop(context);
+          },
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// -------------------- العنوان --------------------
-                Row(
-                  children: [
-                    Text(
-                      widget.title,
-                      textAlign: TextAlign.right,
+        body: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color: backgroundColor(context),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// -------------------- العنوان --------------------
+                  Row(
+                    children: [
+                      Text(
+                        widget.title,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          fontSize: 18.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Image.network(
+                        widget.icon,
+                        height: 20.h,
+                        width: 20.w,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.image_not_supported, size: 20.h);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6.h),
+
+                  Row(
+                    children: [
+                      Text(
+                        widget.description,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: paragraphColor(context),
+                          fontSize: 13.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                    ],
+                  ),
+
+                  SizedBox(height: 6.h),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ProgressBar(active: true),
+                      ProgressBar(),
+                      ProgressBar(),
+                    ],
+                  ),
+
+                  /// -------------------- قسم السيارات --------------------
+                  CarsSection(
+                    onCarSelected: (userCarId) {
+                      setState(() {
+                        _selectedUserCarId = userCarId;
+                      });
+                    },
+                  ),
+
+                  /// -------------------- الخدمات --------------------
+                  Align(
+                    alignment:
+                        locale.isDirectionRTL(context)
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                    child: Text(
+                      locale.isDirectionRTL(context)
+                          ? "الخدمات المتوفرة"
+                          : 'Available Services',
                       style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: 'Graphik Arabic',
+                        color: headingColor(context),
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: 5),
-                    Image.network(
-                      widget.icon,
-                      height: 20.h,
-                      width: 20.w,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.image_not_supported, size: 20.h);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 6.h),
-
-                Row(
-                  children: [
-                    Text(
-                      widget.description,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: paragraphColor(context),
-                        fontSize: 13.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                  ],
-                ),
-
-                SizedBox(height: 6.h),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ProgressBar(active: true),
-                    ProgressBar(),
-                    ProgressBar(),
-                  ],
-                ),
-
-                /// -------------------- قسم السيارات --------------------
-                CarsSection(
-                  onCarSelected: (userCarId) {
-                    setState(() {
-                      _selectedUserCarId = userCarId;
-                    });
-                  },
-                ),
-
-                /// -------------------- الخدمات --------------------
-                Align(
-                  alignment:
-                      locale.isDirectionRTL(context)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                  child: Text(
-                    locale.isDirectionRTL(context)
-                        ? "الخدمات المتوفرة"
-                        : 'Available Services',
-                    style: TextStyle(
-                      color: headingColor(context),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
                   ),
-                ),
-                SizedBox(height: 10.h),
+                  SizedBox(height: 10.h),
 
-                BlocBuilder<CarWashCubit, CarWashState>(
-                  builder: (context, state) {
-                    if (state is CarWashLoading && state is! CarWashLoaded) {
-                      return Padding(
-                        padding: EdgeInsets.all(10.w),
-                        child: Column(
-                          children: List.generate(2, (index) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 20.h),
-                                width: double.infinity,
-                                height: 100.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      );
-                    } else if (state is CarWashLoaded) {
-                      final data = state.services;
-
-                      // Use a single selected index instead of list of booleans
-                      if (_selectedServiceIndex == null && data.isNotEmpty) {
-                        _selectedServiceIndex = null;
-                      }
-                      // Pagination
-                      final totalPages = (data.length / itemsPerPage).ceil();
-                      if (currentPage > totalPages)
-                        currentPage = totalPages > 0 ? totalPages : 1;
-                      if (currentPage < 1) currentPage = 1;
-
-                      final startIndex = (currentPage - 1) * itemsPerPage;
-                      final endIndex =
-                          (startIndex + itemsPerPage) > data.length
-                              ? data.length
-                              : startIndex + itemsPerPage;
-                      final currentItems =
-                          (data.isNotEmpty && startIndex < endIndex)
-                              ? data.sublist(
-                                startIndex.clamp(0, data.length),
-                                endIndex.clamp(0, data.length),
-                              )
-                              : [];
-
-                      return Column(
-                        children: [
-                          ListView.builder(
-                            controller: _scrollController,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: currentItems.length,
-                            itemBuilder: (context, index) {
-                              final item = currentItems[index];
-                              final actualIndex = startIndex + index;
-                              return _serviceItem(context, item, actualIndex);
-                            },
-                          ),
-                          SizedBox(height: 12.h),
-
-                          Container(
-                            width: double.infinity,
-                            height: 120.h,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Next arrow (يسار)
-                                GestureDetector(
-                                  onTap:
-                                      currentPage < totalPages
-                                          ? () {
-                                            setState(() {
-                                              currentPage++;
-                                            });
-                                          }
-                                          : null,
-                                  child: Icon(
-                                    Icons.arrow_left,
-                                    size: 50.sp,
-                                    color:
-                                        currentPage < totalPages
-                                            ? Colors.black
-                                            : Colors.black.withOpacity(0.25),
+                  BlocBuilder<CarWashCubit, CarWashState>(
+                    builder: (context, state) {
+                      if (state is CarWashLoading && state is! CarWashLoaded) {
+                        return Padding(
+                          padding: EdgeInsets.all(10.w),
+                          child: Column(
+                            children: List.generate(2, (index) {
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 20.h),
+                                  width: double.infinity,
+                                  height: 100.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15.r),
                                   ),
                                 ),
-                                SizedBox(width: 12.w),
+                              );
+                            }),
+                          ),
+                        );
+                      } else if (state is CarWashLoaded) {
+                        final data = state.services;
 
-                                if (currentPage < totalPages)
+                        // Use a single selected index instead of list of booleans
+                        if (_selectedServiceIndex == null && data.isNotEmpty) {
+                          _selectedServiceIndex = null;
+                        }
+                        // Pagination
+                        final totalPages = (data.length / itemsPerPage).ceil();
+                        if (currentPage > totalPages)
+                          currentPage = totalPages > 0 ? totalPages : 1;
+                        if (currentPage < 1) currentPage = 1;
+
+                        final startIndex = (currentPage - 1) * itemsPerPage;
+                        final endIndex =
+                            (startIndex + itemsPerPage) > data.length
+                                ? data.length
+                                : startIndex + itemsPerPage;
+                        final currentItems =
+                            (data.isNotEmpty && startIndex < endIndex)
+                                ? data.sublist(
+                                  startIndex.clamp(0, data.length),
+                                  endIndex.clamp(0, data.length),
+                                )
+                                : [];
+
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              controller: _scrollController,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: currentItems.length,
+                              itemBuilder: (context, index) {
+                                final item = currentItems[index];
+                                final actualIndex = startIndex + index;
+                                return _serviceItem(context, item, actualIndex);
+                              },
+                            ),
+                            SizedBox(height: 12.h),
+
+                            Container(
+                              width: double.infinity,
+                              height: 120.h,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Next arrow (يسار)
+                                  GestureDetector(
+                                    onTap:
+                                        currentPage < totalPages
+                                            ? () {
+                                              setState(() {
+                                                currentPage++;
+                                              });
+                                            }
+                                            : null,
+                                    child: Icon(
+                                      Icons.arrow_left,
+                                      size: 50.sp,
+                                      color:
+                                          currentPage < totalPages
+                                              ? Colors.black
+                                              : Colors.black.withOpacity(0.25),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.w),
+
+                                  if (currentPage < totalPages)
+                                    Container(
+                                      width: 50.w,
+                                      height: 50.h,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(8.r),
+                                      ),
+                                      child: Text(
+                                        '${currentPage + 1}',
+                                        style: TextStyle(
+                                          color: backgroundColor(context),
+                                          fontSize: 22.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  if (currentPage < totalPages)
+                                    SizedBox(width: 8.w),
+
+                                  // Current page (red box)
                                   Container(
                                     width: 50.w,
                                     height: 50.h,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey,
+                                      color: typographyMainColor(context),
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Text(
-                                      '${currentPage + 1}',
+                                      '$currentPage',
                                       style: TextStyle(
-                                        color: backgroundColor(context),
+                                        color: Colors.white,
                                         fontSize: 22.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
-                                if (currentPage < totalPages)
-                                  SizedBox(width: 8.w),
+                                  SizedBox(width: 12.w),
 
-                                // Current page (red box)
-                                Container(
-                                  width: 50.w,
-                                  height: 50.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: typographyMainColor(context),
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Text(
-                                    '$currentPage',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600,
+                                  // Previous arrow (يمين)
+                                  GestureDetector(
+                                    onTap:
+                                        currentPage > 1
+                                            ? () {
+                                              setState(() {
+                                                currentPage--;
+                                              });
+                                            }
+                                            : null,
+                                    child: Icon(
+                                      Icons.arrow_right,
+                                      size: 50.sp,
+                                      color:
+                                          currentPage > 1
+                                              ? Colors.black
+                                              : Colors.black.withOpacity(0.25),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 12.w),
-
-                                // Previous arrow (يمين)
-                                GestureDetector(
-                                  onTap:
-                                      currentPage > 1
-                                          ? () {
-                                            setState(() {
-                                              currentPage--;
-                                            });
-                                          }
-                                          : null,
-                                  child: Icon(
-                                    Icons.arrow_right,
-                                    size: 50.sp,
-                                    color:
-                                        currentPage > 1
-                                            ? Colors.black
-                                            : Colors.black.withOpacity(0.25),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    } else if (state is CarWashError) {
-                      return Center(child: Text("no data"));
-                    }
-                    return const SizedBox();
-                  },
-                ),
+                          ],
+                        );
+                      } else if (state is CarWashError) {
+                        return Center(child: Text("no data"));
+                      }
+                      return const SizedBox();
+                    },
+                  ),
 
-                SizedBox(height: 10.h),
-              ],
+                  SizedBox(height: 10.h),
+                ],
+              ),
             ),
           ),
         ),
-      ),
 
-      bottomNavigationBar: CustomBottomButton(
-        textAr: "التالي",
-        textEn: "Next",
-        onPressed: () {
-          // تحقق من البيانات المطلوبة
-          if (_selectedUserCarId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار السيارة")),
-            );
-            return;
-          }
+        bottomNavigationBar: CustomBottomButton(
+          textAr: "التالي",
+          textEn: "Next",
+          onPressed: () {
+            // تحقق من البيانات المطلوبة
+            if (_selectedUserCarId == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى اختيار السيارة")),
+              );
+              return;
+            }
 
-          // ✅ إذا كانت كل البيانات تمام
-          if (_selectedServiceIndex == null) {
-            ScaffoldMessenger.of(
+            // ✅ إذا كانت كل البيانات تمام
+            if (_selectedServiceIndex == null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("يرجى اختيار الخدمة")));
+              return;
+            }
+
+            final cubit = context.read<CarWashCubit>();
+            final selectedService =
+                (cubit.state as CarWashLoaded).services[_selectedServiceIndex!];
+
+            Navigator.push(
               context,
-            ).showSnackBar(const SnackBar(content: Text("يرجى اختيار الخدمة")));
-            return;
-          }
-
-          final cubit = context.read<CarWashCubit>();
-          final selectedService =
-              (cubit.state as CarWashLoaded).services[_selectedServiceIndex!];
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (BuildContext context) => ReviewRequestPage(
-                    title: widget.title,
-                    icon: widget.icon,
-                    slug: widget.slug,
-                    selectedUserCarId: _selectedUserCarId,
-                    selectedProduct: selectedService,
-                    //   notes:
-                    //   notesController.text.isNotEmpty
-                    //       ? notesController.text
-                    //       : null,
-                    //   kiloRead:
-                    //    kiloReadController.text.isNotEmpty
-                    //        ? kiloReadController.text
-                    //        : null,
-                    // selectedCarDocs: selectedCarDocs,
-                  ),
-            ),
-          );
-        },
-      ),
-
-      /*
-      bottomNavigationBar: CustomBottomButton(
-        textAr: "التالي",
-        textEn: "Next",
-        onPressed: () {
-          final cubit = context.read<CarWashCubit>();
-          final selectedService = (_selectedServiceIndex != null &&
-              cubit.state is CarWashLoaded)
-              ? (cubit.state as CarWashLoaded).services[_selectedServiceIndex!]
-              : null;
-
-          if (_selectedUserCarId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("يرجى اختيار سيارة")),
+              MaterialPageRoute(
+                builder:
+                    (BuildContext context) => ReviewRequestPage(
+                      title: widget.title,
+                      icon: widget.icon,
+                      slug: widget.slug,
+                      selectedUserCarId: _selectedUserCarId,
+                      selectedProduct: selectedService,
+                      //   notes:
+                      //   notesController.text.isNotEmpty
+                      //       ? notesController.text
+                      //       : null,
+                      //   kiloRead:
+                      //    kiloReadController.text.isNotEmpty
+                      //        ? kiloReadController.text
+                      //        : null,
+                      // selectedCarDocs: selectedCarDocs,
+                    ),
+              ),
             );
-            return;
-          }
+          },
+        ),
 
-          if (selectedService == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("يرجى اختيار خدمة")),
-            );
-            return;
-          }
+        /*
+        bottomNavigationBar: CustomBottomButton(
+          textAr: "التالي",
+          textEn: "Next",
+          onPressed: () {
+            final cubit = context.read<CarWashCubit>();
+            final selectedService = (_selectedServiceIndex != null &&
+                cubit.state is CarWashLoaded)
+                ? (cubit.state as CarWashLoaded).services[_selectedServiceIndex!]
+                : null;
 
-     //   Navigator.push(
-     //     context,
-     //     MaterialPageRoute(
-     //       builder: (context) => ReviewRequestPage(
-     //         selectedUserCarId: _selectedUserCarId,
-     //         selectedProduct: selectedService,
-     //         notes: notesController.text,
-     //         kiloRead: kiloReadController.text,
-     //         selectedCarDoc: selectedCarDoc,
-     //         title: widget.title,
-     //         icon: widget.icon,
-     //       ),
-     //     ),
-     //   );
+            if (_selectedUserCarId == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("يرجى اختيار سيارة")),
+              );
+              return;
+            }
 
-          // طباعة بيانات للتجريب
-          print("✅ Selected Car ID: $_selectedUserCarId");
-          print("✅ Selected Service: ${selectedService.name}");
-          print("📝 Notes: ${notesController.text}");
-          print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
-          print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
-        },
+            if (selectedService == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("يرجى اختيار خدمة")),
+              );
+              return;
+            }
+
+       //   Navigator.push(
+       //     context,
+       //     MaterialPageRoute(
+       //       builder: (context) => ReviewRequestPage(
+       //         selectedUserCarId: _selectedUserCarId,
+       //         selectedProduct: selectedService,
+       //         notes: notesController.text,
+       //         kiloRead: kiloReadController.text,
+       //         selectedCarDoc: selectedCarDoc,
+       //         title: widget.title,
+       //         icon: widget.icon,
+       //       ),
+       //     ),
+       //   );
+
+            // طباعة بيانات للتجريب
+            print("✅ Selected Car ID: $_selectedUserCarId");
+            print("✅ Selected Service: ${selectedService.name}");
+            print("📝 Notes: ${notesController.text}");
+            print("🚗 Car Kilometer Reading: ${kiloReadController.text}");
+            print("📄 Selected Car Doc: ${selectedCarDoc?.path ?? 'None'}");
+          },
+        ),
+        */
       ),
-      */
     );
   }
 

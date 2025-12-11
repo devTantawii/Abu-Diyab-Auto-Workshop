@@ -18,6 +18,8 @@ import '../../../core/language/locale.dart';
 import '../../../core/theme.dart';
 import '../../../main.dart';
 
+import '../../packages/screen/my_packages_screen.dart';
+import '../../packages/screen/package_screen.dart';
 import '../../profile/widget/ITN.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import 'invite_friends.dart';
@@ -67,8 +69,7 @@ class _MoreScreenState extends State<MoreScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor:
-        Color(0xFF009ED1),
+        backgroundColor: Color(0xFF009ED1),
         appBar: CustomGradientAppBar(
           title_ar: "المزيد",
           title_en: " More",
@@ -101,8 +102,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       Text(
                         locale.isDirectionRTL(context) ? 'عام' : 'General',
                         style: TextStyle(
-                          color:
-                          headingColor(context),
+                          color: headingColor(context),
                           fontSize: 25.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w500,
@@ -125,22 +125,98 @@ class _MoreScreenState extends State<MoreScreen> {
                         );
                       },
                     ),
-             //   if (_isLoggedIn) SizedBox(height: 10.h),
+                  if (_isLoggedIn) SizedBox(height: 10.h),
 
-             //    if (_isLoggedIn)
-             //      widget_ITN(
-             //        textAr: 'باقاتي',
-             //        textEn: "My Packages",
-             //        iconPath: 'assets/icons/gift_card1.png',
-             //        onTap: () {
-             //          //     Navigator.push(
-             //          //       context,
-             //          //       MaterialPageRoute(
-             //          //         builder: (context) => BakatScreen(),
-             //          //       ),
-             //          //     );
-             //        },
-             //      ),
+                  if (_isLoggedIn)
+                    widget_ITN(
+                      textAr: 'باقاتي',
+                      textEn: "My Packages",
+                      iconPath: 'assets/icons/gift_card1.png',
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          // يخلي الشكل أجمل
+                          isScrollControlled: false,
+                          builder: (context) {
+                            return Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(25),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 15,
+                                    spreadRadius: 3,
+                                  ),
+                                ],
+                              ),
+                              height: 300.h,
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  SizedBox(height: 30.h),
+
+                                  Text(
+                                    locale!.isDirectionRTL(context)
+                                        ? "قريباً"
+                                        : "Soon",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 10),
+
+                                  Text(
+                                    locale!.isDirectionRTL(context)
+                                        ? "انتظرونا بإصدار جديد!"
+                                        : "Stay tuned for a new release!",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 25),
+
+                                  SizedBox(
+                                    width: 40.w,
+                                    height: 40.h,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 5.w,
+                                      color: buttonPrimaryBgColor(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                        //      Navigator.push(
+                        //        context,
+                        //        MaterialPageRoute(
+                        //      //    builder: (context) => BakatScreen(),
+                        //        //  builder: (context) => PackageScreen(),
+                        //          builder: (context) => BakatScreen(),
+                        //        ),
+                        //      );
+                      },
+                    ),
                   if (_isLoggedIn) SizedBox(height: 10.h),
                   if (_isLoggedIn)
                     widget_ITN(
@@ -190,7 +266,10 @@ class _MoreScreenState extends State<MoreScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.sp),
-                      border: Border.all(width: 1.50.sp, color: strokeGrayColor(context)),
+                      border: Border.all(
+                        width: 1.50.sp,
+                        color: strokeGrayColor(context),
+                      ),
                     ),
                     child: Row(
                       textDirection:
@@ -200,7 +279,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       children: [
                         Icon(
                           Icons.language,
-                          color:typographyMainColor(context),
+                          color: typographyMainColor(context),
                           size: 18.sp,
                         ),
                         Padding(

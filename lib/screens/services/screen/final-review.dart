@@ -147,86 +147,90 @@ class _FinalReviewState extends State<FinalReview> {
       return const Scaffold(body: Center(child: Text("فشل تحميل البيانات")));
     }
 
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor(context),
-      appBar: CustomGradientAppBar(
-        title_ar: "مراجعة الطلب",
-        title_en: "My Orders",
-        onBack: () => Navigator.pop(context),
-      ),
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.sp),
-            topRight: Radius.circular(15.sp),
-          ),
-          color: backgroundColor(context),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },      child: Scaffold(
+        backgroundColor: scaffoldBackgroundColor(context),
+        appBar: CustomGradientAppBar(
+          title_ar: "مراجعة الطلب",
+          title_en: "My Orders",
+          onBack: () => Navigator.pop(context),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(16.sp),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FinalReviewHeader(
-                    title: widget.title,
-                    icon: widget.icon,
-                    deliveryMethod: widget.deliveryMethod,
-                  ),
-                  SizedBox(height: 12.h),
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color: backgroundColor(context),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(16.sp),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FinalReviewHeader(
+                      title: widget.title,
+                      icon: widget.icon,
+                      deliveryMethod: widget.deliveryMethod,
+                    ),
+                    SizedBox(height: 12.h),
 
-                  CarDetailsSection(userCarId: widget.userCarId),
-                  SizedBox(height: 12.h),
+                    CarDetailsSection(userCarId: widget.userCarId),
+                    SizedBox(height: 12.h),
 
-                  AppointmentDetails(
-                    deliveryMethod: widget.deliveryMethod,
-                    address: widget.address,
-                    dateTime: widget.dateTime,
-                  ),
-                  SizedBox(height: 12.h),
+                    AppointmentDetails(
+                      deliveryMethod: widget.deliveryMethod,
+                      address: widget.address,
+                      dateTime: widget.dateTime,
+                    ),
+                    SizedBox(height: 12.h),
 
-                  BalanceSection(
-                    model: previewModel!,
-                    appliedPoints: usedPoints,
-                    onApplyPoints: (points) async {
-                      setState(() {
-                        usedPoints = points;
-                        isSummaryLoading = true;
-                      });
-                      await _fetchPreview();
-                      setState(() => isSummaryLoading = false);
-                    },
-                  ),
+                    BalanceSection(
+                      model: previewModel!,
+                      appliedPoints: usedPoints,
+                      onApplyPoints: (points) async {
+                        setState(() {
+                          usedPoints = points;
+                          isSummaryLoading = true;
+                        });
+                        await _fetchPreview();
+                        setState(() => isSummaryLoading = false);
+                      },
+                    ),
 
-                  SizedBox(height: 12.h),
-                  PackagesBanner(),
-                  SizedBox(height: 10.h),
-                ],
+                    SizedBox(height: 12.h),
+                    PackagesBanner(),
+                    SizedBox(height: 10.h),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor(context),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, -2),
-            ),
-          ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: backgroundColor(context),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: Offset(0, -2),
+              ),
+            ],
+          ),
+          child: PaymentSummary(
+            model: previewModel!,
+            isLoading: isSummaryLoading,
+            onConfirm: () => _showPaymentMethods(context),
+          ),
         ),
-        child: PaymentSummary(
-          model: previewModel!,
-          isLoading: isSummaryLoading,
-          onConfirm: () => _showPaymentMethods(context),
-        ),
-      ),
 
+      ),
     );
 
   }

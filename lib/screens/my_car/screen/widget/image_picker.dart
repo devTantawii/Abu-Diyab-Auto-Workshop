@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadFormWidget extends StatefulWidget {
   final void Function(File?) onImageSelected;
-  final String? existingImageUrl; // 👈 رابط من API لو موجود
+  final String? existingImageUrl; // رابط من API لو موجود
 
   const UploadFormWidget({
     Key? key,
@@ -23,8 +23,12 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
+    // ممكن يرجع null لو المستخدم لغى
+    final ImageSource? source = await _showSourceDialog();
+    if (source == null) return; // لو لغى، لا نفعل أي شيء
+
     final XFile? pickedFile = await _picker.pickImage(
-      source: await _showSourceDialog(),
+      source: source,
       imageQuality: 80,
     );
 
@@ -37,7 +41,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
     }
   }
 
-  Future<ImageSource> _showSourceDialog() async {
+  Future<ImageSource?> _showSourceDialog() async {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return await showDialog<ImageSource>(
@@ -67,15 +71,13 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                     icon: Icons.camera_alt_rounded,
                     label: isArabic ? 'الكاميرا' : 'Camera',
                     color: Colors.blue,
-                    onTap: () =>
-                        Navigator.pop(context, ImageSource.camera),
+                    onTap: () => Navigator.pop(context, ImageSource.camera),
                   ),
                   _buildOptionButton(
                     icon: Icons.photo_library_rounded,
                     label: isArabic ? 'المعرض' : 'Gallery',
                     color: Colors.green,
-                    onTap: () =>
-                        Navigator.pop(context, ImageSource.gallery),
+                    onTap: () => Navigator.pop(context, ImageSource.gallery),
                   ),
                 ],
               ),
@@ -83,8 +85,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
           ),
         ),
       ),
-    ) ??
-        ImageSource.gallery;
+    );
   }
 
   Widget _buildOptionButton({
@@ -177,8 +178,8 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color:
-                    Theme.of(context).brightness == Brightness.light
+                    color: Theme.of(context).brightness ==
+                        Brightness.light
                         ? Colors.transparent
                         : Colors.grey,
                   ),

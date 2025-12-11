@@ -81,7 +81,8 @@ class _OffersScreenState extends State<OffersScreen> {
                             }),
                           ),
                         );
-                      } else if (state is OffersLoaded) {
+                      }
+                      else if (state is OffersLoaded) {
                         if (state.offers.isEmpty) {
                           return Center(
                             child: Text(
@@ -114,8 +115,6 @@ class _OffersScreenState extends State<OffersScreen> {
                             final relatedId =
                                 offer.service?.id ?? offer.product?.id ?? 0;
 
-                            // تأكد من أن isExpandedList معرفة خارج الـ builder (مثلاً في الـ State)
-                            // أو استخدم StatefulWidget بدلاً من StatefulBuilder إذا كان هناك مشكلة في الحالة
 
                             return StatefulBuilder(
                               builder: (context, setStateSB) {
@@ -159,7 +158,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            // الصورة
                                             ClipRRect(
                                               borderRadius:
                                                   BorderRadius.vertical(
@@ -187,11 +185,10 @@ class _OffersScreenState extends State<OffersScreen> {
                                               ),
                                             ),
 
-                                            // العنوان + زر التوسيع
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 12.w,
-                                                vertical: 8.h,
+                                                vertical: 0.h,
                                               ),
                                               child: Row(
                                                 textDirection:
@@ -243,7 +240,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                               ),
                                             ),
 
-                                            // اسم الخدمة/المنتج
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 12.w,
@@ -251,10 +247,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                               child: Text(
                                                 relatedName,
                                                 style: TextStyle(
-                                                  color:
-                                                      isDark
-                                                          ? Colors.white70
-                                                          : Colors.black87,
+                                                  color:paragraphColor(context),
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily: 'Graphik Arabic',
@@ -266,9 +259,8 @@ class _OffersScreenState extends State<OffersScreen> {
                                               ),
                                             ),
 
-                                            // التفاصيل عند التوسيع
                                             if (isExpandedList[index]) ...[
-                                              SizedBox(height: 12.h),
+                                              SizedBox(height: 8.h),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                   horizontal: 12.w,

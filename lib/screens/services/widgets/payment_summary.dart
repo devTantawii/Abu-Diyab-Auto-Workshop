@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/language/locale.dart';
 import '../../orders/model/payment_preview_model.dart';
@@ -21,12 +22,12 @@ class PaymentSummary extends StatelessWidget {
     final locale = AppLocalizations.of(context);
 
     return Container(
-      height: 300.h,
+      // height: 300.h,
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
-        color: backgroundColor(context),
+        color: buttonBgWhiteColor(context),
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1.5.w, color: paragraphColor(context)),
+          side: BorderSide(width: 2, color: strokeGrayColor(context)),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
@@ -37,6 +38,8 @@ class PaymentSummary extends StatelessWidget {
           isLoading
               ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
               : Column(
+                mainAxisSize: MainAxisSize.min,
+
                 children: [
                   Directionality(
                     textDirection:
@@ -44,42 +47,80 @@ class PaymentSummary extends StatelessWidget {
                             ? TextDirection.rtl
                             : TextDirection.ltr,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
+
                       children: [
+                        model.breakdown.itemsSubtotal == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale!.isDirectionRTL(context)
+                                  ? "المجموع "
+                                  : "Subtotal",
+                              model.breakdown.itemsSubtotal.toString(),
+                            ),
+
+                        model.breakdown.packageDiscount == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "خصم الباقة"
+                                  : "Package Discount",
+                              model.breakdown.packageDiscount.toString(),
+                            ),
+                        model.breakdown.offerDiscount == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "خصم العرض"
+                                  : "Offer Discount",
+                              model.breakdown.offerDiscount.toString(),
+                            ),
+                        model.breakdown.pointsRequested == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "النقاط المستخدمة"
+                                  : "Points Used",
+                              model.breakdown.pointsRequested.toString(),
+                            ),
+                        model.breakdown.pointsDiscount == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "خصم النقاط"
+                                  : "Points Discount",
+                              model.breakdown.pointsDiscount.toString(),
+                            ),
+                        model.breakdown.walletBalanceAfterDeduction == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "الرصيد بعد الخصم"
+                                  : "walletBalanceAfterDeduction",
+                              model.breakdown.walletBalanceAfterDeduction
+                                  .toString(),
+                              isTotal: true,
+                            ),
+
                         _buildRow(
                           context,
-                          "Subtotal",
-                          model.breakdown.itemsSubtotal.toString(),
-                        ),
-                        _buildRow(
-                          context,
-                          "Package Discount",
-                          model.breakdown.packageDiscount.toString(),
-                        ),
-                        _buildRow(
-                          context,
-                          "Offer Discount",
-                          model.breakdown.offerDiscount.toString(),
-                        ),
-                        _buildRow(
-                          context,
-                          "Points Used",
-                          model.breakdown.pointsRequested.toString(),
-                        ),
-                        _buildRow(
-                          context,
-                          "Points Discount",
-                          model.breakdown.pointsDiscount.toString(),
-                        ),
-                        _buildRow(
-                          context,
-                          "Total",
+                          locale.isDirectionRTL(context)
+                              ? "المجموع النهائي"
+                              : "Total",
                           model.breakdown.total.toString(),
                           isTotal: true,
                         ),
                       ],
                     ),
                   ),
-                  const Spacer(),
+                  SizedBox(height: 10.h),
+                  //   const Spacer(),
                   GestureDetector(
                     onTap: onConfirm,
                     child: Container(
@@ -98,10 +139,11 @@ class PaymentSummary extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
+                          fontFamily: 'Graphik Arabic',
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
     );
@@ -119,12 +161,22 @@ class PaymentSummary extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 14.sp, color: headingColor(context)),
+            style: TextStyle(
+              color: headingColor(context),
+              fontSize: 14.sp,
+              fontFamily: 'Graphik Arabic',
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const Spacer(),
           Text(
             value,
-            style: TextStyle(fontSize: 14.sp, color: headingColor(context)),
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: headingColor(context),
+              fontFamily: 'Graphik Arabic',
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

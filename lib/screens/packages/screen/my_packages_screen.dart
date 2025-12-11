@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/language/locale.dart';
-import '../../../packages/cubit/subscriptions_cubit.dart';
-import '../../../packages/model/subscription_model.dart';
-import '../../../services/widgets/custom_app_bar.dart';
+import '../../../core/constant/app_colors.dart';
+import '../../../core/language/locale.dart';
 
+import '../../services/widgets/custom_app_bar.dart';
+import '../cubit/package_details_cubit.dart';
+
+import '../cubit/subscriptions_cubit.dart';
+import '../model/subscription_model.dart';
+import '../widget/package_details_sheet.dart';
 
 class MyPackagesScreen extends StatelessWidget {
   const MyPackagesScreen({super.key});
@@ -19,9 +22,13 @@ class MyPackagesScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => SubscriptionsCubit()..loadSubscriptions(),
-      child: Container(
-
-        child:  _SubscriptionsView(),
+      child: Scaffold(
+        appBar: CustomGradientAppBar(
+          title_ar: "باقاتي",
+          title_en: "My Packages",
+          onBack: () => Navigator.pop(context),
+        ),
+        body: const _SubscriptionsView(),
       ),
     );
   }

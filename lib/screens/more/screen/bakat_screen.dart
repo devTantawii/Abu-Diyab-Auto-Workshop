@@ -3,6 +3,7 @@ import 'package:abu_diyab_workshop/screens/more/screen/widget/old_bakat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
 import '../../services/widgets/custom_app_bar.dart';
 import '../Cubit/bakat_cubit.dart';
@@ -20,30 +21,27 @@ class _BakatScreenState extends State<BakatScreen> {
   @override
   void initState() {
     super.initState();
-    print('🔹 BakatScreen opened, hitting endpoint...');
-    context.read<BakatCubit>().getPackages(); // <-- هنا بنعمل hit للـ endpoint
   }
+
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final Color activeOrdersBackgroundColor =
         _showActiveOrders
-            ? const Color(0xFFBA1B1B)
+            ? const Color(0xD2006D92)
             : isDark
             ? Colors.black
             : Colors.white24;
     final Color oldOrdersBackgroundColor =
         !_showActiveOrders
-            ? const Color(0xFFBA1B1B)
+            ? const Color(0xD3006D92)
             : isDark
             ? Colors.black
             : Colors.white24;
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).brightness == Brightness.light
-              ? Color(0xFFD27A7A)
-              : const Color(0xFF6F5252),
+      backgroundColor: scaffoldBackgroundColor(context),
+
       appBar: CustomGradientAppBar(
         title_ar: "الباقات",
         title_en: "packages",
@@ -99,7 +97,12 @@ class _BakatScreenState extends State<BakatScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color:
-                                  Theme.of(context).brightness ==
+                                  _showActiveOrders
+                                      ? Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black
+                                      : Theme.of(context).brightness ==
                                           Brightness.light
                                       ? Colors.black
                                       : Colors.white,
@@ -142,10 +145,15 @@ class _BakatScreenState extends State<BakatScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color:
-                                  Theme.of(context).brightness ==
+                                  _showActiveOrders
+                                      ? Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black
+                                          : Colors.white
+                                      : Theme.of(context).brightness ==
                                           Brightness.light
-                                      ? Colors.black
-                                      : Colors.white,
+                                      ? Colors.white
+                                      : Colors.black,
                               fontSize: 16.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
@@ -159,18 +167,15 @@ class _BakatScreenState extends State<BakatScreen> {
                 ],
               ),
             ),
-         //   SizedBox(height: 40), // Add some spacing
+            //   SizedBox(height: 40), // Add some spacing
             // Content Container
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  width: double.infinity,
-                  child:
-                      _showActiveOrders
-                          ? ActiveBakatContent()
-                          : OldBakatContent(),
-                ),
+              child: Container(
+                width: double.infinity,
+                child:
+                    _showActiveOrders
+                        ? ActiveBakatContent()
+                        : OldBakatContent(),
               ),
             ),
           ],
@@ -180,12 +185,8 @@ class _BakatScreenState extends State<BakatScreen> {
   }
 
   Widget ActiveBakatContent() {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: ActiveBakat(),
-    );
+    return MyPackagesScreen();
   }
-
 
   Widget OldBakatContent() {
     return ListView(

@@ -1,5 +1,6 @@
 import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constant/app_colors.dart';
@@ -96,6 +97,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Container(
+              margin: EdgeInsets.only(bottom: 20),
+
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
@@ -167,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -231,7 +234,7 @@ class OnboardingContent extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           color: textColor,
-                          fontSize: 25,
+                          fontSize: 25.sp,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),

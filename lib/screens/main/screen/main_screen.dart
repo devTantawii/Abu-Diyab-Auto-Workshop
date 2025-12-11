@@ -17,6 +17,7 @@ import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../../widgets/navigation.dart';
 import '../../notification/screen/notifications_screen.dart';
+import '../../packages/screen/package_screen.dart';
 import '../../profile/repositorie/profile_repository.dart';
 import '../../reminds/cubit/notes_details_cubit.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
@@ -24,6 +25,7 @@ import '../../reminds/cubit/user_car_note_state.dart';
 import '../../reminds/screen/widget/notes_details.dart';
 import '../cubit/services_cubit.dart';
 import '../cubit/services_state.dart';
+import '../model/service_model.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -142,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -250,7 +252,10 @@ class _MainScreenState extends State<MainScreen> {
                             children: [
                               SizedBox(width: 10.w),
                               Text(
-                                'ابحث عن الخدمات',
+                                locale!.isDirectionRTL(context)
+                                    ? 'ابحث عن الخدمات'
+                                    : 'Search about services',
+
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                   color:
@@ -461,6 +466,7 @@ class _MainScreenState extends State<MainScreen> {
                                   'icon': p.icon,
                                   'slug': p.slug,
                                   'description': p.description,
+                                  'offer': p.offer, // ← هنا
                                 },
                               ),
                           ...state.services
@@ -471,6 +477,7 @@ class _MainScreenState extends State<MainScreen> {
                                   'icon': s.icon,
                                   'slug': s.slug,
                                   'description': s.description,
+                                  'offer': s.offer, // ← هنا
                                 },
                               ),
                         ];
@@ -499,6 +506,7 @@ class _MainScreenState extends State<MainScreen> {
                               slug: item['slug'].toString(),
                               description:
                                   item['description']?.toString() ?? '',
+                              offer: item['offer'],
                               context: context,
                             );
                           },
@@ -508,13 +516,100 @@ class _MainScreenState extends State<MainScreen> {
                       return const SizedBox();
                     },
                   ),
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => PackageScreen(),
+                  //   ),
+                  // );
                   SizedBox(height: 8.h),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/main_pack.png',
-                      width: double.infinity,
-                      height: 140.h,
-                      fit: BoxFit.fill,
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        // يخلي الشكل أجمل
+                        isScrollControlled: false,
+                        builder: (context) {
+                          return Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(25),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 15,
+                                  spreadRadius: 3,
+                                ),
+                              ],
+                            ),
+                            height: 300.h,
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 5,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                                SizedBox(height: 30.h),
+
+                                Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? "قريباً"
+                                      : "Soon",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+
+                                SizedBox(height: 10),
+
+                                Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? "انتظرونا بإصدار جديد!"
+                                      : "Stay tuned for a new release!",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+
+                                SizedBox(height: 25),
+
+                                SizedBox(
+                                  width: 40.w,
+                                  height: 40.h,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 5.w,
+                                    color: buttonPrimaryBgColor(context),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+
+                    child: Center(
+                      child: Image.asset(
+                        locale!.isDirectionRTL(context)
+                            ? 'assets/images/main_pack.png'
+                            : "assets/images/main_pack_en.png",
+                        width: double.infinity,
+                        height: 140.h,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                   SizedBox(height: 15.h),
@@ -578,10 +673,12 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                             SizedBox(width: 4.w),
                             Text(
-                              "ذكرني بصيانه سيارتي",
+                              locale!.isDirectionRTL(context)
+                                  ? "ذكرني بصيانه سيارتي"
+                                  : "Remind me about maintenance.",
                               style: TextStyle(
                                 color: typographyMainColor(context),
-                                fontSize: 20.sp,
+                                fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,
                               ),
@@ -665,7 +762,6 @@ class _MainScreenState extends State<MainScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            // السطر الأول (Change Tires + أيقونة)
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
@@ -697,7 +793,6 @@ class _MainScreenState extends State<MainScreen> {
                                               ],
                                             ),
 
-                                            // السطر الثاني (البراند والموديل والسنة)
                                             SingleChildScrollView(
                                               scrollDirection: Axis.horizontal,
                                               child: Row(
@@ -753,7 +848,6 @@ class _MainScreenState extends State<MainScreen> {
                                               ),
                                             ),
 
-                                            // السطر الثالث (التاريخ + التنبيه)
                                             SingleChildScrollView(
                                               scrollDirection: Axis.horizontal,
                                               child: Row(
@@ -876,27 +970,57 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  String formatNumber(String number) {
+    // يحوّلها double
+    double value = double.tryParse(number) ?? 0;
+
+    // لو رقم صحيح → يرجع بدون كسور
+    if (value == value.toInt()) {
+      return value.toInt().toString();
+    }
+
+    // لو فيه كسور → يشيل الأصفار الزيادة
+    return value
+        .toString()
+        .replaceAll(RegExp(r"0+$"), "")
+        .replaceAll(RegExp(r"\.$"), "");
+  }
+
   Widget _buildServiceItem({
     required String title,
     required String imagePath,
     required String slug,
-    required String description, // ✅ أضف دي
+    required String description,
     bool isNetworkImage = true,
     required BuildContext context,
+    List<OfferModel>? offer,
   }) {
+    OfferModel? firstOffer =
+        (offer != null && offer.isNotEmpty) ? offer.first : null;
+
+    String? offerText;
+    Color badgeColor = primaryColor(context);
+
+    bool isPercentage = false;
+    bool isFixed = false;
+
+    if (firstOffer != null) {
+      if (firstOffer.type == "percentage") {
+        offerText = "${firstOffer.discount}% ";
+        isPercentage = true;
+      } else if (firstOffer.type == "fixed") {
+        offerText = firstOffer.discount;
+        isFixed = true;
+      }
+    }
+
     return GestureDetector(
       onTap: () async {
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('token');
 
         if (token != null && token.isNotEmpty) {
-          navigateToServiceScreen(
-            context,
-            slug,
-            title,
-            description,
-            imagePath, // ✅ تمرير الأيقونة
-          ); // ✅ تمريرها هنا
+          navigateToServiceScreen(context, slug, title, description, imagePath);
         } else {
           showModalBottomSheet(
             context: context,
@@ -913,56 +1037,110 @@ class _MainScreenState extends State<MainScreen> {
           );
         }
       },
-      child: Column(
+      child: Stack(
         children: [
-          Container(
-            width: 100.w,
-            height: 100.h,
-            decoration: BoxDecoration(
-              color: buttonBgWhiteColor(context),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: buttonSecondaryBorderColor(context),
-                width: 1.5.sp,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 45.w,
-                  height: 45.h,
-                  child:
-                      isNetworkImage
-                          ? Image.network(
-                            imagePath,
-                            fit: BoxFit.contain,
-                            errorBuilder:
-                                (context, error, stackTrace) => Image.asset(
-                                  'assets/images/water_rinse.png',
-                                ),
-                          )
-                          : Image.asset(imagePath, fit: BoxFit.cover),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+          Column(
+            children: [
+              Container(
+                width: 100.w,
+                height: 100.h,
+                decoration: BoxDecoration(
+                  color: buttonBgWhiteColor(context),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
                     color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
-                    fontSize: 14.h,
-                    fontFamily: 'Graphik Arabic',
-                    fontWeight: FontWeight.w500,
+                        firstOffer != null
+                            ? badgeColor
+                            : buttonSecondaryBorderColor(context),
+                    width: 1.5.sp,
                   ),
                 ),
-              ],
-            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 45.w,
+                      height: 45.h,
+                      child:
+                          isNetworkImage
+                              ? Image.network(
+                                imagePath,
+                                fit: BoxFit.contain,
+                                errorBuilder:
+                                    (context, error, stackTrace) => Image.asset(
+                                      'assets/images/water_rinse.png',
+                                    ),
+                              )
+                              : Image.asset(imagePath, fit: BoxFit.cover),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                        fontSize: 14.h,
+                        fontFamily: 'Graphik Arabic',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
+
+          if (firstOffer != null)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: badgeColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomLeft: Radius.circular(12),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    if (isPercentage)
+                      Text(
+                        offerText!,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                    if (isFixed) ...[
+                      Text(
+                        offerText!,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      Image.asset(
+                        "assets/icons/ryal.png",
+                        width: 12.w,
+                        height: 12.h,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

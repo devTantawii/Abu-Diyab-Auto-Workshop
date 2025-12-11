@@ -16,6 +16,7 @@ import 'package:abu_diyab_workshop/screens/orders/cubit/rate_service_cubit.dart'
 import 'package:abu_diyab_workshop/screens/orders/cubit/repair_card_cubit.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/get_order_repo.dart';
 import 'package:abu_diyab_workshop/screens/orders/repo/payment_service.dart';
+import 'package:abu_diyab_workshop/screens/packages/cubit/get_pack_cubit.dart';
 import 'package:abu_diyab_workshop/screens/profile/cubit/profile_cubit.dart';
 import 'package:abu_diyab_workshop/screens/profile/repositorie/profile_repository.dart';
 import 'package:abu_diyab_workshop/screens/reminds/cubit/maintenance_cubit.dart';
@@ -94,6 +95,7 @@ await FcmApi().initNotifications();
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
+
         BlocProvider<RewardLogsCubit>(
           create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),
         ),

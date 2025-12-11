@@ -189,532 +189,536 @@ class _ChangeOilState extends State<ChangeOil> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor(context),
-      appBar: CustomGradientAppBar(
-        title_ar: "إنشاء طلب",
-        title_en: "Create Request",
-        onBack: () {
-          context.read<OilCubit>().resetOils();
-          Navigator.pop(context);
-        },
-      ),
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.sp),
-            topRight: Radius.circular(15.sp),
-          ),
-          color: backgroundColor(context),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },      child: Scaffold(
+        backgroundColor: scaffoldBackgroundColor(context),
+        appBar: CustomGradientAppBar(
+          title_ar: "إنشاء طلب",
+          title_en: "Create Request",
+          onBack: () {
+            context.read<OilCubit>().resetOils();
+            Navigator.pop(context);
+          },
         ),
-        child: Column(
-          children: [
-            // ============= الجزء الثابت: البحث + الفلتر =============
-            Padding(
-              padding: EdgeInsets.all(12.w),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      // حقل البحث
-                      Expanded(
-                        child: Container(
-                          height: 50.h,
-                          padding: EdgeInsets.symmetric(horizontal: 12.w),
-                          decoration: BoxDecoration(
-                            color: buttonBgWhiteColor(context),
-                            borderRadius: BorderRadius.circular(10.sp),
-                            border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search_outlined,size: 20.sp,),
+        body: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.sp),
+              topRight: Radius.circular(15.sp),
+            ),
+            color: backgroundColor(context),
+          ),
+          child: Column(
+            children: [
+              // ============= الجزء الثابت: البحث + الفلتر =============
+              Padding(
+                padding: EdgeInsets.all(12.w),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        // حقل البحث
+                        Expanded(
+                          child: Container(
+                            height: 50.h,
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            decoration: BoxDecoration(
+                              color: buttonBgWhiteColor(context),
+                              borderRadius: BorderRadius.circular(10.sp),
+                              border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.search_outlined,size: 20.sp,),
 
-                              SizedBox(width: 8.w),
-                              Expanded(
-                                child: TextField(
-                                  controller: searchController,
-                                  textCapitalization: TextCapitalization.words,
-                                  onChanged: (_) => _onSearchChanged(),
-                                  textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
-                                  decoration: InputDecoration(
-                                    hintText: locale.isDirectionRTL(context) ? 'ابحث عن زيت...' : 'Search oil...',
-                                    hintStyle: TextStyle(color: paragraphColor(context).withOpacity(0.5), fontSize: 14.sp),
-                                    border: InputBorder.none,
-                                    isDense: true,
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: TextField(
+                                    controller: searchController,
+                                    textCapitalization: TextCapitalization.words,
+                                    onChanged: (_) => _onSearchChanged(),
+                                    textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
+                                    decoration: InputDecoration(
+                                      hintText: locale.isDirectionRTL(context) ? 'ابحث عن زيت...' : 'Search oil...',
+                                      hintStyle: TextStyle(color: paragraphColor(context).withOpacity(0.5), fontSize: 14.sp),
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                    ),
+                                    style: TextStyle(color: headingColor(context), fontSize: 14.sp),
                                   ),
-                                  style: TextStyle(color: headingColor(context), fontSize: 14.sp),
                                 ),
-                              ),
-                              ValueListenableBuilder<TextEditingValue>(
-                                valueListenable: searchController,
-                                builder: (_, value, __) => value.text.isNotEmpty
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    searchController.clear();
-                                    _onSearchChanged();
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.w),
-                                    child: Icon(Icons.close, size: 20.sp, color: Colors.black),
-                                  ),
-                                )
-                                    : const SizedBox.shrink(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-
-                      // زر الفلتر
-                      GestureDetector(
-                        onTap: () {
-                          if (selectedViscosity != null) {
-                            setState(() => selectedViscosity = null);
-                            _onSearchChanged();
-                          } else {
-                            _showViscosityFilter();
-                          }
-                        },
-                        child: Container(
-                          width: 50.w,
-                          height: 50.h,
-                          decoration: BoxDecoration(
-                            color: selectedViscosity != null
-                                ? typographyMainColor(context).withOpacity(0.2)
-                                : buttonBgWhiteColor(context),
-                            borderRadius: BorderRadius.circular(10.sp),
-                            border: Border.all(
-                              width: 1.5.w,
-                              color: selectedViscosity != null ? typographyMainColor(context) : buttonSecondaryBorderColor(context),
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: searchController,
+                                  builder: (_, value, __) => value.text.isNotEmpty
+                                      ? GestureDetector(
+                                    onTap: () {
+                                      searchController.clear();
+                                      _onSearchChanged();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.w),
+                                      child: Icon(Icons.close, size: 20.sp, color: Colors.black),
+                                    ),
+                                  )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: selectedViscosity != null
-                                ? Image.asset(
-                              'assets/icons/cancel.png',
-                              scale: 1.3.sp,
-                            )
-                                : Image.asset('assets/icons/icon_filter.png', color: paragraphColor(context)),
+                        ),
+                        SizedBox(width: 12.w),
+
+                        // زر الفلتر
+                        GestureDetector(
+                          onTap: () {
+                            if (selectedViscosity != null) {
+                              setState(() => selectedViscosity = null);
+                              _onSearchChanged();
+                            } else {
+                              _showViscosityFilter();
+                            }
+                          },
+                          child: Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: selectedViscosity != null
+                                  ? typographyMainColor(context).withOpacity(0.2)
+                                  : buttonBgWhiteColor(context),
+                              borderRadius: BorderRadius.circular(10.sp),
+                              border: Border.all(
+                                width: 1.5.w,
+                                color: selectedViscosity != null ? typographyMainColor(context) : buttonSecondaryBorderColor(context),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: selectedViscosity != null
+                                  ? Image.asset(
+                                'assets/icons/cancel.png',
+                                scale: 1.3.sp,
+                              )
+                                  : Image.asset('assets/icons/icon_filter.png', color: paragraphColor(context)),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-                ],
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                  ],
+                ),
               ),
-            ),
 
-            // ============= الجزء القابل للسكرول =============
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  child: Column(
-                    textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
-                    children: [
-                      // العنوان والوصف
-                      Row(
-                        children: [
-                          Text(
-                            widget.title,
+              // ============= الجزء القابل للسكرول =============
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: Column(
+                      textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
+                      children: [
+                        // العنوان والوصف
+                        Row(
+                          children: [
+                            Text(
+                              widget.title,
+                              style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                                fontSize: 18.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Image.network(
+                              widget.icon,
+                              height: 20.h,
+                              width: 20.w,
+                              errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported, size: 20.h),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6.h),
+                        Row(
+                          children: [
+                            Text(
+                              widget.description,
+                              style: TextStyle(
+                                color: paragraphColor(context),
+                                fontSize: 13.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6.h),
+
+                        // خطوات التقدم
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ProgressBar(active: true),
+                            ProgressBar(),
+                            ProgressBar(),
+                          ],
+                        ),
+
+                        // قسم السيارات
+                        CarsSection(
+                          onCarSelected: (userCarId) {
+                            setState(() => _selectedUserCarId = userCarId);
+                          },
+                        ),
+
+                        // الزيوت
+                        Align(
+                          alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Text(
+                            locale.isDirectionRTL(context) ? "الخدمات المتوفرة" : 'Available Services',
                             style: TextStyle(
                               color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                              fontSize: 18.sp,
+                              fontSize: 14.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          SizedBox(width: 5.w),
-                          Image.network(
-                            widget.icon,
-                            height: 20.h,
-                            width: 20.w,
-                            errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported, size: 20.h),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 6.h),
-                      Row(
-                        children: [
-                          Text(
-                            widget.description,
-                            style: TextStyle(
-                              color: paragraphColor(context),
-                              fontSize: 13.sp,
-                              fontFamily: 'Graphik Arabic',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 6.h),
-
-                      // خطوات التقدم
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ProgressBar(active: true),
-                          ProgressBar(),
-                          ProgressBar(),
-                        ],
-                      ),
-
-                      // قسم السيارات
-                      CarsSection(
-                        onCarSelected: (userCarId) {
-                          setState(() => _selectedUserCarId = userCarId);
-                        },
-                      ),
-
-                      // الزيوت
-                      Align(
-                        alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Text(
-                          locale.isDirectionRTL(context) ? "الخدمات المتوفرة" : 'Available Services',
-                          style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                            fontSize: 14.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w600,
-                          ),
                         ),
-                      ),
-                      SizedBox(height: 10.h),
+                        SizedBox(height: 10.h),
 
-                      // قائمة الزيوت
-                      BlocBuilder<OilCubit, OilState>(
-                        builder: (context, state) {
-                          if (state is OilLoading) {
-                            return Padding(
-                              padding: EdgeInsets.all(10.w),
-                              child: Column(
-                                children: List.generate(2, (index) {
-                                  return Shimmer.fromColors(
-                                    baseColor: Colors.grey.shade300,
-                                    highlightColor: Colors.grey.shade100,
-                                    child: Container(
-                                      margin: EdgeInsets.only(bottom: 20.h),
-                                      width: double.infinity,
-                                      height: 100.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15.r),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              ),
-                            );
-                          }
-                          if (state is OilLoaded) {
-                            final oils = state.oils;
-                            if (oils.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  locale.isDirectionRTL(context) ? "لا توجد زيوت متاحة" : "No oils available",
-                                  style: TextStyle(fontSize: 18.sp, color: headingColor(context)),
-                                ),
-                              );
-                            }
-
-                            final totalPages = (oils.length / itemsPerPage).ceil();
-                            if (currentPage > totalPages) currentPage = totalPages;
-                            if (currentPage < 1) currentPage = 1;
-
-                            final startIndex = (currentPage - 1) * itemsPerPage;
-                            final endIndex = (startIndex + itemsPerPage).clamp(0, oils.length);
-                            final currentItems = oils.sublist(startIndex, endIndex);
-
-                            return Column(
-                              children: [
-                                ListView.builder(
-                                  controller: _scrollController,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: currentItems.length,
-                                  itemBuilder: (context, index) {
-                                    final oil = currentItems[index];
-                                    final actualIndex = startIndex + index;
-                                    final isSelected = _selectedOilIndex == actualIndex;
-
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedOilIndex = isSelected ? null : actualIndex;
-                                        });
-                                      },
-                                      child: Center(
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width * 0.9,
-                                          margin: EdgeInsets.symmetric(vertical: 16.h),
-                                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
-                                          decoration: BoxDecoration(
-                                            color: buttonBgWhiteColor(context),
-                                            borderRadius: BorderRadius.circular(15.r),
-                                            border: Border.all(
-                                              width: 1.5.w,
-                                              color: isSelected ? typographyMainColor(context) : buttonSecondaryBorderColor(context)
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.25),
-                                                blurRadius: 12.r,
-                                                offset: Offset(0, 4.h),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Transform.scale(
-                                                scale: 1.2.sp,
-                                                child: Checkbox(
-                                                  value: isSelected,
-                                                  onChanged: (_) {
-                                                    setState(() {
-                                                      _selectedOilIndex = isSelected ? null : actualIndex;
-                                                    });
-                                                  },
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
-                                                  side: BorderSide(
-                                                    color: isSelected ? typographyMainColor(context) : const Color(0xFF474747),
-                                                    width: 1.2,
-                                                  ),
-                                                  checkColor: Colors.white,
-                                                  activeColor: typographyMainColor(context),
-                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                ),
-                                              ),
-                                              SizedBox(width: 12.w),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            oil.name,
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                              color: headingColor(context),
-                                                              fontSize: 14.sp,
-                                                              fontFamily: 'Graphik Arabic',
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Text(
-                                                              oil.price,
-                                                              style: TextStyle(
-                                                                color: typographyMainColor(context),
-                                                                fontSize: 16.sp,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 4.w),
-                                                            Image.asset(
-                                                              'assets/icons/ryal.png',
-                                                              width: 20.w,
-                                                              height: 20.h,
-                                                              color: typographyMainColor(context),
-
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 6.h),
-                                                    Text(
-                                                      oil.description,
-                                                      style: TextStyle(
-                                                        color: paragraphColor(context),
-                                                        fontSize: 11.sp,
-                                                        fontFamily: 'Graphik Arabic',
-                                                        fontWeight: FontWeight.w500,
-                                                        height: 1.6,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                        // قائمة الزيوت
+                        BlocBuilder<OilCubit, OilState>(
+                          builder: (context, state) {
+                            if (state is OilLoading) {
+                              return Padding(
+                                padding: EdgeInsets.all(10.w),
+                                child: Column(
+                                  children: List.generate(2, (index) {
+                                    return Shimmer.fromColors(
+                                      baseColor: Colors.grey.shade300,
+                                      highlightColor: Colors.grey.shade100,
+                                      child: Container(
+                                        margin: EdgeInsets.only(bottom: 20.h),
+                                        width: double.infinity,
+                                        height: 100.h,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(15.r),
                                         ),
                                       ),
                                     );
-                                  },
+                                  }),
                                 ),
-                                SizedBox(height: 12.h),
+                              );
+                            }
+                            if (state is OilLoaded) {
+                              final oils = state.oils;
+                              if (oils.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    locale.isDirectionRTL(context) ? "لا توجد زيوت متاحة" : "No oils available",
+                                    style: TextStyle(fontSize: 18.sp, color: headingColor(context)),
+                                  ),
+                                );
+                              }
 
-                                // Pagination
-                                Container(
-                                  width: double.infinity,
-                                  height: 60.h,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: currentPage < totalPages
-                                            ? () => setState(() => currentPage++)
-                                            : null,
-                                        child: Icon(
-                                          Icons.arrow_left,
-                                          size: 50.sp,
-                                          color: currentPage < totalPages ? Colors.black : Colors.black.withOpacity(0.25),
+                              final totalPages = (oils.length / itemsPerPage).ceil();
+                              if (currentPage > totalPages) currentPage = totalPages;
+                              if (currentPage < 1) currentPage = 1;
+
+                              final startIndex = (currentPage - 1) * itemsPerPage;
+                              final endIndex = (startIndex + itemsPerPage).clamp(0, oils.length);
+                              final currentItems = oils.sublist(startIndex, endIndex);
+
+                              return Column(
+                                children: [
+                                  ListView.builder(
+                                    controller: _scrollController,
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: currentItems.length,
+                                    itemBuilder: (context, index) {
+                                      final oil = currentItems[index];
+                                      final actualIndex = startIndex + index;
+                                      final isSelected = _selectedOilIndex == actualIndex;
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedOilIndex = isSelected ? null : actualIndex;
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width * 0.9,
+                                            margin: EdgeInsets.symmetric(vertical: 16.h),
+                                            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
+                                            decoration: BoxDecoration(
+                                              color: buttonBgWhiteColor(context),
+                                              borderRadius: BorderRadius.circular(15.r),
+                                              border: Border.all(
+                                                width: 1.5.w,
+                                                color: isSelected ? typographyMainColor(context) : buttonSecondaryBorderColor(context)
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withOpacity(0.25),
+                                                  blurRadius: 12.r,
+                                                  offset: Offset(0, 4.h),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Transform.scale(
+                                                  scale: 1.2.sp,
+                                                  child: Checkbox(
+                                                    value: isSelected,
+                                                    onChanged: (_) {
+                                                      setState(() {
+                                                        _selectedOilIndex = isSelected ? null : actualIndex;
+                                                      });
+                                                    },
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
+                                                    side: BorderSide(
+                                                      color: isSelected ? typographyMainColor(context) : const Color(0xFF474747),
+                                                      width: 1.2,
+                                                    ),
+                                                    checkColor: Colors.white,
+                                                    activeColor: typographyMainColor(context),
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 12.w),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              oil.name,
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: TextStyle(
+                                                                color: headingColor(context),
+                                                                fontSize: 14.sp,
+                                                                fontFamily: 'Graphik Arabic',
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Text(
+                                                                oil.price,
+                                                                style: TextStyle(
+                                                                  color: typographyMainColor(context),
+                                                                  fontSize: 16.sp,
+                                                                  fontFamily: 'Poppins',
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: 4.w),
+                                                              Image.asset(
+                                                                'assets/icons/ryal.png',
+                                                                width: 20.w,
+                                                                height: 20.h,
+                                                                color: typographyMainColor(context),
+
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 6.h),
+                                                      Text(
+                                                        oil.description,
+                                                        style: TextStyle(
+                                                          color: paragraphColor(context),
+                                                          fontSize: 11.sp,
+                                                          fontFamily: 'Graphik Arabic',
+                                                          fontWeight: FontWeight.w500,
+                                                          height: 1.6,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 12.w),
-                                      if (currentPage < totalPages)
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: 12.h),
+
+                                  // Pagination
+                                  Container(
+                                    width: double.infinity,
+                                    height: 60.h,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: currentPage < totalPages
+                                              ? () => setState(() => currentPage++)
+                                              : null,
+                                          child: Icon(
+                                            Icons.arrow_left,
+                                            size: 50.sp,
+                                            color: currentPage < totalPages ? Colors.black : Colors.black.withOpacity(0.25),
+                                          ),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        if (currentPage < totalPages)
+                                          Container(
+                                            width: 50.w,
+                                            height: 50.h,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey,
+                                              borderRadius: BorderRadius.circular(8.r),
+                                            ),
+                                            child: Text(
+                                              '${currentPage + 1}',
+                                              style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        if (currentPage < totalPages) SizedBox(width: 8.w),
                                         Container(
                                           width: 50.w,
                                           height: 50.h,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                            color: Colors.grey,
+                                            color: typographyMainColor(context),
                                             borderRadius: BorderRadius.circular(8.r),
                                           ),
                                           child: Text(
-                                            '${currentPage + 1}',
+                                            '$currentPage',
                                             style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.w600),
                                           ),
                                         ),
-                                      if (currentPage < totalPages) SizedBox(width: 8.w),
-                                      Container(
-                                        width: 50.w,
-                                        height: 50.h,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: typographyMainColor(context),
-                                          borderRadius: BorderRadius.circular(8.r),
+                                        SizedBox(width: 12.w),
+                                        GestureDetector(
+                                          onTap: currentPage > 1
+                                              ? () => setState(() => currentPage--)
+                                              : null,
+                                          child: Icon(
+                                            Icons.arrow_right,
+                                            size: 50.sp,
+                                            color: currentPage > 1 ? Colors.black : Colors.black.withOpacity(0.25),
+                                          ),
                                         ),
-                                        child: Text(
-                                          '$currentPage',
-                                          style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                      SizedBox(width: 12.w),
-                                      GestureDetector(
-                                        onTap: currentPage > 1
-                                            ? () => setState(() => currentPage--)
-                                            : null,
-                                        child: Icon(
-                                          Icons.arrow_right,
-                                          size: 50.sp,
-                                          color: currentPage > 1 ? Colors.black : Colors.black.withOpacity(0.25),
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            if (state is OilError) {
+                              return Center(child: Text(state.message));
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+
+                        NotesAndCarCounterSection(
+                          notesController: notesController,
+                          kiloReadController: kiloReadController,
+                        ),
+                        SizedBox(height: 10.h),
+
+                        Align(
+                          alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: locale.isDirectionRTL(context) ? 'إستمارة السيارة ' : 'Car Registration ',
+                                  style: TextStyle(
+                                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                                    fontSize: 14.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                              ],
-                            );
-                          }
-                          if (state is OilError) {
-                            return Center(child: Text(state.message));
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                      SizedBox(height: 10.h),
-
-                      NotesAndCarCounterSection(
-                        notesController: notesController,
-                        kiloReadController: kiloReadController,
-                      ),
-                      SizedBox(height: 10.h),
-
-                      Align(
-                        alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: locale.isDirectionRTL(context) ? 'إستمارة السيارة ' : 'Car Registration ',
-                                style: TextStyle(
-                                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                                  fontSize: 14.sp,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w600,
+                                TextSpan(
+                                  text: locale.isDirectionRTL(context) ? '( أختياري )' : '( Optional )',
+                                  style: TextStyle(color: const Color(0xFF4D4D4D), fontSize: 12.sp, fontFamily: 'Graphik Arabic', fontWeight: FontWeight.w600),
                                 ),
-                              ),
-                              TextSpan(
-                                text: locale.isDirectionRTL(context) ? '( أختياري )' : '( Optional )',
-                                style: TextStyle(color: const Color(0xFF4D4D4D), fontSize: 12.sp, fontFamily: 'Graphik Arabic', fontWeight: FontWeight.w600),
-                              ),
-                            ],
+                              ],
+                            ),
+                            textAlign: locale.isDirectionRTL(context) ? TextAlign.right : TextAlign.left,
                           ),
-                          textAlign: locale.isDirectionRTL(context) ? TextAlign.right : TextAlign.left,
                         ),
-                      ),
-                      SizedBox(height: 10.h),
-                      MultiImagePickerWidget(
-                        onImagesSelected: (files) {
-                          selectedCarDocs = files;
-                          print('عدد الصور المختارة: ${selectedCarDocs.length}');
-                        },
-                      ),
-                      SizedBox(height: 15.h),
-                    ],
+                        SizedBox(height: 10.h),
+                        MultiImagePickerWidget(
+                          onImagesSelected: (files) {
+                            selectedCarDocs = files;
+                            print('عدد الصور المختارة: ${selectedCarDocs.length}');
+                          },
+                        ),
+                        SizedBox(height: 15.h),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomButton(
-        textAr: "التالي",
-        textEn: "Next",
-        onPressed: () {
-          if (_selectedUserCarId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار السيارة")),
-            );
-            return;
-          }
-          if (_selectedOilIndex == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى اختيار الزيت")),
-            );
-            return;
-          }
-          if (kiloReadController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
-            );
-            return;
-          }
+        bottomNavigationBar: CustomBottomButton(
+          textAr: "التالي",
+          textEn: "Next",
+          onPressed: () {
+            if (_selectedUserCarId == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى اختيار السيارة")),
+              );
+              return;
+            }
+            if (_selectedOilIndex == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى اختيار الزيت")),
+              );
+              return;
+            }
+            if (kiloReadController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("يرجى إدخال قراءة العداد")),
+              );
+              return;
+            }
 
-          final selectedOil = (context.read<OilCubit>().state as OilLoaded).oils[_selectedOilIndex!];
+            final selectedOil = (context.read<OilCubit>().state as OilLoaded).oils[_selectedOilIndex!];
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ReviewRequestPage(
-                title: widget.title,
-                icon: widget.icon,
-                slug: widget.slug,
-                selectedUserCarId: _selectedUserCarId,
-                selectedProduct: selectedOil,
-                notes: notesController.text.isNotEmpty ? notesController.text : null,
-                kiloRead: kiloReadController.text.isNotEmpty ? kiloReadController.text : null,
-                selectedCarDocs: selectedCarDocs,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ReviewRequestPage(
+                  title: widget.title,
+                  icon: widget.icon,
+                  slug: widget.slug,
+                  selectedUserCarId: _selectedUserCarId,
+                  selectedProduct: selectedOil,
+                  notes: notesController.text.isNotEmpty ? notesController.text : null,
+                  kiloRead: kiloReadController.text.isNotEmpty ? kiloReadController.text : null,
+                  selectedCarDocs: selectedCarDocs,
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
