@@ -16,13 +16,10 @@ class LogoutBottomSheet extends StatelessWidget {
     final token = prefs.getString('token');
 
     if (token == null) {
-      print("⚠️ لا يوجد توكن محفوظ، المستخدم غير مسجل دخول.");
       return;
     }
 
     try {
-      print("📡 جاري محاولة تسجيل الخروج...");
-      print("🔑 التوكن المرسل: $token");
 
       final dio = Dio();
       final response = await dio.post(
@@ -179,7 +176,7 @@ class LogoutBottomSheet extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.black54),
+                    side:  BorderSide(color: strokeGrayColor(context)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.sp),
                     ),

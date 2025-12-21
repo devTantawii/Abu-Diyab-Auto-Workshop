@@ -20,7 +20,6 @@ class FcmApi {
       print("⚠️ Error getting APNS token: $e");
     }
 
-    // 3. تهيئة الإشعارات المحلية Android + iOS
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -39,14 +38,10 @@ class FcmApi {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    // 4. استقبال الإشعارات في الخلفية
     FirebaseMessaging.onBackgroundMessage(handleBackgroundFcm);
 
-    // 5. استقبال الإشعارات أثناء عمل التطبيق (Foreground)
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("📩 Received message in foreground!");
-      print("Title: ${message.notification?.title}");
-      print("Body: ${message.notification?.body}");
+
 
       if (message.notification != null) {
         showLocalNotification(
@@ -57,7 +52,6 @@ class FcmApi {
     });
   }
 
-  // دالة عرض الإشعار المحلي
   Future<void> showLocalNotification(String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -86,9 +80,7 @@ class FcmApi {
   }
 }
 
-// دالة الخلفية
 Future<void> handleBackgroundFcm(RemoteMessage message) async {
-  print("🌙🌙🌙🌙🌙 Background Message:");
-  print("🌙🌙🌙Title: ${message.notification?.title}");
-  print("🌙🌙🌙🌙🌙Body: ${message.notification?.body}");
+  print("Title: ${message.notification?.title}");
+  print("Body: ${message.notification?.body}");
 }

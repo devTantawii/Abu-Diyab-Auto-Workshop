@@ -51,12 +51,9 @@ flutter {
 }
 
 dependencies {
-    // ✅ في Kotlin DSL تكتب كده
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    // Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
 
-    // Firebase services
-    implementation("com.google.firebase:firebase-messaging")
+     implementation("com.google.firebase:firebase-messaging")
 }

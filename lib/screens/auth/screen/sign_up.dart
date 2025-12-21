@@ -29,17 +29,18 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _referralController =
-      TextEditingController(); // ✅ جديد
-  final TextEditingController _IDController = TextEditingController(); // ✅ جديد
+      TextEditingController();
+  final TextEditingController _IDController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isPasswordHidden = true;
 
   @override
   void dispose() {
     _nameController.dispose();
     _name2Controller.dispose();
     _phoneController.dispose();
-    _referralController.dispose(); // ✅ جديد
+    _referralController.dispose();
 
     _passwordController.dispose();
     super.dispose();
@@ -107,10 +108,10 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
         constraints: BoxConstraints(
           maxHeight:
               MediaQuery.of(context).size.height *
-              0.85, // 75% من الشاشة كحد أقصى
+              0.85,
         ),
         child: FractionallySizedBox(
-          widthFactor: 1, // عرض كامل
+          widthFactor: 1,
           child: BlocProvider(
             create: (_) => RegisterCubit(dio: Dio()),
             child: BlocConsumer<RegisterCubit, RegisterState>(
@@ -176,6 +177,18 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                               Center(
+                                  child: Container(
+                                    width: 100.w,
+                                    height: 6.h,
+                                    margin: EdgeInsets.only(bottom: 12.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade400,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                  ),
+                                ),
+
                               Text(
                                 isArabic ? 'انضم إلينا الآن !' : 'Join us now!',
                                 style: TextStyle(
@@ -271,7 +284,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                 controller: _passwordController,
                                 hint: "********",
                                 textInputType: TextInputType.visiblePassword,
-                                obscureText: true,
+                                obscureText: _isPasswordHidden,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return isArabic
@@ -285,7 +298,19 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                   }
                                   return null;
                                 },
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordHidden = !_isPasswordHidden;
+                                    });
+                                  },
+                                ),
                               ),
+
                               SizedBox(height: 15.h),
                               build_label(
                                 text:
@@ -298,7 +323,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                 hint: isArabic ? " ABC123" : "e.g. ABC123",
                                 textInputType: TextInputType.text,
                               ),
-                              SizedBox(height: 20.h),
+                              SizedBox(height: 15.h),
                               build_label(text: isArabic ? 'رقم الهويه' : 'ID'),
                               _buildTextField(
                                 controller: _IDController,
@@ -322,7 +347,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               final prefs =
-                                                  await SharedPreferences.getInstance(); // ✅ هنا صح
+                                                  await SharedPreferences.getInstance();
                                               await prefs.remove('token');
 
                                               final model =
@@ -537,6 +562,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     String? Function(String?)? validator,
     int? maxLength,
     bool obscureText = false,
+    Widget? suffixIcon,
   }) {
     return TextFormField(
       controller: controller,
@@ -544,13 +570,14 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
       validator: validator,
       obscureText: obscureText,
       inputFormatters:
-          maxLength != null
-              ? [LengthLimitingTextInputFormatter(maxLength)]
-              : null,
+      maxLength != null
+          ? [LengthLimitingTextInputFormatter(maxLength)]
+          : null,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
         hintText: hint,
         hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color: Colors.grey),
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -563,4 +590,5 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
       ),
     );
   }
+
 }

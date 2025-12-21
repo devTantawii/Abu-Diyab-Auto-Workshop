@@ -338,7 +338,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                               ),
                                               SizedBox(height: 16.h),
 
-                                              // زر "استمتع بالعرض"
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                   horizontal: 12.w,
@@ -367,13 +366,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                                       elevation: 2,
                                                     ),
                                                     onPressed: () async {
-                                                      final prefs =
-                                                          await SharedPreferences.getInstance();
-                                                      final token = prefs
-                                                          .getString('token');
 
-                                                      if (token != null &&
-                                                          token.isNotEmpty) {
                                                         final slug =
                                                             offer
                                                                 .service
@@ -414,33 +407,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                                           description,
                                                           imagePath,
                                                         );
-                                                      } else {
-                                                        showModalBottomSheet(
-                                                          context: context,
-                                                          isScrollControlled:
-                                                              true,
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          builder:
-                                                              (
-                                                                _,
-                                                              ) => FractionallySizedBox(
-                                                                widthFactor: 1,
-                                                                child: BlocProvider(
-                                                                  create:
-                                                                      (
-                                                                        _,
-                                                                      ) => LoginCubit(
-                                                                        dio:
-                                                                            Dio(),
-                                                                      ),
-                                                                  child:
-                                                                      const LoginBottomSheet(),
-                                                                ),
-                                                              ),
-                                                        );
-                                                      }
                                                     },
                                                     child: Text(
                                                       isArabic

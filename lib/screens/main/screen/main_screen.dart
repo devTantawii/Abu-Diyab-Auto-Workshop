@@ -3,7 +3,6 @@ import 'package:abu_diyab_workshop/screens/auth/screen/login.dart';
 import 'package:abu_diyab_workshop/screens/more/screen/invite_friends.dart';
 import 'package:abu_diyab_workshop/screens/my_car/screen/my_cars_screen.dart';
 import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
-import 'package:abu_diyab_workshop/widgets/location.dart';
 import 'package:abu_diyab_workshop/widgets/slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ import '../../../core/language/locale.dart';
 import '../../../widgets/app_bar_widget.dart';
 import '../../../widgets/navigation.dart';
 import '../../notification/screen/notifications_screen.dart';
-import '../../packages/screen/package_screen.dart';
 import '../../profile/repositorie/profile_repository.dart';
 import '../../reminds/cubit/notes_details_cubit.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
@@ -78,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
     return Scaffold(
-      backgroundColor: backgroundColor(context),
+      backgroundColor: scaffoldBackgroundColor(context),
       appBar: AppBar(
         toolbarHeight: Responsive.h(context, 150, 200),
         backgroundColor: Colors.transparent,
@@ -111,7 +109,6 @@ class _MainScreenState extends State<MainScreen> {
                               builder: (context) => const ProfileScreen(),
                             ),
                           ).then((_) {
-                            // لما ترجع من ProfileScreen، نعيد تحميل الاسم والصورة
                             _loadUsername();
                           });
                         } else {
@@ -150,23 +147,23 @@ class _MainScreenState extends State<MainScreen> {
                         children: [
                           Text(
                             (locale!.isDirectionRTL(context)
-                                        ? "هلا $_username"
+                                        ? "حيّاك $_username"
                                         : "Hello $_username")
                                     .substring(
                                       0,
                                       (locale.isDirectionRTL(context)
-                                                      ? "هلا $_username"
+                                                      ? "حيّاك $_username"
                                                       : "Hello $_username")
                                                   .length >
                                               20
                                           ? 20
                                           : (locale.isDirectionRTL(context)
-                                                  ? "هلا $_username"
+                                                  ? "حيّاك $_username"
                                                   : "Hello $_username")
                                               .length,
                                     ) +
                                 ((locale.isDirectionRTL(context)
-                                                ? "هلا $_username"
+                                                ? "حيّاك $_username"
                                                 : "Hello $_username")
                                             .length >
                                         20
@@ -270,13 +267,10 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ],
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.search,
-                              size: 30,
-                              color: Colors.grey,
-                            ),
+                          Image.asset(
+                            "assets/icons/search_ai.png",
+                            width: 20.w,
+                            height: 20.h,
                           ),
                         ],
                       ),
@@ -295,17 +289,12 @@ class _MainScreenState extends State<MainScreen> {
                         width: 50.w,
                         height: 50.h,
                         decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.white
-                                  : Colors.black,
+                          color: buttonBgWhiteColor(context),
                           border: Border.all(
-                            width: 1.w, // responsive border
-                            color: Colors.black.withValues(alpha: 0.5),
+                            width: 1.w,
+                            color: buttonPrimaryBgColor(context),
                           ),
-                          borderRadius: BorderRadius.circular(
-                            10.r,
-                          ), // responsive radius
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -315,19 +304,19 @@ class _MainScreenState extends State<MainScreen> {
                               height: 18.h,
                               child: Icon(
                                 Icons.ios_share_outlined,
-                                size: 20.sp, // responsive icon size
+                                size: 20.sp,
                                 color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 8.h), // responsive spacing
+                            SizedBox(height: 8.h),
                             Text(
                               locale.isDirectionRTL(context)
                                   ? "مشاركة"
                                   : "Share",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: typographyMainColor(context),
-                                fontSize: 10.sp, // responsive font size
+                                color: paragraphColor(context),
+                                fontSize: 10.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
                               ),
@@ -343,464 +332,451 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ImageSlider(),
-              SizedBox(height: 15.h),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    textDirection:
-                        Localizations.localeOf(context).languageCode == 'ar'
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                    children: [
-                      Text(
-                        locale.isDirectionRTL(context)
-                            ? "الخدمات "
-                            : "Services",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: headingColor(context),
-                          fontSize: 20.sp,
-                          fontFamily: 'GraphikArabic',
-                          fontWeight: FontWeight.w600,
+      body: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.sp),
+            topRight: Radius.circular(15.sp),
+          ),
+          color:
+              Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ImageSlider(),
+                SizedBox(height: 15.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      textDirection:
+                          Localizations.localeOf(context).languageCode == 'ar'
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                      children: [
+                        Text(
+                          locale.isDirectionRTL(context)
+                              ? "الخدمات "
+                              : "Services",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: headingColor(context),
+                            fontSize: 20.sp,
+                            fontFamily: 'GraphikArabic',
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            showAllServices = !showAllServices;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              showAllServices
-                                  ? (locale.isDirectionRTL(context)
-                                      ? "إخفاء"
-                                      : "Hide")
-                                  : (locale.isDirectionRTL(context)
-                                      ? "عرض الكل"
-                                      : "Show All"),
-                              style: TextStyle(
-                                color: typographyMainColor(context),
-                                fontSize: 16.h,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w600,
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showAllServices = !showAllServices;
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                showAllServices
+                                    ? (locale.isDirectionRTL(context)
+                                        ? "إخفاء"
+                                        : "Hide")
+                                    : (locale.isDirectionRTL(context)
+                                        ? "عرض الكل"
+                                        : "Show All"),
+                                style: TextStyle(
+                                  color: typographyMainColor(context),
+                                  fontSize: 16.h,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5.w),
-                            Icon(
-                              showAllServices
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              color: typographyMainColor(context),
-                            ),
-                          ],
+                              SizedBox(width: 5.w),
+                              Icon(
+                                showAllServices
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: typographyMainColor(context),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-                  BlocBuilder<ServicesCubit, ServicesState>(
-                    builder: (context, state) {
-                      if (state is ServicesLoading) {
-                        return Padding(
-                          padding: EdgeInsets.all(20.0.sp),
-                          child: GridView.builder(
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    BlocBuilder<ServicesCubit, ServicesState>(
+                      builder: (context, state) {
+                        if (state is ServicesLoading) {
+                          return Padding(
+                            padding: EdgeInsets.all(20.0.sp),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: 6,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 15,
+                                    mainAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemBuilder: (context, index) {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 60.h,
+                                        width: 60.w,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        height: 12.h,
+                                        width: 50.w,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        } else if (state is ServicesError) {
+                          return const Center(child: Text('حدث خطأ ما'));
+                        } else if (state is ServicesLoaded) {
+                          final List<Map<String, dynamic>> allItems = [
+                            ...state.products
+                                .where((p) => p.status == 1)
+                                .map(
+                                  (p) => {
+                                    'title': p.name,
+                                    'icon': p.icon,
+                                    'slug': p.slug,
+                                    'description': p.description,
+                                    'offer': p.offer,
+                                  },
+                                ),
+                            ...state.services
+                                .where((s) => s.status == 1)
+                                .map(
+                                  (s) => {
+                                    'title': s.name,
+                                    'icon': s.icon,
+                                    'slug': s.slug,
+                                    'description': s.description,
+                                    'offer': s.offer,
+                                  },
+                                ),
+                          ];
+
+                          return GridView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 6,
+                            itemCount:
+                                showAllServices
+                                    ? allItems.length
+                                    : (allItems.length > 3
+                                        ? 3
+                                        : allItems.length),
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
-                                  crossAxisSpacing: 15,
-                                  mainAxisSpacing: 15,
-                                  childAspectRatio: 0.8,
+                                  mainAxisSpacing:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                  crossAxisSpacing:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  childAspectRatio: 1,
                                 ),
                             itemBuilder: (context, index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 60.h,
-                                      width: 60.w,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      height: 12.h,
-                                      width: 50.w,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              final item = allItems[index];
+                              return _buildServiceItem(
+                                title: item['title'].toString(),
+                                imagePath: item['icon'].toString(),
+                                slug: item['slug'].toString(),
+                                description:
+                                    item['description']?.toString() ?? '',
+                                offer: item['offer'],
+                                context: context,
                               );
                             },
-                          ),
-                        );
-                      } else if (state is ServicesError) {
-                        return const Center(child: Text('حدث خطأ ما'));
-                      } else if (state is ServicesLoaded) {
-                        final List<Map<String, dynamic>> allItems = [
-                          ...state.products
-                              .where((p) => p.status == 1)
-                              .map(
-                                (p) => {
-                                  'title': p.name,
-                                  'icon': p.icon,
-                                  'slug': p.slug,
-                                  'description': p.description,
-                                  'offer': p.offer, // ← هنا
-                                },
-                              ),
-                          ...state.services
-                              .where((s) => s.status == 1)
-                              .map(
-                                (s) => {
-                                  'title': s.name,
-                                  'icon': s.icon,
-                                  'slug': s.slug,
-                                  'description': s.description,
-                                  'offer': s.offer, // ← هنا
-                                },
-                              ),
-                        ];
+                          );
+                        }
 
-                        return GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
-                              showAllServices
-                                  ? allItems.length
-                                  : (allItems.length > 3 ? 3 : allItems.length),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing:
-                                    MediaQuery.of(context).size.width * 0.01,
-                                crossAxisSpacing:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                childAspectRatio: 1,
+                        return const SizedBox();
+                      },
+                    ),
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => PackageScreen(),
+                    //   ),
+                    // );
+                    SizedBox(height: 8.h),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: false,
+                          builder: (context) {
+                            return Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(25),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 15,
+                                    spreadRadius: 3,
+                                  ),
+                                ],
                               ),
-                          itemBuilder: (context, index) {
-                            final item = allItems[index];
-                            return _buildServiceItem(
-                              title: item['title'].toString(),
-                              imagePath: item['icon'].toString(),
-                              slug: item['slug'].toString(),
-                              description:
-                                  item['description']?.toString() ?? '',
-                              offer: item['offer'],
-                              context: context,
+                              height: 300.h,
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  SizedBox(height: 30.h),
+
+                                  Text(
+                                    locale!.isDirectionRTL(context)
+                                        ? "قريباً"
+                                        : "Soon",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 10),
+
+                                  Text(
+                                    locale!.isDirectionRTL(context)
+                                        ? "انتظرونا بإصدار جديد!"
+                                        : "Stay tuned for a new release!",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 25),
+
+                                  SizedBox(
+                                    width: 40.w,
+                                    height: 40.h,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 5.w,
+                                      color: buttonPrimaryBgColor(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         );
-                      }
+                      },
 
-                      return const SizedBox();
-                    },
-                  ),
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => PackageScreen(),
-                  //   ),
-                  // );
-                  SizedBox(height: 8.h),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        // يخلي الشكل أجمل
-                        isScrollControlled: false,
-                        builder: (context) {
-                          return Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(25),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 15,
-                                  spreadRadius: 3,
-                                ),
-                              ],
-                            ),
-                            height: 300.h,
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 5,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                                SizedBox(height: 30.h),
-
-                                Text(
-                                  locale!.isDirectionRTL(context)
-                                      ? "قريباً"
-                                      : "Soon",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-
-                                SizedBox(height: 10),
-
-                                Text(
-                                  locale!.isDirectionRTL(context)
-                                      ? "انتظرونا بإصدار جديد!"
-                                      : "Stay tuned for a new release!",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-
-                                SizedBox(height: 25),
-
-                                SizedBox(
-                                  width: 40.w,
-                                  height: 40.h,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 5.w,
-                                    color: buttonPrimaryBgColor(context),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-
-                    child: Center(
-                      child: Image.asset(
-                        locale!.isDirectionRTL(context)
-                            ? 'assets/images/main_pack.png'
-                            : "assets/images/main_pack_en.png",
-                        width: double.infinity,
-                        height: 140.h,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-
-                  Row(
-                    children: [
-                      Text(
-                        locale.isDirectionRTL(context)
-                            ? 'الصيانات القادمة'
-                            : "Upcoming maintenance",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
-                          fontSize: 16.sp,
-                          fontFamily: 'Graphik Arabic',
-                          fontWeight: FontWeight.w600,
+                      child: Center(
+                        child: Image.asset(
+                          locale!.isDirectionRTL(context)
+                              ? 'assets/images/main_pack.png'
+                              : "assets/images/main_pack_en.png",
+                          width: double.infinity,
+                          height: 140.h,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      Image.asset(
-                        'assets/images/notifi.png',
-                        width: 25.w,
-                        height: 25.h,
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 10.h),
-                  Container(
-                    width: double.infinity,
-                    height: 60.h,
-                    decoration: BoxDecoration(
-                      color: typographyMainColor(context).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12.sp),
-                      border: Border.all(
-                        width: 2,
-                        color: typographyMainColor(context),
-                      ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.all(10.w),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MyCarsScreen(showBack: true),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_circle_outline_rounded,
-                              size: 20.sp,
-                              color: typographyMainColor(context),
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              locale!.isDirectionRTL(context)
-                                  ? "ذكرني بصيانه سيارتي"
-                                  : "Remind me about maintenance.",
-                              style: TextStyle(
+                    SizedBox(height: 15.h),
+
+                    Row(
+                      children: [
+                        Text(
+                          locale.isDirectionRTL(context)
+                              ? 'الصيانات القادمة'
+                              : "Upcoming maintenance",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                            fontSize: 16.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/images/notifi.png',
+                          width: 25.w,
+                          height: 25.h,
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 10.h),
+                    Container(
+                      width: double.infinity,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        color: typographyMainColor(context).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12.sp),
+                        border: Border.all(
+                          width: 2,
+                          color: typographyMainColor(context),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10.w),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyCarsScreen(showBack: true),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_circle_outline_rounded,
+                                size: 20.sp,
                                 color: typographyMainColor(context),
-                                fontSize: 18.sp,
-                                fontFamily: 'Graphik Arabic',
-                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 4.w),
+                              Text(
+                                locale!.isDirectionRTL(context)
+                                    ? "ذكرني بصيانه سيارتي"
+                                    : "Remind me about maintenance.",
+                                style: TextStyle(
+                                  color: typographyMainColor(context),
+                                  fontSize: 18.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(height: 10.h),
+                    SizedBox(height: 10.h),
 
-                  BlocBuilder<UserNotesCubit, UserNotesState>(
-                    builder: (context, state) {
-                      if (state is UserNotesLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is UserNotesLoaded) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.notes.length,
-                          itemBuilder: (context, index) {
-                            final note = state.notes[index];
-                            return GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) {
-                                    return BlocProvider(
-                                      create:
-                                          (_) =>
-                                              UserNoteDetailsCubit()
-                                                ..fetchNoteDetails(note.id),
-                                      child: NoteDetailsBottomSheet(
-                                        noteId: note.id,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-
-                              child: Container(
-                                width: double.infinity,
-                                height: isTablet ? 120.h : 94.h,
-                                margin: EdgeInsets.only(bottom: 12.h),
-                                decoration: BoxDecoration(
-                                  color: buttonBgWhiteColor(context),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  border: Border.all(
-                                    color: strokeGrayColor(context),
-                                    width: 1.50,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 12.r,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  textDirection:
-                                      Localizations.localeOf(
-                                                context,
-                                              ).languageCode ==
-                                              'ar'
-                                          ? TextDirection.rtl
-                                          : TextDirection.ltr,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w,
-                                          vertical: 10.h,
+                    BlocBuilder<UserNotesCubit, UserNotesState>(
+                      builder: (context, state) {
+                        if (state is UserNotesLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is UserNotesLoaded) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.notes.length,
+                            itemBuilder: (context, index) {
+                              final note = state.notes[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) {
+                                      return BlocProvider(
+                                        create:
+                                            (_) =>
+                                                UserNoteDetailsCubit()
+                                                  ..fetchNoteDetails(note.id),
+                                        child: NoteDetailsBottomSheet(
+                                          noteId: note.id,
                                         ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  note.service.name,
-                                                  style: TextStyle(
-                                                    color:
-                                                        Theme.of(
-                                                                  context,
-                                                                ).brightness ==
-                                                                Brightness.light
-                                                            ? Colors.black
-                                                            : Colors.white,
-                                                    fontSize: 14.sp,
-                                                    fontFamily:
-                                                        'Graphik Arabic',
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5.w),
-                                                //  Image.network(
-                                                //    note.service.icon,
-                                                //    // حط لينك الصورة هنا
-                                                //    width: 22.w,
-                                                //    height: 20.h,
-                                                //    fit: BoxFit.fill,
-                                                //  ),
-                                              ],
-                                            ),
+                                      );
+                                    },
+                                  );
+                                },
 
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
+                                child: Container(
+                                  width: double.infinity,
+                                  height: isTablet ? 120.h : 94.h,
+                                  margin: EdgeInsets.only(bottom: 12.h),
+                                  decoration: BoxDecoration(
+                                    color: buttonBgWhiteColor(context),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    border: Border.all(
+                                      color: strokeGrayColor(context),
+                                      width: 1.50,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 12.r,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    textDirection:
+                                        Localizations.localeOf(
+                                                  context,
+                                                ).languageCode ==
+                                                'ar'
+                                            ? TextDirection.rtl
+                                            : TextDirection.ltr,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10.w,
+                                            vertical: 10.h,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${note.userCar.carBrand.name} , ${note.userCar.carModel.name}",
+                                                    note.service.name,
                                                     style: TextStyle(
                                                       color:
                                                           Theme.of(
@@ -809,157 +785,198 @@ class _MainScreenState extends State<MainScreen> {
                                                                   Brightness
                                                                       .light
                                                               ? Colors.black
-                                                                  .withValues(
-                                                                    alpha: 0.70,
-                                                                  )
                                                               : Colors.white,
                                                       fontSize: 14.sp,
                                                       fontFamily:
                                                           'Graphik Arabic',
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      height: 1.60,
                                                     ),
                                                   ),
-                                                  SizedBox(width: 10.w),
-                                                  Text(
-                                                    note.userCar.year,
-                                                    style: TextStyle(
-                                                      color:
-                                                          Theme.of(
-                                                                    context,
-                                                                  ).brightness ==
-                                                                  Brightness
-                                                                      .light
-                                                              ? Colors.black
-                                                                  .withValues(
-                                                                    alpha: 0.70,
-                                                                  )
-                                                              : Colors.white,
-                                                      fontSize: 14.sp,
-                                                      fontFamily:
-                                                          'Graphik Arabic',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      height: 1.60,
-                                                    ),
-                                                  ),
+                                                  SizedBox(width: 5.w),
+                                                  //  Image.network(
+                                                  //    note.service.icon,
+                                                  //    // حط لينك الصورة هنا
+                                                  //    width: 22.w,
+                                                  //    height: 20.h,
+                                                  //    fit: BoxFit.fill,
+                                                  //  ),
                                                 ],
                                               ),
-                                            ),
 
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Icon(
-                                                    Icons.notifications_none,
-                                                    size: 18.sp,
-                                                    color: typographyMainColor(
-                                                      context,
+                                              SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${note.userCar.carBrand.name} , ${note.userCar.carModel.name}",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Theme.of(
+                                                                      context,
+                                                                    ).brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.70,
+                                                                    )
+                                                                : Colors.white,
+                                                        fontSize: 14.sp,
+                                                        fontFamily:
+                                                            'Graphik Arabic',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        height: 1.60,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 6.w),
+                                                    SizedBox(width: 10.w),
+                                                    Text(
+                                                      note.userCar.year,
+                                                      style: TextStyle(
+                                                        color:
+                                                            Theme.of(
+                                                                      context,
+                                                                    ).brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.70,
+                                                                    )
+                                                                : Colors.white,
+                                                        fontSize: 14.sp,
+                                                        fontFamily:
+                                                            'Graphik Arabic',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        height: 1.60,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
 
-                                                  Text(
-                                                    note.remindMe
-                                                        .split(" ")
-                                                        .first,
-                                                    style: TextStyle(
-                                                      color:
-                                                          Theme.of(
-                                                                    context,
-                                                                  ).brightness ==
-                                                                  Brightness
-                                                                      .light
-                                                              ? Colors.black
-                                                              : Colors.white,
-                                                      fontSize: 14.21.sp,
-                                                      fontFamily:
-                                                          'Graphik Arabic',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      height: 1.60,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 10.w),
-                                                  Text(
-                                                    locale.isDirectionRTL(
-                                                          context,
-                                                        )
-                                                        ? "صيانتك بعد ${note.daysAgo} أيام"
-                                                        : "Your maintenance after ${note.daysAgo} days",
-                                                    style: TextStyle(
+                                              SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.notifications_none,
+                                                      size: 18.sp,
                                                       color:
                                                           typographyMainColor(
                                                             context,
                                                           ),
-
-                                                      fontSize: 16.sp,
-                                                      fontFamily:
-                                                          'Graphik Arabic',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      height: 1.60,
                                                     ),
-                                                  ),
-                                                ],
+                                                    SizedBox(width: 6.w),
+
+                                                    Text(
+                                                      note.remindMe
+                                                          .split(" ")
+                                                          .first,
+                                                      style: TextStyle(
+                                                        color:
+                                                            Theme.of(
+                                                                      context,
+                                                                    ).brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                : Colors.white,
+                                                        fontSize: 14.21.sp,
+                                                        fontFamily:
+                                                            'Graphik Arabic',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        height: 1.60,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10.w),
+                                                    Text(
+                                                      locale.isDirectionRTL(
+                                                            context,
+                                                          )
+                                                          ? "صيانتك بعد ${note.daysAgo} أيام"
+                                                          : "Your maintenance after ${note.daysAgo} days",
+                                                      style: TextStyle(
+                                                        color:
+                                                            typographyMainColor(
+                                                              context,
+                                                            ),
+
+                                                        fontSize: 16.sp,
+                                                        fontFamily:
+                                                            'Graphik Arabic',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        height: 1.60,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                    // لوجو العربية
-                                    Container(
-                                      width: 99.w,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.06),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(12.r),
-                                          bottomLeft: Radius.circular(12.r),
+                                      // لوجو العربية
+                                      Container(
+                                        width: 99.w,
+                                        height: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.06),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.r),
+                                            bottomLeft: Radius.circular(12.r),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Image.network(
+                                            note.userCar.carBrand.icon,
+                                            fit: BoxFit.contain,
+                                            width: 40.w,
+                                            height: 40.h,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return const Icon(
+                                                Icons.directions_car,
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Image.network(
-                                          note.userCar.carBrand.icon,
-                                          fit: BoxFit.contain,
-                                          width: 40.w,
-                                          height: 40.h,
-                                          errorBuilder: (
-                                            context,
-                                            error,
-                                            stackTrace,
-                                          ) {
-                                            return const Icon(
-                                              Icons.directions_car,
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      } else if (state is UserNotesError) {
-                        return const SizedBox.shrink();
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
+                              );
+                            },
+                          );
+                        } else if (state is UserNotesError) {
+                          return const SizedBox.shrink();
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
 
-                  SizedBox(height: 10.h),
-                ],
-              ),
-            ],
+                    SizedBox(height: 10.h),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -999,7 +1016,7 @@ class _MainScreenState extends State<MainScreen> {
         (offer != null && offer.isNotEmpty) ? offer.first : null;
 
     String? offerText;
-    Color badgeColor = primaryColor(context);
+    Color badgeColor = accentColor;
 
     bool isPercentage = false;
     bool isFixed = false;
@@ -1016,26 +1033,28 @@ class _MainScreenState extends State<MainScreen> {
 
     return GestureDetector(
       onTap: () async {
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('token');
+        // final prefs = await SharedPreferences.getInstance();
+        // final token = prefs.getString('token');
+        //
+        // if (token != null && token.isNotEmpty) {
+        //   navigateToServiceScreen(context, slug, title, description, imagePath);
+        // } else {
+        navigateToServiceScreen(context, slug, title, description, imagePath);
 
-        if (token != null && token.isNotEmpty) {
-          navigateToServiceScreen(context, slug, title, description, imagePath);
-        } else {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder:
-                (context) => FractionallySizedBox(
-                  widthFactor: 1,
-                  child: BlocProvider(
-                    create: (_) => LoginCubit(dio: Dio()),
-                    child: const LoginBottomSheet(),
-                  ),
-                ),
-          );
-        }
+        // showModalBottomSheet(
+        //   context: context,
+        //   isScrollControlled: true,
+        //   backgroundColor: Colors.transparent,
+        //   builder:
+        //       (context) => FractionallySizedBox(
+        //         widthFactor: 1,
+        //         child: BlocProvider(
+        //           create: (_) => LoginCubit(dio: Dio()),
+        //           child: const LoginBottomSheet(),
+        //         ),
+        //       ),
+        // );
+        // }
       },
       child: Stack(
         children: [
@@ -1048,10 +1067,7 @@ class _MainScreenState extends State<MainScreen> {
                   color: buttonBgWhiteColor(context),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color:
-                        firstOffer != null
-                            ? badgeColor
-                            : buttonSecondaryBorderColor(context),
+                    color: buttonSecondaryBorderColor(context),
                     width: 1.5.sp,
                   ),
                 ),

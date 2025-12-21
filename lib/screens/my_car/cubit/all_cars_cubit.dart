@@ -18,7 +18,6 @@ class CarCubit extends Cubit<CarState> {
   // Fetch all cars
   Future<void> fetchCars(String token) async {
     emit(CarLoading());
-    print("Fetching cars...");
     print(token);
 
     try {
@@ -33,32 +32,23 @@ class CarCubit extends Cubit<CarState> {
         ),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response data: ${response.data}");
 
       if (response.statusCode == 200) {
         final responseData = response.data is String
             ? jsonDecode(response.data)
             : response.data;
 
-        print("responseData: $responseData");
 
         final data = List<Map<String, dynamic>>.from(responseData["data"]);
-        print("Cars data: $data");
 
-        print("Decoded data: $data");
 
         final cars = data.map((e) => Car.fromJson(e)).toList();
-        print("Parsed cars: $cars");
 
         emit(CarLoaded(cars));
       } else {
-        print("Non-200 response");
         emit(CarError("Failed to load cars"));
       }
     } catch (e, stackTrace) {
-      print("Error caught: $e");
-      print(stackTrace);
       emit(CarError(e.toString()));
     }
   }

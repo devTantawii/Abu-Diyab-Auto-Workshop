@@ -15,9 +15,6 @@ class UserNotesCubit extends Cubit<UserNotesState> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     try {
-      print("📢 [UserNotesCubit] Fetching notes from API...");
-      print(" 📢📢📢📢📢📢📢📢 $token");
-
       final response = await Dio().get(
         notesGetApi,
         options: Options(
@@ -30,32 +27,20 @@ class UserNotesCubit extends Cubit<UserNotesState> {
         ),
       );
 
-      print("✅ [UserNotesCubit] API response status: ${response.statusCode}");
-      print("✅ [UserNotesCubit] Full response: ${response.data}");
-
       if (response.data == null || response.data['data'] == null) {
-        print("⚠️ [UserNotesCubit] No data field found in response");
         emit(UserNotesLoaded([]));
         return;
       }
 
       final data = response.data['data'] as List;
-      print("📊 [UserNotesCubit] Data length: ${data.length}");
 
       final notes =
           data.map((e) {
-            print("📝 [UserNotesCubit] Parsing note: $e");
             return UserNote.fromJson(e);
           }).toList();
 
-      print(
-        "🎯 [UserNotesCubit] Notes parsed successfully, count: ${notes.length}",
-      );
-
       emit(UserNotesLoaded(notes));
     } catch (e, stack) {
-      print("❌ [UserNotesCubit] Error: $e");
-      print("❌ [UserNotesCubit] Stack: $stack");
       emit(UserNotesError(e.toString()));
     }
   }

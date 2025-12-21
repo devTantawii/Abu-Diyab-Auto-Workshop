@@ -146,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // صورة البروفايل
+                      SizedBox(height: 20.h),
                       GestureDetector(
                         onTap: () {
                           showModalBottomSheet(
@@ -443,9 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: TextField(
                               controller: _phoneController,
                               enabled: false,
-                              // يجعل الحقل غير قابل للتحرير
                               textAlign: TextAlign.start,
-                              // الرقم على اليسار
                               textAlignVertical: TextAlignVertical.center,
                               style: TextStyle(
                                 color: Color(0xFF707070),
@@ -528,12 +526,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           ),
           bottomNavigationBar: BlocBuilder<ProfileCubit, ProfileState>(
+
             builder: (context, state) {
               if (state is ProfileLoaded || state is ProfileUpdating) {
                 final user =
                     (state is ProfileLoaded)
                         ? state.user
                         : (state as ProfileUpdating).user;
+                final isLoading = state is ProfileUpdating;
 
                 return Container(
                   padding: EdgeInsets.symmetric(
@@ -557,35 +557,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.read<ProfileCubit>().updateProfile(
-                              id: user.id,
-                              firstName: _firstNameController.text,
-                              lastName: _lastNameController.text,
-                              phone: _phoneController.text,
-                              imageFile: _pickedImage,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: buttonPrimaryBgColor(context),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? "تحديث"
-                                : "Update",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+
+                  Expanded(
+                      child: ElevatedButton(
+                      onPressed: isLoading
+                      ? null
+                          : () {
+                context.read<ProfileCubit>().updateProfile(
+                id: user.id,
+                firstName: _firstNameController.text,
+                lastName: _lastNameController.text,
+                phone: _phoneController.text,
+                imageFile: _pickedImage,
+                );
+                },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonPrimaryBgColor(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: isLoading
+                      ? SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                      : Text(
+                    locale!.isDirectionRTL(context) ? "تحديث" : "Update",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: OutlinedButton(

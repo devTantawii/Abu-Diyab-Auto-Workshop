@@ -29,7 +29,7 @@ class ChangeBattery extends StatefulWidget {
   final String title;
   final String description;
   final String icon;
-  final String slug; // ✅ أضف ده
+  final String slug;
 
   const ChangeBattery({
     super.key,
@@ -48,21 +48,21 @@ class _ChangeBatteryState extends State<ChangeBattery> {
   List<File> selectedCarDocs = [];
 
   int? _selectedBatteryIndex;
-  String? selectedAh; // ✅ متغير لتخزين القيمة المختارة
+  String? selectedAh;
   late CarCubit _cubit;
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
   int? _selectedUserCarId;
-  int currentPage = 1; // الصفحة الحالية
-  final int itemsPerPage = 4; // عدد المنتجات لكل صفحة
+  int currentPage = 1;
+  final int itemsPerPage = 4;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _cubit = CarCubit();
-    _loadCars(); // optional: fetch cars here
+    _loadCars();
     context.read<BatteryCubit>().fetchBatteries();
     // searchController.addListener(() {
     //   _onSearchChanged(searchController.text);
@@ -117,12 +117,11 @@ class _ChangeBatteryState extends State<ChangeBattery> {
             ),
             color: backgroundColor(context),
           ),
-          child: Column(
-            children: [
-              // === السيرش + الفلتر (ثابتين فوق) ===
-              Padding(
-                padding: EdgeInsets.all(15.sp),
-                child: Row(
+          child: Padding(
+            padding: EdgeInsets.all(20.sp),
+            child: Column(
+              children: [
+                Row(
                   children: [
                     Expanded(
                       child: Container(
@@ -210,7 +209,6 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                       ),
                     ),
                     SizedBox(width: 12.w),
-                    // أيقونة الفلتر
                     GestureDetector(
                       onTap: () {
                         if (selectedAh != null) {
@@ -255,7 +253,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                 : 'Filtering',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: typographyMainColor(context),
+                                              color: typographyMainColor(
+                                                context,
+                                              ),
                                               fontSize: 25.sp,
                                               fontFamily: 'Graphik Arabic',
                                               fontWeight: FontWeight.w600,
@@ -314,10 +314,12 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                         entry,
                                                       ) {
                                                         final index = entry.key;
-                                                        final String amperValue =
+                                                        final String
+                                                        amperValue =
                                                             entry.value;
                                                         final int row =
-                                                            index ~/ itemsPerRow;
+                                                            index ~/
+                                                            itemsPerRow;
                                                         final int col =
                                                             index % itemsPerRow;
                                                         final double left =
@@ -343,7 +345,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                               });
                                                             },
                                                             child: Container(
-                                                              width: buttonWidth,
+                                                              width:
+                                                                  buttonWidth,
                                                               padding:
                                                                   const EdgeInsets.symmetric(
                                                                     horizontal:
@@ -353,7 +356,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                               decoration: ShapeDecoration(
                                                                 color:
                                                                     isSelected
-                                                                        ? typographyMainColor(context).withOpacity(
+                                                                        ? typographyMainColor(
+                                                                          context,
+                                                                        ).withOpacity(
                                                                           0.2,
                                                                         )
                                                                         : null,
@@ -362,9 +367,10 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                                     width: 2.w,
                                                                     color:
                                                                         isSelected
-                                                                            ? typographyMainColor(context)
-                                                                            : Colors
-                                                                                .grey,
+                                                                            ? typographyMainColor(
+                                                                              context,
+                                                                            )
+                                                                            : Colors.grey,
                                                                   ),
                                                                   borderRadius:
                                                                       BorderRadius.circular(
@@ -381,8 +387,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                                   style: TextStyle(
                                                                     color:
                                                                         isSelected
-                                                                            ? Colors
-                                                                                .black
+                                                                            ? Colors.black
                                                                             : Color(
                                                                               0xFF616465,
                                                                             ),
@@ -428,9 +433,13 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                               child: Container(
                                                 width: 240.w,
                                                 height: 50.h,
-                                                padding: const EdgeInsets.all(10),
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
                                                 decoration: ShapeDecoration(
-                                                  color: typographyMainColor(context),
+                                                  color: typographyMainColor(
+                                                    context,
+                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -446,7 +455,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 20.sp,
-                                                    fontFamily: 'Graphik Arabic',
+                                                    fontFamily:
+                                                        'Graphik Arabic',
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
@@ -470,7 +480,9 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         decoration: BoxDecoration(
                           color:
                               selectedAh != null
-                                  ? typographyMainColor(context).withOpacity(0.2)
+                                  ? typographyMainColor(
+                                    context,
+                                  ).withOpacity(0.2)
                                   : buttonBgWhiteColor(context),
                           borderRadius: BorderRadius.circular(10.sp),
                           border: Border.all(
@@ -500,17 +512,13 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     ),
                   ],
                 ),
-              ),
 
-              // === باقي المحتوى (قابل للـ Scroll) ===
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                Expanded(
+                  child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 12.h),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Text(
@@ -545,14 +553,14 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: paragraphColor(context),
-                                fontSize: 13.sp,
+                                fontSize: 14.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 6.h),
+                        SizedBox(height: 10.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -590,7 +598,6 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                         ),
                         SizedBox(height: 10.h),
 
-                        // ---------------- عرض البيانات ----------------
                         BlocBuilder<BatteryCubit, BatteryState>(
                           builder: (context, state) {
                             if (state is BatteryLoading) {
@@ -642,7 +649,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                 currentPage = totalPages > 0 ? totalPages : 1;
                               if (currentPage < 1) currentPage = 1;
 
-                              final startIndex = (currentPage - 1) * itemsPerPage;
+                              final startIndex =
+                                  (currentPage - 1) * itemsPerPage;
                               final endIndex =
                                   (startIndex + itemsPerPage) > batteries.length
                                       ? batteries.length
@@ -657,7 +665,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                 children: [
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: currentBatteries.length,
                                     itemBuilder: (context, index) {
                                       final battery = currentBatteries[index];
@@ -684,10 +693,11 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                             ),
                                             padding: EdgeInsets.all(12.w),
                                             decoration: BoxDecoration(
-                                              color: buttonBgWhiteColor(context),
-                                              borderRadius: BorderRadius.circular(
-                                                15.r,
+                                              color: buttonBgWhiteColor(
+                                                context,
                                               ),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.r),
                                               border: Border.all(
                                                 width: 1.5.w,
                                                 color:
@@ -695,13 +705,14 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                         ? typographyMainColor(
                                                           context,
                                                         )
-                                                        : const Color(0xFF9B9B9B),
+                                                        : const Color(
+                                                          0xFF9B9B9B,
+                                                        ),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withOpacity(
-                                                    0.25,
-                                                  ),
+                                                  color: Colors.black
+                                                      .withOpacity(0.25),
                                                   blurRadius: 12.r,
                                                   offset: Offset(0, 4.h),
                                                 ),
@@ -754,7 +765,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Row(
                                                         children: [
@@ -779,14 +791,15 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                "${battery.price} SAR",
+                                                                "${battery.price}",
                                                                 style: TextStyle(
                                                                   color:
                                                                       typographyMainColor(
                                                                         context,
                                                                       ),
 
-                                                                  fontSize: 16.sp,
+                                                                  fontSize:
+                                                                      16.sp,
                                                                   fontFamily:
                                                                       'Poppins',
                                                                   fontWeight:
@@ -811,12 +824,13 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                         ],
                                                       ),
                                                       SizedBox(height: 6.h),
+
                                                       Text(
                                                         locale.isDirectionRTL(
                                                               context,
                                                             )
-                                                            ? "النوع: ${battery.name}"
-                                                            : "The kind: ${battery.name}",
+                                                            ? "التفاصيل : ${battery.description}"
+                                                            : "Description: ${battery.description}",
                                                         style: TextStyle(
                                                           fontSize: 11.sp,
                                                           color: paragraphColor(
@@ -836,26 +850,12 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                                             context,
                                                           ),
                                                         ),
-                                                      ),
-                                                      Text(
+                                                      ), Text(
                                                         locale.isDirectionRTL(
                                                               context,
                                                             )
-                                                            ? "تفاصيل المقاس: ${battery.quantity}"
-                                                            : "Size details: ${battery.quantity}",
-                                                        style: TextStyle(
-                                                          fontSize: 11.sp,
-                                                          color: paragraphColor(
-                                                            context,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        locale.isDirectionRTL(
-                                                              context,
-                                                            )
-                                                            ? "الكمية المتاحة: ${battery.quantity}"
-                                                            : "Available quantity: ${battery.quantity}",
+                                                            ? "السعة : ${battery.amper}"
+                                                            : "Amper : ${battery.amper}",
                                                         style: TextStyle(
                                                           fontSize: 11.sp,
                                                           color: paragraphColor(
@@ -879,7 +879,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                     width: double.infinity,
                                     height: 60.h,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
@@ -909,9 +910,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
                                               color: Colors.grey,
-                                              borderRadius: BorderRadius.circular(
-                                                8.r,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
                                             ),
                                             child: Text(
                                               '${currentPage + 1}',
@@ -1024,8 +1024,8 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: CustomBottomButton(

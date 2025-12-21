@@ -130,7 +130,7 @@ void navigateToServiceScreen(
       break;
     default:
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("الصفحة الخاصة بـ $title لسه مش متوفرة")),
+        SnackBar(content: Text("الصفحة الخاصة بـ $title ليست متوفرة")),
       );
   }
 }

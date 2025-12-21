@@ -101,10 +101,97 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       }),
                     ),
                   );
-                } else if (state is CarError) {
-                  return ErrorWidgetWithRetry(
-                    onRetry: _loadCars, // لأن _loadCars جوهها التوكين
+                }
+                else if (state is CarError) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 120.h),
+                      Image.asset(
+                        'assets/icons/car_gar.png',
+                        width: 115.w,
+                        height: 115.h,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        locale!.isDirectionRTL(context)
+                            ? 'خلّي سيارتك عندنا، وريح بالك'
+                            : 'Leave your car with us, and relax',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white70,
+                          fontSize: 18.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        locale!.isDirectionRTL(context)
+                            ? 'عشان نخدمك صح، أضف سيارتك ونوفر لك كل اللي تحتاجه من صيانة، عروض، وتذكيرات.'
+                            : "To serve you properly, add your car and we will provide you with everything you need from maintenance, offers, and reminders.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Color(0xFF474747)
+                              : Colors.white54,
+
+                          fontSize: 16.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 40.h),
+
+                      GestureDetector(
+                        onTap: () async {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder:
+                      (context) => FractionallySizedBox(
+                        widthFactor: 1,
+                        child: BlocProvider(
+                          create: (_) => LoginCubit(dio: Dio()),
+                          child: const LoginBottomSheet(),
+                        ),
+                      ),
+                );
+                },
+                        child: Container(
+                          width: 226.w,
+                          height: 50.h,
+                          padding: EdgeInsets.all(10.w),
+                          decoration: ShapeDecoration(
+                            color: buttonPrimaryBgColor(context),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              locale.isDirectionRTL(context)
+                                  ? "أضف سيارتي الآن +"
+                                  : "Add a new car +",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
+
                 } else if (state is CarLoaded) {
                   if (state.cars.isEmpty) {
                     return Column(
@@ -417,7 +504,6 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         );
 
         if (result == true) {
-          // ⬅️ اعمل ريفريش للبيانات
           _loadCars();
         }
       },

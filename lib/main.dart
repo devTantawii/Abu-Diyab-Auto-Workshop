@@ -4,6 +4,7 @@ import 'package:abu_diyab_workshop/screens/home/screen/home_screen.dart';
 import 'package:abu_diyab_workshop/screens/main/cubit/services_cubit.dart';
 import 'package:abu_diyab_workshop/screens/more/Cubit/bakat_cubit.dart';
 import 'package:abu_diyab_workshop/screens/more/cubit/reward_logs_cubit.dart';
+import 'package:abu_diyab_workshop/screens/more/cubit/settings/settings_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/CarModelCubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
@@ -45,12 +46,12 @@ import 'language/languageCubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-await Firebase.initializeApp();
-await FcmApi().initNotifications();
+  await Firebase.initializeApp();
+  await FcmApi().initNotifications();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Color(0xFFBA1B1B),
+      statusBarColor: Color(0xFF006D92),
       statusBarIconBrightness: Brightness.light,
       statusBarBrightness: Brightness.dark,
     ),
@@ -75,7 +76,9 @@ await FcmApi().initNotifications();
           create: (_) => LanguageCubit(sharedPrefHelper),
         ),
         BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
-        BlocProvider(create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders()),
+        BlocProvider(
+          create: (_) => OrdersCubit(OrdersRepo(Dio()))..getAllOrders(),
+        ),
         BlocProvider(create: (_) => CarBrandCubit()..fetchCarBrands()),
         BlocProvider<CarModelCubit>(
           create: (_) => CarModelCubit(dio: Dio(), mainApi: mainApi),
@@ -95,22 +98,26 @@ await FcmApi().initNotifications();
         BlocProvider(create: (_) => UserNotesCubit()..getUserNotes()),
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
+        BlocProvider(create: (_) => AppSettingsCubit()..fetchAppSettings()),
 
         BlocProvider<RewardLogsCubit>(
           create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),
         ),
-        BlocProvider(create: (_) => ProfileCubit(ProfileRepository())..fetchProfile()),
+        BlocProvider(
+          create: (_) => ProfileCubit(ProfileRepository())..fetchProfile(),
+        ),
         BlocProvider<RateServiceCubit>(create: (_) => RateServiceCubit()),
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen:
+            initialToken != null ? const HomeScreen() : OnboardingScreen(),
       ),
     ),
   );
 }
 
-///
-///
-///             "Accept-Language": langCode == '' ? "en" : langCode
-///
+//
+//
+//             "Accept-Language": langCode == '' ? "en" : langCode
+//

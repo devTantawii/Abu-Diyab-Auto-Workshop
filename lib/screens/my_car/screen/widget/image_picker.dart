@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadFormWidget extends StatefulWidget {
   final void Function(File?) onImageSelected;
-  final String? existingImageUrl; // رابط من API لو موجود
+  final String? existingImageUrl;
 
   const UploadFormWidget({
     Key? key,
@@ -133,9 +134,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: ShapeDecoration(
-        color: Theme.of(context).brightness == Brightness.light
-            ? const Color(0xFFFFFFFF)
-            : Colors.black,
+        color: backgroundColor(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -144,7 +143,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         onTap: _pickImage,
         child: DottedBorder(
           color: Colors.grey,
-          strokeWidth: 3,
+          strokeWidth: 2,
           dashPattern: [16.h, 8.w],
           borderType: BorderType.RRect,
           radius: Radius.circular(8.r),
@@ -177,12 +176,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness ==
-                        Brightness.light
-                        ? Colors.transparent
-                        : Colors.grey,
-                  ),
+
                   child: Image.asset(
                     'assets/icons/ep_upload.png',
                     height: 46.32.h,
@@ -197,10 +191,7 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                       : 'You can upload car registration here',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).brightness ==
-                        Brightness.light
-                        ? Colors.black.withOpacity(0.7)
-                        : Colors.white,
+                    color: paragraphColor(context),
                     fontSize: 13.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,

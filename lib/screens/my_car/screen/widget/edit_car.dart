@@ -72,18 +72,15 @@ class _EditCarState extends State<EditCar> {
       );
 
       final data = response.data['data'];
-      debugPrint("🚘 بيانات السيارة كاملة: $data");
 
-      // تقسيم رقم اللوحة من licence_plate
-      final boardParts = data['licence_plate']?.split(' ') ?? [];
+       final boardParts = data['licence_plate']?.split(' ') ?? [];
       final letters =
           boardParts.length >= 2
               ? boardParts.sublist(0, boardParts.length - 1).join(' ')
               : '';
       final numbers = boardParts.isNotEmpty ? boardParts.last : '';
 
-      // السنة
-      final carYear =
+       final carYear =
           data['year']?.toString() ?? DateTime.now().year.toString();
       final yearIndex = years.contains(carYear) ? years.indexOf(carYear) : 0;
 
@@ -99,7 +96,7 @@ class _EditCarState extends State<EditCar> {
         selectedYearIndex = yearIndex;
 
         existingCarCertificateUrl =
-            data['car_certificate']; // 👈 خزن رابط الصورة
+            data['car_certificate'];
 
         isLoading = false;
       });
@@ -196,8 +193,7 @@ class _EditCarState extends State<EditCar> {
             builder: (_) => const Center(child: CircularProgressIndicator()),
           );
         } else {
-          // إذا Dialog مفتوح، اغلقه
-          if (Navigator.canPop(context)) {
+           if (Navigator.canPop(context)) {
             Navigator.of(context).pop();
           }
 
@@ -205,7 +201,7 @@ class _EditCarState extends State<EditCar> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
-            Navigator.pop(context, 'updated'); // ← رجع "updated"
+            Navigator.pop(context, 'updated');
           } else if (state is UpdateCarError) {
             ScaffoldMessenger.of(
               context,
@@ -233,8 +229,7 @@ class _EditCarState extends State<EditCar> {
                     ? TextDirection.rtl
                     : TextDirection.ltr,
             children: [
-              // رقم لوحة السيارة
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -253,16 +248,17 @@ class _EditCarState extends State<EditCar> {
               SizedBox(height: 10.h),
               Row(
                 children: [
-                  Nemra(
-                    arabicLettersController: arabicLettersController,
-                    englishNumbersController: arabicNumbersController,
+                  Expanded(
+                    child: Nemra(
+                      arabicLettersController: arabicLettersController,
+                      englishNumbersController: arabicNumbersController,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 15),
 
-              // ماركة السيارة
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -313,7 +309,7 @@ class _EditCarState extends State<EditCar> {
                                     isSelected
                                         ? buttonPrimaryBgColor(
                                           context,
-                                        ).withOpacity(0.3) // شفافية 50%
+                                        ).withOpacity(0.3)
                                         : Theme.of(context).brightness ==
                                             Brightness.light
                                         ? Colors.white
@@ -380,8 +376,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 15.h),
 
-              // موديل السيارة
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -429,7 +424,7 @@ class _EditCarState extends State<EditCar> {
                                     isSelected
                                         ? buttonPrimaryBgColor(
                                           context,
-                                        ).withOpacity(0.3) // شفافية 50%
+                                        ).withOpacity(0.3)
                                         : Theme.of(context).brightness ==
                                             Brightness.light
                                         ? Colors.white
@@ -482,8 +477,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 15.h),
 
-              // اسم السيارة
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -545,8 +539,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 15.h),
 
-              // سنة الصنع
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -570,8 +563,7 @@ class _EditCarState extends State<EditCar> {
                   controller: FixedExtentScrollController(
                     initialItem: selectedYearIndex,
                   ),
-                  // 👈 يبدأ من السنة اللي جت من الـ API
-                  itemExtent: 30.h,
+                   itemExtent: 30.h,
                   physics: const FixedExtentScrollPhysics(),
                   onSelectedItemChanged:
                       (index) => setState(() => selectedYearIndex = index),
@@ -583,11 +575,8 @@ class _EditCarState extends State<EditCar> {
                         duration: const Duration(milliseconds: 200),
                         width: double.infinity,
                         color:
-                            isSelected
-                                ? (isLight
-                                    ? const Color(0xFFBBBBBB)
-                                    : Colors.white24)
-                                : Colors.transparent,
+                        isSelected ? Color(0x3F006D92) : Colors.transparent,
+
                         child: Center(
                           child: Text(
                             years[index],
@@ -607,8 +596,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 15.h),
 
-              // ممشى السيارة
-              Align(
+               Align(
                 alignment:
                     locale.isDirectionRTL(context)
                         ? Alignment.centerRight
@@ -669,7 +657,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 15.h),
 
-              // استمارة السيارة
+
               Align(
                 alignment:
                     locale.isDirectionRTL(context)
@@ -742,8 +730,7 @@ class _EditCarState extends State<EditCar> {
                       return;
                     }
 
-                    // عرض الـ Modal Bottom Sheet لتأكيد العملية
-                    showModalBottomSheet(
+                     showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
@@ -821,7 +808,7 @@ class _EditCarState extends State<EditCar> {
                                         onPressed: () async {
                                           Navigator.pop(
                                             context,
-                                          ); // إغلاق الشيت أولاً
+                                          );
 
                                           final boardNoFinal = _buildBoardNo(
                                             lettersRaw:
@@ -886,7 +873,7 @@ class _EditCarState extends State<EditCar> {
                                           ),
                                         ),
                                         onPressed: () {
-                                          Navigator.pop(context); // إغلاق الشيت
+                                          Navigator.pop(context);
                                         },
                                         child: Text(
                                           'تراجع',
@@ -930,13 +917,13 @@ class _EditCarState extends State<EditCar> {
                     backgroundColor:
                         Theme.of(context).brightness == Brightness.light
                             ? Colors.white
-                            : Colors.white10, // خلفية الزر
+                            : Colors.white10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       side: const BorderSide(
                         color: Colors.grey,
                         width: 1.5,
-                      ), // البوردر الجراي
+                      ),
                     ),
                   ),
                   onPressed: () async {
@@ -974,7 +961,7 @@ class _EditCarState extends State<EditCar> {
                         Navigator.pop(
                           context,
                           'deleted',
-                        ); // فقط Pop مرة واحدة مع النتيجة
+                        );
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -1022,10 +1009,8 @@ class _EditCarState extends State<EditCar> {
       builder: (context) {
         return Container(
           width: 1.sw,
-          // عرض الشاشة كامل
-          height: 0.48.sh,
-          // 55% من ارتفاع الشاشة
-          margin: EdgeInsets.all(16.w),
+           height: 0.48.sh,
+           margin: EdgeInsets.all(16.w),
           padding: EdgeInsets.all(16.w),
           decoration: ShapeDecoration(
             color:
@@ -1047,8 +1032,7 @@ class _EditCarState extends State<EditCar> {
           ),
           child: Column(
             children: [
-              // العنوان
-              Text(
+               Text(
                 'هل تريد حذف السيارة؟',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -1062,8 +1046,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 20.h),
 
-              // الصورة
-              SizedBox(
+               SizedBox(
                 height: 140.h,
                 width: 140.w,
                 child: Image.asset(
@@ -1078,8 +1061,7 @@ class _EditCarState extends State<EditCar> {
 
               SizedBox(height: 20.h),
 
-              // النص التوضيحي
-              Text(
+               Text(
                 'إذا حذفتها، بتنمسح كل بياناتها من حسابك',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -1095,8 +1077,7 @@ class _EditCarState extends State<EditCar> {
 
               const Spacer(),
 
-              // الأزرار
-              Row(
+               Row(
                 children: [
                   Expanded(
                     child: GestureDetector(

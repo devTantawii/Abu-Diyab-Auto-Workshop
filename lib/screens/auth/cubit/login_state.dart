@@ -11,7 +11,6 @@ class LoginFailure extends LoginState {
   LoginFailure({required this.message});
 }
 
-// ✅ أضف هذه الحالات الجديدة
 class ForgotPasswordLoading extends LoginState {}
 class ForgotPasswordSuccess extends LoginState {
   final String phone;

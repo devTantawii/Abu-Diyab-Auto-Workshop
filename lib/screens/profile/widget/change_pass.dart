@@ -54,7 +54,6 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // العنوان
                 Text(
                   locale!.isDirectionRTL(context)
                       ? "تغيير كلة السر ؟"
@@ -68,10 +67,9 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
 
                 const SizedBox(height: 20),
 
-                // كلمة المرور الحالية
                 TextField(
                   controller: currentController,
-                  obscureText: true,
+                  obscureText: false,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
@@ -84,10 +82,9 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 ),
                 const SizedBox(height: 15),
 
-                // كلمة المرور الجديدة
-                TextField(
+                 TextField(
                   controller: newController,
-                  obscureText: true,
+                   obscureText: false,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.lock_reset),
                     border: OutlineInputBorder(
@@ -100,10 +97,9 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 ),
                 const SizedBox(height: 15),
 
-                // تأكيد كلمة المرور الجديدة
-                TextField(
+                 TextField(
                   controller: confirmController,
-                  obscureText: true,
+                   obscureText: false,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.verified_user_outlined),
                     border: OutlineInputBorder(

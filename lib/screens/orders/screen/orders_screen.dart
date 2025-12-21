@@ -59,9 +59,8 @@ class _OrderScreenState extends State<OrderScreen> {
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
           ),
-          color:backgroundColor(context),
-
-      ),
+          color: backgroundColor(context),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -116,7 +115,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           decoration: ShapeDecoration(
                             color:
                                 !_showActiveOrders
-                                    ?  buttonPrimaryBgColor(context)
+                                    ? buttonPrimaryBgColor(context)
                                     : const Color(0xFFE0E0E0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -169,15 +168,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                           height: 200.h,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(15.r),
+                                            borderRadius: BorderRadius.circular(
+                                              15.r,
+                                            ),
                                           ),
                                         ),
                                       );
                                     }),
                                   ),
                                 );
-                              }
-                              else if (state is OrdersSuccess) {
+                              } else if (state is OrdersSuccess) {
                                 final allowedStatuses = [
                                   'pending',
                                   'admin_approved',
@@ -190,15 +190,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                 final activeOrders =
                                     state.orders
                                         .where(
-                                          (o) =>
-                                              allowedStatuses.contains(o.status),
+                                          (o) => allowedStatuses.contains(
+                                            o.status,
+                                          ),
                                         )
                                         .toList();
 
                                 if (activeOrders.isEmpty) {
                                   return Center(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
                                           'assets/images/no_orders.png',
@@ -226,7 +228,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                 }
 
                                 return ListView.builder(
-                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
                                   itemCount: activeOrders.length,
                                   itemBuilder: (context, index) {
                                     final order = activeOrders[index];
@@ -238,9 +241,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                 );
                               } else if (state is OrdersError) {
                                 return ErrorWidgetWithRetry(
-                                  message: locale.isDirectionRTL(context)
-                                      ? 'حدث خطأ'
-                                      : 'Error',
+                                  message:
+                                      locale.isDirectionRTL(context)
+                                          ? 'حدث خطأ'
+                                          : 'Error',
                                   onRetry: _refresh,
                                 );
                               } else {
@@ -264,22 +268,36 @@ class _OrderScreenState extends State<OrderScreen> {
                                           height: 200.h,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(15.r),
+                                            borderRadius: BorderRadius.circular(
+                                              15.r,
+                                            ),
                                           ),
                                         ),
                                       );
                                     }),
                                   ),
                                 );
-
                               } else if (state is OldOrdersSuccess) {
                                 if (state.orders.isEmpty) {
-                                  return const Center(
-                                    child: Text('لا توجد طلبات قديمة'),
+                                  return Center(
+                                    child: Text(
+                                      'لا توجد طلبات قديمة',
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? Colors.black
+                                                : Colors.white,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Graphik Arabic',
+                                      ),
+                                    ),
                                   );
                                 }
                                 return ListView.builder(
-                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
                                   itemCount: state.orders.length,
                                   itemBuilder: (context, index) {
                                     final order = state.orders[index];
@@ -290,9 +308,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   },
                                 );
                               } else if (state is OldOrdersError) {
-                                return ErrorWidgetWithRetry(
-                                  onRetry: _refresh,
-                                );
+                                return ErrorWidgetWithRetry(onRetry: _refresh);
                               } else {
                                 return const SizedBox();
                               }

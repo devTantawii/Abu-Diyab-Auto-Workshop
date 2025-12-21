@@ -42,7 +42,6 @@ class _InviteFriendsState extends State<InviteFriends> {
     return Scaffold(
       body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
-          // حالة التحميل
           if (state is ProfileLoading) {
             return Padding(
               padding: EdgeInsets.all(10.w),
@@ -66,7 +65,6 @@ class _InviteFriendsState extends State<InviteFriends> {
             );
           }
 
-          // حالة البيانات (مسجل دخول)
           if (state is ProfileLoaded) {
             return SingleChildScrollView(
               child: Container(
@@ -324,26 +322,25 @@ class _InviteFriendsState extends State<InviteFriends> {
                             final message =
                                 locale.isDirectionRTL(context)
                                     ? """
-جرب تطبيق أبو ذياب 🚗
+جرب تطبيق ورشه أبوذياب 
 
 كود الإحالة الخاص بي:
 $code
 
-📱 حمل التطبيق من هنا:
-Android:  https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab
+📱 حمل التطبيق من هنا:Android: https://play.google.com/store/apps/details?id=com.abudiyab.workshop
 
-iOS:  https://apps.apple.com/us/app/أبوذياب-لتأجير-السيارات/id1570665182
+iOS: https://apps.apple.com/us/app/avsc/id6755426926
 """
                                     : """
-Try the Abudiyab app 🚗
+Try  AVSC app 
 
 My referral code:
 $code
 
 📱 Download the app here:
-Android:  https://play.google.com/store/apps/details?id=com.abudiyab.abudiyab
+Android: https://play.google.com/store/apps/details?id=com.abudiyab.workshop
 
-iOS:  https://apps.apple.com/us/app/abudiyab-car-rental/id1570665182
+iOS: https://apps.apple.com/us/app/avsc/id6755426926
 """;
 
                             try {
@@ -689,145 +686,578 @@ iOS:  https://apps.apple.com/us/app/abudiyab-car-rental/id1570665182
               ),
             );
           }
-
-          // حالة افتراضية (غير مسجل أو خطأ)
-          // 🧱 حالة المستخدم غير مسجل دخول
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.white,
-            child: Center(
+          return SingleChildScrollView(
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(0.00, -0.00),
+                  end: Alignment(0.50, 1.00),
+                  colors: [Color(0xFFEDFFEB), Color(0xFF006D92)],
+                ),
+              ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                padding: EdgeInsets.all(20.w),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 🔒 أيقونة داخل دائرة متدرجة
-                    Container(
-                      width: 110.w,
-                      height: 110.w,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF419BBA),
-                            Color(0xFF006D92),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                    SizedBox(height: 50.h,),
+                    Row(
+                      textDirection:
+                      locale!.isDirectionRTL(context)
+                          ? TextDirection.ltr
+                          : TextDirection.rtl,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            locale!.isDirectionRTL(context)
+                                ? 'شارك التطبيق واربح معنا !'
+                                : 'Share the app and win !',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 22.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x33419BBA),
-                            blurRadius: 12,
-                            offset: Offset(0, 5),
+                        Material(
+                          shape: const CircleBorder(),
+                          elevation: 3,
+                          color: Colors.white,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Transform.translate(
+                              offset: Offset(-2.w, 0),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.black,
+                                size: 20.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.h),
+
+                    // دعوة الأصدقاء
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          locale!.isDirectionRTL(context)
+                              ? 'ادع أصدقائك وأحصل علي 20'
+                              : 'Invite your friends and get 20',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: const Color(0xFF474747),
+                            fontSize: 14.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Image.asset(
+                          "assets/icons/ryal.png",
+                          color: const Color(0xFF474747),
+                          width: 14.w,
+                          height: 14.h,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // خطوات المشاركة
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _StepIcon(
+                          icon: Icons.share,
+                          label:
+                          locale!.isDirectionRTL(context)
+                              ? "1. شارك الرابط"
+                              : "1. Share the link",
+                          imagePath: "assets/images/vector_down.png",
+                        ),
+                        _StepIcon(
+                          icon: Icons.person_add,
+                          label:
+                          locale!.isDirectionRTL(context)
+                              ? "2. صديقك يسجل"
+                              : "2. Your friend is registering",
+                          imagePath: "assets/images/vector_up.png",
+                        ),
+                        SizedBox(width: 6.w),
+                        _StepIcon(
+                          icon: Icons.card_giftcard,
+                          label:
+                          locale!.isDirectionRTL(context)
+                              ? "3. اربح مكافأت"
+                              : "3. Earn rewards",
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.h),
+
+                    // كود الدعوة
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.w),
+                      decoration: ShapeDecoration(
+                        color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1.5.w,
+                            color: Color(0xFF9B9B9B),
+                          ),
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            locale!.isDirectionRTL(context)
+                                ? "كود الدعوة الخاص بك"
+                                : "Your invitation code",
+                            style: TextStyle(
+                              color:
+                              Theme.of(context).brightness ==
+                                  Brightness.light
+                                  ? Colors.black
+                                  : Colors.white70,
+                              fontSize: 16.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 15.h),
+                          Row(
+                            textDirection: TextDirection.ltr,
+                            children: [
+                              Flexible(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: () async {
+
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    decoration: ShapeDecoration(
+                                      color: typographyMainColor(context),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          10.r,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        locale!.isDirectionRTL(context)
+                                            ? "   نسخ"
+                                            : "  Copy",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10.w),
+                              Flexible(
+                                flex: 6,
+                                child: Container(
+                                  height: 40.h,
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.w,
+                                        color: typographyMainColor(context),
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        10.r,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                          'Login To Win',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color:
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                            ? Color(0xFF474747)
+                                            : Colors.white70,
+                                        fontSize: 18.sp,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.lock_outline_rounded,
-                        size: 55,
-                        color: Colors.white,
-                      ),
                     ),
+                    SizedBox(height: 20.h),
 
-                    SizedBox(height: 30.h),
+                    // زر المشاركة
+                  GestureDetector(
+                    onTap: () async {
+                      final message = locale.isDirectionRTL(context)
+                          ? """
+جرب تطبيق ورشه أبوذياب 
 
-                    // 📝 النص الرئيسي
-                    Text(
-                      locale!.isDirectionRTL(context)
-                          ? "سجل الدخول لرؤية المحتوى"
-                          : "Login to view content",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF006D92),
-                        height: 1.4,
-                      ),
-                    ),
+📱 حمل التطبيق من هنا:
+Android: https://play.google.com/store/apps/details?id=com.abudiyab.workshop
 
-                    SizedBox(height: 12.h),
+iOS: https://apps.apple.com/us/app/avsc/id6755426926
+"""
+                          : """
+Try  AVSC app 
 
-                    // 🧾 النص الثانوي
-                    Text(
-                      locale.isDirectionRTL(context)
-                          ? "قم بتسجيل الدخول للوصول إلى ميزات إضافية"
-                          : "Sign in to access more features and rewards",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
+📱 Download the app here:
+Android: https://play.google.com/store/apps/details?id=com.abudiyab.workshop
 
-                    SizedBox(height: 40.h),
+iOS: https://apps.apple.com/us/app/avsc/id6755426926
+""";
 
-                    // 🔘 زر تسجيل الدخول
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Future.delayed(
-                          Duration(milliseconds: 100),
-                              () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder:
-                                  (context) => FractionallySizedBox(
-                                widthFactor: 1,
-                                child: BlocProvider(
-                                  create:
-                                      (_) => LoginCubit(
-                                    dio: Dio(),
-                                  ),
-                                  child:
-                                  const LoginBottomSheet(),
-                                ),
-                              ),
-                            );
-                          },
+                      try {
+                        final byteData = await rootBundle.load('assets/icons/app_icon.png');
+                        final tempDir = await Directory.systemTemp.createTemp();
+                        final file = File('${tempDir.path}/app_icon.png');
+                        await file.writeAsBytes(byteData.buffer.asUint8List());
+
+                        await Share.shareXFiles([XFile(file.path)], text: message);
+                      } catch (e) {
+                        Fluttertoast.showToast(
+                          msg: locale.isDirectionRTL(context)
+                              ? "حدث خطأ أثناء مشاركة الصورة"
+                              : "An error occurred while sharing the image",
                         );
-
-                      },
-                      icon: const Icon(Icons.login, color: Colors.white),
-                      label: Text(
-                        locale.isDirectionRTL(context) ? "تسجيل الدخول" : "Login",
-                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF006D92),
-                        minimumSize: Size(double.infinity, 50.h),
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 50.h,
+                      decoration: ShapeDecoration(
+                        color: typographyMainColor(context),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.r),
                         ),
-                        elevation: 3,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            locale.isDirectionRTL(context) ? "   مشاركة الآن" : "  Share now",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 5.w),
+                          Image.asset(
+                            "assets/icons/telegram.png",
+                            width: 18.w,
+                            height: 18.h,
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                    SizedBox(height: 20.h),
 
-                    SizedBox(height: 16.h),
-
-                    TextButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 16.sp,
-                        color: const Color(0xFF419BBA),
+                    // الرصيد الحالي
+                    Container(
+                      width: double.infinity,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1.5.w,
+                            color: typographyMainColor(context),
+                          ),
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 12.r,
+                            offset: Offset(0, 0),
+                          ),
+                        ],
                       ),
-                      label: Text(
-                        locale.isDirectionRTL(context) ? "رجوع" : "Back",
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: const Color(0xFF419BBA),
-                          fontWeight: FontWeight.w500,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 10.h,
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10.h),
+                            Text(
+                              locale!.isDirectionRTL(context)
+                                  ? "   رصيدك الحالي"
+                                  : "  Your current balance",
+                              style: TextStyle(
+                                color:
+                                Theme.of(context).brightness ==
+                                    Brightness.light
+                                    ? Colors.black
+                                    : Colors.white70,
+                                fontSize: 20.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                   '0',
+                                  style: TextStyle(
+                                    color: typographyMainColor(context),
+                                    fontSize: 25.sp,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Image.asset(
+                                  "assets/icons/ryal.png",
+                                  width: 20.w,
+                                  height: 22.h,
+                                  color: typographyMainColor(context),
+
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 15.h),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    height: 50.h,
+                                    decoration: ShapeDecoration(
+                                      color: typographyMainColor(context),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          15.r,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        locale!.isDirectionRTL(context)
+                                            ? "   عدد الإحالات الخاصه بك"
+                                            : "  Your number of referrals",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.sp,
+                                          fontFamily: 'Graphik Arabic',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    height: 50.h,
+                                    decoration: ShapeDecoration(
+                                      color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.light
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1.5.w,
+                                          color: const Color(0xFF9B9B9B),
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          15.r,
+                                        ),
+                                      ),
+                                    ),
+                                    child: BlocBuilder<
+                                        RewardLogsCubit,
+                                        RewardLogsState
+                                    >(
+                                      builder: (context, rewardState) {
+                                        if (rewardState
+                                        is RewardLogsLoading) {
+                                          return const Center(
+                                            child:
+                                            CircularProgressIndicator(),
+                                          );
+                                        } else if (rewardState
+                                        is RewardLogsLoaded) {
+                                          final logs = rewardState.data.logs;
+                                          final referralsCount =
+                                              logs.length; // ← احسب العدد اللي يناسبك هنا
+                                          return Center(
+                                            child: Text(
+                                              '$referralsCount',
+                                              style: TextStyle(
+                                                color:
+                                                Theme.of(
+                                                  context,
+                                                ).brightness ==
+                                                    Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white70,
+                                                fontSize: 18.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          return Center(
+                                            child: Text(
+                                              '-',
+                                              style: TextStyle(
+                                                color:
+                                                Theme.of(
+                                                  context,
+                                                ).brightness ==
+                                                    Brightness.light
+                                                    ? Colors.black
+                                                    : Colors.white70,
+                                                fontSize: 18.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                    SizedBox(height: 20.h),
+
+                    // === سجل المكافآت ===
+                    Row(
+                      children: [
+                        Text(
+                          locale!.isDirectionRTL(context)
+                              ? "   سجل المكافأت"
+                              : " Reward Record",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.h),
+
+                    BlocBuilder<RewardLogsCubit, RewardLogsState>(
+                      builder: (context, state) {
+
+                        if (state is RewardLogsLoading) {
+                          return _buildLogsContainer(
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        if (state is RewardLogsLoaded) {
+                          final logs = state.data.logs;
+
+                          if (logs.isEmpty) {
+                            return _buildLogsContainer(
+                              child: Center(
+                                child: Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? "لا توجد مكافآت بعد"
+                                      : "No rewards yet",
+                                  style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                                ),
+                              ),
+                            );
+                          }
+
+                          return _buildLogsContainer(
+                            child: ListView.builder(
+                              padding: EdgeInsets.symmetric(vertical: 8.h),
+                              itemCount: logs.length,
+                              itemBuilder: (context, index) =>
+                                  _buildLogItem(logs[index], locale, context),
+                            ),
+                          );
+                        }
+
+                        if (state is RewardLogsError) {
+                          return _buildLogsContainer(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () =>
+                                        context.read<RewardLogsCubit>().fetchRewardLogs(),
+                                    icon: Icon(Icons.refresh),
+                                    label: Text(
+                                      locale!.isDirectionRTL(context) ? "تحديث القائمه" : "Refresh",
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        // Default (initial) state
+                        return _buildLogsContainer(
+                          child: Center(
+                            child: Text(
+                              locale!.isDirectionRTL(context)
+                                  ? "جاري تهيئة السجل..."
+                                  : "Initializing...",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
             ),
           );
+
 
         },
       ),

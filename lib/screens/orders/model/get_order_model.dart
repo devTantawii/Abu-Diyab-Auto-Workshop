@@ -1,4 +1,4 @@
-import 'dart:developer'; // لاستخدام log بدل print (أنظف في الـ console)
+import 'dart:developer';
 
 class OrdersResponse {
   final int status;
@@ -12,7 +12,6 @@ class OrdersResponse {
   });
 
   factory OrdersResponse.fromJson(Map<String, dynamic> json) {
-    log('📦 [OrdersResponse] Parsing response...');
     return OrdersResponse(
       status: json['status'] ?? 0,
       msg: json['msg']?.toString() ?? '',

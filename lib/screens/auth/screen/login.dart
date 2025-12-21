@@ -28,6 +28,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isPasswordHidden = true;
 
   @override
   void dispose() {
@@ -64,6 +65,18 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: Container(
+                        width: 100.w,
+                        height: 6.h,
+                        margin: EdgeInsets.only(bottom: 12.h),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                      ),
+                    ),
+
                     Text(
                       locale!.isDirectionRTL(context)
                           ? 'حيّاك! سجل دخولك'
@@ -119,6 +132,8 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       controller: _passwordController,
                       hint: "********",
                       textInputType: TextInputType.visiblePassword,
+                      obscureText: _isPasswordHidden,
+                      maxLength: 30,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "يرجى إدخال كلمة المرور";
@@ -128,9 +143,19 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         }
                         return null;
                       },
-                      maxLength: 30,
-                      obscureText: true,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordHidden = !_isPasswordHidden;
+                          });
+                        },
+                      ),
                     ),
+
                     SizedBox(height: 20.h),
                     SizedBox(height: 6.h),
                     BlocConsumer<LoginCubit, LoginState>(
@@ -142,7 +167,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => HomeScreen()),
-                            (route) => false, // ⬅️ يقفل كل الصفحات السابقة
+                            (route) => false,
                           );
                         } else if (state is LoginFailure) {
                           showDialog(
@@ -329,7 +354,6 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                               content: Text("تم تغيير كلمة المرور بنجاح ✅"),
                             ),
                           );
-                          print("تم تغيير كلمة المرور بنجاح ✅");
                         }
 
                         if (state is ResetPasswordFailure) {
@@ -426,6 +450,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
     String? Function(String?)? validator,
     int? maxLength,
     bool obscureText = false,
+    Widget? suffixIcon,
   }) {
     return TextFormField(
       controller: controller,
@@ -433,13 +458,14 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
       obscureText: obscureText,
       validator: validator,
       inputFormatters:
-          maxLength != null
-              ? [LengthLimitingTextInputFormatter(maxLength)]
-              : null,
+      maxLength != null
+          ? [LengthLimitingTextInputFormatter(maxLength)]
+          : null,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
         hintText: hint,
         hintStyle: GoogleFonts.almarai(fontSize: 14.sp, color: Colors.grey),
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -447,9 +473,10 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide:  BorderSide(color: typographyMainColor(context)),
+          borderSide: BorderSide(color: typographyMainColor(context)),
         ),
       ),
     );
   }
+
 }

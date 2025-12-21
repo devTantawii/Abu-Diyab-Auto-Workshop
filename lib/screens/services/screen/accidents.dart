@@ -49,8 +49,6 @@ class _AccidentsState extends State<Accidents> {
     notesController.dispose();
     kiloReadController.dispose();
 
-    // نفرغ الزيوت لما نخرج من الشاشة
-
     super.dispose();
   }
 
@@ -61,7 +59,8 @@ class _AccidentsState extends State<Accidents> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-      },      child: Scaffold(
+      },
+      child: Scaffold(
         backgroundColor: scaffoldBackgroundColor(context),
         appBar: CustomGradientAppBar(
           title_ar: "إنشاء طلب",
@@ -76,10 +75,7 @@ class _AccidentsState extends State<Accidents> {
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color: backgroundColor(context),
           ),
           child: SingleChildScrollView(
             child: Padding(
@@ -190,7 +186,8 @@ class _AccidentsState extends State<Accidents> {
                             margin: EdgeInsets.symmetric(horizontal: 5.w),
                             decoration: BoxDecoration(
                               color:
-                                  Theme.of(context).brightness == Brightness.light
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
                                       ? Colors.white
                                       : Colors.black,
                               borderRadius: BorderRadius.circular(12),
@@ -232,7 +229,9 @@ class _AccidentsState extends State<Accidents> {
                                   ),
                                 ),
                                 Text(
-                                  locale.isDirectionRTL(context) ? " نعم" : "Yes",
+                                  locale.isDirectionRTL(context)
+                                      ? " نعم"
+                                      : "Yes",
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w600,
@@ -262,7 +261,8 @@ class _AccidentsState extends State<Accidents> {
                             margin: EdgeInsets.symmetric(horizontal: 5.w),
                             decoration: BoxDecoration(
                               color:
-                                  Theme.of(context).brightness == Brightness.light
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
                                       ? Colors.white
                                       : Colors.black,
                               borderRadius: BorderRadius.circular(12),
@@ -338,7 +338,8 @@ class _AccidentsState extends State<Accidents> {
                                     : 'Reform paper',
                             style: TextStyle(
                               color:
-                                  Theme.of(context).brightness == Brightness.light
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
                                       ? Colors.black
                                       : Colors.white,
                               fontSize: 14.sp,
@@ -388,7 +389,8 @@ class _AccidentsState extends State<Accidents> {
                                     : 'Attatchment',
                             style: TextStyle(
                               color:
-                                  Theme.of(context).brightness == Brightness.light
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
                                       ? Colors.black
                                       : Colors.white,
                               fontSize: 14.sp,

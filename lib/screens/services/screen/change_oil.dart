@@ -101,87 +101,127 @@ class _ChangeOilState extends State<ChangeOil> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.sp)),
       ),
-      builder: (_) => StatefulBuilder(
-        builder: (context, setModalState) => Container(
-          height: 350.h,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: backgroundColor(context),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.sp)),
-          ),
-          child: Column(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.isDirectionRTL(context) ? 'الفلترة' : 'Filtering',
-                style: TextStyle(fontSize: 25.sp, color: typographyMainColor(context), fontWeight: FontWeight.w600),
-              ),
-              Divider(color: buttonSecondaryBorderColor(context)),
-              Text(
-                AppLocalizations.of(context)!.isDirectionRTL(context) ? 'لزوجة الزيت' : 'Oil viscosity',
-                style: TextStyle(fontSize: 18.sp, color: Color(0xFF616465), fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 12.h),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (_, constraints) {
-                    const itemsPerRow = 4;
-                    final width = (constraints.maxWidth - 30) / itemsPerRow;
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: itemsPerRow,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 2.2,
+      builder:
+          (_) => StatefulBuilder(
+            builder:
+                (context, setModalState) => Container(
+                  height: 350.h,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: backgroundColor(context),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.sp),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.isDirectionRTL(context)
+                            ? 'الفلترة'
+                            : 'Filtering',
+                        style: TextStyle(
+                          fontSize: 25.sp,
+                          color: typographyMainColor(context),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      itemCount: viscosityOptions.length,
-                      itemBuilder: (_, i) {
-                        final v = viscosityOptions[i];
-                        final selected = temp == v;
-                        return GestureDetector(
-                          onTap: () => setModalState(() => temp = v),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: selected ? typographyMainColor(context).withOpacity(0.2) : null,
-                              border: Border.all(color: selected ? typographyMainColor(context) : Colors.grey, width: 2.w),
-                              borderRadius: BorderRadius.circular(5.sp),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              v,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: selected ? Colors.black : Color(0xFF616465),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                      Divider(color: buttonSecondaryBorderColor(context)),
+                      Text(
+                        AppLocalizations.of(context)!.isDirectionRTL(context)
+                            ? 'لزوجة الزيت'
+                            : 'Oil viscosity',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Color(0xFF616465),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (_, constraints) {
+                            const itemsPerRow = 4;
+                            final width =
+                                (constraints.maxWidth - 30) / itemsPerRow;
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: itemsPerRow,
+                                    mainAxisSpacing: 10,
+                                    crossAxisSpacing: 10,
+                                    childAspectRatio: 2.2,
+                                  ),
+                              itemCount: viscosityOptions.length,
+                              itemBuilder: (_, i) {
+                                final v = viscosityOptions[i];
+                                final selected = temp == v;
+                                return GestureDetector(
+                                  onTap: () => setModalState(() => temp = v),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          selected
+                                              ? typographyMainColor(
+                                                context,
+                                              ).withOpacity(0.2)
+                                              : null,
+                                      border: Border.all(
+                                        color:
+                                            selected
+                                                ? typographyMainColor(context)
+                                                : Colors.grey,
+                                        width: 2.w,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5.sp),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      v,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color:
+                                            selected
+                                                ? Colors.black
+                                                : Color(0xFF616465),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() => selectedViscosity = temp);
+                          Navigator.pop(context);
+                          _onSearchChanged();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: typographyMainColor(context),
+                          minimumSize: Size(240.w, 50.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.sp),
                           ),
-                        );
-                      },
-                    );
-                  },
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.isDirectionRTL(context)
+                              ? 'عرض النتائج'
+                              : 'Show Results',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() => selectedViscosity = temp);
-                  Navigator.pop(context);
-                  _onSearchChanged();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: typographyMainColor(context),
-                  minimumSize: Size(240.w, 50.h),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.sp)),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.isDirectionRTL(context) ? 'عرض النتائج' : 'Show Results',
-                  style: TextStyle(color: Colors.white, fontSize: 20.sp, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
           ),
-        ),
-      ),
     );
   }
 
@@ -192,7 +232,8 @@ class _ChangeOilState extends State<ChangeOil> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-      },      child: Scaffold(
+      },
+      child: Scaffold(
         backgroundColor: scaffoldBackgroundColor(context),
         appBar: CustomGradientAppBar(
           title_ar: "إنشاء طلب",
@@ -211,16 +252,14 @@ class _ChangeOilState extends State<ChangeOil> {
             ),
             color: backgroundColor(context),
           ),
-          child: Column(
-            children: [
-              // ============= الجزء الثابت: البحث + الفلتر =============
-              Padding(
-                padding: EdgeInsets.all(12.w),
-                child: Column(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Column(
                   children: [
                     Row(
                       children: [
-                        // حقل البحث
                         Expanded(
                           child: Container(
                             height: 50.h,
@@ -228,42 +267,66 @@ class _ChangeOilState extends State<ChangeOil> {
                             decoration: BoxDecoration(
                               color: buttonBgWhiteColor(context),
                               borderRadius: BorderRadius.circular(10.sp),
-                              border: Border.all(color: buttonSecondaryBorderColor(context), width: 1.5.w),
+                              border: Border.all(
+                                color: buttonSecondaryBorderColor(context),
+                                width: 1.5.w,
+                              ),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.search_outlined,size: 20.sp,),
-
-                                SizedBox(width: 8.w),
+                                SizedBox(width: 4.w),
                                 Expanded(
                                   child: TextField(
                                     controller: searchController,
-                                    textCapitalization: TextCapitalization.words,
+                                    textCapitalization:
+                                        TextCapitalization.words,
                                     onChanged: (_) => _onSearchChanged(),
-                                    textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
+                                    textDirection:
+                                        locale.isDirectionRTL(context)
+                                            ? TextDirection.rtl
+                                            : TextDirection.ltr,
                                     decoration: InputDecoration(
-                                      hintText: locale.isDirectionRTL(context) ? 'ابحث عن زيت...' : 'Search oil...',
-                                      hintStyle: TextStyle(color: paragraphColor(context).withOpacity(0.5), fontSize: 14.sp),
+                                      hintText:
+                                          locale.isDirectionRTL(context)
+                                              ? 'ابحث عن زيت...'
+                                              : 'Search oil...',
+                                      hintStyle: TextStyle(
+                                        color: paragraphColor(
+                                          context,
+                                        ).withOpacity(0.5),
+                                        fontSize: 14.sp,
+                                      ),
                                       border: InputBorder.none,
                                       isDense: true,
                                     ),
-                                    style: TextStyle(color: headingColor(context), fontSize: 14.sp),
+                                    style: TextStyle(
+                                      color: headingColor(context),
+                                      fontSize: 14.sp,
+                                    ),
                                   ),
                                 ),
                                 ValueListenableBuilder<TextEditingValue>(
                                   valueListenable: searchController,
-                                  builder: (_, value, __) => value.text.isNotEmpty
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      searchController.clear();
-                                      _onSearchChanged();
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 8.w),
-                                      child: Icon(Icons.close, size: 20.sp, color: Colors.black),
-                                    ),
-                                  )
-                                      : const SizedBox.shrink(),
+                                  builder:
+                                      (_, value, __) =>
+                                          value.text.isNotEmpty
+                                              ? GestureDetector(
+                                                onTap: () {
+                                                  searchController.clear();
+                                                  _onSearchChanged();
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                    left: 8.w,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 20.sp,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              )
+                                              : const SizedBox.shrink(),
                                 ),
                               ],
                             ),
@@ -271,7 +334,6 @@ class _ChangeOilState extends State<ChangeOil> {
                         ),
                         SizedBox(width: 12.w),
 
-                        // زر الفلتر
                         GestureDetector(
                           onTap: () {
                             if (selectedViscosity != null) {
@@ -285,48 +347,60 @@ class _ChangeOilState extends State<ChangeOil> {
                             width: 50.w,
                             height: 50.h,
                             decoration: BoxDecoration(
-                              color: selectedViscosity != null
-                                  ? typographyMainColor(context).withOpacity(0.2)
-                                  : buttonBgWhiteColor(context),
+                              color:
+                                  selectedViscosity != null
+                                      ? typographyMainColor(
+                                        context,
+                                      ).withOpacity(0.2)
+                                      : buttonBgWhiteColor(context),
                               borderRadius: BorderRadius.circular(10.sp),
                               border: Border.all(
                                 width: 1.5.w,
-                                color: selectedViscosity != null ? typographyMainColor(context) : buttonSecondaryBorderColor(context),
+                                color:
+                                    selectedViscosity != null
+                                        ? typographyMainColor(context)
+                                        : buttonSecondaryBorderColor(context),
                               ),
                             ),
                             child: Padding(
                               padding: EdgeInsets.all(10),
-                              child: selectedViscosity != null
-                                  ? Image.asset(
-                                'assets/icons/cancel.png',
-                                scale: 1.3.sp,
-                              )
-                                  : Image.asset('assets/icons/icon_filter.png', color: paragraphColor(context)),
+                              child:
+                                  selectedViscosity != null
+                                      ? Image.asset(
+                                        'assets/icons/cancel.png',
+                                        scale: 1.3.sp,
+                                      )
+                                      : Image.asset(
+                                        'assets/icons/icon_filter.png',
+                                        color: paragraphColor(context),
+                                      ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 4.h),
                   ],
                 ),
-              ),
 
-              // ============= الجزء القابل للسكرول =============
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                Expanded(
+                  child: SingleChildScrollView(
                     child: Column(
-                      textDirection: locale.isDirectionRTL(context) ? TextDirection.rtl : TextDirection.ltr,
+                      textDirection:
+                          locale.isDirectionRTL(context)
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
                       children: [
-                        // العنوان والوصف
                         Row(
                           children: [
                             Text(
                               widget.title,
                               style: TextStyle(
-                                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                 fontSize: 18.sp,
                                 fontFamily: 'Graphik Arabic',
                                 fontWeight: FontWeight.w600,
@@ -337,7 +411,11 @@ class _ChangeOilState extends State<ChangeOil> {
                               widget.icon,
                               height: 20.h,
                               width: 20.w,
-                              errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported, size: 20.h),
+                              errorBuilder:
+                                  (_, __, ___) => Icon(
+                                    Icons.image_not_supported,
+                                    size: 20.h,
+                                  ),
                             ),
                           ],
                         ),
@@ -357,7 +435,6 @@ class _ChangeOilState extends State<ChangeOil> {
                         ),
                         SizedBox(height: 6.h),
 
-                        // خطوات التقدم
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -367,20 +444,27 @@ class _ChangeOilState extends State<ChangeOil> {
                           ],
                         ),
 
-                        // قسم السيارات
                         CarsSection(
                           onCarSelected: (userCarId) {
                             setState(() => _selectedUserCarId = userCarId);
                           },
                         ),
 
-                        // الزيوت
                         Align(
-                          alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment:
+                              locale.isDirectionRTL(context)
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
                           child: Text(
-                            locale.isDirectionRTL(context) ? "الخدمات المتوفرة" : 'Available Services',
+                            locale.isDirectionRTL(context)
+                                ? "الخدمات المتوفرة"
+                                : 'Available Services',
                             style: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                               fontSize: 14.sp,
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
@@ -389,7 +473,6 @@ class _ChangeOilState extends State<ChangeOil> {
                         ),
                         SizedBox(height: 10.h),
 
-                        // قائمة الزيوت
                         BlocBuilder<OilCubit, OilState>(
                           builder: (context, state) {
                             if (state is OilLoading) {
@@ -406,7 +489,9 @@ class _ChangeOilState extends State<ChangeOil> {
                                         height: 100.h,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(15.r),
+                                          borderRadius: BorderRadius.circular(
+                                            15.r,
+                                          ),
                                         ),
                                       ),
                                     );
@@ -419,60 +504,96 @@ class _ChangeOilState extends State<ChangeOil> {
                               if (oils.isEmpty) {
                                 return Center(
                                   child: Text(
-                                    locale.isDirectionRTL(context) ? "لا توجد زيوت متاحة" : "No oils available",
-                                    style: TextStyle(fontSize: 18.sp, color: headingColor(context)),
+                                    locale.isDirectionRTL(context)
+                                        ? "لا توجد زيوت متاحة"
+                                        : "No oils available",
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      color: headingColor(context),
+                                    ),
                                   ),
                                 );
                               }
 
-                              final totalPages = (oils.length / itemsPerPage).ceil();
-                              if (currentPage > totalPages) currentPage = totalPages;
+                              final totalPages =
+                                  (oils.length / itemsPerPage).ceil();
+                              if (currentPage > totalPages)
+                                currentPage = totalPages;
                               if (currentPage < 1) currentPage = 1;
 
-                              final startIndex = (currentPage - 1) * itemsPerPage;
-                              final endIndex = (startIndex + itemsPerPage).clamp(0, oils.length);
-                              final currentItems = oils.sublist(startIndex, endIndex);
+                              final startIndex =
+                                  (currentPage - 1) * itemsPerPage;
+                              final endIndex = (startIndex + itemsPerPage)
+                                  .clamp(0, oils.length);
+                              final currentItems = oils.sublist(
+                                startIndex,
+                                endIndex,
+                              );
 
                               return Column(
                                 children: [
                                   ListView.builder(
                                     controller: _scrollController,
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: currentItems.length,
                                     itemBuilder: (context, index) {
                                       final oil = currentItems[index];
                                       final actualIndex = startIndex + index;
-                                      final isSelected = _selectedOilIndex == actualIndex;
+                                      final isSelected =
+                                          _selectedOilIndex == actualIndex;
 
                                       return GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            _selectedOilIndex = isSelected ? null : actualIndex;
+                                            _selectedOilIndex =
+                                                isSelected ? null : actualIndex;
                                           });
                                         },
                                         child: Center(
                                           child: Container(
-                                            width: MediaQuery.of(context).size.width * 0.9,
-                                            margin: EdgeInsets.symmetric(vertical: 16.h),
-                                            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
+                                            width:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.9,
+                                            margin: EdgeInsets.symmetric(
+                                              vertical: 16.h,
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 12.h,
+                                              horizontal: 12.w,
+                                            ),
                                             decoration: BoxDecoration(
-                                              color: buttonBgWhiteColor(context),
-                                              borderRadius: BorderRadius.circular(15.r),
+                                              color: buttonBgWhiteColor(
+                                                context,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.r),
                                               border: Border.all(
                                                 width: 1.5.w,
-                                                color: isSelected ? typographyMainColor(context) : buttonSecondaryBorderColor(context)
+                                                color:
+                                                    isSelected
+                                                        ? typographyMainColor(
+                                                          context,
+                                                        )
+                                                        : buttonSecondaryBorderColor(
+                                                          context,
+                                                        ),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withOpacity(0.25),
+                                                  color: Colors.black
+                                                      .withOpacity(0.25),
                                                   blurRadius: 12.r,
                                                   offset: Offset(0, 4.h),
                                                 ),
                                               ],
                                             ),
                                             child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Transform.scale(
                                                   scale: 1.2.sp,
@@ -480,23 +601,45 @@ class _ChangeOilState extends State<ChangeOil> {
                                                     value: isSelected,
                                                     onChanged: (_) {
                                                       setState(() {
-                                                        _selectedOilIndex = isSelected ? null : actualIndex;
+                                                        _selectedOilIndex =
+                                                            isSelected
+                                                                ? null
+                                                                : actualIndex;
                                                       });
                                                     },
-                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            4.r,
+                                                          ),
+                                                    ),
                                                     side: BorderSide(
-                                                      color: isSelected ? typographyMainColor(context) : const Color(0xFF474747),
+                                                      color:
+                                                          isSelected
+                                                              ? typographyMainColor(
+                                                                context,
+                                                              )
+                                                              : const Color(
+                                                                0xFF474747,
+                                                              ),
                                                       width: 1.2,
                                                     ),
                                                     checkColor: Colors.white,
-                                                    activeColor: typographyMainColor(context),
-                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    activeColor:
+                                                        typographyMainColor(
+                                                          context,
+                                                        ),
+                                                    materialTapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap,
                                                   ),
                                                 ),
                                                 SizedBox(width: 12.w),
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Row(
                                                         children: [
@@ -504,34 +647,55 @@ class _ChangeOilState extends State<ChangeOil> {
                                                             child: Text(
                                                               oil.name,
                                                               maxLines: 1,
-                                                              overflow: TextOverflow.ellipsis,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                               style: TextStyle(
-                                                                color: headingColor(context),
+                                                                color:
+                                                                    headingColor(
+                                                                      context,
+                                                                    ),
                                                                 fontSize: 14.sp,
-                                                                fontFamily: 'Graphik Arabic',
-                                                                fontWeight: FontWeight.w600,
+                                                                fontFamily:
+                                                                    'Graphik Arabic',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
                                                               ),
                                                             ),
                                                           ),
                                                           Row(
-                                                            mainAxisSize: MainAxisSize.min,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
                                                             children: [
                                                               Text(
                                                                 oil.price,
                                                                 style: TextStyle(
-                                                                  color: typographyMainColor(context),
-                                                                  fontSize: 16.sp,
-                                                                  fontFamily: 'Poppins',
-                                                                  fontWeight: FontWeight.w600,
+                                                                  color:
+                                                                      typographyMainColor(
+                                                                        context,
+                                                                      ),
+                                                                  fontSize:
+                                                                      16.sp,
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 4.w),
+                                                              SizedBox(
+                                                                width: 4.w,
+                                                              ),
                                                               Image.asset(
                                                                 'assets/icons/ryal.png',
                                                                 width: 20.w,
                                                                 height: 20.h,
-                                                                color: typographyMainColor(context),
-
+                                                                color:
+                                                                    typographyMainColor(
+                                                                      context,
+                                                                    ),
                                                               ),
                                                             ],
                                                           ),
@@ -541,10 +705,29 @@ class _ChangeOilState extends State<ChangeOil> {
                                                       Text(
                                                         oil.description,
                                                         style: TextStyle(
-                                                          color: paragraphColor(context),
+                                                          color: paragraphColor(
+                                                            context,
+                                                          ),
                                                           fontSize: 11.sp,
-                                                          fontFamily: 'Graphik Arabic',
-                                                          fontWeight: FontWeight.w500,
+                                                          fontFamily:
+                                                              'Graphik Arabic',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          height: 1.6,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 6.h),
+                                                      Text(
+                                                        oil.viscosty,
+                                                        style: TextStyle(
+                                                          color: paragraphColor(
+                                                            context,
+                                                          ),
+                                                          fontSize: 11.sp,
+                                                          fontFamily:
+                                                              'Graphik Arabic',
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                           height: 1.6,
                                                         ),
                                                       ),
@@ -565,17 +748,27 @@ class _ChangeOilState extends State<ChangeOil> {
                                     width: double.infinity,
                                     height: 60.h,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         GestureDetector(
-                                          onTap: currentPage < totalPages
-                                              ? () => setState(() => currentPage++)
-                                              : null,
+                                          onTap:
+                                              currentPage < totalPages
+                                                  ? () => setState(
+                                                    () => currentPage++,
+                                                  )
+                                                  : null,
                                           child: Icon(
                                             Icons.arrow_left,
                                             size: 50.sp,
-                                            color: currentPage < totalPages ? Colors.black : Colors.black.withOpacity(0.25),
+                                            color:
+                                                currentPage < totalPages
+                                                    ? Colors.black
+                                                    : Colors.black.withOpacity(
+                                                      0.25,
+                                                    ),
                                           ),
                                         ),
                                         SizedBox(width: 12.w),
@@ -586,36 +779,56 @@ class _ChangeOilState extends State<ChangeOil> {
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
                                               color: Colors.grey,
-                                              borderRadius: BorderRadius.circular(8.r),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
                                             ),
                                             child: Text(
                                               '${currentPage + 1}',
-                                              style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.w600),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 22.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                        if (currentPage < totalPages) SizedBox(width: 8.w),
+                                        if (currentPage < totalPages)
+                                          SizedBox(width: 8.w),
                                         Container(
                                           width: 50.w,
                                           height: 50.h,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             color: typographyMainColor(context),
-                                            borderRadius: BorderRadius.circular(8.r),
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
                                           ),
                                           child: Text(
                                             '$currentPage',
-                                            style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.w600),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
                                         SizedBox(width: 12.w),
                                         GestureDetector(
-                                          onTap: currentPage > 1
-                                              ? () => setState(() => currentPage--)
-                                              : null,
+                                          onTap:
+                                              currentPage > 1
+                                                  ? () => setState(
+                                                    () => currentPage--,
+                                                  )
+                                                  : null,
                                           child: Icon(
                                             Icons.arrow_right,
                                             size: 50.sp,
-                                            color: currentPage > 1 ? Colors.black : Colors.black.withOpacity(0.25),
+                                            color:
+                                                currentPage > 1
+                                                    ? Colors.black
+                                                    : Colors.black.withOpacity(
+                                                      0.25,
+                                                    ),
                                           ),
                                         ),
                                       ],
@@ -639,33 +852,56 @@ class _ChangeOilState extends State<ChangeOil> {
                         SizedBox(height: 10.h),
 
                         Align(
-                          alignment: locale.isDirectionRTL(context) ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment:
+                              locale.isDirectionRTL(context)
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
                           child: Text.rich(
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text: locale.isDirectionRTL(context) ? 'إستمارة السيارة ' : 'Car Registration ',
+                                  text:
+                                      locale.isDirectionRTL(context)
+                                          ? 'إستمارة السيارة '
+                                          : 'Car Registration ',
                                   style: TextStyle(
-                                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
                                     fontSize: 14.sp,
                                     fontFamily: 'Graphik Arabic',
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 TextSpan(
-                                  text: locale.isDirectionRTL(context) ? '( أختياري )' : '( Optional )',
-                                  style: TextStyle(color: const Color(0xFF4D4D4D), fontSize: 12.sp, fontFamily: 'Graphik Arabic', fontWeight: FontWeight.w600),
+                                  text:
+                                      locale.isDirectionRTL(context)
+                                          ? '( أختياري )'
+                                          : '( Optional )',
+                                  style: TextStyle(
+                                    color: const Color(0xFF4D4D4D),
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ],
                             ),
-                            textAlign: locale.isDirectionRTL(context) ? TextAlign.right : TextAlign.left,
+                            textAlign:
+                                locale.isDirectionRTL(context)
+                                    ? TextAlign.right
+                                    : TextAlign.left,
                           ),
                         ),
                         SizedBox(height: 10.h),
                         MultiImagePickerWidget(
                           onImagesSelected: (files) {
                             selectedCarDocs = files;
-                            print('عدد الصور المختارة: ${selectedCarDocs.length}');
+                            print(
+                              'عدد الصور المختارة: ${selectedCarDocs.length}',
+                            );
                           },
                         ),
                         SizedBox(height: 15.h),
@@ -673,8 +909,8 @@ class _ChangeOilState extends State<ChangeOil> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: CustomBottomButton(
@@ -700,21 +936,30 @@ class _ChangeOilState extends State<ChangeOil> {
               return;
             }
 
-            final selectedOil = (context.read<OilCubit>().state as OilLoaded).oils[_selectedOilIndex!];
+            final selectedOil =
+                (context.read<OilCubit>().state as OilLoaded)
+                    .oils[_selectedOilIndex!];
 
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ReviewRequestPage(
-                  title: widget.title,
-                  icon: widget.icon,
-                  slug: widget.slug,
-                  selectedUserCarId: _selectedUserCarId,
-                  selectedProduct: selectedOil,
-                  notes: notesController.text.isNotEmpty ? notesController.text : null,
-                  kiloRead: kiloReadController.text.isNotEmpty ? kiloReadController.text : null,
-                  selectedCarDocs: selectedCarDocs,
-                ),
+                builder:
+                    (_) => ReviewRequestPage(
+                      title: widget.title,
+                      icon: widget.icon,
+                      slug: widget.slug,
+                      selectedUserCarId: _selectedUserCarId,
+                      selectedProduct: selectedOil,
+                      notes:
+                          notesController.text.isNotEmpty
+                              ? notesController.text
+                              : null,
+                      kiloRead:
+                          kiloReadController.text.isNotEmpty
+                              ? kiloReadController.text
+                              : null,
+                      selectedCarDocs: selectedCarDocs,
+                    ),
               ),
             );
           },

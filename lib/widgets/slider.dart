@@ -101,7 +101,7 @@ class _ImageSliderState extends State<ImageSlider> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return SizedBox(
-        height: 140.h,
+        height: 160.h,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -109,7 +109,6 @@ class _ImageSliderState extends State<ImageSlider> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 6,
-              // عدد العناصر المؤقتة اللي هتظهر كـ placeholder
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 10,
@@ -144,9 +143,9 @@ class _ImageSliderState extends State<ImageSlider> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: SizedBox(
-              height: 140.h,
+            borderRadius: BorderRadius.circular(15),
+            child: AspectRatio(
+              aspectRatio: 1050 / 420,
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: banners.length,
@@ -157,36 +156,29 @@ class _ImageSliderState extends State<ImageSlider> {
                 },
                 itemBuilder: (context, index) {
                   final banner = banners[index];
-                  return GestureDetector(
-                    onTap: () {
-                      debugPrint("Open link: ${banner.link}");
+                  return Image.network(
+                    banner.image,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
                     },
-                    child: Image.network(
-                      banner.image,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(child: Icon(Icons.broken_image));
-                      },
-                    ),
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(child: Icon(Icons.broken_image));
+                    },
                   );
                 },
               ),
             ),
           ),
-
           SizedBox(height: 8.h),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(banners.length, (index) {
               final bool isActive = index == _currentIndex;
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
                 margin: EdgeInsets.symmetric(horizontal: 3.w),
                 width: isActive ? 35.w : 30.w,

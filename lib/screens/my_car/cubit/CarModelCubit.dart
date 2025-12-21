@@ -18,23 +18,20 @@ class CarModelCubit extends Cubit<CarModelState> {
     emit(CarModelLoading());
 
     try {
-      print('🚀 Fetching car models for brandId: $brandId');
       final url = '$getModelApi$brandId';
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token'); // 👈 جبنا التوكن
-      print("🔑 Token: $token");
+      final token = prefs.getString('token');
 
       final response = await dio.get(
         url,
         options: Options(
           headers: {
-            "Authorization": "Bearer $token", // 👈 هنا حطينا التوكن
+            "Authorization": "Bearer $token",
             "Accept-Language": langCode == '' ? "en" : langCode,
           },
         ),
       );
 
-      print('📡 Response status code: ${response.statusCode}');
 
       if (response.statusCode == 200 && response.data['status'] == 200) {
         List<CarModel> models =
@@ -43,7 +40,6 @@ class CarModelCubit extends Cubit<CarModelState> {
             .toList();
 
         if (models.isEmpty) {
-          // 🆕 لو مفيش موديلات
           emit(CarModelLoaded([], message: response.data['msg'] ?? "لا توجد موديلات"));
         } else {
           emit(CarModelLoaded(models));
@@ -53,8 +49,6 @@ class CarModelCubit extends Cubit<CarModelState> {
       }
 
     } catch (e, stack) {
-      print('❌ Exception occurred: $e');
-      print('📜 Stack trace: $stack');
       emit(CarModelError('حدث خطأ: $e'));
     }
   }

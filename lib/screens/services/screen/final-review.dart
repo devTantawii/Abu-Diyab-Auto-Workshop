@@ -65,7 +65,7 @@ class _FinalReviewState extends State<FinalReview> {
   bool isLoading = true;
   PaymentPreviewModel? previewModel;
   int usedPoints = 0;
-  bool isSummaryLoading = false; // ✅ تحميل جزئي للـ Summary فقط
+  bool isSummaryLoading = false;
 
   @override
   void initState() {
@@ -294,15 +294,11 @@ class _FinalReviewState extends State<FinalReview> {
 
     final fields = _buildPayload();
 
-// ✅ اطبع كل البيانات قبل الإرسال
-    debugPrint("====== بيانات الطلب اللي هتتبعت للسيرفر ======");
     fields.forEach((key, value) {
       debugPrint("➡️ $key: $value");
       formData.fields.add(MapEntry(key, value.toString()));
     });
-    debugPrint("============================================");
 
-// ✅ اطبع الملفات كمان (لو فيه صور عربية السيارة مثلًا)
     if (widget.selectedCarDocs != null && widget.selectedCarDocs!.isNotEmpty) {
       for (int i = 0; i < widget.selectedCarDocs!.length; i++) {
         final file = widget.selectedCarDocs![i];
@@ -314,7 +310,7 @@ class _FinalReviewState extends State<FinalReview> {
         debugPrint("📸 ملف مرفق → media[$i]: ${file.path}");
       }
     } else {
-      debugPrint("📁 لا توجد مرفقات (selectedCarDocs فارغة)");
+
     }
 
 
@@ -345,7 +341,6 @@ class _FinalReviewState extends State<FinalReview> {
       debugPrint("Status: ${response.statusCode}");
       debugPrint("Response: ${response.data}");
 
-      // إغلاق Modal اختيار طريقة الدفع أولاً
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
@@ -356,10 +351,9 @@ class _FinalReviewState extends State<FinalReview> {
         if (response.statusCode == 201 && response.data["data"]?["payment_url"] != null) {
           final paymentUrl = response.data["data"]["payment_url"];
           debugPrint("Payment URL: $paymentUrl");
-          Navigator.pop(context); // إغلاق الـ modal
+          Navigator.pop(context);
           navigateTo(context, WebPayment(url: paymentUrl));
         }
-        // 2. دفع كاش (لا يوجد payment_url)
         else if (data != null && data["order_id"] != null) {
           final orderId = data["order_id"] as int;
           final amount = (data["amount"] ?? 0).toDouble();
@@ -386,7 +380,6 @@ class _FinalReviewState extends State<FinalReview> {
           );
         }
       } else {
-        // فشل عام
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(response.data["msg"] ?? 'فشل في إنشاء الطلب'),
@@ -414,7 +407,7 @@ class _FinalReviewState extends State<FinalReview> {
 
   Map<String, dynamic> _buildPayload() {
     return {
-      "points": usedPoints, // ✅ أضف هذا السطر هنا
+      "points": usedPoints,
       "payment_method": selectedPaymentMethod,
       "payload[user_car_id]": widget.userCarId,
       "payload[delivery_method]": widget.deliveryMethod,

@@ -79,7 +79,6 @@ class _ErrorWidgetWithRetryState extends State<ErrorWidgetWithRetry> {
                   _hasToken
                       ? widget.onRetry
                       : () {
-                        // 🔥 افتح BottomSheet لتسجيل الدخول
                         Future.delayed(const Duration(milliseconds: 100), () {
                           showModalBottomSheet(
                             context: context,
@@ -120,11 +119,7 @@ class _ErrorWidgetWithRetryState extends State<ErrorWidgetWithRetry> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      _hasToken ? Icons.refresh : Icons.login,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 8),
+
                     Text(
                       _hasToken
                           ? (isRTL ? 'إعادة المحاولة' : 'Retry')

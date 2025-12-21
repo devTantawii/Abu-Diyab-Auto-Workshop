@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -18,7 +17,6 @@ import '../../my_car/screen/widget/nemra.dart';
 import '../../services/widgets/car_brand_widget.dart';
 import '../../services/widgets/car_model_widget.dart';
 
-
 class AddCarBottomSheet extends StatefulWidget {
   const AddCarBottomSheet({super.key});
 
@@ -31,7 +29,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
   final TextEditingController arabicNumbersController = TextEditingController();
   final List<String> years = List.generate(
     50,
-        (index) => (DateTime.now().year - index).toString(),
+    (index) => (DateTime.now().year - index).toString(),
   );
   int selectedYearIndex = 0;
   int? _selectedCarBrandId;
@@ -97,16 +95,44 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
   }
 
   bool _validateInputs(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
+    void showError(String messageAr, String messageEn) {
+      final message = locale!.isDirectionRTL(context) ? messageAr : messageEn;
+
+      showDialog(
+        context: context,
+        builder:
+            (ctx) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: Text(message, style: const TextStyle(fontSize: 16)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(
+                    locale.isDirectionRTL(context) ? "حسنًا" : "OK",
+                    style: const TextStyle(color: Color(0xFF006D92)),
+                  ),
+                ),
+              ],
+            ),
+      );
+    }
+
     if (_selectedCarBrandId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك اختر ماركة السيارة")),
+      showError(
+        "⚠️ من فضلك اختر ماركة السيارة",
+        "⚠️ Please choose a car brand",
       );
       return false;
     }
 
     if (_selectedCarModelId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك اختر موديل السيارة")),
+      showError(
+        "⚠️ من فضلك اختر موديل السيارة",
+        "⚠️ Please choose a car model",
       );
       return false;
     }
@@ -115,53 +141,53 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
     final numbers = _digitsToEn(arabicNumbersController.text.trim());
 
     if (letters.isEmpty || numbers.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك أدخل رقم وحروف اللوحة")),
+      showError(
+        "⚠️ من فضلك أدخل رقم وحروف اللوحة",
+        "⚠️ Please enter plate letters and numbers",
       );
       return false;
     }
+
     if (letters.length > 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ الحد الأقصى لعدد حروف اللوحة 4")),
+      showError(
+        "⚠️ الحد الأقصى لعدد حروف اللوحة 4",
+        "⚠️ Maximum 4 letters for plate",
       );
       return false;
     }
+
     if (numbers.length > 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ الحد الأقصى لعدد أرقام اللوحة 6")),
+      showError(
+        "⚠️ الحد الأقصى لعدد أرقام اللوحة 6",
+        "⚠️ Maximum 6 numbers for plate",
       );
       return false;
     }
 
     final kilo = _digitsToEn(kiloReadController.text.trim());
     if (kilo.isEmpty || int.tryParse(kilo) == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك أدخل ممشى السيارة بشكل صحيح")),
+      showError(
+        "⚠️ من فضلك أدخل ممشى السيارة بشكل صحيح",
+        "⚠️ Please enter a valid car mileage",
       );
       return false;
     }
 
-    if (carNameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك أدخل اسم السيارة")),
-      );
-      return false;
-    }
-
-    if (selectedCarDoc == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("⚠️ من فضلك قم برفع استمارة السيارة")),
-      );
-      return false;
-    }
-
-    return true;
+      return true;
   }
-
 
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    final bgColor = isLight ? Colors.white : Colors.black;
+    final cardColor = isLight ? Colors.white : const Color(0xFF1E1E1E);
+    final textColor = isLight ? Colors.black : Colors.white;
+    final hintColor = isLight ? Colors.black54 : Colors.white54;
+    final borderColor = isLight ? Colors.grey.shade300 : Colors.white24;
+    final shadowColor = isLight ? Colors.black12 : Colors.transparent;
+
     return Container(
       padding: EdgeInsets.only(
         top: 20.h,
@@ -176,15 +202,18 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child:  Icon(Icons.close, size: 18.sp),
+                  child: Icon(Icons.close, size: 18.sp),
                 ),
                 Text(
-                  locale!.isDirectionRTL(context) ? 'أضف سيارتك' : 'Add Your Car',
+                  locale!.isDirectionRTL(context)
+                      ? 'أضف سيارتك'
+                      : 'Add Your Car',
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -195,13 +224,32 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
               ],
             ),
             SizedBox(height: 15.h),
-
+            Align(
+              alignment:
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
+              child: Text(
+                locale.isDirectionRTL(context)
+                    ? 'رقم لوحة السيارة'
+                    : 'Car plate number',
+                style: TextStyle(
+                  color: headingColor(context),
+                  fontSize: 14.sp,
+                  fontFamily: 'Graphik Arabic',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            SizedBox(height: 10.h),
 
             Row(
               children: [
-                Nemra(
-                  arabicLettersController: arabicLettersController,
-                  englishNumbersController: arabicNumbersController,
+                Expanded(
+                  child: Nemra(
+                    arabicLettersController: arabicLettersController,
+                    englishNumbersController: arabicNumbersController,
+                  ),
                 ),
               ],
             ),
@@ -220,7 +268,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             ),
             SizedBox(height: 15.h),
             CarModelWidget(
-              titleAr:"اختر الموديل",
+              titleAr: "اختر الموديل",
               titleEn: "Choose a  model",
               selectedCarModelId: _selectedCarModelId,
               onModelSelected: (id) {
@@ -233,17 +281,17 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             // ---- اسم السيارة ----
             Align(
               alignment:
-              locale.isDirectionRTL(context)
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
               child: Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text:
-                      locale.isDirectionRTL(context)
-                          ? 'اسم السيارة '
-                          : 'Car name ',
+                          locale.isDirectionRTL(context)
+                              ? 'اسم السيارة '
+                              : 'Car name ',
                       style: TextStyle(
                         color: headingColor(context),
                         fontSize: 14.sp,
@@ -253,9 +301,9 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     ),
                     TextSpan(
                       text:
-                      locale.isDirectionRTL(context)
-                          ? '( اختياري )'
-                          : '( Optional )',
+                          locale.isDirectionRTL(context)
+                              ? '( اختياري )'
+                              : '( Optional )',
                       style: TextStyle(
                         color: paragraphColor(context),
                         fontSize: 12.sp,
@@ -269,27 +317,21 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             ),
             SizedBox(height: 10.h),
             Container(
-         //     height: 55.h,
-              decoration: BoxDecoration(
-                color: backgroundColor(context),
-                borderRadius: BorderRadius.circular(12.sp),
-                border: Border.all(color: paragraphColor(context), width: 1.w),
+              decoration: ShapeDecoration(
+                color: cardColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.sp),
+                ),
               ),
               child: TextField(
                 controller: carNameController,
-                style: TextStyle(
-                  color: headingColor(context),
-                  fontSize: 12.sp,
-                ),
-                textAlignVertical: TextAlignVertical.center,
+                style: TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  hintText: locale.isDirectionRTL(context)
-                      ? "سيارة الدوام، سيارة العائلة..."
-                      : "Work car, family car...",
-                  hintStyle: TextStyle(
-                    color: paragraphColor(context),
-                    fontSize: 12.sp,
-                  ),
+                  hintText:
+                      locale.isDirectionRTL(context)
+                          ? "سيارة الدوام، سيارة العائلة..."
+                          : "Work car, family car...",
+                  hintStyle: TextStyle(color: hintColor),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(12),
                 ),
@@ -301,9 +343,9 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             // ---- سنة الصنع ----
             Align(
               alignment:
-              locale.isDirectionRTL(context)
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
               child: Text(
                 locale.isDirectionRTL(context)
                     ? "سنة الصنع"
@@ -329,16 +371,17 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     final isSelected = index == selectedYearIndex;
                     return Container(
                       color:
-                      isSelected
-                          ?buttonSecondaryBorderLight
-                          : Colors.transparent,
+                          isSelected ? Color(0x3F006D92) : Colors.transparent,
                       child: Center(
                         child: Text(
                           years[index],
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
-                            color: isSelected ? headingColor(context) : paragraphColor(context),
+                            color:
+                                isSelected
+                                    ? headingColor(context)
+                                    : paragraphColor(context),
                           ),
                         ),
                       ),
@@ -351,38 +394,33 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             SizedBox(height: 15.h),
 
             Align(
-              alignment: locale.isDirectionRTL(context)
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+              alignment:
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
               child: Text(
                 locale.isDirectionRTL(context) ? "ممشى السياره" : "Car counter",
                 style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: headingColor(context)
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: headingColor(context),
                 ),
               ),
             ),
             SizedBox(height: 10.h),
             Container(
-              height: 55.h,
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color:backgroundColor(context),
-                borderRadius: BorderRadius.circular(12.sp),
-                border: Border.all(
-                  color: paragraphColor(context),
-                  width: 1.w,
+              padding: EdgeInsets.all(10.w),
+              decoration: ShapeDecoration(
+                color: cardColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
               ),
               child: Row(
-                textDirection: locale.isDirectionRTL(context)
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
                 children: [
                   Expanded(
                     child: DottedBorder(
-                      color: Colors.grey,
+                      color: borderColor,
                       strokeWidth: 1,
                       dashPattern: const [6, 3],
                       borderType: BorderType.RRect,
@@ -390,37 +428,25 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       child: TextField(
                         controller: kiloReadController,
+                        style: TextStyle(color: textColor),
                         decoration: InputDecoration(
                           hintText: '0000000',
-                          hintStyle: TextStyle(
-                            color: headingColor(context),
-                            fontSize: 13.sp,
-                            fontFamily: 'Graphik Arabic',
-                            fontWeight: FontWeight.w500,
-                          ),
-                          hintTextDirection: locale.isDirectionRTL(context)
-                              ? TextDirection.rtl
-                              : TextDirection.ltr,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 12.h,
-                          ),
+                          hintStyle: TextStyle(color: hintColor),
                           border: InputBorder.none,
                         ),
-                        textDirection: locale.isDirectionRTL(context)
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 8.w),
                   Text(
                     locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color:headingColor(context),
-                      fontSize: 15.sp,
-                      fontFamily: 'Graphik Arabic',
+                      color: textColor,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -432,17 +458,17 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             // ---- الاستمارة ----
             Align(
               alignment:
-              locale.isDirectionRTL(context)
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+                  locale.isDirectionRTL(context)
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
               child: Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text:
-                      locale.isDirectionRTL(context)
-                          ? 'إستمارة السيارة '
-                          : 'Car Registration ',
+                          locale.isDirectionRTL(context)
+                              ? 'إستمارة السيارة '
+                              : 'Car Registration ',
                       style: TextStyle(
                         color: headingColor(context),
                         fontSize: 14.sp,
@@ -451,9 +477,9 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                     ),
                     TextSpan(
                       text:
-                      locale.isDirectionRTL(context)
-                          ? '( اختياري )'
-                          : '( Optional )',
+                          locale.isDirectionRTL(context)
+                              ? '( اختياري )'
+                              : '( Optional )',
                       style: TextStyle(
                         color: paragraphColor(context),
                         fontSize: 12.sp,
@@ -476,10 +502,15 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
             BlocConsumer<AddCarCubit, AddCarState>(
               listener: (context, state) {
                 if (state is AddCarSuccess) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text("✅ ${state.message}",style: TextStyle(color: headingColor(context),),)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "✅ ${state.message}",
+                        style: TextStyle(color: headingColor(context)),
+                      ),
+                    ),
+                  );
                   Navigator.pop(context, true);
-
                 } else if (state is AddCarError) {
                   showDialog(
                     context: context,
@@ -488,37 +519,35 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        title: const Text(
-                          "حدث خطأ ❌",
+                        title:  Text(
+                          "حدث خطأ حاول مره اخرى ",
                           style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 15.sp,
+                            fontWeight:FontWeight.w500,
                           ),
                         ),
-                        content: Text(
-                          state.message,
-                          style:  TextStyle(fontSize: 16.sp),
-                        ),
+                        // content: Text(
+                        //   state.message,
+                        //   style: TextStyle(fontSize: 10.sp),
+                        // ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
                             child: const Text(
                               "حسنًا",
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ],
                       );
                     },
                   );
-
                 }
               },
               builder: (context, state) {
                 if (state is AddCarLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 return SizedBox(
@@ -545,7 +574,9 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                       final token = prefs.getString('token');
                       if (token == null) return;
 
-                      final kiloEn = _digitsToEn(kiloReadController.text.trim());
+                      final kiloEn = _digitsToEn(
+                        kiloReadController.text.trim(),
+                      );
                       final kiloInt = int.tryParse(kiloEn);
 
                       context.read<AddCarCubit>().addCar(
@@ -554,13 +585,18 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
                         token: token,
                         carCertificate: selectedCarDoc,
                         kilometre: kiloInt.toString(),
-                        name: carNameController.text.trim(),
+                        name:
+                            carNameController.text.trim().isEmpty
+                                ? null
+                                : carNameController.text.trim(),
                         licencePlate: boardNoFinal,
                         year: years[selectedYearIndex],
                       );
                     },
                     child: Text(
-                      locale.isDirectionRTL(context) ? 'أضف سيارتي' : 'Add My Car',
+                      locale.isDirectionRTL(context)
+                          ? 'أضف سيارتي'
+                          : 'Add My Car',
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,

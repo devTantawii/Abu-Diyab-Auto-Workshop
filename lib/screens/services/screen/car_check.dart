@@ -83,10 +83,8 @@ class _CarCheckState extends State<CarCheck> {
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color: backgroundColor(context),
+
           ),
           child: SingleChildScrollView(
             child: Padding(

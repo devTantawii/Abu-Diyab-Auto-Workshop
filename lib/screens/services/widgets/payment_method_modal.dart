@@ -139,11 +139,14 @@ class _PaymentMethodModalState extends State<PaymentMethodModal> {
   }
 
   Widget _buildConfirmButton(AppLocalizations locale, BuildContext context) {
+    final bool isEnabled = agreeTerms && selected != null;
+
     return ElevatedButton(
-      onPressed: agreeTerms ? widget.onConfirm : null,
+      onPressed: isEnabled ? widget.onConfirm : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: typographyMainColor(context),
         minimumSize: Size(double.infinity, 50.sp),
+        disabledBackgroundColor: Colors.grey, // اختياري
       ),
       child: Text(
         locale.isDirectionRTL(context) ? "تأكيد الطلب" : "Confirm Order",

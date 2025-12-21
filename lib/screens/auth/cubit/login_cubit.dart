@@ -15,7 +15,6 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit({required this.dio}) : super(LoginInitial());
 
   Future<void> _updateFcmToken(String fcmToken, String userToken) async {
-    print('🔁 تحديث FCM Token...');
 
     try {
       final response = await dio.post(
@@ -29,16 +28,11 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
 
-      print('📩 [updateFCM] Status: ${response.statusCode}');
-      print('📩 [updateFCM] Response: ${response.data}');
 
       if (response.statusCode == 200 && response.data['status'] == 200) {
-        print('✅ تم تحديث FCM Token بنجاح');
       } else {
-        print('⚠️ فشل تحديث FCM Token: ${response.data['msg']}');
       }
     } catch (e) {
-      print('❌ خطأ أثناء تحديث FCM Token: $e');
     }
   }
 
@@ -63,8 +57,6 @@ class LoginCubit extends Cubit<LoginState> {
       print("⚠️ Error getting FCM token: $e");
     }
 
-    print('📡 جاري محاولة تسجيل الدخول...');
-    print('➡️ البيانات المرسلة: phone $phone, password $password');
     print(' fcmToken $fcmToken');
 
     try {
@@ -78,8 +70,7 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
 
-      print('📩 Status Code: ${response.statusCode}');
-      print('📩 Response Data: ${response.data}');
+
 
       final status = response.data['status'];
       if (response.statusCode == 200 && status == 200) {
@@ -95,7 +86,6 @@ class LoginCubit extends Cubit<LoginState> {
         await prefs.setString('token', token);
         await prefs.setBool('is_logged_in', true);
 
-        print('🎉 تم تسجيل الدخول بنجاح! التوكن: $token');
 
         initialToken = token;
 
@@ -113,14 +103,11 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginFailure(message: errorMessage));
       }
     } on DioError catch (dioError) {
-      print('❌ DioError: ${dioError.message}');
-      emit(LoginFailure(
+       emit(LoginFailure(
           message:
           dioError.response?.data['msg'] ?? 'خطأ في الاتصال بالسيرفر'));
     } catch (e, stack) {
-      print('❌ استثناء غير متوقع: $e');
-      print('📝 Stacktrace: $stack');
-      emit(LoginFailure(message: 'حدث خطأ غير متوقع'));
+       emit(LoginFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -149,7 +136,6 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
 
-      print("📩 Reset response: ${res.data}");
 
       if (res.statusCode == 200) {
         final message = res.data["message"]?.toString() ?? "";
@@ -169,7 +155,6 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> forgotPassword({required String phone}) async {
     emit(ForgotPasswordLoading());
-    print("📞 Sending forgot-password request for $phone");
 
     try {
       final res = await dio.post(
@@ -177,7 +162,6 @@ class LoginCubit extends Cubit<LoginState> {
         data: {"phone": phone},
       );
 
-      print("📩 Response: ${res.data}");
 
       if (res.statusCode == 200 && res.data["otp"] != null) {
         final otp = res.data["otp"];
@@ -198,8 +182,6 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> requestResetPassword(String phone) async {
     emit(RequestResetLoading());
-    print("📡 [requestResetPassword] إرسال طلب إعادة تعيين كلمة المرور...");
-    print("➡️ البيانات المرسلة: phone=$phone");
 
     try {
       final response = await dio.post(
@@ -207,8 +189,7 @@ class LoginCubit extends Cubit<LoginState> {
         data: {"phone": phone},
       );
 
-      print("📩 Response StatusCode: ${response.statusCode}");
-      print("📩 Response Body: ${response.data}");
+
 
       final serverStatus = response.data['status'];
       final serverMsg = response.data['msg'];
@@ -227,8 +208,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> verifyResetPassword(String phone, String otp) async {
     emit(VerifyResetLoading());
-    print("📡 [verifyResetPassword] التحقق من الكود...");
-    print("➡️ البيانات المرسلة: phone=$phone, otp=$otp");
+
 
     try {
       final response = await dio.post(
@@ -253,9 +233,6 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> submitNewPassword(
       String phone, String password, String confirmPassword) async {
     emit(SubmitNewPasswordLoading());
-    print("📡 [submitNewPassword] تغيير كلمة المرور...");
-    print(
-        "➡️ البيانات: phone=$phone, password=$password, confirm=$confirmPassword");
 
     try {
       final response = await dio.post(

@@ -58,7 +58,8 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-      },      child: Scaffold(
+      },
+      child: Scaffold(
         backgroundColor: scaffoldBackgroundColor(context),
 
         appBar: CustomGradientAppBar(
@@ -74,10 +75,8 @@ class _PeriodicMaintenanceState extends State<PeriodicMaintenance> {
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color: backgroundColor(context),
+
           ),
           child: SingleChildScrollView(
             child: Padding(

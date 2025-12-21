@@ -13,8 +13,6 @@ class RegisterCubit extends Cubit<RegisterState> {
   Future<void> register(RegisterRequestModel model) async {
     emit(RegisterLoading());
 
-    print("📤 Sending JSON to /register:");
-    print(model.toJson());
 
     try {
       final response = await dio.post(
@@ -33,12 +31,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         final message = response.data["msg"]; // ✅ هنا
         final verificationMessage = response.data["verification_sms"];
 
-        print("📩 Received Response:");
-        print(response.data);
-        print({
-          "msg": message,
-          "verification_sms": verificationMessage,
-        });
+
 
         emit(RegisterSuccess(
           message: message ?? "تم التسجيل",
@@ -48,9 +41,6 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterFailure("فشل التسجيل. حاول مرة أخرى"));
       }
     } on DioException catch (e) {
-      print("❌ DioException Occurred");
-      print("📥 Response data: ${e.response?.data}");
-      print("📥 Response type: ${e.response?.data.runtimeType}");
 
       String errorMessage = "حدث خطأ أثناء الاتصال";
 

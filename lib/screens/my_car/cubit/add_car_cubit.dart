@@ -13,9 +13,9 @@ class AddCarCubit extends Cubit<AddCarState> {
 
   Future<void> addCar({
  //   required int userId,
-    required File? carCertificate, // 👈 هنا اسم زي الـ API
-    required String kilometre,     // 👈 String عشان الـ API بيرجع "50000"
-    required String name,
+    required File? carCertificate,
+    required String kilometre,
+    required String? name,
     required String licencePlate,
     required String year,
     required int carModelId,
@@ -26,7 +26,6 @@ class AddCarCubit extends Cubit<AddCarState> {
 
     try {
       FormData formData = FormData.fromMap({
-   //     "user_id": userId, // لو مش مطلوب من الـ backend ممكن تشيله
         "licence_plate": licencePlate,
         "name": name,
         "year": year,
@@ -40,8 +39,7 @@ class AddCarCubit extends Cubit<AddCarState> {
           ),
       });
 
-      debugPrint("📤 Sending fields: ${formData.fields}");
-      debugPrint("📤 Sending files: ${formData.files}");
+
 
       final response = await dio.post(
         carCreateApi,
@@ -55,8 +53,7 @@ class AddCarCubit extends Cubit<AddCarState> {
         data: formData,
       );
 
-      debugPrint("📥 Response: ${response.statusCode}");
-      debugPrint("📥 Response data: ${response.data}");
+
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         emit(AddCarSuccess(response.data["msg"] ?? "Car added successfully ✅"));

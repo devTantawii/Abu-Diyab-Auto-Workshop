@@ -4,6 +4,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../core/constant/app_colors.dart';
+
 class MultiImagePickerWidget extends StatefulWidget {
   final void Function(List<File>) onImagesSelected;
   final List<String>? existingImageUrls;
@@ -143,10 +145,8 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: ShapeDecoration(
-        color:
-            Theme.of(context).brightness == Brightness.light
-                ? const Color(0xFFFFFFFF)
-                : Colors.black,
+        color: backgroundColor(context),
+
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -155,7 +155,7 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
         onTap: _pickImages,
         child: DottedBorder(
           color: Colors.grey,
-          strokeWidth: 3,
+          strokeWidth: 2,
           dashPattern: [16.h, 8.w],
           borderType: BorderType.RRect,
           radius: Radius.circular(8.r),

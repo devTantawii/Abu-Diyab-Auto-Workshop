@@ -6,14 +6,14 @@ class CustomBottomButton extends StatelessWidget {
   final String textAr;
   final String textEn;
   final VoidCallback? onPressed;
-  final bool isEnabled; // ✅ إضافة جديدة
+  final bool isEnabled;
 
   const CustomBottomButton({
     Key? key,
     required this.textAr,
     required this.textEn,
     required this.onPressed,
-    this.isEnabled = true, // ✅ افتراضي الزر مفعل
+    this.isEnabled = true,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class CustomBottomButton extends StatelessWidget {
                 : Colors.black,
       ),
       child: Container(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.all(20.sp),
         decoration: BoxDecoration(
           color:
               Theme.of(context).brightness == Brightness.light
@@ -60,13 +60,13 @@ class CustomBottomButton extends StatelessWidget {
               backgroundColor:
                   isEnabled
                       ? typographyMainColor(context)
-                      : Colors.grey.shade400, // رمادي لو الزر مقفول
+                      : Colors.grey.shade400,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
               elevation: 3,
             ),
-            onPressed: isEnabled ? onPressed : null, // ✅ يتعطل الزر هنا
+            onPressed: isEnabled ? onPressed : null,
             child: Text(
               locale == 'ar' ? textAr : textEn,
               textAlign: TextAlign.center,

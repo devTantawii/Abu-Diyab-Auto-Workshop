@@ -11,41 +11,32 @@ class OrdersRepo {
   OrdersRepo(this.dio);
 
   Future<OrdersResponse> getAllOrders() async {
-    print('📦 [OrdersRepo] بدء جلب الطلبات الحالية...');
-    try {
+     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      print('🔑 [OrdersRepo] تم الحصول على التوكن: $token');
 
       final url = currentOrdersApi;
-      print('🌐 [OrdersRepo] سيتم الاتصال بالرابط: $url');
 
       final headers = {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
         "Accept-Language": langCode == '' ? "en" : langCode,
       };
-      print('🧾 [OrdersRepo] الهيدر المستخدم: $headers');
 
       final response = await dio.get(
         url,
         options: Options(headers: headers),
       );
 
-      print('📡 [OrdersRepo] تم استلام الرد من السيرفر. Status code: ${response.statusCode}');
-      print('📨 [OrdersRepo] البيانات الخام من السيرفر: ${response.data}');
+
 
       if (response.statusCode == 200) {
-        print('✅ [OrdersRepo] تم جلب الطلبات بنجاح، يتم الآن تحويل الـ JSON إلى الموديل...');
-        final result = OrdersResponse.fromJson(response.data);
+         final result = OrdersResponse.fromJson(response.data);
         return result;
       } else {
-        print('⚠️ [OrdersRepo] فشل تحميل الطلبات. Status: ${response.statusCode}');
-        throw Exception('Failed to load orders');
+         throw Exception('Failed to load orders');
       }
     } catch (e, stack) {
-      print('❌ [OrdersRepo] حدث خطأ أثناء جلب الطلبات: $e');
-      print('🧱 Stack trace: $stack');
       rethrow;
     }
   }

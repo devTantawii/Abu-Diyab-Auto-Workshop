@@ -70,7 +70,7 @@ const Color shadowDark = Color(0x1AFFFFFF); // 10% White
 /// :small_orange_diamond: ACCENT & SCAFFOLD
 const Color accentColor = Color(0xFFBA1B1B);
 const Color scaffoldLight = Color(0xFF419BBA);
-const Color scaffoldDark = Color(0xFF006D92);
+const Color scaffoldDark = Color(0xFF02A1D6);
 
 /// ================================================
 /// :small_blue_diamond: DYNAMIC COLOR FUNCTIONS (AUTO BASED ON THEME)

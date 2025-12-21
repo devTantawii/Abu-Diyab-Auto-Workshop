@@ -20,7 +20,7 @@ class NotificationsScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => NotificationsCubit()..fetchNotifications(),
       child: Scaffold(
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: backgroundColor(context),
         appBar: CustomGradientAppBar(
           title_ar: "الإشعارات",
           title_en: "Notifications",
@@ -55,7 +55,6 @@ class NotificationsScreen extends StatelessWidget {
 
             else if (state is NotificationsLoaded) {
               if (state.notifications.isEmpty) {
-                // 📭 حالة لا يوجد إشعارات
                 return Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -73,7 +72,7 @@ class NotificationsScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: headingColor(context),
                           ),
                         ),
                         SizedBox(height: 10.h),

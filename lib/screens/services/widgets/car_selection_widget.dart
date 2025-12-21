@@ -1,10 +1,13 @@
 import 'package:abu_diyab_workshop/core/constant/app_colors.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/language/locale.dart';
+import '../../auth/cubit/login_cubit.dart';
+import '../../auth/screen/login.dart';
 import '../../my_car/cubit/all_cars_cubit.dart';
 import '../../my_car/cubit/all_cars_state.dart';
 import '../../my_car/model/all_cars_model.dart';
@@ -89,10 +92,47 @@ class _CarsSectionState extends State<CarsSection> {
                   );
                 } else if (state is CarError) {
                   return Center(
-                    child: Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 40.sp,
+                    child:
+                    GestureDetector(
+                      onTap: ()  {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder:
+                              (context) => FractionallySizedBox(
+                                widthFactor: 1,
+                                child: BlocProvider(
+                                  create: (_) => LoginCubit(dio: Dio()),
+                                  child: const LoginBottomSheet(),
+                                ),
+                              ),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.87,
+                        decoration: ShapeDecoration(
+                          color: buttonBgWhiteColor(context),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1.50.w,
+                              color: buttonSecondaryBorderColor(context),
+                            ),
+                            borderRadius: BorderRadius.circular(15.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '+ إضافة سيارة',
+                            style: TextStyle(
+                              color: typographyMainColor(context),
+                              fontSize: 18.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 } else if (state is CarLoaded) {

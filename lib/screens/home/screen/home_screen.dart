@@ -60,9 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
 
-      // التأكد أن القيم موجودة
       if (serverAndroidVersion == null || serverIOSVersion == null) {
-        print("❌ Version info missing from server response");
         return;
       }
 

@@ -71,7 +71,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          // مؤشرات الصفحات
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -92,8 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           SizedBox(height: 20),
 
-          // أزرار التنقل
-          currentPage == onboardingData.length - 1
+           currentPage == onboardingData.length - 1
               ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Container(
@@ -228,13 +226,13 @@ class OnboardingContent extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset("assets/images/bg_tag.png"),
+                      Image.asset("assets/images/bg_tag.png",),
                       Text(
                         title2,
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           color: textColor,
-                          fontSize: 25.sp,
+                          fontSize: 25,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
                         ),

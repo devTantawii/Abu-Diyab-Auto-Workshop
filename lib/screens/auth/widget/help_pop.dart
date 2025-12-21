@@ -78,10 +78,9 @@ class HelpCard extends StatelessWidget {
                       Theme.of(context).brightness == Brightness.light
                           ? Colors.black.withValues(alpha: 0.70)
                           : Colors.white,
-                  fontSize: 8.sp,
+                  fontSize: 16.sp,
                   fontFamily: 'Graphik Arabic',
                   fontWeight: FontWeight.w500,
-                  height: 1.25,
                 ),
               ),
             ),
