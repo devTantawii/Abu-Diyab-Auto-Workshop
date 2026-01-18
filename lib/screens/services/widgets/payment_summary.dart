@@ -107,6 +107,27 @@ class PaymentSummary extends StatelessWidget {
                                   .toString(),
                               isTotal: true,
                             ),
+                        model.breakdown.totalAfterDiscounts == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "الإجمالي بعد الخصومات"
+                                  : "total After Discounts",
+                              model.breakdown.totalAfterDiscounts.toString(),
+                              isTotal: true,
+                            ),
+
+                        model.breakdown.taxAmount == 0
+                            ? SizedBox.shrink()
+                            : _buildRow(
+                              context,
+                              locale.isDirectionRTL(context)
+                                  ? "مبلغ الضريبة (${model.breakdown.taxRate.toString()}%)"
+                                  : "taxAmount (${model.breakdown.taxRate.toString()}%)",
+                              model.breakdown.taxAmount.toString(),
+                              isTotal: true,
+                            ),
 
                         _buildRow(
                           context,

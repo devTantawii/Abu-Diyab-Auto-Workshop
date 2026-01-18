@@ -26,14 +26,32 @@ class OrderData {
   final String? notes;
   final int? kilometers;
   final int? isCarWorking;
+
   final String address;
   final String deliveryMethod;
+  final String paymentMethod;
+
   final String date;
   final String time;
-  final dynamic totalPrice;
+
+  final String? lat;
+  final String? long;
+
+   final dynamic total;
+
+  final dynamic offerDiscount;
+  final dynamic packageDiscount;
+  final dynamic pointsDiscount;
+  final dynamic taxAmount;
+  final dynamic finalTotal;
+
   final String status;
   final String createdAt;
   final String updatedAt;
+
+  final bool hasRepairCard;
+  final dynamic repairCard;
+
   final User user;
   final UserCar userCar;
   final List<OrderItem> items;
@@ -48,12 +66,22 @@ class OrderData {
     this.isCarWorking,
     required this.address,
     required this.deliveryMethod,
+    required this.paymentMethod,
     required this.date,
     required this.time,
-    this.totalPrice,
+    this.lat,
+    this.long,
+    this.total,
+    this.offerDiscount,
+    this.packageDiscount,
+    this.pointsDiscount,
+    this.taxAmount,
+    this.finalTotal,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    required this.hasRepairCard,
+    this.repairCard,
     required this.user,
     required this.userCar,
     required this.items,
@@ -70,22 +98,35 @@ class OrderData {
       isCarWorking: int.tryParse(json['is_car_working']?.toString() ?? ''),
       address: json['address']?.toString() ?? '',
       deliveryMethod: json['delivery_method']?.toString() ?? '',
+      paymentMethod: json['payment_method']?.toString() ?? '',
       date: json['date']?.toString() ?? '',
       time: json['time']?.toString() ?? '',
-      totalPrice: json['total_price'],
+      lat: json['lat']?.toString(),
+      long: json['long']?.toString(),
+
+      total: json['total'],
+      offerDiscount: json['offer_discount'],
+      packageDiscount: json['package_discount'],
+      pointsDiscount: json['points_discount'],
+      taxAmount: json['tax_amount'],
+      finalTotal: json['final_total'],
+
       status: json['status']?.toString() ?? '',
       createdAt: json['created_at']?.toString() ?? '',
       updatedAt: json['updated_at']?.toString() ?? '',
+      hasRepairCard: json['has_repair_card'] == true,
+      repairCard: json['repair_card'],
+
       user: User.fromJson(json['user'] ?? {}),
       userCar: UserCar.fromJson(json['userCar'] ?? {}),
       items: (json['items'] as List? ?? [])
-          .map((i) => OrderItem.fromJson(i))
+          .map((i) => OrderItem.fromJson(i as Map<String, dynamic>))
           .toList(),
       histories: (json['histories'] as List? ?? [])
-          .map((h) => OrderHistory.fromJson(h))
+          .map((h) => OrderHistory.fromJson(h as Map<String, dynamic>))
           .toList(),
       media: (json['media'] as List? ?? [])
-          .map((m) => OrderMedia.fromJson(m))
+          .map((m) => OrderMedia.fromJson(m as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -178,13 +219,8 @@ class Item {
   final String name;
   final String? description;
   final String? price;
-  final int? quentity;
-  final String? viscosty;
-  final int? kilometer;
-  final String? icon;
-  final String? slug;
-  final int? fees;
-  final int? status;
+  final String? size;
+  final String? type;
 
   Item({
     required this.id,
@@ -192,13 +228,8 @@ class Item {
     required this.name,
     this.description,
     this.price,
-    this.quentity,
-    this.viscosty,
-    this.kilometer,
-    this.icon,
-    this.slug,
-    this.fees,
-    this.status,
+    this.size,
+    this.type,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -208,13 +239,8 @@ class Item {
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString(),
       price: json['price']?.toString(),
-      quentity: int.tryParse(json['quentity']?.toString() ?? ''),
-      viscosty: json['viscosty']?.toString(),
-      kilometer: int.tryParse(json['kilometer']?.toString() ?? ''),
-      icon: json['icon']?.toString(),
-      slug: json['slug']?.toString(),
-      fees: int.tryParse(json['fees']?.toString() ?? ''),
-      status: int.tryParse(json['status']?.toString() ?? ''),
+      size: json['size']?.toString(),
+      type: json['type']?.toString(),
     );
   }
 }

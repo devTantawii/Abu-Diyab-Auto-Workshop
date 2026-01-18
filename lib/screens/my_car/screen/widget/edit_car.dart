@@ -209,789 +209,793 @@ class _EditCarState extends State<EditCar> {
           }
         }
       },
-      child: Scaffold(
-        backgroundColor:
-            Theme.of(context).brightness == Brightness.light
-                ? Color(0xFFEAEAEA)
-                : Colors.black87,
-        appBar: CustomGradientAppBar(
-          title_ar: "عدل سيارتك",
-          title_en: "Edit Your Car",
-          onBack: () {
-            Navigator.pop(context);
-          },
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            textDirection:
-                locale!.isDirectionRTL(context)
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
-            children: [
-               Align(
-                alignment:
+      child: GestureDetector(  onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+        child: Scaffold(
+          backgroundColor:
+              Theme.of(context).brightness == Brightness.light
+                  ? Color(0xFFEAEAEA)
+                  : Colors.black87,
+          appBar: CustomGradientAppBar(
+            title_ar: "عدل سيارتك",
+            title_en: "Edit Your Car",
+            onBack: () {
+              Navigator.pop(context);
+            },
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              textDirection:
+                  locale!.isDirectionRTL(context)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
+              children: [
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
                     locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? 'رقم لوحة السيارة'
-                      : 'Car plate number',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: Nemra(
-                      arabicLettersController: arabicLettersController,
-                      englishNumbersController: arabicNumbersController,
+                        ? 'رقم لوحة السيارة'
+                        : 'Car plate number',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 15),
-
-               Align(
-                alignment:
-                    locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? "ماركة السيارة"
-                      : "Car brand",
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              BlocBuilder<CarBrandCubit, CarBrandState>(
-                builder: (context, state) {
-                  if (state is CarBrandLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is CarBrandLoaded) {
-                    return SizedBox(
-                      height: 110.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: state.brands.length,
-                        itemBuilder: (context, index) {
-                          final car = state.brands[index];
-                          final isSelected = _selectedCarBrandId == car.id;
-
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedCarBrandId = car.id;
-                                _selectedCarModelId = null;
-                              });
-                              context.read<CarModelCubit>().fetchCarModels(
-                                car.id,
-                              );
-                            },
-                            child: Container(
-                              width: 80.w,
-                              height: 70.h,
-                              margin: EdgeInsets.symmetric(horizontal: 6.w),
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? buttonPrimaryBgColor(
-                                          context,
-                                        ).withOpacity(0.3)
-                                        : Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color:
-                                      isSelected
-                                          ? buttonPrimaryBgColor(context)
-                                          : Colors.grey.shade300,
-                                  width: 2,
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.network(
-                                    car.image,
-                                    width: 30.w,
-                                    height: 30.h,
-                                    fit: BoxFit.contain,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(Icons.error, size: 20),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    car.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color:
-                                          isSelected
-                                              ? Colors.black
-                                              : Colors.grey,
-
-                                      fontSize: 12.sp,
-                                      fontFamily: 'Graphik Arabic',
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                SizedBox(height: 10.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Nemra(
+                        arabicLettersController: arabicLettersController,
+                        englishNumbersController: arabicNumbersController,
                       ),
-                    );
-                  }
-                  if (state is CarBrandError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return const SizedBox();
-                },
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
 
-              SizedBox(height: 15.h),
-
-               Align(
-                alignment:
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
                     locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? "موديل السيارة"
-                      : "Car model",
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
+                        ? "ماركة السيارة"
+                        : "Car brand",
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              BlocBuilder<CarModelCubit, CarModelState>(
-                builder: (context, state) {
-                  if (state is CarModelLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is CarModelLoaded) {
-                    return SizedBox(
-                      height: 30.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: state.models.length,
-                        itemBuilder: (context, index) {
-                          final car = state.models[index];
-                          final isSelected = _selectedCarModelId == car.id;
+                SizedBox(height: 10.h),
+                BlocBuilder<CarBrandCubit, CarBrandState>(
+                  builder: (context, state) {
+                    if (state is CarBrandLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is CarBrandLoaded) {
+                      return SizedBox(
+                        height: 110.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.brands.length,
+                          itemBuilder: (context, index) {
+                            final car = state.brands[index];
+                            final isSelected = _selectedCarBrandId == car.id;
 
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedCarModelId = car.id;
-                              });
-                            },
-                            child: Container(
-                              width: 70.w,
-                              height: 30.h,
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? buttonPrimaryBgColor(
-                                          context,
-                                        ).withOpacity(0.3)
-                                        : Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedCarBrandId = car.id;
+                                  _selectedCarModelId = null;
+                                });
+                                context.read<CarModelCubit>().fetchCarModels(
+                                  car.id,
+                                );
+                              },
+                              child: Container(
+                                width: 80.w,
+                                height: 70.h,
+                                margin: EdgeInsets.symmetric(horizontal: 6.w),
+                                decoration: BoxDecoration(
                                   color:
                                       isSelected
-                                          ? buttonPrimaryBgColor(context)
-                                          : Colors.grey.shade300,
-                                  width: 2,
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                car.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color:
-                                      isSelected
-                                          ? Colors.black
+                                          ? buttonPrimaryBgColor(
+                                            context,
+                                          ).withOpacity(0.3)
                                           : Theme.of(context).brightness ==
                                               Brightness.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                  fontSize: 14.sp,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w600,
+                                          ? Colors.white
+                                          : Colors.black,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color:
+                                        isSelected
+                                            ? buttonPrimaryBgColor(context)
+                                            : Colors.grey.shade300,
+                                    width: 2,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(
+                                      car.image,
+                                      width: 30.w,
+                                      height: 30.h,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.error, size: 20),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      car.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color:
+                                            isSelected
+                                                ? Colors.black
+                                                : Colors.grey,
+
+                                        fontSize: 12.sp,
+                                        fontFamily: 'Graphik Arabic',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }
-                  if (state is CarModelError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return const SizedBox();
-                },
-              ),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                    if (state is CarBrandError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox();
+                  },
+                ),
 
-              SizedBox(height: 15.h),
+                SizedBox(height: 15.h),
 
-               Align(
-                alignment:
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
                     locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text.rich(
-                  TextSpan(
+                        ? "موديل السيارة"
+                        : "Car model",
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                BlocBuilder<CarModelCubit, CarModelState>(
+                  builder: (context, state) {
+                    if (state is CarModelLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is CarModelLoaded) {
+                      return SizedBox(
+                        height: 30.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.models.length,
+                          itemBuilder: (context, index) {
+                            final car = state.models[index];
+                            final isSelected = _selectedCarModelId == car.id;
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedCarModelId = car.id;
+                                });
+                              },
+                              child: Container(
+                                width: 70.w,
+                                height: 30.h,
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? buttonPrimaryBgColor(
+                                            context,
+                                          ).withOpacity(0.3)
+                                          : Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color:
+                                        isSelected
+                                            ? buttonPrimaryBgColor(context)
+                                            : Colors.grey.shade300,
+                                    width: 2,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  car.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color:
+                                        isSelected
+                                            ? Colors.black
+                                            : Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                    fontSize: 14.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                    if (state is CarModelError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox();
+                  },
+                ),
+
+                SizedBox(height: 15.h),
+
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              locale.isDirectionRTL(context)
+                                  ? 'اسم السيارة '
+                                  : 'Car name ',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                              locale.isDirectionRTL(context)
+                                  ? '( اختياري )'
+                                  : '( Optional )',
+                          style: TextStyle(
+                            color: const Color(0xFF4D4D4D),
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Container(
+                  decoration: ShapeDecoration(
+                    color: cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: carNameController,
+                    decoration: InputDecoration(
+                      hintText:
+                          locale.isDirectionRTL(context)
+                              ? "سيارة الدوام، سيارة العائلة، سيارة أحمد"
+                              : "Work car, family car, Ahmed's car",
+                      hintStyle: TextStyle(color: hintColor),
+
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 12.h,
+                        horizontal: 12.w,
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 15.h),
+
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
+                    locale.isDirectionRTL(context)
+                        ? "سنة الصنع"
+                        : "Year of manufacture",
+                    style: TextStyle(
+                      color: textColor,
+
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                SizedBox(
+                  height: 80.h,
+                  child: ListWheelScrollView.useDelegate(
+                    controller: FixedExtentScrollController(
+                      initialItem: selectedYearIndex,
+                    ),
+                     itemExtent: 30.h,
+                    physics: const FixedExtentScrollPhysics(),
+                    onSelectedItemChanged:
+                        (index) => setState(() => selectedYearIndex = index),
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      builder: (context, index) {
+                        if (index < 0 || index >= years.length) return null;
+                        final isSelected = index == selectedYearIndex;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: double.infinity,
+                          color:
+                          isSelected ? Color(0x3F006D92) : Colors.transparent,
+
+                          child: Center(
+                            child: Text(
+                              years[index],
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected ? textColor : hintColor,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: years.length,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 15.h),
+
+                 Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
+                    locale.isDirectionRTL(context)
+                        ? "ممشى السياره"
+                        : "Car counter",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                  decoration: ShapeDecoration(
+                    color: cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      TextSpan(
-                        text:
-                            locale.isDirectionRTL(context)
-                                ? 'اسم السيارة '
-                                : 'Car name ',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: DottedBorder(
+                          color: borderColor,
+                          strokeWidth: 1,
+                          dashPattern: const [6, 3],
+                          borderType: BorderType.RRect,
+                          radius: Radius.circular(8.r),
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          child: TextField(
+                            controller: kiloReadController,
+                            decoration: InputDecoration(
+                              hintText: '0000000',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 12.h,
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
                         ),
                       ),
-                      TextSpan(
-                        text:
-                            locale.isDirectionRTL(context)
-                                ? '( اختياري )'
-                                : '( Optional )',
-                        style: TextStyle(
-                          color: const Color(0xFF4D4D4D),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
+                      SizedBox(width: 8.w),
+                      Text(
+                        locale.isDirectionRTL(context) ? 'كم' : 'KM',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                decoration: ShapeDecoration(
-                  color: cardColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-                child: TextField(
-                  controller: carNameController,
-                  decoration: InputDecoration(
-                    hintText:
-                        locale.isDirectionRTL(context)
-                            ? "سيارة الدوام، سيارة العائلة، سيارة أحمد"
-                            : "Work car, family car, Ahmed's car",
-                    hintStyle: TextStyle(color: hintColor),
 
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 12.w,
+                SizedBox(height: 15.h),
+
+
+                Align(
+                  alignment:
+                      locale.isDirectionRTL(context)
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                  child: Text(
+                    locale.isDirectionRTL(context)
+                        ? 'إستمارة السيارة ( أختياري )'
+                        : 'Car Registration ( Optional )',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ),
-
-              SizedBox(height: 15.h),
-
-               Align(
-                alignment:
-                    locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? "سنة الصنع"
-                      : "Year of manufacture",
-                  style: TextStyle(
-                    color: textColor,
-
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                SizedBox(height: 10.h),
+                UploadFormWidget(
+                  existingImageUrl: existingCarCertificateUrl,
+                  onImageSelected: (file) => selectedCarDoc = file,
                 ),
-              ),
-              SizedBox(height: 10.h),
-              SizedBox(
-                height: 80.h,
-                child: ListWheelScrollView.useDelegate(
-                  controller: FixedExtentScrollController(
-                    initialItem: selectedYearIndex,
-                  ),
-                   itemExtent: 30.h,
-                  physics: const FixedExtentScrollPhysics(),
-                  onSelectedItemChanged:
-                      (index) => setState(() => selectedYearIndex = index),
-                  childDelegate: ListWheelChildBuilderDelegate(
-                    builder: (context, index) {
-                      if (index < 0 || index >= years.length) return null;
-                      final isSelected = index == selectedYearIndex;
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: double.infinity,
-                        color:
-                        isSelected ? Color(0x3F006D92) : Colors.transparent,
-
-                        child: Center(
-                          child: Text(
-                            years[index],
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w500,
-                              color: isSelected ? textColor : hintColor,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    childCount: years.length,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 15.h),
-
-               Align(
-                alignment:
-                    locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? "ممشى السياره"
-                      : "Car counter",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-                decoration: ShapeDecoration(
-                  color: cardColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: DottedBorder(
-                        color: borderColor,
-                        strokeWidth: 1,
-                        dashPattern: const [6, 3],
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(8.r),
-                        padding: EdgeInsets.symmetric(horizontal: 8.w),
-                        child: TextField(
-                          controller: kiloReadController,
-                          decoration: InputDecoration(
-                            hintText: '0000000',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12.h,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: 15.h),
-
-
-              Align(
-                alignment:
-                    locale.isDirectionRTL(context)
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                child: Text(
-                  locale.isDirectionRTL(context)
-                      ? 'إستمارة السيارة ( أختياري )'
-                      : 'Car Registration ( Optional )',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              UploadFormWidget(
-                existingImageUrl: existingCarCertificateUrl,
-                onImageSelected: (file) => selectedCarDoc = file,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.white10,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14.h),
-                    backgroundColor: buttonPrimaryBgColor(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    final token = prefs.getString('token') ?? '';
-
-                    if (_selectedCarBrandId == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار ماركة السيارة"),
-                        ),
-                      );
-                      return;
-                    }
-
-                    if (_selectedCarModelId == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء اختيار موديل السيارة"),
-                        ),
-                      );
-                      return;
-                    }
-
-                    if (arabicLettersController.text.trim().isEmpty ||
-                        arabicNumbersController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("الرجاء إدخال رقم اللوحة"),
-                        ),
-                      );
-                      return;
-                    }
-
-                     showModalBottomSheet(
-                      context: context,
+          bottomNavigationBar: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            color:
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.white10,
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      backgroundColor: buttonPrimaryBgColor(context),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20.r),
-                        ),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
-                      builder: (context) {
-                        return Padding(
-                          padding: EdgeInsets.all(20.w),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                locale.isDirectionRTL(context)
-                                    ? 'هل تريد حفظ التعديلات؟'
-                                    : 'Do you want to save the changes?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: buttonPrimaryBgColor(context),
-                                  fontSize: 22.sp,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(height: 20.h),
+                    ),
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      final token = prefs.getString('token') ?? '';
 
-                              Image.asset(
-                                'assets/images/save_changes.png',
-                                height: 130.h,
-                                width: 130.w,
-                                color:
-                                    Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.black
-                                        : Colors.white,
-                              ),
-                              SizedBox(height: 15.h),
-                              Text(
-                                locale.isDirectionRTL(context)
-                                    ? 'تم تغيير معلومات السيارة، تبينا نحفظها؟'
-                                    : 'The car information has changed, should we save it?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
+                      if (_selectedCarBrandId == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("الرجاء اختيار ماركة السيارة"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (_selectedCarModelId == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("الرجاء اختيار موديل السيارة"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (arabicLettersController.text.trim().isEmpty ||
+                          arabicNumbersController.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("الرجاء إدخال رقم اللوحة"),
+                          ),
+                        );
+                        return;
+                      }
+
+                       showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20.r),
+                          ),
+                        ),
+                        builder: (context) {
+                          return Padding(
+                            padding: EdgeInsets.all(20.w),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  locale.isDirectionRTL(context)
+                                      ? 'هل تريد حفظ التعديلات؟'
+                                      : 'Do you want to save the changes?',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: buttonPrimaryBgColor(context),
+                                    fontSize: 22.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 20.h),
+
+                                Image.asset(
+                                  'assets/images/save_changes.png',
+                                  height: 130.h,
+                                  width: 130.w,
                                   color:
                                       Theme.of(context).brightness ==
                                               Brightness.light
                                           ? Colors.black
                                           : Colors.white,
-                                  fontSize: 20.sp,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w500,
                                 ),
-                              ),
-                              SizedBox(height: 20.h),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 50.h,
+                                SizedBox(height: 15.h),
+                                Text(
+                                  locale.isDirectionRTL(context)
+                                      ? 'تم تغيير معلومات السيارة، تبينا نحفظها؟'
+                                      : 'The car information has changed, should we save it?',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                    fontSize: 20.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 20.h),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 50.h,
 
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: buttonPrimaryBgColor(
-                                            context,
-                                          ),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: buttonPrimaryBgColor(
+                                              context,
+                                            ),
 
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                10.r,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        onPressed: () async {
-                                          Navigator.pop(
-                                            context,
-                                          );
+                                          onPressed: () async {
+                                            Navigator.pop(
+                                              context,
+                                            );
 
-                                          final boardNoFinal = _buildBoardNo(
-                                            lettersRaw:
-                                                arabicLettersController.text,
-                                            numbersRaw:
-                                                arabicNumbersController.text,
-                                          );
+                                            final boardNoFinal = _buildBoardNo(
+                                              lettersRaw:
+                                                  arabicLettersController.text,
+                                              numbersRaw:
+                                                  arabicNumbersController.text,
+                                            );
 
-                                          final kiloRead =
-                                              int.tryParse(
-                                                _digitsToEn(
-                                                  kiloReadController.text
-                                                      .trim(),
-                                                ),
-                                              ) ??
-                                              0;
-
-                                          await context
-                                              .read<CarCubit>()
-                                              .updateCar(
-                                                carId: widget.carId,
-                                                token: token,
-                                                carBrandId:
-                                                    _selectedCarBrandId ?? 0,
-                                                carModelId:
-                                                    _selectedCarModelId ?? 0,
-                                                creationYear:
-                                                    years[selectedYearIndex],
-                                                boardNo: boardNoFinal,
-                                                translationName:
-                                                    carNameController.text
+                                            final kiloRead =
+                                                int.tryParse(
+                                                  _digitsToEn(
+                                                    kiloReadController.text
                                                         .trim(),
-                                                kiloRead: kiloRead,
-                                                carDocs: selectedCarDoc,
-                                              );
-                                        },
-                                        child: Text(
-                                          'أكيد',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                                  ),
+                                                ) ??
+                                                0;
 
-                                  SizedBox(width: 18.w),
-                                  Expanded(
-                                    child: Container(
-                                      height: 50.h,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.grey[400],
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
+                                            await context
+                                                .read<CarCubit>()
+                                                .updateCar(
+                                                  carId: widget.carId,
+                                                  token: token,
+                                                  carBrandId:
+                                                      _selectedCarBrandId ?? 0,
+                                                  carModelId:
+                                                      _selectedCarModelId ?? 0,
+                                                  creationYear:
+                                                      years[selectedYearIndex],
+                                                  boardNo: boardNoFinal,
+                                                  translationName:
+                                                      carNameController.text
+                                                          .trim(),
+                                                  kiloRead: kiloRead,
+                                                  carDocs: selectedCarDoc,
+                                                );
+                                          },
+                                          child: Text(
+                                            'أكيد',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                         ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          'تراجع',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20.sp,
-                                            fontFamily: 'Graphik Arabic',
-                                            fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+
+                                    SizedBox(width: 18.w),
+                                    Expanded(
+                                      child: Container(
+                                        height: 50.h,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey[400],
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                10.r,
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'تراجع',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Text(
-                    locale.isDirectionRTL(context)
-                        ? 'حفظ التعديلات'
-                        : 'Save Changes',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Graphik Arabic',
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14.h),
-                    backgroundColor:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.white10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      side: const BorderSide(
-                        color: Colors.grey,
-                        width: 1.5,
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      locale.isDirectionRTL(context)
+                          ? 'حفظ التعديلات'
+                          : 'Save Changes',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Graphik Arabic',
                       ),
                     ),
                   ),
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    final token = prefs.getString('token') ?? '';
-
-                    bool confirm = await showDeleteCarBottomSheet(context);
-
-                    false;
-
-                    if (!confirm) return;
-
-                    try {
-                      final response = await Dio().delete(
-                        '$carDeleteApi${widget.carId}',
-                        options: Options(
-                          headers: {
-                            'Authorization': 'Bearer $token',
-                            "Accept-Language": langCode == '' ? "en" : langCode,
-                          },
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      backgroundColor:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.white10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        side: const BorderSide(
+                          color: Colors.grey,
+                          width: 1.5,
                         ),
-                      );
+                      ),
+                    ),
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      final token = prefs.getString('token') ?? '';
 
-                      if (response.statusCode == 200 ||
-                          response.statusCode == 204) {
+                      bool confirm = await showDeleteCarBottomSheet(context);
+
+                      false;
+
+                      if (!confirm) return;
+
+                      try {
+                        final response = await Dio().delete(
+                          '$carDeleteApi${widget.carId}',
+                          options: Options(
+                            headers: {
+                              'Authorization': 'Bearer $token',
+                              "Accept-Language": langCode == '' ? "en" : langCode,
+                            },
+                          ),
+                        );
+
+                        if (response.statusCode == 200 ||
+                            response.statusCode == 204) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                locale.isDirectionRTL(context)
+                                    ? 'تم حذف السيارة بنجاح'
+                                    : 'Car deleted successfully',
+                              ),
+                            ),
+                          );
+                          Navigator.pop(
+                            context,
+                            'deleted',
+                          );
+                        }
+                      } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                               locale.isDirectionRTL(context)
-                                  ? 'تم حذف السيارة بنجاح'
-                                  : 'Car deleted successfully',
+                                  ? 'فشل الحذف'
+                                  : 'Failed to delete car',
                             ),
                           ),
                         );
-                        Navigator.pop(
-                          context,
-                          'deleted',
-                        );
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            locale.isDirectionRTL(context)
-                                ? 'فشل الحذف'
-                                : 'Failed to delete car',
-                          ),
-                        ),
-                      );
-                    }
-                  },
+                    },
 
-                  child: Text(
-                    locale.isDirectionRTL(context)
-                        ? 'حذف السيارة'
-                        : 'Delete Car',
-                    style: TextStyle(
-                      color:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+                    child: Text(
+                      locale.isDirectionRTL(context)
+                          ? 'حذف السيارة'
+                          : 'Delete Car',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -122,8 +122,7 @@ class _FinalReviewState extends State<FinalReview> {
       setState(() {
         previewModel = PaymentPreviewModel.fromJson(data);
 
-        // ✅ استخدم القيمة اللي فعلاً راجعة من السيرفر
-        usedPoints = (previewModel?.breakdown.pointsRequested ?? 0).toInt();
+         usedPoints = (previewModel?.breakdown.pointsRequested ?? 0).toInt();
 
         isLoading = false;
       });

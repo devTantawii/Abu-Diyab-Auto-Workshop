@@ -76,6 +76,12 @@ class PaymentMethodTile extends StatelessWidget {
             width: 42.w,
             height: 30.h,
             fit: BoxFit.contain,
+             errorBuilder: (context, error, stackTrace) {
+              return SizedBox(
+                width: 42.w,
+                height: 30.h,
+              );
+            },
           ),
           SizedBox(width: 12.w),
           Expanded(

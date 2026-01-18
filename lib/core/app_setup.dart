@@ -106,6 +106,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return BlocBuilder<ThemeCubit, ThemeMode>(
               builder: (context, themeMode) {
                 return MaterialApp(
+                  builder: (context, child) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        textScaler: const TextScaler.linear(1.0),
+                      ),
+                      child: child!,
+                    );
+                  },
                   locale: locale,
                   supportedLocales: const [Locale('en'), Locale('ar')],
                   localizationsDelegates: const [

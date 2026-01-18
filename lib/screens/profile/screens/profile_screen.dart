@@ -43,6 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
+
           appBar: CustomGradientAppBar(
             title_ar: 'الملف الشخصي',
             title_en: "profile",
@@ -142,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? state.user
                         : (state as ProfileUpdating).user;
                 return SingleChildScrollView(
-                  padding: EdgeInsets.all(16.w),
+                  padding: EdgeInsets.all(16.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -458,11 +459,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 border: InputBorder.none,
                                 isCollapsed: true,
-                                suffixIcon: Icon(
-                                  Icons.lock,
-                                  size: 20.sp,
-                                  color: Colors.grey,
-                                ),
+                                // suffixIcon: Icon(
+                                //   Icons.lock,
+                                //   size: 20.sp,
+                                //   color: Colors.grey,
+                                // ),
                               ),
                             ),
                           ),
@@ -526,78 +527,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           ),
           bottomNavigationBar: BlocBuilder<ProfileCubit, ProfileState>(
-
             builder: (context, state) {
               if (state is ProfileLoaded || state is ProfileUpdating) {
-                final user =
-                    (state is ProfileLoaded)
-                        ? state.user
-                        : (state as ProfileUpdating).user;
+                final user = (state is ProfileLoaded)
+                    ? state.user
+                    : (state as ProfileUpdating).user;
                 final isLoading = state is ProfileUpdating;
 
                 return Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
+                    horizontal: 20.w,
                     vertical: 10.h,
                   ),
-                  decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.white10,
-
-                    boxShadow: [
+                  decoration: ShapeDecoration(
+                    color: buttonBgWhiteColor(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                    ),
+                    shadows: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6,
-                        offset: Offset(0, -2),
+                        color: Color(0x3F000000),
+                        blurRadius: 12,
+                        offset: Offset(0, 0),
+                        spreadRadius: 6,
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      SizedBox(
+                        height: 50.h,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                            context.read<ProfileCubit>().updateProfile(
+                              id: user.id,
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              phone: _phoneController.text,
+                              imageFile: _pickedImage,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonPrimaryBgColor(context),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: isLoading
+                              ? SizedBox(
+                            height: 22.h,
+                            width: 22.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                              : Text(
+                            locale!.isDirectionRTL(context) ? "تحديث" : "Update",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      SizedBox(
+                        height: 50.h,
 
-                  Expanded(
-                      child: ElevatedButton(
-                      onPressed: isLoading
-                      ? null
-                          : () {
-                context.read<ProfileCubit>().updateProfile(
-                id: user.id,
-                firstName: _firstNameController.text,
-                lastName: _lastNameController.text,
-                phone: _phoneController.text,
-                imageFile: _pickedImage,
-                );
-                },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonPrimaryBgColor(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: isLoading
-                      ? SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                      : Text(
-                    locale!.isDirectionRTL(context) ? "تحديث" : "Update",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-                      SizedBox(width: 12.w),
-                      Expanded(
+                        width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () {
                             showDialog(
@@ -617,24 +623,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   actions: [
                                     TextButton(
                                       child: Text(
-                                        locale.isDirectionRTL(context)
-                                            ? "إلغاء"
-                                            : "Cancel",
+                                        locale.isDirectionRTL(context) ? "إلغاء" : "Cancel",
                                       ),
                                       onPressed: () => Navigator.pop(context),
                                     ),
                                     TextButton(
                                       child: Text(
-                                        locale.isDirectionRTL(context)
-                                            ? "حذف"
-                                            : "Delete",
+                                        locale.isDirectionRTL(context) ? "حذف" : "Delete",
                                         style: TextStyle(color: Colors.red),
                                       ),
                                       onPressed: () {
                                         Navigator.pop(context);
-                                        context
-                                            .read<ProfileCubit>()
-                                            .deleteAccount();
+                                        context.read<ProfileCubit>().deleteAccount();
                                       },
                                     ),
                                   ],
@@ -642,7 +642,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                             );
                           },
-
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
                               color: buttonPrimaryBgColor(context),
@@ -652,9 +651,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           child: Text(
-                            locale!.isDirectionRTL(context)
-                                ? "حذف الحساب"
-                                : "Delete Account",
+                            locale!.isDirectionRTL(context) ? "حذف الحساب" : "Delete Account",
                             style: TextStyle(
                               color: buttonPrimaryBgColor(context),
                               fontSize: 16.sp,

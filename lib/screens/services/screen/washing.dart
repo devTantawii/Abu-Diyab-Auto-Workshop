@@ -24,14 +24,16 @@ class Washing extends StatefulWidget {
   final String title;
   final String description;
   final String icon;
-  final String slug; // ✅ أضف ده
+  final String slug;    final int? productId;
+
 
   const Washing({
     super.key,
     required this.title,
     required this.description,
     required this.icon,
-    required this.slug,
+    required this.slug,    this.productId,
+
   });
 
   @override
@@ -46,9 +48,10 @@ class _WashingState extends State<Washing> {
   List<File> selectedCarDocs = [];
   final TextEditingController notesController = TextEditingController();
   final TextEditingController kiloReadController = TextEditingController();
-  int? _selectedServiceIndex; // العنصر المختار فقط
-  final int itemsPerPage = 4; // عدد المنتجات لكل صفحة
+  int? _selectedServiceIndex;
+  final int itemsPerPage = 4;
   int? _selectedUserCarId;
+  bool _autoSelectedFromSearch = false;
 
   int currentPage = 1;
   final ScrollController _scrollController = ScrollController();
@@ -249,6 +252,22 @@ class _WashingState extends State<Washing> {
                                   endIndex.clamp(0, data.length),
                                 )
                                 : [];
+                        if (widget.productId != null && !_autoSelectedFromSearch) {
+                          final index = data.indexWhere(
+                                (service) => service.id == widget.productId,
+                          );
+
+                          if (index != -1) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              setState(() {
+                                _selectedServiceIndex = index;
+                                currentPage = (index ~/ itemsPerPage) + 1;
+                                _autoSelectedFromSearch = true;
+                              });
+                            });
+                          }
+                        }
+
 
                         return Column(
                           children: [
@@ -480,9 +499,11 @@ class _WashingState extends State<Washing> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedServiceIndex = index;
+          _selectedServiceIndex =
+          _selectedServiceIndex == index ? null : index;
         });
       },
+
       child: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.9,

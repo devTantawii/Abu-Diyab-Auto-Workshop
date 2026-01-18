@@ -46,13 +46,11 @@ class _OffersScreenState extends State<OffersScreen> {
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
           ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          color:backgroundColor(context),
+
         ),
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding:   EdgeInsets.all(10.sp),
           child: Column(
             children: [
               Expanded(
@@ -127,7 +125,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                 return Column(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.all(15.w),
+                                      padding: EdgeInsets.all(10.sp),
                                       child: AnimatedContainer(
                                         duration: const Duration(
                                           milliseconds: 300,

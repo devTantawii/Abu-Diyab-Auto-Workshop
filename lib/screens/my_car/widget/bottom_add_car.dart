@@ -173,7 +173,7 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
       return false;
     }
 
-      return true;
+    return true;
   }
 
   @override
@@ -200,415 +200,416 @@ class _AddCarBottomSheetState extends State<AddCarBottomSheet> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.close, size: 18.sp),
-                ),
-                Text(
-                  locale!.isDirectionRTL(context)
-                      ? 'أضف سيارتك'
-                      : 'Add Your Car',
+        child: GestureDetector(  onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+          child: Column(
+            children: [
+              SizedBox(height: 16.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.close, size: 18.sp),
+                  ),
+                  Text(
+                    locale!.isDirectionRTL(context)
+                        ? 'أضف سيارتك'
+                        : 'Add Your Car',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: headingColor(context),
+                    ),
+                  ),
+                  SizedBox(width: 24.w),
+                ],
+              ),
+              SizedBox(height: 15.h),
+              Align(
+                alignment:
+                    locale.isDirectionRTL(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                child: Text(
+                  locale.isDirectionRTL(context)
+                      ? 'رقم لوحة السيارة'
+                      : 'Car plate number',
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
                     color: headingColor(context),
+                    fontSize: 14.sp,
+                    fontFamily: 'Graphik Arabic',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(width: 24.w),
-              ],
-            ),
-            SizedBox(height: 15.h),
-            Align(
-              alignment:
-                  locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-              child: Text(
-                locale.isDirectionRTL(context)
-                    ? 'رقم لوحة السيارة'
-                    : 'Car plate number',
-                style: TextStyle(
-                  color: headingColor(context),
-                  fontSize: 14.sp,
-                  fontFamily: 'Graphik Arabic',
-                  fontWeight: FontWeight.w600,
-                ),
               ),
-            ),
-            SizedBox(height: 10.h),
+              SizedBox(height: 10.h),
 
-            Row(
-              children: [
-                Expanded(
-                  child: Nemra(
-                    arabicLettersController: arabicLettersController,
-                    englishNumbersController: arabicNumbersController,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.h),
-            CarBrandWidget(
-              titleAr: "اختر ماركة ",
-              titleEn: "Choose a brand",
-              selectedCarBrandId: _selectedCarBrandId,
-              onBrandSelected: (id) {
-                setState(() {
-                  _selectedCarBrandId = id;
-                  _selectedCarModelId = null;
-                });
-                context.read<CarModelCubit>().fetchCarModels(id);
-              },
-            ),
-            SizedBox(height: 15.h),
-            CarModelWidget(
-              titleAr: "اختر الموديل",
-              titleEn: "Choose a  model",
-              selectedCarModelId: _selectedCarModelId,
-              onModelSelected: (id) {
-                setState(() {
-                  _selectedCarModelId = id;
-                });
-              },
-            ),
-            SizedBox(height: 15.h),
-            // ---- اسم السيارة ----
-            Align(
-              alignment:
-                  locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text:
-                          locale.isDirectionRTL(context)
-                              ? 'اسم السيارة '
-                              : 'Car name ',
-                      style: TextStyle(
-                        color: headingColor(context),
-                        fontSize: 14.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    TextSpan(
-                      text:
-                          locale.isDirectionRTL(context)
-                              ? '( اختياري )'
-                              : '( Optional )',
-                      style: TextStyle(
-                        color: paragraphColor(context),
-                        fontSize: 12.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10.h),
-            Container(
-              decoration: ShapeDecoration(
-                color: cardColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.sp),
-                ),
-              ),
-              child: TextField(
-                controller: carNameController,
-                style: TextStyle(color: textColor),
-                decoration: InputDecoration(
-                  hintText:
-                      locale.isDirectionRTL(context)
-                          ? "سيارة الدوام، سيارة العائلة..."
-                          : "Work car, family car...",
-                  hintStyle: TextStyle(color: hintColor),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(12),
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-            ),
-            SizedBox(height: 15.h),
-
-            // ---- سنة الصنع ----
-            Align(
-              alignment:
-                  locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-              child: Text(
-                locale.isDirectionRTL(context)
-                    ? "سنة الصنع"
-                    : "Year of manufacture",
-                style: TextStyle(
-                  color: headingColor(context),
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 80.h,
-              child: ListWheelScrollView.useDelegate(
-                itemExtent: 30.h,
-                physics: const FixedExtentScrollPhysics(),
-                onSelectedItemChanged: (index) {
-                  setState(() => selectedYearIndex = index);
-                },
-                childDelegate: ListWheelChildBuilderDelegate(
-                  builder: (context, index) {
-                    if (index < 0 || index >= years.length) return null;
-                    final isSelected = index == selectedYearIndex;
-                    return Container(
-                      color:
-                          isSelected ? Color(0x3F006D92) : Colors.transparent,
-                      child: Center(
-                        child: Text(
-                          years[index],
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                            color:
-                                isSelected
-                                    ? headingColor(context)
-                                    : paragraphColor(context),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  childCount: years.length,
-                ),
-              ),
-            ),
-            SizedBox(height: 15.h),
-
-            Align(
-              alignment:
-                  locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-              child: Text(
-                locale.isDirectionRTL(context) ? "ممشى السياره" : "Car counter",
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: headingColor(context),
-                ),
-              ),
-            ),
-            SizedBox(height: 10.h),
-            Container(
-              padding: EdgeInsets.all(10.w),
-              decoration: ShapeDecoration(
-                color: cardColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Row(
+              Row(
                 children: [
                   Expanded(
-                    child: DottedBorder(
-                      color: borderColor,
-                      strokeWidth: 1,
-                      dashPattern: const [6, 3],
-                      borderType: BorderType.RRect,
-                      radius: Radius.circular(8.r),
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: TextField(
-                        controller: kiloReadController,
-                        style: TextStyle(color: textColor),
-                        decoration: InputDecoration(
-                          hintText: '0000000',
-                          hintStyle: TextStyle(color: hintColor),
-                          border: InputBorder.none,
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    locale.isDirectionRTL(context) ? 'كم' : 'KM',
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                    child: Nemra(
+                      arabicLettersController: arabicLettersController,
+                      englishNumbersController: arabicNumbersController,
                     ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 10.h),
+              SizedBox(height: 15.h),
+              CarBrandWidget(
+                titleAr: "اختر ماركة ",
+                titleEn: "Choose a brand",
+                selectedCarBrandId: _selectedCarBrandId,
+                onBrandSelected: (id) {
+                  setState(() {
+                    _selectedCarBrandId = id;
+                    _selectedCarModelId = null;
+                  });
+                  context.read<CarModelCubit>().fetchCarModels(id);
+                },
+              ),
+              SizedBox(height: 15.h),
+              CarModelWidget(
+                titleAr: "اختر الموديل",
+                titleEn: "Choose a  model",
+                selectedCarModelId: _selectedCarModelId,
+                onModelSelected: (id) {
+                  setState(() {
+                    _selectedCarModelId = id;
+                  });
+                },
+              ),
+              SizedBox(height: 15.h),
+              Align(
+                alignment:
+                    locale.isDirectionRTL(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? 'اسم السيارة '
+                                : 'Car name ',
+                        style: TextStyle(
+                          color: headingColor(context),
+                          fontSize: 14.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? '( اختياري )'
+                                : '( Optional )',
+                        style: TextStyle(
+                          color: paragraphColor(context),
+                          fontSize: 12.sp,
+                          fontFamily: 'Graphik Arabic',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                decoration: ShapeDecoration(
+                  color: cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.sp),
+                  ),
+                ),
+                child: TextField(
+                  controller: carNameController,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    hintText:
+                        locale.isDirectionRTL(context)
+                            ? "سيارة الدوام، سيارة العائلة..."
+                            : "Work car, family car...",
+                    hintStyle: TextStyle(color: hintColor),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.all(12),
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+              SizedBox(height: 15.h),
 
-            // ---- الاستمارة ----
-            Align(
-              alignment:
+              Align(
+                alignment:
+                    locale.isDirectionRTL(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                child: Text(
                   locale.isDirectionRTL(context)
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-              child: Text.rich(
-                TextSpan(
+                      ? "سنة الصنع"
+                      : "Year of manufacture",
+                  style: TextStyle(
+                    color: headingColor(context),
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 80.h,
+                child: ListWheelScrollView.useDelegate(
+                  itemExtent: 30.h,
+                  physics: const FixedExtentScrollPhysics(),
+                  onSelectedItemChanged: (index) {
+                    setState(() => selectedYearIndex = index);
+                  },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    builder: (context, index) {
+                      if (index < 0 || index >= years.length) return null;
+                      final isSelected = index == selectedYearIndex;
+                      return Container(
+                        color:
+                            isSelected ? Color(0x3F006D92) : Colors.transparent,
+                        child: Center(
+                          child: Text(
+                            years[index],
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                              color:
+                                  isSelected
+                                      ? headingColor(context)
+                                      : paragraphColor(context),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: years.length,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.h),
+
+              Align(
+                alignment:
+                    locale.isDirectionRTL(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                child: Text(
+                  locale.isDirectionRTL(context) ? "ممشى السياره" : "Car counter",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: headingColor(context),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.all(10.w),
+                decoration: ShapeDecoration(
+                  color: cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Row(
                   children: [
-                    TextSpan(
-                      text:
-                          locale.isDirectionRTL(context)
-                              ? 'إستمارة السيارة '
-                              : 'Car Registration ',
-                      style: TextStyle(
-                        color: headingColor(context),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: DottedBorder(
+                        color: borderColor,
+                        strokeWidth: 1,
+                        dashPattern: const [6, 3],
+                        borderType: BorderType.RRect,
+                        radius: Radius.circular(8.r),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: TextField(
+                          controller: kiloReadController,
+                          style: TextStyle(color: textColor),
+                          decoration: InputDecoration(
+                            hintText: '0000000',
+                            hintStyle: TextStyle(color: hintColor),
+                            border: InputBorder.none,
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                        ),
                       ),
                     ),
-                    TextSpan(
-                      text:
-                          locale.isDirectionRTL(context)
-                              ? '( اختياري )'
-                              : '( Optional )',
+                    SizedBox(width: 8.w),
+                    Text(
+                      locale.isDirectionRTL(context) ? 'كم' : 'KM',
                       style: TextStyle(
-                        color: paragraphColor(context),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
+                        color: textColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 10.h),
-            UploadFormWidget(
-              onImageSelected: (file) {
-                selectedCarDoc = file;
-              },
-            ),
-            SizedBox(height: 15.h),
-            // ---- زر الإضافة ----
-            SizedBox(height: 20.h),
-            BlocConsumer<AddCarCubit, AddCarState>(
-              listener: (context, state) {
-                if (state is AddCarSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "✅ ${state.message}",
-                        style: TextStyle(color: headingColor(context)),
+              SizedBox(height: 10.h),
+
+              Align(
+                alignment:
+                    locale.isDirectionRTL(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? 'إستمارة السيارة '
+                                : 'Car Registration ',
+                        style: TextStyle(
+                          color: headingColor(context),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  );
-                  Navigator.pop(context, true);
-                } else if (state is AddCarError) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      TextSpan(
+                        text:
+                            locale.isDirectionRTL(context)
+                                ? '( اختياري )'
+                                : '( Optional )',
+                        style: TextStyle(
+                          color: paragraphColor(context),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
                         ),
-                        title:  Text(
-                          "حدث خطأ حاول مره اخرى ",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15.sp,
-                            fontWeight:FontWeight.w500,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              UploadFormWidget(
+                onImageSelected: (file) {
+                  selectedCarDoc = file;
+                },
+              ),
+              SizedBox(height: 15.h),
+              SizedBox(height: 20.h),
+              BlocConsumer<AddCarCubit, AddCarState>(
+                listener: (context, state) {
+                  if (state is AddCarSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "✅ ${state.message}",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
+                    );
+                    Navigator.pop(context, true);
+                  } else if (state is AddCarError) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                        // content: Text(
-                        //   state.message,
-                        //   style: TextStyle(fontSize: 10.sp),
-                        // ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              "حسنًا",
-                              style: TextStyle(color: Colors.black),
+                          title: Text(
+                            "حدث خطأ حاول مره اخرى ",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
-                      );
-                    },
+                          // content: Text(
+                          //   state.message,
+                          //   style: TextStyle(fontSize: 10.sp),
+                          // ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "حسنًا",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is AddCarLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  return SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: typographyMainColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                      ),
+                      onPressed: () async {
+                        if (!_validateInputs(context)) return;
+
+                        final numbersRaw = arabicNumbersController.text;
+                        final lettersRaw = arabicLettersController.text;
+                        final boardNoFinal = _buildBoardNo(
+                          lettersRaw: lettersRaw,
+                          numbersRaw: numbersRaw,
+                        );
+
+                        final prefs = await SharedPreferences.getInstance();
+                        final token = prefs.getString('token');
+                        if (token == null) return;
+
+                        final kiloEn = _digitsToEn(
+                          kiloReadController.text.trim(),
+                        );
+                        final kiloInt = int.tryParse(kiloEn);
+
+                        context.read<AddCarCubit>().addCar(
+                          carModelId: _selectedCarModelId!,
+                          carBrandId: _selectedCarBrandId!,
+                          token: token,
+                          carCertificate: selectedCarDoc,
+                          kilometre: kiloInt.toString(),
+                          name:
+                              carNameController.text.trim().isEmpty
+                                  ? null
+                                  : carNameController.text.trim(),
+                          licencePlate: boardNoFinal,
+                          year: years[selectedYearIndex],
+                        );
+                      },
+                      child: Text(
+                        locale.isDirectionRTL(context)
+                            ? 'أضف سيارتي'
+                            : 'Add My Car',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   );
-                }
-              },
-              builder: (context, state) {
-                if (state is AddCarLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: typographyMainColor(context),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
-                    onPressed: () async {
-                      if (!_validateInputs(context)) return;
-
-                      final numbersRaw = arabicNumbersController.text;
-                      final lettersRaw = arabicLettersController.text;
-                      final boardNoFinal = _buildBoardNo(
-                        lettersRaw: lettersRaw,
-                        numbersRaw: numbersRaw,
-                      );
-
-                      final prefs = await SharedPreferences.getInstance();
-                      final token = prefs.getString('token');
-                      if (token == null) return;
-
-                      final kiloEn = _digitsToEn(
-                        kiloReadController.text.trim(),
-                      );
-                      final kiloInt = int.tryParse(kiloEn);
-
-                      context.read<AddCarCubit>().addCar(
-                        carModelId: _selectedCarModelId!,
-                        carBrandId: _selectedCarBrandId!,
-                        token: token,
-                        carCertificate: selectedCarDoc,
-                        kilometre: kiloInt.toString(),
-                        name:
-                            carNameController.text.trim().isEmpty
-                                ? null
-                                : carNameController.text.trim(),
-                        licencePlate: boardNoFinal,
-                        year: years[selectedYearIndex],
-                      );
-                    },
-                    child: Text(
-                      locale.isDirectionRTL(context)
-                          ? 'أضف سيارتي'
-                          : 'Add My Car',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 20.h),
-          ],
+                },
+              ),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
     );

@@ -25,8 +25,8 @@ android {
         applicationId = "com.abudiyab.workshop"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.3"
+        versionCode = 8
+        versionName = "1.0.5"
     }
     signingConfigs {
         create("release") {

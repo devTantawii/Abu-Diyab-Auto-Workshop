@@ -11,6 +11,7 @@ import 'package:abu_diyab_workshop/screens/auth/screen/sign_up.dart';
 import 'package:abu_diyab_workshop/screens/auth/widget/support_bottom_sheet.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/language/locale.dart';
+import '../../my_car/screen/my_cars_screen.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
 import '../widget/build_label.dart';
@@ -47,7 +48,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
         duration: const Duration(milliseconds: 200),
         padding: MediaQuery.of(context).viewInsets,
         child: Container(
-          width: MediaQuery.of(context).size.width, // ياخذ عرض الشاشة كله
+          width: MediaQuery.of(context).size.width,
 
           padding: EdgeInsets.all(20.sp),
           decoration: BoxDecoration(
@@ -65,31 +66,34 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Container(
-                        width: 100.w,
-                        height: 6.h,
-                        margin: EdgeInsets.only(bottom: 12.h),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(10.r),
+                    Row(
+                      children: [
+                        Text(
+                          locale!.isDirectionRTL(context)
+                              ? 'حيّاك! سجل دخولك'
+                              : "Welcome! Log in",
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                            fontSize: 17.sp,
+                            fontFamily: 'Graphik Arabic',
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ),
-
-                    Text(
-                      locale!.isDirectionRTL(context)
-                          ? 'حيّاك! سجل دخولك'
-                          : "Welcome! Log in",
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
-                        fontSize: 17.sp,
-                        fontFamily: 'Graphik Arabic',
-                        fontWeight: FontWeight.w600,
-                      ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.cancel,
+                            color: typographyMainColor(context),
+                            size: 25.sp,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10.h),
                     Text(
@@ -106,7 +110,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 15.h),
 
                     build_label(
                       text:
@@ -145,7 +149,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       },
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                          _isPasswordHidden
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.grey,
                         ),
                         onPressed: () {
@@ -156,7 +162,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       ),
                     ),
 
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 15.h),
                     SizedBox(height: 6.h),
                     BlocConsumer<LoginCubit, LoginState>(
                       listener: (context, state) {
@@ -172,24 +178,25 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                         } else if (state is LoginFailure) {
                           showDialog(
                             context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                  locale!.isDirectionRTL(context)
-                                      ? 'خطأ في تسجيل الدخول'
-                                      : 'Login error',
-                            ),
-                              content: Text(state.message),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('حسناً'),
+                            builder:
+                                (context) => AlertDialog(
+                                  title: Text(
+                                    locale!.isDirectionRTL(context)
+                                        ? 'خطأ في تسجيل الدخول'
+                                        : 'Login error',
+                                  ),
+                                  content: Text(state.message),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('حسناً'),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
                           );
-                        //  ScaffoldMessenger.of(context).showSnackBar(
-                        //    SnackBar(content: Text(state.message)),
-                        //  );
+                          //  ScaffoldMessenger.of(context).showSnackBar(
+                          //    SnackBar(content: Text(state.message)),
+                          //  );
                         } else if (state is LoginNeedsVerification) {
                           showModalBottomSheet(
                             context: context,
@@ -225,7 +232,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                       }
                                     },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:typographyMainColor(context),
+                              backgroundColor: typographyMainColor(context),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -236,9 +243,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                       color: Colors.white,
                                     )
                                     : Text(
-                                  locale!.isDirectionRTL(context)
-                                      ? 'تسجيل الدخول'
-                                      : 'Login',
+                                      locale!.isDirectionRTL(context)
+                                          ? 'تسجيل الدخول'
+                                          : 'Login',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.sp,
@@ -288,9 +295,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
+                          SizedBox(width: 5.w),
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
@@ -458,9 +463,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
       obscureText: obscureText,
       validator: validator,
       inputFormatters:
-      maxLength != null
-          ? [LengthLimitingTextInputFormatter(maxLength)]
-          : null,
+          maxLength != null
+              ? [LengthLimitingTextInputFormatter(maxLength)]
+              : null,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
         hintText: hint,
@@ -478,5 +483,4 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
       ),
     );
   }
-
 }

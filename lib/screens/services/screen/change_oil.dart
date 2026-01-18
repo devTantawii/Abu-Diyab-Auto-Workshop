@@ -32,13 +32,15 @@ class ChangeOil extends StatefulWidget {
   final String description;
   final String icon;
   final String slug;
+  final int? productId;
 
   const ChangeOil({
     super.key,
     required this.title,
     required this.description,
     required this.icon,
-    required this.slug,
+    required this.slug,    this.productId,
+
   });
 
   @override
@@ -51,6 +53,7 @@ class _ChangeOilState extends State<ChangeOil> {
   final TextEditingController searchController = TextEditingController();
   String? selectedViscosity;
   List<File> selectedCarDocs = [];
+  bool _autoSelectedFromSearch = false;
 
   final List<String> viscosityOptions = [
     '0W-20',
@@ -529,7 +532,21 @@ class _ChangeOilState extends State<ChangeOil> {
                                 startIndex,
                                 endIndex,
                               );
+                              if (widget.productId != null && !_autoSelectedFromSearch) {
+                                final index = oils.indexWhere(
+                                      (oils) => oils.id == widget.productId,
+                                );
 
+                                if (index != -1) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    setState(() {
+                                      _selectedOilIndex = index;
+                                      currentPage = (index ~/ itemsPerPage) + 1;
+                                      _autoSelectedFromSearch = true;
+                                    });
+                                  });
+                                }
+                              }
                               return Column(
                                 children: [
                                   ListView.builder(

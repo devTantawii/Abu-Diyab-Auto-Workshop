@@ -30,8 +30,7 @@ class ServicesCubit extends Cubit<ServicesState> {
       if (response.statusCode == 200) {
         final data = response.data['data'];
 
-        // ✅ استخراج القوائم الجديدة
-        final List servicesJson = data['services'] ?? [];
+         final List servicesJson = data['services'] ?? [];
         final List productsJson = data['products'] ?? [];
 
         final services = servicesJson

@@ -71,13 +71,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               topLeft: Radius.circular(15.sp),
               topRight: Radius.circular(15.sp),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color:backgroundColor(context),
+
           ),
           child: Padding(
-            padding: EdgeInsets.all(20.w),
+            padding: EdgeInsets.all(20.sp),
             child: BlocBuilder<CarCubit, CarState>(
               builder: (context, state) {
                 if (state is CarLoading) {

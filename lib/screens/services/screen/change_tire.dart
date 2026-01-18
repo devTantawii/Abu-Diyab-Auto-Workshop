@@ -31,7 +31,8 @@ class ChangeTire extends StatefulWidget {
   final String title;
   final String description;
   final String icon;
-  final String slug; // ✅ أضف ده
+  final String slug;
+  final int? productId;
 
   const ChangeTire({
     super.key,
@@ -39,6 +40,7 @@ class ChangeTire extends StatefulWidget {
     required this.description,
     required this.icon,
     required this.slug,
+    this.productId,
   });
 
   @override
@@ -58,7 +60,7 @@ class _ChangeTireState extends State<ChangeTire> {
   String? selectedTireSize;
 
   int currentPage = 1;
-  final int itemsPerPage = 5; // عدد العناصر في كل صفحة
+  final int itemsPerPage = 5;
   ScrollController _scrollController = ScrollController();
   final List<String> tireSizeOptions = [
     'R-14',
@@ -69,6 +71,7 @@ class _ChangeTireState extends State<ChangeTire> {
     'R-19',
     'R-20',
   ];
+  bool _autoSelectedFromSearch = false;
 
   @override
   void initState() {
@@ -654,30 +657,42 @@ class _ChangeTireState extends State<ChangeTire> {
                                         height: 100.h,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            15.r,
-                                          ),
+                                          borderRadius: BorderRadius.circular(15.r),
                                         ),
                                       ),
                                     );
                                   }),
                                 ),
                               );
-                            } else if (state is TireLoaded) {
+                            }
+                            else if (state is TireLoaded) {
                               final tires = state.tires;
-                              final totalPages =
-                                  (tires.length / itemsPerPage).ceil();
+                              final totalPages = (tires.length / itemsPerPage).ceil();
 
-                              if (currentPage > totalPages)
-                                currentPage = totalPages > 0 ? totalPages : 1;
+
+                              if (widget.productId != null && !_autoSelectedFromSearch) {
+                                final index = tires.indexWhere(
+                                      (tire) => tire.id == widget.productId,
+                                );
+
+                                if (index != -1) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    setState(() {
+                                      selectedTireIndex = index;
+                                      currentPage = (index ~/ itemsPerPage) + 1;
+                                      _autoSelectedFromSearch = true;
+                                    });
+                                  });
+                                }
+                              }
+
+                              if (currentPage > totalPages) currentPage = totalPages > 0 ? totalPages : 1;
                               if (currentPage < 1) currentPage = 1;
 
-                              final startIndex =
-                                  (currentPage - 1) * itemsPerPage;
-                              final endIndex =
-                                  (startIndex + itemsPerPage) > tires.length
-                                      ? tires.length
-                                      : startIndex + itemsPerPage;
+                              final startIndex = (currentPage - 1) * itemsPerPage;
+                              final endIndex = (startIndex + itemsPerPage) > tires.length
+                                  ? tires.length
+                                  : startIndex + itemsPerPage;
                               final currentItems = tires.sublist(
                                 startIndex.clamp(0, tires.length),
                                 endIndex.clamp(0, tires.length),
@@ -688,99 +703,69 @@ class _ChangeTireState extends State<ChangeTire> {
                                   ListView.builder(
                                     controller: _scrollController,
                                     shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     itemCount: currentItems.length,
                                     itemBuilder: (context, index) {
                                       final tire = currentItems[index];
                                       final actualIndex = startIndex + index;
-                                      final isSelected =
-                                          selectedTireIndex == actualIndex;
+                                      final isSelected = selectedTireIndex == actualIndex;
 
                                       void toggleSelection() {
                                         setState(() {
-                                          selectedTireIndex =
-                                              isSelected ? null : actualIndex;
+                                          selectedTireIndex = isSelected ? null : actualIndex;
                                         });
                                       }
 
                                       return GestureDetector(
                                         onTap: toggleSelection,
                                         child: Container(
-                                          margin: EdgeInsets.symmetric(
-                                            vertical: 8.h,
-                                          ),
+                                          margin: EdgeInsets.symmetric(vertical: 8.h),
                                           padding: EdgeInsets.all(12.w),
                                           decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.light
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                            borderRadius: BorderRadius.circular(
-                                              15.r,
-                                            ),
+                                            color: Theme.of(context).brightness == Brightness.light
+                                                ? Colors.white
+                                                : Colors.black,
+                                            borderRadius: BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1.5.w,
-                                              color:
-                                                  isSelected
-                                                      ? typographyMainColor(
-                                                        context,
-                                                      )
-                                                      : const Color(0xFF9B9B9B),
+                                              color: isSelected
+                                                  ? typographyMainColor(context)
+                                                  : const Color(0xFF9B9B9B),
                                             ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(
-                                                  0.25,
-                                                ),
+                                                color: Colors.black.withOpacity(0.25),
                                                 blurRadius: 12.r,
                                                 offset: Offset(0, 4.h),
                                               ),
                                             ],
                                           ),
                                           child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Transform.scale(
                                                 scale: 1.2.sp,
                                                 child: Checkbox(
                                                   value: isSelected,
-                                                  onChanged:
-                                                      (_) => toggleSelection(),
+                                                  onChanged: (_) => toggleSelection(),
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          4.r,
-                                                        ),
+                                                    borderRadius: BorderRadius.circular(4.r),
                                                   ),
                                                   side: BorderSide(
-                                                    color:
-                                                        isSelected
-                                                            ? typographyMainColor(
-                                                              context,
-                                                            )
-                                                            : const Color(
-                                                              0xFF474747,
-                                                            ),
+                                                    color: isSelected
+                                                        ? typographyMainColor(context)
+                                                        : const Color(0xFF474747),
                                                     width: 1.2,
                                                   ),
                                                   checkColor: Colors.white,
-                                                  activeColor:
-                                                      typographyMainColor(
-                                                        context,
-                                                      ),
-                                                  materialTapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
+                                                  activeColor: typographyMainColor(context),
+                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                 ),
                                               ),
                                               SizedBox(width: 12.w),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
                                                       children: [
@@ -788,61 +773,36 @@ class _ChangeTireState extends State<ChangeTire> {
                                                           child: Text(
                                                             tire.name,
                                                             maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                            overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
-                                                              color:
-                                                                  Theme.of(
-                                                                            context,
-                                                                          ).brightness ==
-                                                                          Brightness
-                                                                              .light
-                                                                      ? Colors
-                                                                          .black
-                                                                      : Colors
-                                                                          .white,
+                                                              color: Theme.of(context).brightness == Brightness.light
+                                                                  ? Colors.black
+                                                                  : Colors.white,
                                                               fontSize: 14.sp,
-                                                              fontFamily:
-                                                                  'Graphik Arabic',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                              fontFamily: 'Graphik Arabic',
+                                                              fontWeight: FontWeight.w600,
                                                             ),
                                                           ),
                                                         ),
                                                         SizedBox(width: 8.w),
                                                         Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
+                                                          mainAxisSize: MainAxisSize.min,
                                                           children: [
                                                             Text(
                                                               "${tire.price}",
                                                               style: TextStyle(
-                                                                color:
-                                                                    typographyMainColor(
-                                                                      context,
-                                                                    ),
-
+                                                                color: typographyMainColor(context),
                                                                 fontSize: 16.sp,
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                fontFamily: 'Poppins',
+                                                                fontWeight: FontWeight.w600,
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                              width: 4.w,
-                                                            ),
+                                                            SizedBox(width: 4.w),
                                                             Image.asset(
                                                               'assets/icons/ryal.png',
                                                               width: 20.w,
                                                               height: 20.h,
-                                                              color:
-                                                                  typographyMainColor(
-                                                                    context,
-                                                                  ),
+                                                              color: typographyMainColor(context),
                                                             ),
                                                           ],
                                                         ),
@@ -850,44 +810,32 @@ class _ChangeTireState extends State<ChangeTire> {
                                                     ),
                                                     SizedBox(height: 6.h),
                                                     Text(
-                                                      locale.isDirectionRTL(
-                                                            context,
-                                                          )
+                                                      locale.isDirectionRTL(context)
                                                           ? "التفاصيل : ${tire.description}"
                                                           : "Description: ${tire.description}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: paragraphColor(
-                                                          context,
-                                                        ),
+                                                        color: paragraphColor(context),
                                                       ),
                                                     ),
                                                     Text(
-                                                      locale.isDirectionRTL(
-                                                        context,
-                                                      )
+                                                      locale.isDirectionRTL(context)
                                                           ? "المقاس : ${tire.size}"
                                                           : "Size : ${tire.size}",
                                                       style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: paragraphColor(
-                                                          context,
-                                                        ),
+                                                        color: paragraphColor(context),
                                                       ),
                                                     ),
                                                     Text(
-                                                      locale.isDirectionRTL(
-                                                        context,
-                                                      )
+                                                      locale.isDirectionRTL(context)
                                                           ? "بلد المنشأ: ${tire.country}"
-                                                          : "Country of Origin: ${tire.country}",                                                      style: TextStyle(
+                                                          : "Country of Origin: ${tire.country}",
+                                                      style: TextStyle(
                                                         fontSize: 11.sp,
-                                                        color: paragraphColor(
-                                                          context,
-                                                        ),
+                                                        color: paragraphColor(context),
                                                       ),
                                                     ),
-
                                                   ],
                                                 ),
                                               ),
@@ -901,30 +849,18 @@ class _ChangeTireState extends State<ChangeTire> {
                                   SizedBox(height: 12.h),
                                   Center(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                          0.9,
+                                      width: MediaQuery.of(context).size.width * 0.9,
                                       height: 60.h,
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           GestureDetector(
-                                            onTap:
-                                                currentPage < totalPages
-                                                    ? () => setState(
-                                                      () => currentPage++,
-                                                    )
-                                                    : null,
+                                            onTap: currentPage < totalPages ? () => setState(() => currentPage++) : null,
                                             child: Icon(
                                               Icons.arrow_left,
                                               size: 50.sp,
-                                              color:
-                                                  currentPage < totalPages
-                                                      ? iconGrayColor(context)
-                                                      : iconGrayColor(context),
+                                              color: currentPage < totalPages ? iconGrayColor(context) : iconGrayColor(context),
                                             ),
                                           ),
                                           SizedBox(width: 12.w),
@@ -935,8 +871,7 @@ class _ChangeTireState extends State<ChangeTire> {
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                 color: iconGrayColor(context),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.r),
+                                                borderRadius: BorderRadius.circular(8.r),
                                               ),
                                               child: Text(
                                                 '${currentPage + 1}',
@@ -947,18 +882,14 @@ class _ChangeTireState extends State<ChangeTire> {
                                                 ),
                                               ),
                                             ),
-                                          if (currentPage < totalPages)
-                                            SizedBox(width: 8.w),
+                                          if (currentPage < totalPages) SizedBox(width: 8.w),
                                           Container(
                                             width: 50.w,
                                             height: 50.h,
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
-                                              color: typographyMainColor(
-                                                context,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
+                                              color: typographyMainColor(context),
+                                              borderRadius: BorderRadius.circular(8.r),
                                             ),
                                             child: Text(
                                               '$currentPage',
@@ -971,19 +902,11 @@ class _ChangeTireState extends State<ChangeTire> {
                                           ),
                                           SizedBox(width: 12.w),
                                           GestureDetector(
-                                            onTap:
-                                                currentPage > 1
-                                                    ? () => setState(
-                                                      () => currentPage--,
-                                                    )
-                                                    : null,
+                                            onTap: currentPage > 1 ? () => setState(() => currentPage--) : null,
                                             child: Icon(
                                               Icons.arrow_right,
                                               size: 50.sp,
-                                              color:
-                                                  currentPage > 1
-                                                      ? iconGrayColor(context)
-                                                      : iconGrayColor(context),
+                                              color: currentPage > 1 ? iconGrayColor(context) : iconGrayColor(context),
                                             ),
                                           ),
                                         ],

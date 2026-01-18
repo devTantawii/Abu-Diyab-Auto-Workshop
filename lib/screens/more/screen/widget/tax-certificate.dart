@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_view/photo_view.dart';
 
 import '../../../services/widgets/custom_app_bar.dart';
 import '../../Cubit/static_pages_cubit.dart';
@@ -59,13 +60,26 @@ class Tax_Certificate extends StatelessWidget {
                         ),
                       ],
                     )
-                        : Image.network(
-                      taxCertificateUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Text("تعذر تحميل الصورة",
-                              style: TextStyle(fontSize: 14.sp)),
+                        : PhotoView(
+                      imageProvider: NetworkImage(taxCertificateUrl),
+                      backgroundDecoration: BoxDecoration(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFFEAEAEA)
+                            : Colors.black,
+                      ),
+                      minScale: PhotoViewComputedScale.contained,
+                      maxScale: PhotoViewComputedScale.covered * 3,
+                      loadingBuilder: (context, event) => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorBuilder: (context, error, stackTrace) => Center(
+                        child: Text(
+                          "تعذر تحميل الصورة",
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ),
                     ),
+
                   ),
                 ),
               );
@@ -76,7 +90,7 @@ class Tax_Certificate extends StatelessWidget {
                     state.message,
                     style: TextStyle(
                       color: Colors.red,
-                      fontSize: 16.sp, // ريسبونسف
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),

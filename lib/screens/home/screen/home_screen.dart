@@ -292,7 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: _screens[_currentIndex],
           ),
-          bottomNavigationBar: SizedBox(
+          bottomNavigationBar: Container(
+            color:backgroundColor(context),
             // height: 75.h, // responsive height
             child: _buildBottomNavigationBar(isRTL),
           ),
@@ -308,9 +309,10 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            blurRadius: 10.r,
-            offset: Offset(0, -1.h),
+            color: shadowColor(context),
+            blurRadius: 12,
+            offset: Offset(0, 0),
+            spreadRadius: 0,
           ),
         ],
       ),

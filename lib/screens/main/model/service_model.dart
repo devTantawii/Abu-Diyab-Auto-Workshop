@@ -31,12 +31,12 @@ class ServicesData {
     return ServicesData(
       products: (json['products'] as List<dynamic>?)
           ?.map((e) => ProductModel.fromJson(e))
-          .toList()
-          ?? [],
+          .toList() ??
+          [],
       services: (json['services'] as List<dynamic>?)
           ?.map((e) => ServiceModel.fromJson(e))
-          .toList()
-          ?? [],
+          .toList() ??
+          [],
     );
   }
 }
@@ -48,7 +48,7 @@ class ProductModel {
   final String icon;
   final String slug;
   final int status;
-  final List<OfferModel> offer;
+  final OfferModel? offer;
 
   ProductModel({
     required this.id,
@@ -57,7 +57,7 @@ class ProductModel {
     required this.icon,
     required this.slug,
     required this.status,
-    required this.offer,
+    this.offer,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -68,10 +68,9 @@ class ProductModel {
       icon: json['icon'] ?? '',
       slug: json['slug'] ?? '',
       status: json['status'] ?? 0,
-      offer: (json['offer'] as List<dynamic>?)
-          ?.map((e) => OfferModel.fromJson(e))
-          .toList()
-          ?? [],
+      offer: json['offer'] != null
+          ? OfferModel.fromJson(json['offer'])
+          : null,
     );
   }
 }
@@ -84,7 +83,7 @@ class ServiceModel {
   final String slug;
   final String fees;
   final int status;
-  final List<OfferModel> offer;
+  final OfferModel? offer;
 
   ServiceModel({
     required this.id,
@@ -94,7 +93,7 @@ class ServiceModel {
     required this.slug,
     required this.fees,
     required this.status,
-    required this.offer,
+    this.offer,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -106,23 +105,25 @@ class ServiceModel {
       slug: json['slug'] ?? '',
       fees: json['fees']?.toString() ?? '0',
       status: json['status'] ?? 0,
-      offer: (json['offer'] as List<dynamic>?)
-          ?.map((e) => OfferModel.fromJson(e))
-          .toList()
-          ?? [],
+      offer: json['offer'] != null
+          ? OfferModel.fromJson(json['offer'])
+          : null,
     );
   }
 }
+
 class OfferModel {
   final int id;
-  final int productId;
+  final int? productId;
+  final int? serviceId;
   final String discount;
-  final String type; // percentage or fixed
+  final String type; // percentage | fixed
   final String expiredAt;
 
   OfferModel({
     required this.id,
-    required this.productId,
+    this.productId,
+    this.serviceId,
     required this.discount,
     required this.type,
     required this.expiredAt,
@@ -131,7 +132,8 @@ class OfferModel {
   factory OfferModel.fromJson(Map<String, dynamic> json) {
     return OfferModel(
       id: json['id'] ?? 0,
-      productId: json['product_id'] ?? 0,
+      productId: json['product_id'],
+      serviceId: json['service_id'],
       discount: json['discount'] ?? '',
       type: json['type'] ?? '',
       expiredAt: json['expired_at'] ?? '',

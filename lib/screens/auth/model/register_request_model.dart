@@ -5,7 +5,7 @@ class RegisterRequestModel {
   final String password;
   final String? fcm;
   final String? referral;
-  final String? idNumber; // ✅ جديد: رقم الهوية
+  final String? idNumber;
 
   RegisterRequestModel({
     required this.name,
@@ -14,7 +14,7 @@ class RegisterRequestModel {
     required this.password,
     this.fcm,
     this.referral,
-    this.idNumber, // ✅ جديد
+    this.idNumber,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,7 +26,7 @@ class RegisterRequestModel {
       "password_confirmation": password,
       if (fcm != null) "fcm": fcm,
       if (referral != null && referral!.isNotEmpty) "referral": referral,
-      if (idNumber != null && idNumber!.isNotEmpty) "id_number": idNumber, // ✅ key: id_number
+      if (idNumber != null && idNumber!.isNotEmpty) "id_number": idNumber,
     };
   }
 }

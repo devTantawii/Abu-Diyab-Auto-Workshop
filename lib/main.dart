@@ -25,13 +25,16 @@ import 'package:abu_diyab_workshop/screens/reminds/cubit/user_car_note_cubit.dar
 import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/car_check_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/oil_cubit.dart';
+import 'package:abu_diyab_workshop/screens/services/cubit/search_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/tire_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/washing_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/battery_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/car_check_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/oil_repo.dart';
+import 'package:abu_diyab_workshop/screens/services/repo/search_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/tire_repo.dart';
 import 'package:abu_diyab_workshop/screens/services/repo/washing_repo.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/search_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +49,8 @@ import 'language/languageCubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await FcmApi().initNotifications();
-
+    await Firebase.initializeApp();
+    await FcmApi().initNotifications();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Color(0xFF006D92),
@@ -99,6 +101,10 @@ void main() async {
         BlocProvider(create: (_) => BakatCubit()..getPackages()),
         BlocProvider(create: (_) => OldOrdersCubit()..getOldOrders()),
         BlocProvider(create: (_) => AppSettingsCubit()..fetchAppSettings()),
+  BlocProvider(
+  create: (_) => SearchCubit(SearchApi()),
+  child: const SearchScreen(),
+  ),
 
         BlocProvider<RewardLogsCubit>(
           create: (_) => RewardLogsCubit(profileRepository)..fetchRewardLogs(),

@@ -21,6 +21,7 @@ import '../../reminds/cubit/notes_details_cubit.dart';
 import '../../reminds/cubit/user_car_note_cubit.dart';
 import '../../reminds/cubit/user_car_note_state.dart';
 import '../../reminds/screen/widget/notes_details.dart';
+import '../../services/screen/search_screen.dart';
 import '../cubit/services_cubit.dart';
 import '../cubit/services_state.dart';
 import '../model/service_model.dart';
@@ -34,6 +35,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   String _username = 'زائر';
+  String _usernameen = 'visitor';
   String? _profileImagePath;
 
   final Dio dio = Dio();
@@ -55,6 +57,7 @@ class _MainScreenState extends State<MainScreen> {
     if (user != null) {
       setState(() {
         _username = user.name;
+        _usernameen = user.name;
         _profileImagePath = user.image;
       });
     } else {
@@ -66,6 +69,7 @@ class _MainScreenState extends State<MainScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username') ?? 'زائر';
+      _usernameen = prefs.getString('username') ?? 'visitor';
       _profileImagePath = prefs.getString('profile_image');
     });
   }
@@ -148,23 +152,23 @@ class _MainScreenState extends State<MainScreen> {
                           Text(
                             (locale!.isDirectionRTL(context)
                                         ? "حيّاك $_username"
-                                        : "Hello $_username")
+                                        : "Hello $_usernameen")
                                     .substring(
                                       0,
                                       (locale.isDirectionRTL(context)
                                                       ? "حيّاك $_username"
-                                                      : "Hello $_username")
+                                                      : "Hello $_usernameen")
                                                   .length >
                                               20
                                           ? 20
                                           : (locale.isDirectionRTL(context)
                                                   ? "حيّاك $_username"
-                                                  : "Hello $_username")
+                                                  : "Hello $_usernameen")
                                               .length,
                                     ) +
                                 ((locale.isDirectionRTL(context)
                                                 ? "حيّاك $_username"
-                                                : "Hello $_username")
+                                                : "Hello $_usernameen")
                                             .length >
                                         20
                                     ? "..."
@@ -222,57 +226,65 @@ class _MainScreenState extends State<MainScreen> {
                 SizedBox(height: 20.h),
                 Row(
                   children: [
-                    Container(
-                      width: 282.w,
-                      height: 50.h,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: ShapeDecoration(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.white
-                                : Colors.black,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 1.5,
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>   SearchScreen()),
+                        );
+                      },
+                      child: Container(
+                        width: 282.w,
+                        height: 50.h,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: ShapeDecoration(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1.5,
+                              color:
+                                  Theme.of(context).brightness == Brightness.light
+                                      ? Colors.white
+                                      : Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(width: 10.w),
-                              Text(
-                                locale!.isDirectionRTL(context)
-                                    ? 'ابحث عن الخدمات'
-                                    : 'Search about services',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: 10.w),
+                                Text(
+                                  locale!.isDirectionRTL(context)
+                                      ? 'ابحث عن الخدمات'
+                                      : 'Search about services',
 
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.white,
-                                  fontSize: 15.sp,
-                                  fontFamily: 'Graphik Arabic',
-                                  fontWeight: FontWeight.w500,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.black
+                                            : Colors.white,
+                                    fontSize: 15.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            "assets/icons/search_ai.png",
-                            width: 20.w,
-                            height: 20.h,
-                          ),
-                        ],
+                              ],
+                            ),
+                            Image.asset(
+                              "assets/icons/search_ai.png",
+                              width: 20.w,
+                              height: 20.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Spacer(),
@@ -339,10 +351,7 @@ class _MainScreenState extends State<MainScreen> {
             topLeft: Radius.circular(15.sp),
             topRight: Radius.circular(15.sp),
           ),
-          color:
-              Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
+          color:backgroundColor(context),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -461,7 +470,8 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                           );
                         } else if (state is ServicesError) {
-                          return const Center(child: Text('حدث خطأ ما'));
+                    //      return  Center(child: Text(state.message));
+                         return const Center(child: Text('حدث خطأ ما'));
                         } else if (state is ServicesLoaded) {
                           final List<Map<String, dynamic>> allItems = [
                             ...state.products
@@ -991,13 +1001,11 @@ class _MainScreenState extends State<MainScreen> {
     // يحوّلها double
     double value = double.tryParse(number) ?? 0;
 
-    // لو رقم صحيح → يرجع بدون كسور
-    if (value == value.toInt()) {
+     if (value == value.toInt()) {
       return value.toInt().toString();
     }
 
-    // لو فيه كسور → يشيل الأصفار الزيادة
-    return value
+     return value
         .toString()
         .replaceAll(RegExp(r"0+$"), "")
         .replaceAll(RegExp(r"\.$"), "");
@@ -1010,51 +1018,33 @@ class _MainScreenState extends State<MainScreen> {
     required String description,
     bool isNetworkImage = true,
     required BuildContext context,
-    List<OfferModel>? offer,
+    OfferModel? offer,
   }) {
-    OfferModel? firstOffer =
-        (offer != null && offer.isNotEmpty) ? offer.first : null;
-
     String? offerText;
     Color badgeColor = accentColor;
 
     bool isPercentage = false;
     bool isFixed = false;
 
-    if (firstOffer != null) {
-      if (firstOffer.type == "percentage") {
-        offerText = "${firstOffer.discount}% ";
+    if (offer != null) {
+      if (offer.type == "percentage") {
+        offerText = "${offer.discount}%";
         isPercentage = true;
-      } else if (firstOffer.type == "fixed") {
-        offerText = firstOffer.discount;
+      } else if (offer.type == "fixed") {
+        offerText = offer.discount;
         isFixed = true;
       }
     }
 
     return GestureDetector(
-      onTap: () async {
-        // final prefs = await SharedPreferences.getInstance();
-        // final token = prefs.getString('token');
-        //
-        // if (token != null && token.isNotEmpty) {
-        //   navigateToServiceScreen(context, slug, title, description, imagePath);
-        // } else {
-        navigateToServiceScreen(context, slug, title, description, imagePath);
-
-        // showModalBottomSheet(
-        //   context: context,
-        //   isScrollControlled: true,
-        //   backgroundColor: Colors.transparent,
-        //   builder:
-        //       (context) => FractionallySizedBox(
-        //         widthFactor: 1,
-        //         child: BlocProvider(
-        //           create: (_) => LoginCubit(dio: Dio()),
-        //           child: const LoginBottomSheet(),
-        //         ),
-        //       ),
-        // );
-        // }
+      onTap: () {
+        navigateToServiceScreen(
+          context,
+          slug,
+          title,
+          description,
+          imagePath,
+        );
       },
       child: Stack(
         children: [
@@ -1077,17 +1067,14 @@ class _MainScreenState extends State<MainScreen> {
                     SizedBox(
                       width: 45.w,
                       height: 45.h,
-                      child:
-                          isNetworkImage
-                              ? Image.network(
-                                imagePath,
-                                fit: BoxFit.contain,
-                                errorBuilder:
-                                    (context, error, stackTrace) => Image.asset(
-                                      'assets/images/water_rinse.png',
-                                    ),
-                              )
-                              : Image.asset(imagePath, fit: BoxFit.cover),
+                      child: isNetworkImage
+                          ? Image.network(
+                        imagePath,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) =>
+                            Image.asset('assets/images/water_rinse.png'),
+                      )
+                          : Image.asset(imagePath),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -1096,10 +1083,9 @@ class _MainScreenState extends State<MainScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 14.h,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -1111,7 +1097,8 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
 
-          if (firstOffer != null)
+          /// Badge
+          if (offer != null)
             Positioned(
               top: 0,
               right: 0,
@@ -1135,7 +1122,6 @@ class _MainScreenState extends State<MainScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                     if (isFixed) ...[
                       Text(
                         offerText!,
@@ -1161,4 +1147,5 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
 }

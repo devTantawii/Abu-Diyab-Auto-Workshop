@@ -13,8 +13,9 @@ void navigateToServiceScreen(
   String slug,
   String title,
   String description,
-  String icon,
-) {
+  String icon, {
+  int? productId,
+}) {
   switch (slug) {
     case 'oils':
       Navigator.push(
@@ -26,6 +27,8 @@ void navigateToServiceScreen(
                 description: description,
                 icon: icon,
                 slug: slug,
+                productId: productId,
+
               ),
         ),
       );
@@ -40,6 +43,7 @@ void navigateToServiceScreen(
                 description: description,
                 icon: icon,
                 slug: slug,
+                productId: productId,
               ),
         ),
       );
@@ -53,7 +57,8 @@ void navigateToServiceScreen(
                 title: title,
                 description: description,
                 icon: icon,
-                slug: slug,
+                slug: slug,                productId: productId,
+
               ),
         ),
       );
@@ -109,7 +114,7 @@ void navigateToServiceScreen(
                 title: title,
                 description: description,
                 icon: icon,
-                slug: slug, // ✅ هنا
+                slug: slug, productId: productId,
               ),
         ),
       );

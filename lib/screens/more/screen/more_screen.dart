@@ -82,10 +82,8 @@ class _MoreScreenState extends State<MoreScreen> {
               topLeft: Radius.circular(15.sp),
               topRight: Radius.circular(15.sp),
             ),
-            color:
-                Theme.of(context).brightness == Brightness.light
-                    ? Colors.white
-                    : Colors.black,
+            color:backgroundColor(context),
+
           ),
           child: Padding(
             padding: EdgeInsets.all(20.sp),
@@ -280,7 +278,7 @@ class _MoreScreenState extends State<MoreScreen> {
                         Icon(
                           Icons.language,
                           color: typographyMainColor(context),
-                          size: 18.sp,
+                          size: 20.sp,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -337,7 +335,7 @@ class _MoreScreenState extends State<MoreScreen> {
                             Icon(
                               Icons.color_lens,
                               color: typographyMainColor(context),
-                              size: 18.sp,
+                              size: 20.sp,
                             ),
                             SizedBox(width: 5.w),
                             Text(
@@ -490,14 +488,13 @@ class LanguageToggle extends StatelessWidget {
         height: 30.h,
         padding: EdgeInsets.all(4.w),
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.1),
+          color: Colors.blueAccent.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(color: Colors.grey, width: 1.w),
         ),
         child: Stack(
           children: [
-            // النصوص AR / EN
-            Align(
+             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: EdgeInsets.only(left: 8.w),
@@ -505,7 +502,7 @@ class LanguageToggle extends StatelessWidget {
                   "AR",
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isArabic ? Colors.white : Colors.red,
+                    color: isArabic ? Colors.white : Color(0xFF006D92),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -519,7 +516,7 @@ class LanguageToggle extends StatelessWidget {
                   "EN",
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isArabic ? Colors.red : Colors.white,
+                    color: isArabic ? Color(0xFF006D92) : Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

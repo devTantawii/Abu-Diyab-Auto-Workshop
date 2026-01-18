@@ -30,6 +30,7 @@ class ChangeBattery extends StatefulWidget {
   final String description;
   final String icon;
   final String slug;
+  final int? productId;
 
   const ChangeBattery({
     super.key,
@@ -37,6 +38,8 @@ class ChangeBattery extends StatefulWidget {
     required this.description,
     required this.icon,
     required this.slug,
+    this.productId,
+
   });
 
   @override
@@ -56,6 +59,7 @@ class _ChangeBatteryState extends State<ChangeBattery> {
   int? _selectedUserCarId;
   int currentPage = 1;
   final int itemsPerPage = 4;
+  bool _autoSelectedFromSearch = false;
 
   @override
   void initState() {
@@ -660,7 +664,21 @@ class _ChangeBatteryState extends State<ChangeBattery> {
                                 startIndex.clamp(0, batteries.length),
                                 endIndex.clamp(0, batteries.length),
                               );
+                              if (widget.productId != null && !_autoSelectedFromSearch) {
+                                final index = batteries.indexWhere(
+                                      (batteries) => batteries.id == widget.productId,
+                                );
 
+                                if (index != -1) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    setState(() {
+                                      _selectedBatteryIndex = index;
+                                      currentPage = (index ~/ itemsPerPage) + 1;
+                                      _autoSelectedFromSearch = true;
+                                    });
+                                  });
+                                }
+                              }
                               return Column(
                                 children: [
                                   ListView.builder(
